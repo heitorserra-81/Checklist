@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Premium v11.0</title>
+  <title>Marchesini Premium v11.1</title>
   <style>
     :root {
-      --bg: #060608;
-      --surface-card: #111116;
-      --surface-nested: #16161f;
-      --border-color: rgba(255, 255, 255, 0.05);
-      --accent-gold: #d4af37;
+      --bg: #0b0c10;
+      --surface-card: #14161d;
+      --surface-nested: #1b1e26;
+      --border-color: rgba(212, 175, 55, 0.12);
+      --accent-gold: #c9a054;
       --accent-light: #f3e5ab;
       --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --color-success: #2ed573;
-      --color-danger: #ff4757;
+      --text-muted: #8e8e93;
+      --color-success: #30d158;
+      --color-danger: #ff453a;
     }
 
     * { 
@@ -27,15 +27,15 @@
     }
     
     body { 
-      background: var(--bg); 
+      background: radial-gradient(circle at top, #161923 0%, var(--bg) 100%); 
       color: var(--text-main); 
-      padding: 24px 16px 120px 16px; 
+      padding: 24px 16px 140px 16px; 
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* NOVO LAYOUT: Cabeçalho Estilo Dashboard Moderno */
+    /* Cabeçalho Estilo Dashboard Moderno */
     .app-header {
       display: flex;
       align-items: center;
@@ -45,168 +45,175 @@
       padding: 16px 20px;
       border-radius: 20px;
       margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
 
     .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-wrapper { position: relative; width: 48px; height: 48px; cursor: pointer; }
-    .app-logo { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-gold); }
+    .logo-wrapper { position: relative; width: 50px; height: 50px; cursor: pointer; }
+    .app-logo { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
     
-    .app-info h1 { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
+    .app-info h1 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
     .app-info p { font-size: 10px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
 
     .menu-toggle {
-      background: transparent; border: none; color: var(--accent-gold); font-size: 24px; cursor: pointer; padding: 6px;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; cursor: pointer; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
     }
 
-    /* Menu Lateral Ouro */
+    /* Menu Lateral */
     .sidebar {
-      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0b0b0f; border-left: 1px solid var(--border-color); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 1px solid var(--border-color); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .sidebar.open { right: 0; }
     .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-    .sidebar-header h3 { font-size: 15px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
+    .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
     .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
     
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e7eb; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-    .menu-item.danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.05); margin-top: 20px; }
+    .menu-item.danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
 
-    /* Barra de Progresso Minimalista */
+    /* Barra de Progresso */
     .progress-box {
-      background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; margin-bottom: 24px;
+      background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
     .progress-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 6px; border-radius: 3px; overflow: hidden; }
-    .progress-bar-fill { background: var(--accent-gold); height: 100%; width: 0%; transition: width 0.4s ease; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent-gold), var(--color-success)); height: 100%; width: 0%; transition: width 0.4s ease; }
 
-    /* Seletor de Equipe Redesenhado */
+    /* Seletor de Equipe */
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .section-title { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-    .btn-add-member { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 11px; padding: 4px 10px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; }
+    .btn-add-member { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 11px; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; }
     
-    .team-scroll { display: flex; gap: 16px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 24px; -webkit-overflow-scrolling: touch; }
+    .team-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 24px; -webkit-overflow-scrolling: touch; }
     .team-scroll::-webkit-scrollbar { display: none; }
-    .team-card { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; position: relative; }
     
-    .avatar-wrapper { position: relative; width: 58px; height: 58px; }
-    .team-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #15151a; transition: all 0.2s ease; }
-    .team-avatar-placeholder { width: 58px; height: 58px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: #1c1c24; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; }
-    .team-name { font-size: 12px; font-weight: 500; color: var(--text-muted); }
-    
-    .btn-profile-cam { position: absolute; bottom: 0; right: 0; background: var(--accent-gold); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; }
-    
-    .team-card.active .team-avatar { border-color: var(--accent-gold); transform: translateY(-2px); }
-    .team-card.active .team-avatar-placeholder { background: var(--accent-gold); color: #000; border-color: var(--accent-gold); transform: translateY(-2px); }
-    .team-card.active .team-name { color: #fff; font-weight: 700; }
-
-    /* Setores e Acordeon Clean */
-    .sector-card {
-      background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 16px; margin-bottom: 12px; overflow: hidden;
+    .team-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.25s ease;
     }
-    .sector-header { display: flex; align-items: center; padding: 16px; cursor: pointer; user-select: none; }
-    .sector-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.02); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px; }
+
+    /* Setores e Acordeon */
+    .sector-card {
+      background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 18px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
+    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; }
     .sector-details { flex: 1; }
-    .sector-name { font-size: 14px; font-weight: 600; }
-    .sector-qty { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .chevron { width: 16px; height: 16px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; transition: transform 0.25s ease; }
+    .sector-name { font-size: 15px; font-weight: 600; }
+    .sector-qty { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; transition: transform 0.25s ease; }
     
+    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent-gold); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); background: var(--surface-nested); }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); background: rgba(0, 0, 0, 0.15); }
     
     /* Listagem de Tarefas */
-    .task-item { display: flex; flex-direction: column; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.01); }
+    .task-item { display: flex; flex-direction: column; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
     .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
     
-    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; margin-right: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .task-item.done .check-round { background: var(--color-success); border-color: var(--color-success); }
     .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 900; }
     
-    .task-label { font-size: 13px; flex: 1; color: #d1d5db; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
-    .task-item.done .task-label span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
+    .task-label { font-size: 14px; flex: 1; color: #e5e5ea; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
+    .task-item.done .task-label span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
     
-    /* Crachá de Conclusão com Foto */
-    .user-badge-premium { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 12px; color: #000; display: inline-flex; align-items: center; gap: 5px; text-transform: uppercase; background: var(--accent-gold); }
-    .user-badge-pic { width: 14px; height: 14px; border-radius: 50%; object-fit: cover; }
+    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #000; text-transform: uppercase; animation: popIn 0.25s ease; }
+    @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-    /* Foto de Evidência da Tarefa */
-    .task-photo-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-left: 32px; }
-    .btn-task-camera { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); color: var(--text-muted); padding: 5px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-    .task-img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--accent-gold); display: none; }
+    /* Área da Foto de Evidência por Setor */
+    .photo-area { padding: 16px 18px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255,255,255,0.02); }
+    .file-wrapper { position: relative; overflow: hidden; display: block; }
+    .btn-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+    
+    .preview-box { position: relative; margin-top: 12px; display: none; }
+    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-    /* MODAL DO CHAT (SUBSTITUIU A CAIXA FIXA QUE TAMPAVA TUDO) */
-    .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); }
-    .chat-box-container { width: 100%; background: #0e0e12; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 70vh; animation: slideUp 0.25s ease-out; }
+    /* POP-UP DO CHAT FLUTUANTE */
+    .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; animation: slideUp 0.25s ease-out; padding-bottom: cubic-bezier(0.1, 0.9, 0.2, 1); }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     
     .chat-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
     .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
     .chat-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
     
-    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-height: 200px; }
-    .msg-bubble { font-size: 12px; padding: 8px 12px; border-radius: 14px; max-width: 80%; line-height: 1.4; }
-    .msg-received { background: rgba(255,255,255,0.04); align-self: flex-start; color: #d1d5db; }
-    .msg-sent { background: rgba(212, 175, 55, 0.15); border: 1px solid rgba(212, 175, 55, 0.2); align-self: flex-end; color: #fff; }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-height: 220px; }
+    .msg-bubble { font-size: 13px; padding: 10px 14px; border-radius: 14px; max-width: 80%; line-height: 1.4; }
+    .msg-received { background: rgba(255,255,255,0.04); align-self: flex-start; color: #e5e5ea; }
+    .msg-sent { background: rgba(199, 160, 84, 0.15); border: 1px solid rgba(199, 160, 84, 0.2); align-self: flex-end; color: #fff; }
     .msg-author { font-weight: 700; font-size: 10px; color: var(--accent-gold); margin-bottom: 2px; text-transform: uppercase; }
     
-    .chat-modal-footer { display: flex; padding: 12px 16px; background: #09090b; gap: 10px; border-top: 1px solid var(--border-color); }
-    .chat-modal-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 14px; color: #fff; font-size: 13px; }
-    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: #000; }
+    .chat-modal-footer { display: flex; padding: 12px 16px; background: #0b0c10; gap: 10px; border-top: 1px solid var(--border-color); }
+    .chat-modal-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 14px; }
+    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; color: #000; }
 
-    /* BOTÕES FLUTUANTES REDESENHADOS (LADO DIREITO) */
-    .floating-actions { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 1000; }
-    .btn-fab { width: 52px; height: 52px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.5); transition: transform 0.2s; }
+    /* BOTÕES FLUTUANTES NO CANTO DIREITO (Não ocupam espaço embaixo!) */
+    .floating-actions { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 14px; z-index: 1000; }
+    .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); transition: transform 0.2s; }
     .btn-fab:active { transform: scale(0.9); }
-    .fab-chat { background: #1e1e24; border: 1px solid var(--border-color); color: var(--accent-gold); }
+    .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--accent-gold); }
     .fab-whatsapp { background: #25d366; color: #fff; text-decoration: none; }
 
-    /* Modais Gerais */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 20px; }
-    .modal-content { background: #0e0e12; border: 1px solid var(--border-color); padding: 24px; border-radius: 20px; width: 100%; max-width: 320px; }
+    /* Modais Gerais de Cadastro */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 20px; }
+    .modal-content { background: #0f111a; border: 1px solid var(--border-color); padding: 24px; border-radius: 20px; width: 100%; max-width: 320px; }
     .modal-content h3 { margin-bottom: 16px; font-size: 16px; text-align: center; color: #fff; }
-    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 13px; margin-bottom: 16px; }
+    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; margin-bottom: 16px; }
     .modal-btns { display: flex; gap: 10px; }
     .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; }
     .btn-m-save { background: var(--accent-gold); color: #000; }
     .btn-m-cancel { background: rgba(255,255,255,0.04); color: #fff; }
 
-    /* OVERLAY DAS INTELIGENTES SUPER ANIMAÇÕES CARTOON DIRETAS */
+    /* TELA DE ANIMAÇÕES CARTOON EXCLUSIVAS */
     .animation-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(6, 6, 8, 0.98); z-index: 3000; align-items: center; justify-content: center;
+      background: rgba(11, 12, 16, 0.96); z-index: 3000; align-items: center; justify-content: center;
     }
     .anim-box { text-align: center; padding: 24px; }
     .anim-title { font-size: 22px; font-weight: 800; color: #fff; margin-top: 20px; letter-spacing: -0.5px; }
     .anim-subtitle { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
     .cartoon-container { position: relative; width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-    .cartoon-emoji { font-size: 84px; line-height: 1; display: inline-block; }
+    .cartoon-emoji { font-size: 80px; line-height: 1; display: inline-block; }
 
-    /* Biblioteca Cartoon de Efeitos Exclusivos */
+    /* Movimentos Cartoon */
     .anim-vassoura { animation: varrerMove 0.4s ease-in-out infinite alternate; transform-origin: bottom center; }
-    @keyframes varrerMove { 0% { transform: rotate(-20deg) translateX(-10px); } 100% { transform: rotate(20deg) translateX(10px); } }
+    @keyframes varrerMove { 0% { transform: rotate(-25deg) translateX(-10px); } 100% { transform: rotate(25deg) translateX(10px); } }
     
-    .anim-pano { animation: panoGinga 0.45s linear infinite alternate; }
-    @keyframes panoGinga { 0% { transform: scaleX(0.85) skewX(-10deg); } 100% { transform: scaleX(1.1) skewX(10deg); } }
+    .anim-pano { animation: panoGinga 0.4s linear infinite alternate; }
+    @keyframes panoGinga { 0% { transform: scaleX(0.8) skewX(-12deg); } 100% { transform: scaleX(1.15) skewX(12deg); } }
     
-    .anim-vaso { animation: vasoPula 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite alternate; }
-    @keyframes vasoPula { 0% { transform: translateY(15px) scaleY(0.8); } 100% { transform: translateY(-20px) scaleY(1.1); filter: drop-shadow(0 0 15px rgba(46,213,115,0.4)); } }
+    .anim-vaso { animation: vasoPula 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite alternate; }
+    @keyframes vasoPula { 0% { transform: translateY(15px) scaleY(0.8); } 100% { transform: translateY(-20px) scaleY(1.1); filter: drop-shadow(0 0 15px rgba(48,209,88,0.4)); } }
     
-    .anim-mesa { animation: mesaBrilha 0.5s ease-in-out infinite alternate; }
-    @keyframes mesaBrilha { 0% { transform: scale(0.95); opacity: 0.8; } 100% { transform: scale(1.15); opacity: 1; } }
+    .anim-mesa { animation: mesaBrilha 0.4s ease-in-out infinite alternate; }
+    @keyframes mesaBrilha { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.15); opacity: 1; } }
     
-    .anim-bebida { animation: cocktailShake 0.3s ease-in-out infinite alternate; }
-    @keyframes cocktailShake { 0% { transform: rotate(-15deg); } 100% { transform: rotate(15deg); } }
+    .anim-bebida { animation: cocktailShake 0.25s ease-in-out infinite alternate; }
+    @keyframes cocktailShake { 0% { transform: rotate(-20deg); } 100% { transform: rotate(20deg); } }
 
     .anim-padrao { animation: popGeral 0.4s ease-in-out infinite alternate; }
-    @keyframes popGeral { 0% { transform: scale(0.9); } 100% { transform: scale(1.15); } }
+    @keyframes popGeral { 0% { transform: scale(0.85); } 100% { transform: scale(1.15); } }
   </style>
 </head>
 <body>
 
   <div class="sidebar" id="app-sidebar">
     <div class="sidebar-header">
-      <h3>Opções Operacionais</h3>
+      <h3>Configurações do Turno</h3>
       <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
     </div>
-    <div class="menu-item" onclick="toggleSidebar()">📋 Checklist Ativo</div>
+    <div class="menu-item" onclick="toggleSidebar()">📋 Visualizar Checklist</div>
     <div class="menu-item danger" onclick="limparMesa(); toggleSidebar();">⚠️ Zerar Todo o Turno</div>
   </div>
 
@@ -216,7 +223,7 @@
         <div class="cartoon-emoji" id="anim-emoji">✨</div>
       </div>
       <div class="anim-title" id="anim-title">Concluído!</div>
-      <div class="anim-subtitle" id="anim-subtitle">Marchesini Premium</div>
+      <div class="anim-subtitle" id="anim-subtitle">Operação Marchesini</div>
     </div>
   </div>
 
@@ -236,7 +243,7 @@
 
   <div class="progress-box">
     <div class="progress-labels">
-      <span>Meta do Turno</span>
+      <span>Meta do Fechamento</span>
       <span id="progress-txt">0%</span>
     </div>
     <div class="progress-bar-bg">
@@ -245,12 +252,12 @@
   </div>
 
   <div class="section-header-flex">
-    <div class="section-title">Quem está operando?</div>
-    <button class="btn-add-member" onclick="abrirModalCadastro()">➕ Equipe</button>
+    <div class="section-title">Funcionário Logado</div>
+    <button class="btn-add-member" onclick="abrirModalCadastro()">➕ Integrante</button>
   </div>
   <div class="team-scroll" id="team-container"></div>
 
-  <div class="section-title" style="margin-bottom: 12px;">Setores</div>
+  <div class="section-title" style="margin-bottom: 12px;">Setores Operacionais</div>
   <div id="sectors-container"></div>
 
   <div class="chat-modal" id="chat-popup">
@@ -261,12 +268,12 @@
       </div>
       <div class="chat-messages" id="chat-messages-box">
         <div class="msg-bubble msg-received">
-          <div class="msg-author">Sistema</div>
-          Painel de comunicação interna ativado para este fechamento.
+          <div class="msg-author">Gerência</div>
+          Boa noite equipe! Vamos focar no checklist para entregar o salão impecável.
         </div>
       </div>
       <div class="chat-modal-footer">
-        <input type="text" class="chat-modal-input" id="chat-input-field" placeholder="Digite aqui...">
+        <input type="text" class="chat-modal-input" id="chat-input-field" placeholder="Escreva uma mensagem...">
         <button class="btn-chat-send" onclick="enviarMensagemSimulada()">Enviar</button>
       </div>
     </div>
@@ -289,6 +296,11 @@
   </div>
 
   <script>
+    // Correção automática de conflito de versões e limpeza de cache antigo pesado
+    if (localStorage.getItem('marchesini_v3_state')) {
+      localStorage.removeItem('marchesini_v3_state'); 
+    }
+
     var audioCtx = null;
     function somSucessoCartoon() {
       try {
@@ -297,20 +309,26 @@
         var gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // Dó
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // Mi
-        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // Sol
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); 
+        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); 
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
         osc.start(); osc.stop(audioCtx.currentTime + 0.4);
       } catch(e) {}
     }
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
+    
     function toggleChatPopup() { 
       var p = document.getElementById('chat-popup');
       p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
     }
+
+    var equipeCores = {
+      "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
+      "Pepeu": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
+    };
 
     var dadosSetores = [
       {
@@ -362,7 +380,7 @@
 
     var estado;
     try {
-      var salvo = localStorage.getItem('marchesini_v11_state');
+      var salvo = localStorage.getItem('marchesini_v11_fixed');
       estado = salvo ? JSON.parse(salvo) : null;
       if (!estado || !estado.listaMembros) { throw new Error(); }
     } catch(e) {
@@ -370,50 +388,48 @@
         usuarioAtivo: "Heitor",
         listaMembros: ["Heitor", "Danilo", "Bill", "Pepeu", "Eibe", "Suelen", "Gi"],
         tarefasFeitas: {},
-        fotosTarefas: {},
-        fotosPerfil: {},
+        fotosSetores: {},
         logoRestaurante: ""
       };
     }
 
     function salvarEstado() {
       try {
-        localStorage.setItem('marchesini_v11_state', JSON.stringify(estado));
+        localStorage.setItem('marchesini_v11_fixed', JSON.stringify(estado));
       } catch(e) {
-        console.log("Aviso de cota cheia contornado.");
+        console.log("Cota limpa.");
       }
       atualizarProgresso();
     }
 
-    // 🌟 MÓDULO ULTRA-COMPACTADOR DE IMAGENS (Evita travar a memória do celular)
-    function processarFotoReduzida(input, destino, chaveAdicional) {
+    // COMPACTADOR INTEGRADO DE FOTOS DE EVIDÊNCIA
+    function processarFotoReduzida(input, destino, setorId) {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
           var img = new Image();
           img.onload = function() {
             var canvas = document.createElement('canvas');
-            var MAX_WIDTH = 120; // Super compacto para crachá e preview
+            var MAX_WIDTH = 400; // Resolução otimizada e leve para celular
             var scale = MAX_WIDTH / img.width;
             canvas.width = MAX_WIDTH;
             canvas.height = img.height * scale;
             
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            
-            var dataUrlObtida = canvas.toDataURL('image/jpeg', 0.6); // Miniatura super leve
+            var b64Leve = canvas.toDataURL('image/jpeg', 0.65);
             
             if(destino === 'logo') {
-              estado.logoRestaurante = dataUrlObtida;
-              document.getElementById('restaurant-logo').src = dataUrlObtida;
-            } else if(destino === 'perfil') {
-              estado.fotosPerfil[chaveAdicional] = dataUrlObtida;
-              renderEquipe();
-              montarPainel();
-            } else if(destino === 'tarefa') {
-              estado.fotosTarefas[chaveAdicional] = dataUrlObtida;
-              var pImg = document.getElementById('img_prev_' + chaveAdicional);
-              if(pImg) { pImg.src = dataUrlObtida; pImg.style.display = 'block'; }
+              estado.logoRestaurante = b64Leve;
+              document.getElementById('restaurant-logo').src = b64Leve;
+            } else if(destino === 'setor') {
+              estado.fotosSetores[setorId] = b64Leve;
+              document.getElementById('img_' + setorId).src = b64Leve;
+              document.getElementById('pbox_' + setorId).style.display = 'block';
+              document.getElementById('lbl_img_' + setorId).innerText = '🔄 Trocar Foto do Setor';
+              
+              var content = document.getElementById('content_' + setorId);
+              content.style.maxHeight = content.scrollHeight + 'px';
             }
             salvarEstado();
           };
@@ -423,30 +439,36 @@
       }
     }
 
+    function removerFoto(setorId, e) {
+      e.stopPropagation();
+      if(confirm('Remover esta imagem?')) {
+        delete estado.fotosSetores[setorId];
+        salvarEstado();
+        document.getElementById('pbox_' + setorId).style.display = 'none';
+        document.getElementById('lbl_img_' + setorId).innerText = '📸 Tirar ou Anexar Foto';
+        var content = document.getElementById('content_' + setorId);
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    }
+
     function renderEquipe() {
       var container = document.getElementById('team-container');
       container.innerHTML = '';
       
       estado.listaMembros.forEach(function(nome) {
         var card = document.createElement('div');
-        card.className = 'team-card' + (estado.usuarioAtivo === nome ? ' active' : '');
+        card.className = 'team-card';
+        card.innerText = nome;
         
-        var fSalva = estado.fotosPerfil[nome];
-        var avatarHtml = fSalva ? 
-          '<img class="team-avatar" src="' + fSalva + '">' : 
-          '<div class="team-avatar-placeholder">' + nome.charAt(0) + '</div>';
+        var corBase = equipeCores[nome] || "#c9a054";
+        if(estado.usuarioAtivo === nome) {
+          card.style.background = corBase;
+          card.style.color = '#000';
+          card.style.fontWeight = '700';
+          card.style.borderColor = corBase;
+        }
 
-        card.innerHTML = 
-          '<div class="avatar-wrapper">' +
-            avatarHtml +
-            '<label class="btn-profile-cam">📸' +
-              '<input type="file" accept="image/*" style="display:none;" onchange="processarFotoReduzida(this, \'perfil\', \''+nome+'\')">' +
-            '</label>' +
-          '</div>' +
-          '<div class="team-name">' + nome + '</div>';
-          
-        card.onclick = function(e) {
-          if(e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL' || e.target.classList.contains('btn-profile-cam')) return;
+        card.onclick = function() {
           estado.usuarioAtivo = nome;
           salvarEstado();
           renderEquipe();
@@ -457,18 +479,23 @@
 
     function abrirModalCadastro() { document.getElementById('cadastro-modal').style.display = 'flex'; }
     function fecharModalCadastro() { document.getElementById('cadastro-modal').style.display = 'none'; document.getElementById('new-member-name').value = ''; }
+    
     function salvarNovoMembro() {
       var nome = document.getElementById('new-member-name').value.trim();
       if(!nome) return;
-      if(!estado.listaMembros.includes(nome)) { estado.listaMembros.push(nome); }
+      if(!estado.listaMembros.includes(nome)) { 
+        estado.listaMembros.push(nome); 
+        // Gera cor aleatória se não mapeada
+        if(!equipeCores[nome]) { equipeCores[nome] = "#" + Math.floor(Math.random()*16777215).toString(16); }
+      }
       estado.usuarioAtivo = nome;
       salvarEstado();
       renderEquipe();
       fecharModalCadastro();
     }
 
-    // 🤖 LEITURA INTELIGENTE DE TAREFA E DISPARO DE ANIMAÇÕES CUSTOMIZADAS
-    function processarAnimacaoInteligente(textoTarefa) {
+    // ANIMAÇÕES INTELIGENTES EXCLUSIVAS POR DETECÇÃO DE PALAVRA-CHAVE
+    function dispararAnimacaoInteligente(textoTarefa) {
       somSucessoCartoon();
       var overlay = document.getElementById('anim-overlay');
       var emoji = document.getElementById('anim-emoji');
@@ -482,36 +509,36 @@
         emoji.innerText = "🧹✨";
         emoji.classList.add('anim-vassoura');
         title.innerText = "Vassoura em Ação!";
-        sub.innerText = "Salão varrido com maestria! 🚀";
+        sub.innerText = "Salão limpo e brilhando! 🚀";
       } else if (txt.includes('pano') || txt.includes('desinfetante') || txt.includes('chão') || txt.includes('piso')) {
         emoji.innerText = "🧼🪣";
         emoji.classList.add('anim-pano');
-        title.innerText = "Chão Espelhado!";
-        sub.innerText = "Pano dançarino passou por aqui! 💃";
+        title.innerText = "Piso Brilhando!";
+        sub.innerText = "Pano e desinfetante aplicados! 💃";
       } else if (txt.includes('vaso') || txt.includes('sanitário') || txt.includes('pias') || txt.includes('banheiro')) {
         emoji.innerText = "🚽👑";
         emoji.classList.add('anim-vaso');
-        title.innerText = "Tudo Higienizado!";
-        sub.innerText = "O vaso cartoon saltou de alegria! 👍";
+        title.innerText = "Banheiro Higienizado!";
+        sub.innerText = "Vaso limpo com padrão premium! 👍";
       } else if (txt.includes('mesa') || txt.includes('cadeira') || txt.includes('montar') || txt.includes('sousplat')) {
         emoji.innerText = "🍽️⭐";
         emoji.classList.add('anim-mesa');
-        title.innerText = "Mesa Impecável!";
-        sub.innerText = "Montagem padrão luxo Marchesini! 💎";
+        title.innerText = "Layout Organizado!";
+        sub.innerText = "Mesas e talheres impecáveis! 💎";
       } else if (txt.includes('bar') || txt.includes('bebida') || txt.includes('gelo') || txt.includes('copo')) {
         emoji.innerText = "🍹🎉";
         emoji.classList.add('anim-bebida');
-        title.innerText = "Estoque do Bar Pronto!";
-        sub.innerText = "Drinks e gelo no ponto certo! 🧊";
+        title.innerText = "Bar Pronto pro Turno!";
+        sub.innerText = "Gelo abastecido e taças polidas! 🧊";
       } else {
         emoji.innerText = "🏆";
         emoji.classList.add('anim-padrao');
         title.innerText = "Tarefa Concluída!";
-        sub.innerText = "Avançando no fechamento! ✨";
+        sub.innerText = "Fechamento progredindo! ✨";
       }
       
       overlay.style.display = 'flex';
-      setTimeout(function() { overlay.style.display = 'none'; }, 1600);
+      setTimeout(function() { overlay.style.display = 'none'; }, 1500);
     }
 
     function montarPainel() {
@@ -521,6 +548,7 @@
       dadosSetores.forEach(function(setor) {
         var card = document.createElement('div');
         card.className = 'sector-card';
+        card.id = 'card_' + setor.id;
 
         var header = document.createElement('div');
         header.className = 'sector-header';
@@ -535,7 +563,145 @@
 
         var content = document.createElement('div');
         content.className = 'sector-content';
+        content.id = 'content_' + setor.id;
 
         setor.tasks.forEach(function(tarefa, idx) {
           var item = document.createElement('div');
-          var chave = setor.id +
+          var chave = setor.id + '_' + idx;
+          item.className = 'task-item' + (estado.tarefasFeitas[chave] ? ' done' : '');
+          
+          var badgeHtml = '';
+          if(estado.tarefasFeitas[chave]) {
+            var dono = estado.tarefasFeitas[chave];
+            var corBadge = equipeCores[dono] || "#c9a054";
+            badgeHtml = '<span class="user-badge-premium" style="background:'+ corBadge +'">'+ dono +'</span>';
+          }
+
+          item.innerHTML = '<div class="task-main-row">' +
+                             '<div class="check-round"></div>' +
+                             '<div class="task-label"><span>' + tarefa + '</span><div id="badge_space_' + chave + '">' + badgeHtml + '</div></div>' +
+                           '</div>';
+
+          item.onclick = function(e) {
+            e.stopPropagation();
+            if(!estado.tarefasFeitas[chave]) {
+              estado.tarefasFeitas[chave] = estado.usuarioAtivo;
+              item.classList.add('done');
+              
+              var uActive = estado.usuarioAtivo;
+              var corB = equipeCores[uActive] || "#c9a054";
+              document.getElementById('badge_space_' + chave).innerHTML = '<span class="user-badge-premium" style="background:'+ corB +'">'+ uActive +'</span>';
+              
+              dispararAnimacaoInteligente(tarefa);
+            } else {
+              delete estado.tarefasFeitas[chave];
+              item.classList.remove('done');
+              document.getElementById('badge_space_' + chave).innerHTML = '';
+            }
+            salvarEstado();
+            document.getElementById('qty_' + setor.id).innerText = contarFeitas(setor.id) + ' de ' + setor.tasks.length + ' feitas';
+          };
+          
+          content.appendChild(item);
+        });
+
+        // Área de upload de foto por setor
+        var fotoDiv = document.createElement('div');
+        fotoDiv.className = 'photo-area';
+        fotoDiv.innerHTML = '<div class="file-wrapper">' +
+                              '<span class="btn-camera" id="lbl_img_'+setor.id+'">📸 Tirar ou Anexar Foto do Setor</span>' +
+                              '<input type="file" accept="image/*" onchange="processarFotoReduzida(this, \'setor\', \''+setor.id+'\')">' +
+                            '</div>' +
+                            '<div class="preview-box" id="pbox_'+setor.id+'">' +
+                              '<button class="btn-remove-photo" onclick="removerFoto(\''+setor.id+'\', event)">✕</button>' +
+                              '<img class="preview-img" id="img_'+setor.id+'">' +
+                            '</div>';
+        
+        content.appendChild(fotoDiv);
+        card.appendChild(header);
+        card.appendChild(content);
+        container.appendChild(card);
+
+        header.onclick = function() {
+          var active = card.classList.contains('active');
+          document.querySelectorAll('.sector-card').forEach(function(c) {
+            c.classList.remove('active');
+            c.querySelector('.sector-content').style.maxHeight = '0px';
+          });
+          if(!active) {
+            card.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + 120 + 'px';
+          }
+        };
+
+        if(estado.fotosSetores[setor.id]) {
+          setTimeout(function() {
+            var pb = document.getElementById('pbox_' + setor.id);
+            var im = document.getElementById('img_' + setor.id);
+            im.src = estado.fotosSetores[setor.id];
+            pb.style.display = 'block';
+            document.getElementById('lbl_img_' + setor.id).innerText = '🔄 Trocar Foto do Setor';
+          }, 20);
+        }
+      });
+    }
+
+    function contarFeitas(setorId) {
+      var s = dadosSetores.find(function(x) { return x.id === setorId; });
+      var c = 0;
+      s.tasks.forEach(function(t, i) { if(estado.tarefasFeitas[setorId + '_' + i]) c++; });
+      return c;
+    }
+
+    function atualizarProgresso() {
+      var total = 0; var feitas = 0;
+      dadosSetores.forEach(function(s) { s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
+      var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-txt').innerText = pct + '%';
+    }
+
+    window.enviarMensagemSimulada = function() {
+      var campo = document.getElementById('chat-input-field');
+      var texto = campo.value.trim();
+      if(!texto) return;
+      var box = document.getElementById('chat-messages-box');
+      var bolha = document.createElement('div');
+      bolha.className = 'msg-bubble msg-sent';
+      bolha.innerHTML = '<div class="msg-author">' + estado.usuarioAtivo + '</div>' + texto;
+      box.appendChild(bolha);
+      campo.value = '';
+      box.scrollTop = box.scrollHeight;
+    };
+
+    function enviarRelatorio(e) {
+      var msg = '✨ *MARCHESINI DI ROVERBELLA* ✨\n*Relatório de Fechamento de Turno*\n\n';
+      dadosSetores.forEach(function(s) {
+        msg += '📌 *' + s.title.toUpperCase() + '*\n';
+        s.tasks.forEach(function(t, i) {
+          var por = estado.tarefasFeitas[s.id + '_' + i];
+          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
+        });
+        if(estado.fotosSetores[s.id]) msg += '📸 _Evidência visual salva no sistema._\n';
+        msg += '\n';
+      });
+      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    }
+
+    function limparMesa() {
+      if(confirm('Zerar todas as marcações e fotos do turno atual?')) {
+        estado.tarefasFeitas = {};
+        estado.fotosSetores = {};
+        salvarEstado();
+        renderEquipe();
+        montarPainel();
+      }
+    }
+
+    if(estado.logoRestaurante) { document.getElementById('restaurant-logo').src = estado.logoRestaurante; }
+    renderEquipe();
+    montarPainel();
+    atualizarProgresso();
+  </script>
+</body>
+</html>

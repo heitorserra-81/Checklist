@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Marchesini Pro v9</title>
+  <title>Marchesini Pro v10</title>
   <style>
     :root {
-      --bg-gradient: linear-gradient(135deg, #0b0d17 0%, #16192b 100%);
-      --glass-card: rgba(255, 255, 255, 0.04);
-      --glass-border: rgba(199, 160, 84, 0.2);
-      --accent: #d4af37; /* Ouro Premium */
-      --accent-light: #f3e5ab;
+      --bg-gradient: linear-gradient(135deg, #0a0d1a 0%, #121526 100%);
+      --glass-card: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(212, 175, 55, 0.25);
+      --accent: #d4af37; /* Ouro Nobre */
+      --accent-glow: rgba(212, 175, 55, 0.4);
       --text: #ffffff;
-      --muted: #a0a5b5;
-      --success: #2ed573;
-      --shadow: rgba(0, 0, 0, 0.5);
+      --muted: #8fa0b5;
+      --success: #2ecc71;
+      --chat-bg: rgba(15, 18, 36, 0.95);
     }
 
     * { 
@@ -28,232 +28,161 @@
     body { 
       background: var(--bg-gradient); 
       color: var(--text); 
-      padding: 20px 16px 140px 16px; 
+      padding: 20px 16px 260px 16px; /* Espaço maior no rodapé para o Chat fixo */
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Topo Layout Novo de Luxo */
+    /* Topo de Luxo */
     .app-header {
       display: flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.02);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--glass-border);
-      padding: 20px;
-      border-radius: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 15px 35px var(--shadow), inset 0 1px 2px rgba(255,255,255,0.1);
-    }
-
-    .logo-wrapper {
-      position: relative;
-      width: 60px;
-      height: 60px;
-      margin-right: 16px;
-      cursor: pointer;
-    }
-
-    .app-logo {
-      width: 100%;
-      height: 100%;
-      border-radius: 16px; /* Quadrado arredondado estilo App */
-      object-fit: cover;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-    }
-
-    .logo-hint {
-      position: absolute;
-      bottom: -4px;
-      right: -4px;
-      background: var(--accent);
-      font-size: 8px;
-      padding: 2px 4px;
-      border-radius: 4px;
-      color: #000;
-      font-weight: 800;
-    }
-
-    .app-info h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; }
-    .app-info p { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
-
-    /* Card de Progresso Futurista */
-    .progress-box {
       background: rgba(255, 255, 255, 0.01);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
       padding: 16px;
       border-radius: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
     }
-    .progress-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 10px; color: var(--accent-light); }
-    .progress-bar-bg { background: rgba(0, 0, 0, 0.4); height: 8px; border-radius: 10px; overflow: hidden; pading: 1px; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), #ffd700, var(--success)); height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 0 12px var(--accent); }
+    .logo-wrapper { position: relative; width: 54px; height: 54px; margin-right: 14px; cursor: pointer; }
+    .app-logo { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 2px solid var(--accent); }
+    .logo-hint { position: absolute; bottom: -4px; right: -4px; background: var(--accent); font-size: 8px; padding: 1px 4px; border-radius: 4px; color: #000; font-weight: 900; }
+    .app-info h1 { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
+    .app-info p { font-size: 10px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-    /* Seleção de Funcionários */
-    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .section-title { font-size: 12px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; padding-left: 4px; }
+    /* Barra de Progresso Fina Premium */
+    .progress-box { background: rgba(0, 0, 0, 0.2); padding: 14px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.03); }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 8px; color: var(--muted); }
+    .progress-bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--accent-glow); }
+
+    /* Seção de Equipe Atualizada Sem Erros */
+    .section-title { font-size: 11px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; margin: 15px 0 10px 4px; }
     
-    .team-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 10px 4px; align-items: center; width: 100%; }
+    .team-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 4px 4px 10px 4px; width: 100%; }
     .team-scroll::-webkit-scrollbar { display: none; }
     
-    .team-card { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; transition: all 0.3s ease; }
-    .team-avatar { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #1c1c24; transition: all 0.3s ease; }
-    .team-name { font-size: 11px; font-weight: 600; color: var(--muted); }
-    .team-card.active .team-avatar { border-color: var(--accent); transform: scale(1.1); box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+    .team-card { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; position: relative; }
+    .avatar-wrapper { position: relative; width: 56px; height: 56px; }
+    .team-avatar { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #16192e; transition: all 0.3s ease; }
+    .team-name { font-size: 11px; font-weight: 600; color: var(--muted); text-align: center; white-space: nowrap; }
+    
+    /* Botão discreto de foto de perfil em cada funcionário */
+    .btn-profile-cam { position: absolute; bottom: 0; right: 0; background: var(--accent); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+    
+    .team-card.active .team-avatar { border-color: var(--accent); transform: scale(1.05); box-shadow: 0 0 12px var(--accent-glow); }
     .team-card.active .team-name { color: #fff; font-weight: 700; }
 
-    .btn-add-member { width: 54px; height: 54px; border-radius: 50%; border: 2px dashed var(--accent); background: transparent; color: var(--accent); font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
-
-    /* Setores Estilo Premium Minimalista */
-    .sector-card {
-      background: var(--glass-card);
-      border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 22px;
-      margin-bottom: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      transition: border 0.3s;
-    }
-    .sector-card.active { border-color: var(--glass-border); }
-    
-    .sector-header { display: flex; align-items: center; padding: 18px 20px; cursor: pointer; }
-    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; border: 1px solid rgba(255,255,255,0.05); }
+    /* Cards dos Setores */
+    .sector-card { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; margin-bottom: 12px; overflow: hidden; }
+    .sector-card.active { border-color: rgba(212, 175, 55, 0.15); }
+    .sector-header { display: flex; align-items: center; padding: 16px; cursor: pointer; }
+    .sector-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.02); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px; }
     .sector-details { flex: 1; }
-    .sector-name { font-size: 15px; font-weight: 700; color: #fff; }
-    .sector-qty { font-size: 11px; color: var(--muted); margin-top: 1px; }
-    .chevron { width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 3; transition: transform 0.3s; }
+    .sector-name { font-size: 14px; font-weight: 700; color: #fff; }
+    .sector-qty { font-size: 11px; color: var(--muted); }
+    .chevron { width: 14px; height: 14px; fill: none; stroke: var(--muted); stroke-width: 3; transition: transform 0.3s; }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
-
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
     
-    /* Itens de Tarefa Totalmente Novos */
-    .task-item { 
-      display: flex; 
-      flex-direction: column;
-      padding: 16px 20px; 
-      border-top: 1px solid rgba(255,255,255,0.03); 
-      background: rgba(0, 0, 0, 0.1);
-    }
-    
+    /* Layout de Itens de Tarefa */
+    .task-item { display: flex; flex-direction: column; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.02); background: rgba(0,0,0,0.08); }
     .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
-    
-    .check-round { 
-      width: 22px; height: 22px; 
-      border: 2px solid rgba(255,255,255,0.2); 
-      border-radius: 6px; /* Quadrado sutil, estilo premium */
-      margin-right: 14px; 
-      flex-shrink: 0; 
-      display: flex; align-items: center; justify-content: center; 
-      transition: all 0.2s; 
-    }
-    
-    .task-item.done .check-round { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px rgba(212, 175, 55, 0.4); }
-    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 12px; font-weight: 900; }
-    
-    .task-label { font-size: 14px; flex: 1; color: #e1e3e6; font-weight: 500; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.7; }
+    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; margin-right: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .task-item.done .check-round { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 900; }
+    .task-label { font-size: 13px; flex: 1; color: #e5e9f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
+    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: rgba(212, 175, 55, 0.1); color: var(--accent); border: 1px solid rgba(212, 175, 55, 0.2); display: flex; align-items: center; gap: 4px; }
+    .user-badge-pic { width: 12px; height: 12px; border-radius: 50%; object-fit: cover; }
 
-    .user-badge-premium { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 8px; background: rgba(212, 175, 55, 0.1); color: var(--accent); border: 1px solid rgba(212, 175, 55, 0.2); }
+    /* Upload de Fotos Individuais da Tarefa */
+    .task-photo-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-left: 32px; }
+    .btn-task-camera { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); color: var(--muted); padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .task-img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--accent); display: none; }
 
-    /* Área de Foto por Tarefa (Novo!) */
-    .task-photo-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 10px;
-      padding-left: 36px;
-      width: 100%;
-    }
-    .btn-task-camera {
-      background: rgba(255,255,255,0.03);
-      border: 1px dashed rgba(255,255,255,0.2);
-      color: var(--muted);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .btn-task-camera:active { background: rgba(255,255,255,0.08); }
-    
-    .task-img-preview {
-      width: 45px;
-      height: 45px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 1px solid var(--accent);
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-      display: none;
-      position: relative;
-    }
-
-    /* 🔥 TELA CHEIA: SUPER ANIMAÇÕES DE IMPACTO 🔥 */
+    /* 🔥 SUPER ANIMAÇÕES ESTILO CARTOON (DESENHO ANIMADO) 🔥 */
     .animation-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(7, 9, 15, 0.95);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 7, 15, 0.96); z-index: 2000; align-items: center; justify-content: center;
     }
-    
-    .anim-box {
-      text-align: center;
-      animation: zoomPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    .anim-box { text-align: center; }
+    .anim-title { font-size: 22px; font-weight: 900; color: #fff; margin-top: 20px; letter-spacing: -0.5px; }
+    .anim-subtitle { font-size: 12px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 4px; }
+
+    /* Elementos de Desenho Animado Genuíno (Flexionando e se movendo de verdade) */
+    .cartoon-container { position: relative; width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .cartoon-emoji { font-size: 85px; line-height: 1; display: inline-block; }
+
+    /* Animação 1: A Privada Maluca (Estica, pula de alegria e deforma estilo borracha) */
+    .cartoon-toilet-anim {
+      animation: crazyToilet 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) infinite alternate;
     }
-    
-    .anim-art { font-size: 90px; margin-bottom: 20px; display: inline-block; position: relative; }
-    .anim-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
-    .anim-subtitle { font-size: 13px; color: var(--accent); font-weight: 600; text-transform: uppercase; }
-
-    @keyframes zoomPop {
-      0% { transform: scale(0.3); opacity: 0; }
-      70% { transform: scale(1.1); }
-      100% { transform: scale(1); opacity: 1; }
+    @keyframes crazyToilet {
+      0% { transform: scaleX(1.1) scaleY(0.85) translateY(15px); }
+      40% { transform: scaleX(0.9) scaleY(1.15) translateY(-25px) rotate(-8deg); }
+      70% { transform: scaleX(1) scaleY(1) translateY(-25px) rotate(8deg); }
+      100% { transform: scaleX(1.05) scaleY(0.9) translateY(0) rotate(0deg); }
     }
-    
-    /* Efeito Pulo da Privada e do Pano */
-    .jump-animation { animation: jmp 0.5s ease infinite alternate; }
-    @keyframes jmp { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
-    
-    .wipe-animation { animation: wp 0.6s ease infinite alternate; }
-    @keyframes wp { 0% { transform: translateX(-15px) rotate(-10deg); } 100% { transform: translateX(15px) rotate(10deg); } }
 
-    /* Modais e Botões de Ação */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
-    .modal-content { background: #131622; border: 1px solid var(--glass-border); padding: 24px; border-radius: 24px; width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-    .modal-content h3 { margin-bottom: 16px; color: #fff; text-align: center; font-size: 18px; }
-    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 14px; margin-bottom: 16px; }
-    .modal-btns { display: flex; gap: 10px; }
-    .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; }
-    .btn-m-save { background: var(--accent); color: #000; }
-    .btn-m-cancel { background: rgba(255,255,255,0.05); color: #fff; }
+    /* Animação 2: O Rodo Dançarino (Passa pano gingando com molejo de desenho animado) */
+    .cartoon-wipe-anim {
+      animation: crazyWipe 0.5s ease-in-out infinite alternate;
+      transform-origin: bottom center;
+    }
+    @keyframes crazyWipe {
+      0% { transform: translateX(-35px) rotate(-25deg) scaleY(0.9); filter: drop-shadow(0 0 5px var(--accent)); }
+      100% { transform: translateX(35px) rotate(25deg) scaleY(1.1); filter: drop-shadow(0 0 15px var(--success)); }
+    }
 
-    .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 100; }
-    .btn-action { flex: 1; border: none; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.4); text-align: center; text-decoration: none; }
+    /* Animação 3: Estrela de Troféu Saltitante */
+    .cartoon-star-anim {
+      animation: crazyStar 0.4s ease-in-out infinite alternate;
+    }
+    @keyframes crazyStar {
+      0% { transform: scale(0.8) rotate(-15deg); }
+      100% { transform: scale(1.25) rotate(15deg); }
+    }
+
+    /* 💬 SISTEMA DE CHAT DO TURNO INTEGRADO NO RODAPÉ 💬 */
+    .chat-panel {
+      position: fixed; bottom: 84px; left: 16px; right: 16px;
+      background: var(--chat-bg); border: 1px solid var(--glass-border);
+      border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; z-index: 150; overflow: hidden;
+    }
+    .chat-header { background: rgba(255,255,255,0.02); padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header h4 { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
+    .chat-messages { height: 100px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-messages::-webkit-scrollbar { display: none; }
+    .msg-bubble { font-size: 11px; padding: 6px 10px; border-radius: 10px; max-width: 85%; width: fit-content; line-height: 1.3; }
+    .msg-received { background: rgba(255,255,255,0.06); align-self: flex-start; color: #f0f2f5; }
+    .msg-sent { background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.2); align-self: flex-end; color: #fff; }
+    .msg-author { font-weight: 800; font-size: 9px; color: var(--accent); margin-bottom: 2px; text-transform: uppercase; }
+    .chat-footer { display: flex; padding: 8px; background: rgba(0,0,0,0.2); gap: 6px; border-top: 1px solid rgba(255,255,255,0.03); }
+    .chat-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 12px; }
+    .chat-input:focus { outline: none; border-color: var(--accent); }
+    .btn-chat-send { background: var(--accent); border: none; padding: 0 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: #000; }
+
+    /* Barra de Botões Finais Extrema */
+    .footer-bar { position: fixed; bottom: 20px; left: 16px; right: 16px; display: flex; gap: 10px; z-index: 160; }
+    .btn-action { flex: 1; border: none; padding: 14px; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-align: center; text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     .btn-clear { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); color: #ff453a; }
-    .btn-send { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-send { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px; }
   </style>
 </head>
 <body>
 
   <div class="animation-overlay" id="anim-overlay">
     <div class="anim-box">
-      <div class="anim-art" id="anim-art">🚽👍</div>
-      <div class="anim-title" id="anim-title">Tarefa Concluída!</div>
-      <div class="anim-subtitle" id="anim-subtitle">Excelente trabalho!</div>
+      <div class="cartoon-container">
+        <div class="cartoon-emoji" id="anim-emoji">🚽</div>
+      </div>
+      <div class="anim-title" id="anim-title">Vaso Limpinho!</div>
+      <div class="anim-subtitle" id="anim-subtitle">Trabalho sensacional! 👍</div>
     </div>
   </div>
 
@@ -266,13 +195,13 @@
     </div>
     <div class="app-info">
       <h1 id="restaurant-name">Marchesini di Roverbella</h1>
-      <p>Módulo Operacional Premium</p>
+      <p>Gestão Operacional de Luxo</p>
     </div>
   </div>
 
   <div class="progress-box">
     <div class="progress-labels">
-      <span>Progresso do Turno</span>
+      <span>Conclusão das Metas</span>
       <span id="progress-txt">0%</span>
     </div>
     <div class="progress-bar-bg">
@@ -280,40 +209,45 @@
     </div>
   </div>
 
-  <div class="section-header-flex">
-    <div class="section-title">Equipe do Turno</div>
-  </div>
-  
-  <div class="team-scroll">
-    <div id="team-container" style="display: flex; gap: 12px;"></div>
-    <button class="btn-add-member" onclick="abrirModalCadastro()">➕</button>
-  </div>
+  <div class="section-title">Equipe Logada no Turno</div>
+  <div class="team-scroll" id="team-container"></div>
 
-  <div class="section-title" style="margin: 20px 0 12px 4px;">Setores</div>
+  <div class="section-title">Setores Operacionais</div>
   <div id="sectors-container"></div>
 
-  <div class="modal" id="cadastro-modal">
-    <div class="modal-content">
-      <h3>Novo Membro</h3>
-      <input type="text" class="modal-input" id="new-member-name" placeholder="Nome do funcionário">
-      <div class="modal-btns">
-        <button class="btn-m btn-m-cancel" onclick="fecharModalCadastro()">Voltar</button>
-        <button class="btn-m btn-m-save" onclick="salvarNovoMembro()">Salvar</button>
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h4>Chat Integrado do Turno</h4>
+      <span style="font-size: 8px; background: #2ecc71; color: #000; padding: 2px 4px; border-radius: 4px; font-weight: 900;">ONLINE SIMULADO</span>
+    </div>
+    <div class="chat-messages" id="chat-messages-box">
+      <div class="msg-bubble msg-received">
+        <div class="msg-author">Gerência</div>
+        Boa noite equipe! Vamos focar no checklist para entregar o salão impecável.
       </div>
+    </div>
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chat-input-field" placeholder="Digite um recado para a equipe...">
+      <button class="btn-chat-send" onclick="enviarMensagemSimulada()">Enviar</button>
     </div>
   </div>
 
   <div class="footer-bar">
-    <button class="btn-action btn-clear" onclick="limparMesa()">Zerar</button>
-    <a class="btn-action btn-send" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">Enviar Relatório</a>
+    <button class="btn-action btn-clear" onclick="limparMesa()">Zerar Tudo</button>
+    <a class="btn-action btn-send" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">Enviar WhatsApp</a>
   </div>
 
   <script>
+    // Lista corrigida sem erros de ortografia
     var equipePadrao = [
       { nome: "Heitor", foto: "" },
       { nome: "Danilo", foto: "" },
       { nome: "Bill", foto: "" },
-      { nome: "Aeby", foto: "" }
+      { nome: "Pepeu", foto: "" },
+      { nome: "Eibe", foto: "" },
+      { nome: "Gi", foto: "" },
+      { nome: "Suelen", foto: "" },
+      { nome: "Gerentes", foto: "" }
     ];
 
     var dadosSetores = [
@@ -325,9 +259,7 @@
           "Baixar todas as cadeiras das mesas com cuidado.",
           "Passar pano com desinfetante no chão do salão.",
           "Higienizar a superfície das mesas com álcool 70%.",
-          "Limpar detalhadamente os sousplats e jogos americanos.",
-          "Montar as mesas (sousplat, pratos, talheres).",
-          "Abastecer e alinhar as papeleiras e galheteiros."
+          "Limpar detalhadamente os sousplats e jogos americanos."
         ]
       },
       {
@@ -335,10 +267,7 @@
         tasks: [
           "Limpar a pista quente e ligar o aquecimento.",
           "Limpar a pista fria e ligar a refrigeração.",
-          "Organizar a mesa de candy e a bancada de cafés.",
-          "Higienizar pegadores, conchas e utensílios.",
-          "Abastecer pratos e talheres no início da rampa.",
-          "Coordenar com a cozinha o abastecimento das cubas."
+          "Organizar a mesa de candy e a bancada de cafés."
         ]
       },
       {
@@ -346,9 +275,7 @@
         tasks: [
           "Varrer e passar pano no piso do bar.",
           "Recolher, esvaziar e higienizar as lixeiras do bar.",
-          "Conferir e reabastecer o estoque de gelo.",
-          "Abastecer geladeiras com cervejas, refris e sucos.",
-          "Organizar, polir e alinhar copos e taças."
+          "Conferir e reabastecer o estoque de gelo."
         ]
       },
       {
@@ -356,24 +283,22 @@
         tasks: [
           "Lavar e desinfetar os vasos sanitários e pias.",
           "Repor rolos de papel higiênico nos suportes.",
-          "Abastecer os dispensers de papel toalha.",
-          "Verificar e abastecer os recipientes de sabonete.",
-          "Limpar espelhos e passar pano perfumado no chão.",
-          "Esvaziar e trocar os sacos plásticos das lixeiras."
+          "Abastecer os dispensers de papel toalha."
         ]
       }
     ];
 
-    var estado = JSON.parse(localStorage.getItem('marchesini_v9_state')) || {
+    var estado = JSON.parse(localStorage.getItem('marchesini_v10_state')) || {
       usuarioAtivo: "Heitor",
       equipe: equipePadrao,
       tarefasFeitas: {},
       fotosTarefas: {},
+      fotosPerfil: {},
       logoRestaurante: ""
     };
 
     function salvarEstado() {
-      localStorage.setItem('marchesini_v9_state', JSON.stringify(estado));
+      localStorage.setItem('marchesini_v10_state', JSON.stringify(estado));
       atualizarProgresso();
     }
 
@@ -389,17 +314,41 @@
       }
     }
 
+    // Tira a foto de perfil diretamente clicando na camera do crachá
+    window.capturarFotoPerfil = function(input, nomeMembro) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          estado.fotosPerfil[nomeMembro] = e.target.result;
+          salvarEstado();
+          renderEquipe();
+          montarPainel(); // atualiza miniaturas nas tarefas se houver
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
     function renderEquipe() {
       var container = document.getElementById('team-container');
       container.innerHTML = '';
       estado.equipe.forEach(function(membro) {
         var card = document.createElement('div');
         card.className = 'team-card' + (estado.usuarioAtivo === membro.nome ? ' active' : '');
-        var letra = membro.nome.charAt(0).toUpperCase();
-        var fotoSrc = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><rect width='50' height='50' fill='%23222535'/><text x='50%25' y='55%25' font-size='16' fill='%23d4af37' font-weight='bold' text-anchor='middle' dominant-baseline='middle'>"+letra+"</text></svg>";
         
-        card.innerHTML = '<img class="team-avatar" src="' + fotoSrc + '"><div class="team-name">' + membro.nome + '</div>';
-        card.onclick = function() {
+        var imgSalva = estado.fotosPerfil[membro.nome];
+        var fotoSrc = imgSalva ? imgSalva : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50'><rect width='50' height='50' fill='%23191d3a'/><text x='50%25' y='55%25' font-size='15' fill='%23d4af37' font-weight='bold' text-anchor='middle' dominant-baseline='middle'>"+membro.nome.charAt(0)+"</text></svg>";
+        
+        card.innerHTML = 
+          '<div class="avatar-wrapper">' +
+            '<img class="team-avatar" src="' + fotoSrc + '">' +
+            '<label class="btn-profile-cam">📸' +
+              '<input type="file" accept="image/*" style="display:none;" onchange="capturarFotoPerfil(this, \''+membro.nome+'\')">' +
+            '</label>' +
+          '</div>' +
+          '<div class="team-name">' + membro.nome + '</div>';
+          
+        card.onclick = function(e) {
+          if(e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL') return;
           estado.usuarioAtivo = membro.nome;
           salvarEstado();
           renderEquipe();
@@ -408,48 +357,42 @@
       });
     }
 
-    function abrirModalCadastro() { document.getElementById('cadastro-modal').style.display = 'flex'; }
-    function fecharModalCadastro() { document.getElementById('cadastro-modal').style.display = 'none'; document.getElementById('new-member-name').value = ''; }
-    function salvarNovoMembro() {
-      var nome = document.getElementById('new-member-name').value.trim();
-      if(!nome) return;
-      estado.equipe.push({ nome: nome, foto: "" });
-      estado.usuarioAtivo = nome;
-      salvarEstado();
-      renderEquipe();
-      fecharModalCadastro();
-    }
-
-    // 🔥 ACIONADOR DA SUPER ANIMAÇÃO EM TELA CHEIA 🔥
+    // 🔥 LOGICA DAS ANIMAÇÕES CARTOON ESTILO DESENHO ANIMADO REAL 🔥
     function dispararSuperAnimacao(textoTarefa) {
       var overlay = document.getElementById('anim-overlay');
-      var art = document.getElementById('anim-art');
+      var emoji = document.getElementById('anim-emoji');
       var title = document.getElementById('anim-title');
+      var sub = document.getElementById('anim-subtitle');
       
-      var t = textoTarefa.toLowerCase();
-      art.className = "anim-art"; // Limpa classes
+      var text = textoTarefa.toLowerCase();
+      emoji.className = "cartoon-emoji"; // Reset
       
-      if (t.includes('vaso') || t.includes('sanitário') || t.includes('privada') || t.includes('banheiro')) {
-        art.innerText = "🚽✨👍";
-        art.classList.add('jump-animation');
-        title.innerText = "Vaso Higienizado!";
-      } else if (t.includes('pano') || t.includes('varrer') || t.includes('vassoura') || t.includes('chão') || t.includes('piso')) {
-        art.innerText = "🧹🧼✨";
-        art.classList.add('wipe-animation');
+      if (text.includes('vaso') || text.includes('sanitário') || text.includes('banheiro')) {
+        emoji.innerText = "🚽";
+        emoji.classList.add('cartoon-toilet-anim');
+        title.innerText = "Privada Higienizada!";
+        sub.innerText = "Ela até pula de alegria! 🌟";
+      } else if (text.includes('pano') || text.includes('varrer') || text.includes('chão') || text.includes('piso') || text.includes('vassoura')) {
+        emoji.innerText = "🧹🧼";
+        emoji.classList.add('cartoon-wipe-anim');
         title.innerText = "Chão Brilhando!";
+        sub.innerText = "Gingado de limpeza premium! ✨";
+      } else if (text.includes('papel') || text.includes('toalha')) {
+        emoji.innerText = "🧻✨";
+        emoji.classList.add('cartoon-star-anim');
+        title.innerText = "Suprimentos Repostos!";
+        sub.innerText = "Tudo abastecido com sucesso! 👍";
       } else {
-        art.innerText = "🌟🏆✨";
-        art.classList.add('jump-animation');
+        emoji.innerText = "🌟";
+        emoji.classList.add('cartoon-star-anim');
         title.innerText = "Tarefa Concluída!";
+        sub.innerText = "Mais um ponto para a equipe! 🏆";
       }
       
       overlay.style.display = 'flex';
-      setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 1500); // 1.5 segundo em tela cheia e some automaticamente
+      setTimeout(function() { overlay.style.display = 'none'; }, 1600); // Exibe por 1.6s
     }
 
-    // Captura e renderiza foto para CADA tarefa individualmente
     window.tirarFotoTarefa = function(input, chave) {
       if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -480,7 +423,7 @@
         header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
                            '<div class="sector-details">' +
                              '<div class="sector-name">' + setor.title + '</div>' +
-                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' prontas</div>' +
+                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
                            '</div>' +
                            '<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>';
 
@@ -496,31 +439,35 @@
           
           var badgeHtml = '';
           if(estado.tarefasFeitas[chave]) {
-            badgeHtml = '<span class="user-badge-premium">' + estado.tarefasFeitas[chave] + '</span>';
+            var user = estado.tarefasFeitas[chave];
+            var fPerfil = estado.fotosPerfil[user];
+            var picHtml = fPerfil ? '<img class="user-badge-pic" src="'+fPerfil+'">' : '👤 ';
+            badgeHtml = '<span class="user-badge-premium">' + picHtml + user + '</span>';
           }
 
-          // HTML da linha da tarefa + linha de foto individual
           item.innerHTML = 
-            '<div class="task-main-row" id="main_row_'+chave+'">' +
+            '<div class="task-main-row">' +
               '<div class="check-round"></div>' +
               '<div class="task-label"><span>' + tarefa + '</span><div id="badge_space_'+chave+'">' + badgeHtml + '</div></div>' +
             '</div>' +
             '<div class="task-photo-row">' +
               '<label class="btn-task-camera">' +
-                '📸 Foto Real' +
+                '📸 Foto da Tarefa' +
                 '<input type="file" accept="image/*" style="display:none;" onchange="tirarFotoTarefa(this, \''+chave+'\')">' +
               '</label>' +
               '<img class="task-img-preview" id="img_prev_'+chave+'">' +
             '</div>';
 
-          // Evento de marcar a tarefa concluída
-          item.querySelector('.task-main-row').onclick = function(e) {
+          item.querySelector('.task-main-row').onclick = function() {
             if(!estado.tarefasFeitas[chave]) {
               estado.tarefasFeitas[chave] = estado.usuarioAtivo;
               item.classList.add('done');
-              document.getElementById('badge_space_'+chave).innerHTML = '<span class="user-badge-premium">' + estado.usuarioAtivo + '</span>';
               
-              // Dispara o show da animação em tela cheia!
+              var uActive = estado.usuarioAtivo;
+              var fP = estado.fotosPerfil[uActive];
+              var thumbHtml = fP ? '<img class="user-badge-pic" src="'+fP+'">' : '👤 ';
+              document.getElementById('badge_space_'+chave).innerHTML = '<span class="user-badge-premium">' + thumbHtml + uActive + '</span>';
+              
               dispararSuperAnimacao(tarefa);
             } else {
               delete estado.tarefasFeitas[chave];
@@ -529,19 +476,15 @@
             }
             salvarEstado();
             var novasProntas = contarFeitas(setor.id);
-            document.getElementById('qty_' + setor.id).innerText = novasProntas + ' de ' + setor.tasks.length + ' prontas';
+            document.getElementById('qty_' + setor.id).innerText = novasProntas + ' de ' + setor.tasks.length + ' feitas';
           };
           
           content.appendChild(item);
 
-          // Se já existia uma foto salva para essa tarefa na memória, carrega ela na hora
           setTimeout(function() {
             if(estado.fotosTarefas[chave]) {
-              var imgElement = document.getElementById('img_prev_' + chave);
-              if(imgElement) {
-                imgElement.src = estado.fotosTarefas[chave];
-                imgElement.style.display = 'block';
-              }
+              var pImg = document.getElementById('img_prev_' + chave);
+              if(pImg) { pImg.src = estado.fotosTarefas[chave]; pImg.style.display = 'block'; }
             }
           }, 10);
         });
@@ -558,7 +501,7 @@
           });
           if(!active) {
             card.classList.add('active');
-            content.style.maxHeight = '2000px';
+            content.style.maxHeight = '1500px';
           }
         };
       });
@@ -573,23 +516,34 @@
 
     function atualizarProgresso() {
       var total = 0; var feitas = 0;
-      dadosSetores.forEach(function(s) {
-        s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; });
-      });
+      dadosSetores.forEach(function(s) { s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
       var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
       document.getElementById('progress-bar').style.width = pct + '%';
       document.getElementById('progress-txt').innerText = pct + '%';
     }
 
+    // Lógica do Chat Simulado Local
+    window.enviarMensagemSimulada = function() {
+      var campo = document.getElementById('chat-input-field');
+      var texto = campo.value.trim();
+      if(!texto) return;
+
+      var box = document.getElementById('chat-messages-box');
+      var bolha = document.createElement('div');
+      bolha.className = 'msg-bubble msg-sent';
+      bolha.innerHTML = '<div class="msg-author">' + estado.usuarioAtivo + '</div>' + texto;
+      box.appendChild(bolha);
+      campo.value = '';
+      box.scrollTop = box.scrollHeight;
+    };
+
     function enviarRelatorio(e) {
-      var msg = '✨ *' + document.getElementById('restaurant-name').innerText.toUpperCase() + '* ✨\n*Relatório Operacional Premium*\n\n';
+      var msg = '✨ *' + document.getElementById('restaurant-name').innerText.toUpperCase() + '* ✨\n*Relatório de Turno Premium*\n\n';
       dadosSetores.forEach(function(s) {
         msg += '📌 *' + s.title.toUpperCase() + '*\n';
         s.tasks.forEach(function(t, i) {
-          var chave = s.id + '_' + i;
-          var por = estado.tarefasFeitas[chave];
-          var temFoto = estado.fotosTarefas[chave] ? ' 📸(Foto ok)' : '';
-          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_' + temFoto + ')' : '') + '\n';
+          var por = estado.tarefasFeitas[s.id + '_' + i];
+          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
         });
         msg += '\n';
       });

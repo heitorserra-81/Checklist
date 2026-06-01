@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Marchesini Premium v10.4</title>
+  <title>Marchesini Premium v10.5</title>
   <style>
     :root {
       --bg: #09090b;
@@ -29,13 +29,13 @@
     body { 
       background: var(--bg); 
       color: var(--text); 
-      padding: 20px 16px 360px 16px; /* Espaço gigante no fundo para NADA tampar as tarefas */
+      padding: 20px 16px 380px 16px; /* Espaço gigante no fundo para o chat e botões não cobrirem nada */
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Cabeçalho de Luxo com Menu */
+    /* Cabeçalho de Luxo */
     .app-header {
       display: flex;
       align-items: center;
@@ -59,7 +59,6 @@
     .app-info h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
     .app-info p { font-size: 10px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
 
-    /* Botão Menu Ouro ☰ */
     .menu-toggle {
       background: transparent; border: none; color: var(--accent); font-size: 26px; cursor: pointer; padding: 4px; display: flex; align-items: center;
     }
@@ -70,71 +69,75 @@
     }
     .sidebar.open { right: 0; }
     .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-    .sidebar-header h3 { color: #fff; font-size: 16px; font-weight: 700; color: var(--accent); }
+    .sidebar-header h3 { font-size: 16px; font-weight: 700; color: var(--accent); }
     .sidebar-close { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e9f0; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.01); border: 1px solid transparent; }
-    .menu-item:hover, .menu-item.active { background: rgba(199, 160, 84, 0.1); color: var(--accent-light); border-color: rgba(199, 160, 84, 0.2); }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e9f0; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.01); }
+    .menu-item.active { background: rgba(199, 160, 84, 0.1); color: var(--accent-light); border: 1px solid rgba(199, 160, 84, 0.2); }
 
-    /* Card de Progresso Premium */
+    /* Card de Progresso */
     .progress-box {
       background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 16px; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
     .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
     .progress-bar-bg { background: rgba(255, 255, 255, 0.04); height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.6s ease; }
 
-    /* Seletor de Equipe Avançado com Avatar/Iniciais */
+    /* Seletor de Equipe com Fotos Reais */
     .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
     .section-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
-    .btn-add-member { background: transparent; border: 1px dashed var(--accent); color: var(--accent); font-size: 11px; padding: 3px 10px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+    .btn-add-member { background: transparent; border: 1px dashed var(--accent); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 8px; cursor: pointer; font-weight: 700; }
     
     .team-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
     .team-scroll::-webkit-scrollbar { display: none; }
     .team-card { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; position: relative; }
     
-    .avatar-wrapper { position: relative; width: 54px; height: 54px; }
-    .team-avatar, .team-avatar-placeholder { width: 54px; height: 54px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #16161e; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; transition: all 0.25s ease; }
+    .avatar-wrapper { position: relative; width: 56px; height: 56px; }
+    .team-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.15); background: #16161e; transition: all 0.2s ease; }
+    .team-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.15); background: #22222a; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; transition: all 0.2s ease; }
     .team-name { font-size: 12px; font-weight: 600; color: var(--muted); text-align: center; white-space: nowrap; }
-    .btn-profile-cam { position: absolute; bottom: -2px; right: -2px; background: var(--accent); border: none; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); z-index: 5; }
     
-    .team-card.active .team-avatar, .team-card.active .team-avatar-placeholder { transform: scale(1.05); }
-    .team-card.active .team-name { color: var(--accent-light); font-weight: 700; }
+    .btn-profile-cam { position: absolute; bottom: -2px; right: -2px; background: var(--accent); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); z-index: 10; }
+    
+    .team-card.active .team-avatar { border-color: var(--accent) !important; transform: scale(1.05); }
+    .team-card.active .team-avatar-placeholder { background: var(--accent) !important; color: #000 !important; border-color: var(--accent) !important; transform: scale(1.05); font-weight: 800; }
+    .team-card.active .team-name { color: #fff; font-weight: 700; }
 
-    /* Setores Sanfona */
+    /* Setores e Sanfona */
     .sector-card {
-      background: var(--card-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 22px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15); transition: border-color 0.3s;
+      background: var(--card-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 22px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
     .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
-    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; border: 1px solid rgba(255,255,255,0.02); }
+    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; }
     .sector-details { flex: 1; }
-    .sector-name { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+    .sector-name { font-size: 15px; font-weight: 600; }
     .sector-qty { font-size: 12px; color: var(--muted); margin-top: 2px; }
     .chevron { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.3s; }
     
     .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); background: rgba(0, 0, 0, 0.12); }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: rgba(0, 0, 0, 0.15); }
     
-    /* Itens de Tarefa Estilizados */
+    /* Itens de Tarefa */
     .task-item { display: flex; flex-direction: column; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
     .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
     
-    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .check-round { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
     .task-item.done .check-round { background: var(--success); border-color: var(--success); }
-    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 800; }
+    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 12px; font-weight: 900; }
     
     .task-label { font-size: 14px; flex: 1; color: #e5e5ea; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.7; }
+    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
     
-    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 6px; color: #000; display: inline-flex; align-items: center; gap: 4px; font-weight: 800; text-transform: uppercase; }
-    .user-badge-pic { width: 12px; height: 12px; border-radius: 50%; object-fit: cover; }
+    /* Crachá Premium com Foto de quem fez */
+    .user-badge-premium { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px; color: #000; display: inline-flex; align-items: center; gap: 5px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .user-badge-pic { width: 14px; height: 14px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0,0,0,0.2); }
 
-    /* Upload de Mídia e Fotos das tarefas */
-    .task-photo-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-left: 34px; }
+    /* Área de Evidência por Tarefa */
+    .task-photo-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-left: 36px; }
     .btn-task-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
     .task-img-preview { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); display: none; }
 
-    /* 🔥 ANIMAÇÕES CARTOON EXCLUSIVAS POR TAREFA 🔥 */
+    /* Super Animações Cartoon */
     .animation-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(9, 9, 11, 0.98); z-index: 3000; align-items: center; justify-content: center;
@@ -145,23 +148,19 @@
     .cartoon-container { position: relative; width: 160px; height: 160px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
     .cartoon-emoji { font-size: 90px; line-height: 1; display: inline-block; }
 
-    /* Animação 1: Banheiro/Sanitário Pulando e Sorrindo Joinha */
     .cartoon-toilet-anim { animation: toiletJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; }
-    @keyframes toiletJump {
-      0% { transform: scaleX(1.1) scaleY(0.85) translateY(10px); }
-      100% { transform: scaleX(0.9) scaleY(1.15) translateY(-25px); filter: drop-shadow(0 0 20px rgba(48,209,88,0.4)); }
-    }
-    /* Animação 2: Pano/Chão Dançarino Gingado */
+    @keyframes toiletJump { 0% { transform: scaleX(1.1) scaleY(0.85) translateY(10px); } 100% { transform: scaleX(0.9) scaleY(1.15) translateY(-25px); filter: drop-shadow(0 0 20px rgba(48,209,88,0.4)); } }
+    
     .cartoon-wipe-anim { animation: wipeDance 0.45s ease-in-out infinite alternate; transform-origin: bottom center; }
     @keyframes wipeDance { 0% { transform: rotate(-25deg) translateX(-15px); } 100% { transform: rotate(25deg) translateX(15px); } }
-    /* Animação 3: Buffet e Pistas Giratório */
+    
     .cartoon-buffet-anim { animation: buffetSpin 0.7s linear infinite; }
-    @keyframes buffetSpin { 0% { transform: rotate(0deg) scale(0.95); } 50% { transform: rotate(180deg) scale(1.1); } 100% { transform: rotate(360deg) scale(0.95); } }
-    /* Animação 4: Estrela Padrão */
+    @keyframes buffetSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    
     .cartoon-star-anim { animation: starPop 0.4s ease-in-out infinite alternate; }
     @keyframes starPop { 0% { transform: scale(0.9); } 100% { transform: scale(1.2); } }
 
-    /* Modais Estilo Apple */
+    /* Modais */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
     .modal-content { background: #121216; border: 1px solid var(--glass-border); padding: 24px; border-radius: 24px; width: 100%; max-width: 320px; }
     .modal-content h3 { margin-bottom: 16px; color: #fff; text-align: center; font-size: 18px; }
@@ -171,14 +170,14 @@
     .btn-m-save { background: var(--accent); color: #000; }
     .btn-m-cancel { background: rgba(255,255,255,0.05); color: #fff; }
 
-    /* 💬 CHAT DO TURNO INTEGRADO FIXO NO RODAPÉ 💬 */
+    /* Chat do Turno */
     .chat-panel {
       position: fixed; bottom: 94px; left: 16px; right: 16px;
       background: var(--chat-bg); border: 1px solid var(--glass-border);
       border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
       display: flex; flex-direction: column; z-index: 150; overflow: hidden;
     }
-    .chat-header { background: rgba(255,255,255,0.02); padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header { background: rgba(255,255,255,0.02); padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .chat-header h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.5px; }
     .chat-messages { height: 100px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
     .chat-messages::-webkit-scrollbar { display: none; }
@@ -191,7 +190,7 @@
     .chat-input:focus { outline: none; border-color: var(--accent); }
     .btn-chat-send { background: var(--accent); border: none; padding: 0 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: #000; }
 
-    /* Barra Fixa de Botões Operacionais */
+    /* Barra Fixa de Ações */
     .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 160; }
     .btn-action { flex: 1; border: none; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-align: center; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
     .btn-clear { background: #1c1c24; border: 1px solid rgba(255,255,255,0.08); color: var(--danger); }
@@ -215,8 +214,8 @@
       <div class="cartoon-container">
         <div class="cartoon-emoji" id="anim-emoji">🚽</div>
       </div>
-      <div class="anim-title" id="anim-title">Vaso Sanitário Sorrindo!</div>
-      <div class="anim-subtitle" id="anim-subtitle">Tudo brilhando! 👍</div>
+      <div class="anim-title" id="anim-title">Título</div>
+      <div class="anim-subtitle" id="anim-subtitle">Subtítulo</div>
     </div>
   </div>
 
@@ -288,7 +287,7 @@
   </div>
 
   <script>
-    // Sintetizador de Áudio Nativo Blindado
+    // Sintetizador de Áudio Blindado nativo
     var audioCtx = null;
     function tocarSomSucesso() {
       try {
@@ -297,17 +296,17 @@
         var gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
-        osc.frequency.setValueAtTime(900, audioCtx.currentTime + 0.08); 
-        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
-      } catch(e) { console.log("Áudio aguardando clique inicial."); }
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nota Ré
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // Nota Lá
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+      } catch(e) { console.log("Áudio aguardando interação inicial."); }
     }
 
     function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
 
-    var equipeCores = {
+    var coresFixas = {
       "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
       "Pepeu": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
     };
@@ -360,11 +359,16 @@
       }
     ];
 
-    // CARREGAMENTO SEGURO DA MEMÓRIA (Se der erro, ele reinicia limpo e não quebra a tela)
+    // CARREGAMENTO BLINDADO DE MEMÓRIA (Se falhar, ele cria o padrão e NÃO trava a tela)
     var estado;
     try {
-      estado = JSON.parse(localStorage.getItem('marchesini_v104_state'));
-      if(!estado || !estado.usuarioAtivo || !estado.tarefasFeitas) { throw new Error(); }
+      var salvo = localStorage.getItem('marchesini_v105_state');
+      if (salvo) {
+        estado = JSON.parse(salvo);
+      } else {
+        throw new Error("Criar novo estado");
+      }
+      if (!estado.listaMembros || !estado.tarefasFeitas) { throw new Error("Incompleto"); }
     } catch(e) {
       estado = {
         usuarioAtivo: "Heitor",
@@ -377,7 +381,7 @@
     }
 
     function salvarEstado() {
-      localStorage.setItem('marchesini_v104_state', JSON.stringify(estado));
+      localStorage.setItem('marchesini_v105_state', JSON.stringify(estado));
       atualizarProgresso();
     }
 
@@ -409,28 +413,23 @@
     function renderEquipe() {
       var container = document.getElementById('team-container');
       container.innerHTML = '';
+      
       estado.listaMembros.forEach(function(nome) {
         var card = document.createElement('div');
         card.className = 'team-card' + (estado.usuarioAtivo === nome ? ' active' : '');
         
-        var imgSalva = estado.fotosPerfil[nome];
-        var corDono = equipeCores[nome] || "#c9a054";
+        var fotoSalva = estado.fotosPerfil[nome];
+        var corDoMembro = coresFixas[nome] || "#c9a054";
         
-        var avatarHtml = imgSalva ? 
-          '<img class="team-avatar" src="' + imgSalva + '" style="border-color:'+corDono+'">' : 
-          '<div class="team-avatar-placeholder" style="border-color:'+corDono+'; color:'+corDono+'">' + nome.charAt(0) + '</div>';
-        
-        if(estado.usuarioAtivo === nome) {
-          if(!imgSalva) {
-            avatarHtml = '<div class="team-avatar-placeholder" style="background:'+corDono+'; border-color:'+corDono+'; color:#000">' + nome.charAt(0) + '</div>';
-          }
-        }
+        var avatarHtml = fotoSalva ? 
+          '<img class="team-avatar" src="' + fotoSalva + '" style="border-color:' + corDoMembro + '">' : 
+          '<div class="team-avatar-placeholder" style="border-color:' + corDoMembro + '; color:' + corDoMembro + '">' + nome.charAt(0) + '</div>';
 
         card.innerHTML = 
           '<div class="avatar-wrapper">' +
             avatarHtml +
             '<label class="btn-profile-cam">📸' +
-              '<input type="file" accept="image/*" style="display:none;" onchange="capturarFotoPerfil(this, \''+nome+'\')">' +
+              '<input type="file" accept="image/*" style="display:none;" onchange="capturarFotoPerfil(this, \'' + nome + '\')">' +
             '</label>' +
           '</div>' +
           '<div class="team-name">' + nome + '</div>';
@@ -452,7 +451,7 @@
       if(!nome) return;
       if(!estado.listaMembros.includes(nome)) {
         estado.listaMembros.push(nome);
-        equipeCores[nome] = "#" + Math.floor(Math.random()*16777215).toString(16);
+        coresFixas[nome] = "#" + Math.floor(Math.random()*16777215).toString(16);
       }
       estado.usuarioAtivo = nome;
       salvarEstado();
@@ -460,7 +459,6 @@
       fecharModalCadastro();
     }
 
-    // 🔥 INDIVIDUALIZAÇÃO REAL DAS ANIMAÇÕES CARTOON 🔥
     function dispararSuperAnimacao(textoTarefa) {
       tocarSomSucesso();
       var overlay = document.getElementById('anim-overlay');
@@ -474,23 +472,23 @@
       if (txt.includes('vaso') || txt.includes('sanitário') || txt.includes('banheiro') || txt.includes('pias')) {
         emoji.innerText = "🚽👑";
         emoji.classList.add('cartoon-toilet-anim');
-        title.innerText = "Sanitário Higienizado!";
-        sub.innerText = "Ele está dando joinha saltando de alegria! 🎉";
+        title.innerText = "Sanitário Impecável!";
+        sub.innerText = "Vaso dando joinha e pulando de alegria! 🎉";
       } else if (txt.includes('pano') || txt.includes('varrer') || txt.includes('chão') || txt.includes('piso')) {
-        emoji.innerText = "🧼🪣";
+        emoji.innerText = "🧼🧹";
         emoji.classList.add('cartoon-wipe-anim');
-        title.innerText = "Pano Passado com Sucesso!";
-        sub.innerText = "O pano está sorrindo e dançando no salão! 💃";
+        title.innerText = "Chão Brilhando!";
+        sub.innerText = "O pano está gingando e dançando de alegria! 💃";
       } else if (txt.includes('buffet') || txt.includes('pista') || txt.includes('rampa')) {
         emoji.innerText = "🍱✨";
         emoji.classList.add('cartoon-buffet-anim');
         title.innerText = "Pistas Prontas!";
-        sub.innerText = "Giro radiante com brilho extremo! ⭐";
+        sub.innerText = "Giro cartoon radiante com muito brilho! ⭐";
       } else {
         emoji.innerText = "🏆";
         emoji.classList.add('cartoon-star-anim');
-        title.innerText = "Tarefa Concluída!";
-        sub.innerText = "Marchesini di Roverbella no topo! ✨";
+        title.innerText = "Meta Cumprida!";
+        sub.innerText = "Equipe Marchesini arrebentando no salão! 💎";
       }
       
       overlay.style.display = 'flex';
@@ -543,10 +541,10 @@
           var badgeHtml = '';
           if(estado.tarefasFeitas[chave]) {
             var dono = estado.tarefasFeitas[chave];
-            var corBadge = equipeCores[dono] || "#c9a054";
+            var corBadge = coresFixas[dono] || "#c9a054";
             var fPerfil = estado.fotosPerfil[dono];
             var picHtml = fPerfil ? '<img class="user-badge-pic" src="' + fPerfil + '">' : '👤 ';
-            badgeHtml = '<span class="user-badge-premium" style="background:'+corBadge+'">' + picHtml + dono + '</span>';
+            badgeHtml = '<span class="user-badge-premium" style="background:' + corBadge + '">' + picHtml + dono + '</span>';
           }
 
           item.innerHTML = 
@@ -568,10 +566,10 @@
               item.classList.add('done');
               
               var uActive = estado.usuarioAtivo;
-              var corB = equipeCores[uActive] || "#c9a054";
+              var corB = coresFixas[uActive] || "#c9a054";
               var fP = estado.fotosPerfil[uActive];
               var thumbHtml = fP ? '<img class="user-badge-pic" src="' + fP + '">' : '👤 ';
-              document.getElementById('badge_space_' + chave).innerHTML = '<span class="user-badge-premium" style="background:'+corB+'">' + thumbHtml + uActive + '</span>';
+              document.getElementById('badge_space_' + chave).innerHTML = '<span class="user-badge-premium" style="background:' + corB + '">' + thumbHtml + uActive + '</span>';
               
               dispararSuperAnimacao(tarefa);
             } else {
@@ -586,6 +584,90 @@
           
           content.appendChild(item);
 
+          // Renderiza a foto da tarefa com micro-atraso preventivo
           setTimeout(function() {
-            if(estado.fotosTarefas[chave]) {
+            if(estado.fotosTarefas && estado.fotosTarefas[chave]) {
               var pImg = document.getElementById('img_prev_' + chave);
+              if(pImg) { pImg.src = estado.fotosTarefas[chave]; pImg.style.display = 'block'; }
+            }
+          }, 15);
+        });
+
+        card.appendChild(header);
+        card.appendChild(content);
+        container.appendChild(card);
+
+        header.onclick = function() {
+          var active = card.classList.contains('active');
+          document.querySelectorAll('.sector-card').forEach(function(c) {
+            c.classList.remove('active');
+            c.querySelector('.sector-content').style.maxHeight = '0px';
+          });
+          if(!active) {
+            card.classList.add('active');
+            content.style.maxHeight = '2000px';
+          }
+        };
+      });
+    }
+
+    function contarFeitas(setorId) {
+      var s = dadosSetores.find(function(x) { return x.id === setorId; });
+      var c = 0;
+      s.tasks.forEach(function(t, i) { if(estado.tarefasFeitas[setorId + '_' + i]) c++; });
+      return c;
+    }
+
+    function atualizarProgresso() {
+      var total = 0; var feitas = 0;
+      dadosSetores.forEach(function(s) { s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
+      var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-txt').innerText = pct + '%';
+    }
+
+    window.enviarMensagemSimulada = function() {
+      var campo = document.getElementById('chat-input-field');
+      var texto = campo.value.trim();
+      if(!texto) return;
+
+      var box = document.getElementById('chat-messages-box');
+      var bolha = document.createElement('div');
+      bolha.className = 'msg-bubble msg-sent';
+      bolha.innerHTML = '<div class="msg-author">' + estado.usuarioAtivo + '</div>' + texto;
+      box.appendChild(bolha);
+      campo.value = '';
+      box.scrollTop = box.scrollHeight;
+    };
+
+    document.getElementById('chat-input-field').addEventListener('keypress', function(e) { if(e.key === 'Enter') { enviarMensagemSimulada(); } });
+
+    function enviarRelatorio(e) {
+      var msg = '✨ *' + document.getElementById('restaurant-name').innerText.toUpperCase() + '* ✨\n*Relatório de Fechamento Operacional*\n\n';
+      dadosSetores.forEach(function(s) {
+        msg += '📌 *' + s.title.toUpperCase() + '*\n';
+        s.tasks.forEach(function(t, i) {
+          var por = estado.tarefasFeitas[s.id + '_' + i];
+          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
+        });
+        msg += '\n';
+      });
+      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    }
+
+    function limparMesa() {
+      if(confirm('Deseja zerar as marcações do turno atual?')) {
+        estado.tarefasFeitas = {};
+        estado.fotosTarefas = {};
+        salvarEstado();
+        montarPainel();
+      }
+    }
+
+    if(estado.logoRestaurante) { document.getElementById('restaurant-logo').src = estado.logoRestaurante; }
+    renderEquipe();
+    montarPainel();
+    atualizarProgresso();
+  </script>
+</body>
+</html>

@@ -3,18 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Marchesini Premium</title>
+  <title>Marchesini Premium v4</title>
   <style>
     :root {
-      --bg: #09090b;
-      --card-bg: rgba(22, 22, 27, 0.8);
-      --glass-border: rgba(255, 255, 255, 0.06);
+      --bg: #050507;
+      --card-bg: rgba(18, 18, 24, 0.85);
+      --glass-border: rgba(199, 160, 84, 0.15);
       --accent: #c9a054;
-      --accent-light: #e5c386;
+      --accent-light: #f3d7a8;
       --text: #ffffff;
-      --muted: #8e8e93;
+      --muted: #a1a1aa;
       --success: #30d158;
       --danger: #ff453a;
+      --glow: rgba(199, 160, 84, 0.3);
     }
 
     * { 
@@ -31,75 +32,194 @@
       padding: 20px 16px 140px 16px; 
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* Cabeçalho de Luxo */
+    /* Cabeçalho de Luxo com Logo Alterável */
     .app-header {
       display: flex;
       align-items: center;
-      background: linear-gradient(135deg, rgba(28, 28, 35, 0.7), rgba(18, 18, 22, 0.7));
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: linear-gradient(135deg, rgba(32, 32, 42, 0.8), rgba(15, 15, 20, 0.8));
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border);
-      padding: 20px;
+      padding: 22px;
       border-radius: 24px;
       margin-bottom: 20px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255,255,255,0.1);
+      position: relative;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      margin-right: 16px;
+      cursor: pointer;
     }
 
     .app-logo {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
       object-fit: cover;
-      border: 1.5px solid var(--accent);
-      margin-right: 16px;
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 15px var(--glow);
     }
 
-    .app-info h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
-    .app-info p { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+    .logo-hint {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      background: var(--accent);
+      font-size: 9px;
+      padding: 2px 4px;
+      border-radius: 6px;
+      color: #000;
+      font-weight: bold;
+    }
 
-    /* Card de Progresso Premium */
+    .app-info h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .app-info p { font-size: 11px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+    /* Card de Progresso Brilhante */
     .progress-box {
       background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
-      padding: 16px;
-      border-radius: 20px;
+      padding: 18px;
+      border-radius: 22px;
       margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
-    .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
-    .progress-bar-bg { background: rgba(255, 255, 255, 0.04); height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 12px; color: var(--accent-light); }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 10px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), #ffca28, var(--success)); height: 100%; width: 0%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(48, 209, 88, 0.5); }
 
-    /* Seletor de Login / Equipe */
-    .section-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 4px; }
+    /* Seleção de Equipe Dinâmica */
+    .section-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .section-title { font-size: 12px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; padding-left: 4px; }
     
     .team-scroll {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       overflow-x: auto;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
+      padding: 4px 4px 14px 4px;
+      margin-bottom: 15px;
       scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
+      align-items: center;
     }
     .team-scroll::-webkit-scrollbar { display: none; }
     
     .team-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--glass-border);
-      color: var(--text);
-      padding: 10px 22px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
     }
+    
+    .team-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.1);
+      background: #1c1c24;
+      transition: all 0.3s ease;
+    }
+    
+    .team-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      max-width: 65px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .team-card.active .team-avatar {
+      border-color: var(--accent);
+      transform: scale(1.1);
+      box-shadow: 0 0 15px var(--glow);
+    }
+    .team-card.active .team-name {
+      color: var(--accent-light);
+      font-weight: 700;
+    }
+
+    .btn-add-member {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px dashed var(--accent);
+      background: rgba(199, 160, 84, 0.05);
+      color: var(--accent);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-bottom: 18px;
+    }
+
+    /* Modal de Cadastro Rápido */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      padding: 20px;
+    }
+    .modal-content {
+      background: #121218;
+      border: 1px solid var(--accent);
+      padding: 24px;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    }
+    .modal-content h3 { margin-bottom: 16px; color: #fff; font-size: 18px; text-align: center; }
+    .modal-input {
+      width: 100%;
+      padding: 12px;
+      background: #1c1c24;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .modal-input:focus { border-color: var(--accent); outline: none; }
+    .modal-avatar-select {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .modal-preview { width: 70px; height: 70px; border-radius: 50%; border: 2px dashed var(--accent); object-fit: cover; display: flex; align-items: center; justify-content: center; font-size: 24px; background: #1c1c24; overflow: hidden; }
+    .modal-btns { display: flex; gap: 10px; }
+    .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; }
+    .btn-m-save { background: var(--accent); color: #000; }
+    .btn-m-cancel { background: #272732; color: #fff; }
 
     /* Setores Sanfona Animados */
     .sector-card {
@@ -110,118 +230,133 @@
       border-radius: 22px;
       margin-bottom: 14px;
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      transition: border-color 0.3s, transform 0.3s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
     
     .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
-    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; border: 1px solid rgba(255,255,255,0.02); }
+    .sector-icon { 
+      width: 42px; height: 42px; 
+      background: rgba(255,255,255,0.04); 
+      border-radius: 14px; 
+      display: flex; align-items: center; justify-content: center; 
+      font-size: 20px; margin-right: 14px; 
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
     .sector-details { flex: 1; }
-    .sector-name { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
-    .sector-qty { font-size: 12px; color: var(--muted); margin-top: 2px; transition: color 0.3s; }
+    .sector-name { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; }
+    .sector-qty { font-size: 12px; color: var(--muted); margin-top: 2px; }
     
-    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
-    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
+    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.3s; }
+    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); box-shadow: 0 0 15px rgba(199, 160, 84, 0.1); }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
 
-    /* Conteúdo com transição suave */
+    /* Efeito de Pulo/Animação no Ícone do Setor */
+    @keyframes superPop {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.4) rotate(-15deg); filter: drop-shadow(0 0 8px var(--accent)); }
+      50% { transform: scale(1.4) rotate(15deg); }
+      70% { transform: scale(1.4) rotate(0deg); }
+      100% { transform: scale(1); }
+    }
+    .animate-icon { animation: superPop 0.7s ease-in-out; }
+
     .sector-content { 
       max-height: 0; 
       overflow: hidden; 
-      transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); 
-      background: rgba(0, 0, 0, 0.12);
+      transition: max-height 0.35s ease-out; 
+      background: rgba(0, 0, 0, 0.2);
     }
     
-    /* Itens da Lista */
+    /* Itens da Lista Estilizados */
     .task-item { 
       display: flex; 
       align-items: center; 
-      padding: 15px 18px; 
-      border-bottom: 1px solid rgba(255,255,255,0.01); 
+      padding: 16px 18px; 
+      border-bottom: 1px solid rgba(255,255,255,0.02); 
       cursor: pointer;
       transition: background 0.2s;
+      position: relative;
     }
-    .task-item:active { background: rgba(255,255,255,0.02); }
+    .task-item:active { background: rgba(255,255,255,0.03); }
     
     .check-round { 
-      width: 20px; 
-      height: 20px; 
-      border: 2px solid rgba(255,255,255,0.25); 
+      width: 22px; height: 22px; 
+      border: 2px solid rgba(255,255,255,0.3); 
       border-radius: 50%; 
       margin-right: 14px; 
       flex-shrink: 0; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); 
+      display: flex; align-items: center; justify-content: center; 
+      transition: all 0.2s ease; 
     }
     
-    .task-item.done .check-round { background: var(--success); border-color: var(--success); transform: scale(1.05); }
-    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 800; }
+    .task-item.done .check-round { background: linear-gradient(135deg, var(--success), #2db84c); border-color: var(--success); transform: scale(1.05); box-shadow: 0 0 8px rgba(48, 209, 88, 0.4); }
+    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 12px; font-weight: 900; }
     
-    .task-label { font-size: 14px; flex: 1; color: #e5e5ea; transition: all 0.25s ease; pointer-events: none; }
-    .task-item.done .task-label { text-decoration: line-through; color: var(--muted); opacity: 0.7; }
+    .task-label { font-size: 14px; flex: 1; color: #f4f4f5; transition: all 0.25s ease; pointer-events: none; display: flex; align-items: center; justify-content: space-between; }
+    .task-item.done .task-label { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
 
-    .user-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; margin-left: 8px; color: #000; display: inline-block; animation: popIn 0.3s ease; }
-    @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-    /* Área de Mídia (Fotos de Evidência) */
-    .photo-area {
-      padding: 16px 18px;
-      background: rgba(255, 255, 255, 0.01);
-      border-top: 1px solid rgba(255,255,255,0.03);
-    }
-    .file-wrapper { position: relative; overflow: hidden; display: block; }
-    .btn-camera {
-      background: rgba(199, 160, 84, 0.06);
-      border: 1px dashed rgba(199, 160, 84, 0.4);
-      color: var(--accent-light);
-      padding: 12px;
-      border-radius: 14px;
-      font-size: 13px;
-      font-weight: 600;
-      text-align: center;
-      cursor: pointer;
+    /* Crachá com foto mini do funcionário na tarefa */
+    .user-badge-premium {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-    
-    .preview-box { position: relative; margin-top: 10px; display: none; animation: popIn 0.3s ease; }
-    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); }
-    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); }
-
-    /* Rodapé com Botões de Ação Fixo */
-    .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 100; }
-    .btn-action {
-      flex: 1;
-      border: none;
-      padding: 16px;
-      border-radius: 50px;
-      font-size: 13px;
+      gap: 5px;
+      font-size: 10px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      transition: transform 0.2s, background-color 0.2s;
-      text-align: center;
-      text-decoration: none;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.05);
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .btn-action:睫ctive { transform: scale(0.96); }
-    .btn-clear { background: #1c1c24; border: 1px solid rgba(255,255,255,0.08); color: var(--danger); }
+    .user-badge-thumb { width: 14px; height: 14px; border-radius: 50%; object-fit: cover; }
+    
+    @keyframes popIn { 0% { transform: scale(0.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* Partículas de Brilho (Sparkles) */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      background: radial-gradient(circle, #fff 20%, transparent 60%);
+      border-radius: 50%;
+      opacity: 0;
+      z-index: 99;
+      animation: sparkleAnim 0.6s ease-out forwards;
+    }
+    @keyframes sparkleAnim {
+      0% { transform: translate(0, 0) scale(0); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(1.5); opacity: 0; }
+    }
+
+    /* Área de Mídia */
+    .photo-area { padding: 16px 18px; background: rgba(255, 255, 255, 0.01); border-top: 1px solid rgba(255,255,255,0.03); }
+    .file-wrapper { position: relative; overflow: hidden; display: block; }
+    .btn-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 600; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+    .preview-box { position: relative; margin-top: 10px; display: none; }
+    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); }
+    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: var(--danger); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; cursor: pointer; }
+
+    /* Rodapé */
+    .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 100; }
+    .btn-action { flex: 1; border: none; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; text-decoration: none; }
+    .btn-clear { background: #14141c; border: 1px solid rgba(255,255,255,0.08); color: var(--danger); }
     .btn-send { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; }
   </style>
 </head>
 <body>
 
+  <input type="file" id="logo-input" accept="image/*" style="display: none;" onchange="atualizarLogo(this)">
+
   <div class="app-header">
-    <img class="app-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150" alt="Logo">
+    <div class="logo-wrapper" onclick="document.getElementById('logo-input').click()">
+      <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150" alt="Logo">
+      <div class="logo-hint">Alterar</div>
+    </div>
     <div class="app-info">
-      <h1>Marchesini di Roverbella</h1>
+      <h1 id="restaurant-name">Marchesini di Roverbella</h1>
       <p>Gestão de Turno Premium</p>
     </div>
   </div>
@@ -236,11 +371,37 @@
     </div>
   </div>
 
-  <div class="section-title">Funcionário Logado</div>
-  <div class="team-scroll" id="team-container"></div>
+  <div class="section-header-flex">
+    <div class="section-title">Equipe de Hoje</div>
+    <div class="section-title" style="color: var(--muted); font-size: 10px;">Toque para selecionar</div>
+  </div>
+  
+  <div style="display: flex; gap: 12px; align-items: center;">
+    <div class="team-scroll" id="team-container"></div>
+    <button class="btn-add-member" onclick="abrirModalCadastro()">➕</button>
+  </div>
 
-  <div class="section-title">Setores Operacionais</div>
+  <div class="section-title" style="margin-bottom: 12px;">Setores Operacionais</div>
   <div id="sectors-container"></div>
+
+  <div class="modal" id="cadastro-modal">
+    <div class="modal-content">
+      <h3>Novo Funcionário</h3>
+      
+      <div class="modal-avatar-select" onclick="document.getElementById('avatar-input').click()">
+        <div class="modal-preview" id="avatar-preview">📸</div>
+        <span style="font-size: 11px; color: var(--accent);">Tirar foto de perfil</span>
+      </div>
+      <input type="file" id="avatar-input" accept="image/*" capture="user" style="display: none;" onchange="previewAvatar(this)">
+      
+      <input type="text" class="modal-input" id="new-member-name" placeholder="Nome do funcionário">
+      
+      <div class="modal-btns">
+        <button class="btn-m btn-m-cancel" onclick="fecharModalCadastro()">Cancelar</button>
+        <button class="btn-m btn-m-save" onclick="salvarNovoMembro()">Confirmar</button>
+      </div>
+    </div>
+  </div>
 
   <div class="footer-bar">
     <button class="btn-action btn-clear" onclick="limparMesa()">Zerar Turno</button>
@@ -248,10 +409,13 @@
   </div>
 
   <script>
-    var equipe = {
-      "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
-      "Pepeo": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
-    };
+    // Lista inicial padrão caso não haja nada na memória
+    var equipePadrao = [
+      { nome: "Heitor", foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", cor: "#c9a054" },
+      { nome: "Danilo", foto: "", cor: "#34c759" },
+      { nome: "Bill", foto: "", cor: "#ff9500" },
+      { nome: "Aeby", foto: "", cor: "#ff2d55" }
+    ];
 
     var dadosSetores = [
       {
@@ -301,41 +465,125 @@
       }
     ];
 
-    var estado = JSON.parse(localStorage.getItem('marchesini_v3_state')) || {
+    // Carrega o estado ou define o padrão inicial
+    var estado = JSON.parse(localStorage.getItem('marchesini_v4_state')) || {
       usuarioAtivo: "Heitor",
+      equipe: equipePadrao,
       tarefasFeitas: {},
-      fotosSetores: {}
+      fotosSetores: {},
+      logoRestaurante: ""
     };
 
+    // Variável temporária para segurar a foto tirada no modal de cadastro
+    var tempAvatarB64 = "";
+
     function salvarEstado() {
-      localStorage.setItem('marchesini_v3_state', JSON.stringify(estado));
+      localStorage.setItem('marchesini_v4_state', JSON.stringify(estado));
       atualizarProgresso();
+    }
+
+    function atualizarLogo(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          estado.logoRestaurante = e.target.result;
+          document.getElementById('restaurant-logo').src = e.target.result;
+          salvarEstado();
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
     }
 
     function renderEquipe() {
       var container = document.getElementById('team-container');
       container.innerHTML = '';
-      Object.keys(equipe).forEach(function(nome) {
+      
+      estado.equipe.forEach(function(membro) {
         var card = document.createElement('div');
-        card.className = 'team-card';
-        card.innerText = nome;
-        if(estado.usuarioAtivo === nome) {
-          card.style.background = equipe[nome];
-          card.style.color = '#000';
-          card.style.fontWeight = '700';
-          card.style.borderColor = equipe[nome];
-        }
+        card.className = 'team-card' + (estado.usuarioAtivo === membro.nome ? ' active' : '');
+        
+        // Se não tiver foto cadastrada, usa uma imagem placeholder cinza com a letra inicial
+        var fotoSrc = membro.foto ? membro.foto : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'><rect width='50' height='50' fill='%23272732'/><text x='50%25' y='55%25' font-size='18' fill='%23a1a1aa' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'>" + membro.nome.charAt(0) + "</text></svg>";
+
+        card.innerHTML = '<img class="team-avatar" src="' + fotoSrc + '">' +
+                         '<div class="team-name">' + membro.nome + '</div>';
+                         
         card.onclick = function() {
-          estado.usuarioAtivo = nome;
+          estado.usuarioAtivo = membro.nome;
           salvarEstado();
           renderEquipe();
-          // Atualiza os crachás sem fechar as abas
-          document.querySelectorAll('.task-item.done').forEach(item => {
-             // Mantém consistência visual do ativo
-          });
         };
         container.appendChild(card);
       });
+    }
+
+    // Modal de Cadastro
+    function abrirModalCadastro() {
+      document.getElementById('cadastro-modal').style.display = 'flex';
+    }
+    function fecharModalCadastro() {
+      document.getElementById('cadastro-modal').style.display = 'none';
+      document.getElementById('new-member-name').value = '';
+      document.getElementById('avatar-preview').innerHTML = '📸';
+      tempAvatarB64 = "";
+    }
+    function previewAvatar(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          tempAvatarB64 = e.target.result;
+          document.getElementById('avatar-preview').innerHTML = '<img src="'+tempAvatarB64+'" style="width:100%; height:100%; object-fit:cover;">';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+    function salvarNovoMembro() {
+      var nome = document.getElementById('new-member-name').value.trim();
+      if(!nome) return alert('Por favor, digite o nome!');
+      
+      // Cria um novo perfil na equipe
+      var coresValores = ["#34c759", "#ff9500", "#af52de", "#ff2d55", "#5ac8fa", "#ffcc00", "#c9a054"];
+      var corAleatoria = coresValores[Math.floor(Math.random() * coresValores.length)];
+
+      estado.equipe.push({
+        nome: nome,
+        foto: tempAvatarB64,
+        cor: corAleatoria
+      });
+      
+      estado.usuarioAtivo = nome; // Já deixa logado o novo cadastrado
+      salvarEstado();
+      renderEquipe();
+      fecharModalCadastro();
+    }
+
+    // Gerador de Partículas de Brilho (Estrelas voando ao clicar)
+    function criarBrilhoEfeito(elementoRaiz) {
+      var rect = elementoRaiz.getBoundingClientRect();
+      for (var i = 0; i < 12; i++) {
+        var sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Define tamanho aleatório para a estrelinha
+        var tamanho = Math.random() * 6 + 4;
+        sparkle.style.width = tamanho + 'px';
+        sparkle.style.height = tamanho + 'px';
+        
+        // Posiciona no centro do item clicado
+        sparkle.style.left = (rect.width / 2) + 'px';
+        sparkle.style.top = (rect.height / 2) + 'px';
+        
+        // Direção aleatória para onde a partícula vai voar
+        var xDest = (Math.random() - 0.5) * 150;
+        var yDest = (Math.random() - 0.5) * 150;
+        sparkle.style.setProperty('--x', xDest + 'px');
+        sparkle.style.setProperty('--y', yDest + 'px');
+        
+        elementoRaiz.appendChild(sparkle);
+        
+        // Remove do HTML após a animação acabar
+        setTimeout((function(s) { return function() { s.remove(); }; })(sparkle), 600);
+      }
     }
 
     function montarPainel() {
@@ -349,10 +597,9 @@
 
         var header = document.createElement('div');
         header.className = 'sector-header';
-        
         var prontas = contarFeitas(setor.id);
 
-        header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
+        header.innerHTML = '<div class="sector-icon" id="icon_' + setor.id + '">' + setor.icon + '</div>' +
                            '<div class="sector-details">' +
                              '<div class="sector-name">' + setor.title + '</div>' +
                              '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
@@ -363,7 +610,6 @@
         content.className = 'sector-content';
         content.id = 'content_' + setor.id;
 
-        // Injeta tarefas diretamente
         setor.tasks.forEach(function(tarefa, idx) {
           var item = document.createElement('div');
           var chave = setor.id + '_' + idx;
@@ -372,28 +618,47 @@
           
           var badgeHtml = '';
           if(estado.tarefasFeitas[chave]) {
-            var dono = estado.tarefasFeitas[chave];
-            badgeHtml = '<span class="user-badge" style="background:'+ equipe[dono] +'">'+ dono +'</span>';
+            var donoNome = estado.tarefasFeitas[chave];
+            var objDono = estado.equipe.find(x => x.nome === donoNome) || { foto: "", cor: "#c9a054" };
+            var miniFoto = objDono.foto ? objDono.foto : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><rect width='20' height='20' fill='%23c9a054'/></svg>";
+            
+            badgeHtml = '<span class="user-badge-premium" style="border-color:'+ objDono.cor +'">' +
+                          '<img class="user-badge-thumb" src="'+ miniFoto +'">' + donoNome + 
+                        '</span>';
           }
 
           item.innerHTML = '<div class="check-round"></div>' +
-                           '<div class="task-label">' + tarefa + badgeHtml + '</div>';
+                           '<div class="task-label"><span>' + tarefa + '</span>' + badgeHtml + '</div>';
 
-          // CLIQUE DA TAREFA: Correção do Bug de Fechar a Aba
+          // AÇÃO DE CLIQUE COM ANIMAÇÕES INDIVIDUAIS
           item.onclick = function(e) {
-            e.stopPropagation(); // Trava o fechamento do card pai
+            e.stopPropagation();
+            
+            var iconeSetor = document.getElementById('icon_' + setor.id);
+            
             if(!estado.tarefasFeitas[chave]) {
               estado.tarefasFeitas[chave] = estado.usuarioAtivo;
               item.className = 'task-item done';
-              item.querySelector('.task-label').innerHTML = tarefa + '<span class="user-badge" style="background:'+ equipe[estado.usuarioAtivo] +'">'+ estado.usuarioAtivo +'</span>';
+              
+              // Executa o pulo e o giro do ícone do setor principal
+              iconeSetor.classList.remove('animate-icon');
+              void iconeSetor.offsetWidth; // Força reinício da animação CSS
+              iconeSetor.classList.add('animate-icon');
+              
+              // Solta o efeito visual de poeira de estrelas/brilho partindo do item
+              criarBrilhoEfeito(item);
+              
+              var objAtivo = estado.equipe.find(x => x.nome === estado.usuarioAtivo) || { foto: "", cor: "#c9a054" };
+              var thumb = objAtivo.foto ? objAtivo.foto : "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><rect width='20' height='20' fill='%23c9a054'/></svg>";
+              
+              item.querySelector('.task-label').innerHTML = '<span>' + tarefa + '</span><span class="user-badge-premium" style="border-color:'+ objAtivo.cor +'"><img class="user-badge-thumb" src="'+ thumb +'">'+ estado.usuarioAtivo +'✨</span>';
             } else {
               delete estado.tarefasFeitas[chave];
               item.className = 'task-item';
-              item.querySelector('.task-label').innerHTML = tarefa;
+              item.querySelector('.task-label').innerHTML = '<span>' + tarefa + '</span>';
             }
-            salvarEstado();
             
-            // Atualiza apenas os números no topo do card, sem fechar nada
+            salvarEstado();
             var novasProntas = contarFeitas(setor.id);
             document.getElementById('qty_' + setor.id).innerText = novasProntas + ' de ' + setor.tasks.length + ' feitas';
           };
@@ -401,11 +666,11 @@
           content.appendChild(item);
         });
 
-        // Bloco de upload de Foto
+        // Bloco de fotos de evidência do setor
         var fotoDiv = document.createElement('div');
         fotoDiv.className = 'photo-area';
         fotoDiv.innerHTML = '<div class="file-wrapper">' +
-                              '<span class="btn-camera" id="lbl_img_'+setor.id+'">📸 Tirar ou Anexar Foto</span>' +
+                              '<span class="btn-camera" id="lbl_img_'+setor.id+'">📸 Foto Geral do Setor</span>' +
                               '<input type="file" accept="image/*" onchange="processarFoto(this, \''+setor.id+'\')">' +
                             '</div>' +
                             '<div class="preview-box" id="pbox_'+setor.id+'">' +
@@ -418,10 +683,8 @@
         card.appendChild(content);
         container.appendChild(card);
 
-        // Mecanismo Abre/Fecha com Animação
         header.onclick = function() {
           var active = card.classList.contains('active');
-          // Fecha todas as outras para manter limpo
           document.querySelectorAll('.sector-card').forEach(c => {
             c.classList.remove('active');
             c.querySelector('.sector-content').style.maxHeight = '0px';
@@ -429,17 +692,14 @@
           
           if(!active) {
             card.classList.add('active');
-            content.style.maxHeight = content.scrollHeight + 100 + 'px';
+            content.style.maxHeight = content.scrollHeight + 150 + 'px';
           }
         };
 
-        // Resgata foto se já existir na memória
         if(estado.fotosSetores[setor.id]) {
           setTimeout(function() {
-            var pb = document.getElementById('pbox_' + setor.id);
-            var im = document.getElementById('img_' + setor.id);
-            im.src = estado.fotosSetores[setor.id];
-            pb.style.display = 'block';
+            document.getElementById('img_' + setor.id).src = estado.fotosSetores[setor.id];
+            document.getElementById('pbox_' + setor.id).style.display = 'block';
             document.getElementById('lbl_img_' + setor.id).innerText = '🔄 Trocar Foto do Setor';
           }, 20);
         }
@@ -457,15 +717,10 @@
       if (input.files && input.files[0]) {
         var reader = new FileReader();
         reader.onload = function(e) {
-          var b64 = e.target.result;
-          estado.fotosSetores[setorId] = b64;
+          estado.fotosSetores[setorId] = e.target.result;
           salvarEstado();
-          
-          document.getElementById('img_' + setorId).src = b64;
+          document.getElementById('img_' + setorId).src = e.target.result;
           document.getElementById('pbox_' + setorId).style.display = 'block';
-          document.getElementById('lbl_img_' + setorId).innerText = '🔄 Trocar Foto do Setor';
-          
-          // Ajusta tamanho da sanfona para comportar a foto nova
           var content = document.getElementById('content_' + setorId);
           content.style.maxHeight = content.scrollHeight + 'px';
         };
@@ -479,7 +734,6 @@
         delete estado.fotosSetores[setorId];
         salvarEstado();
         document.getElementById('pbox_' + setorId).style.display = 'none';
-        document.getElementById('lbl_img_' + setorId).innerText = '📸 Tirar ou Anexar Foto';
         var content = document.getElementById('content_' + setorId);
         content.style.maxHeight = content.scrollHeight + 'px';
       }
@@ -496,29 +750,32 @@
     }
 
     function enviarRelatorio(e) {
-      var msg = '✨ *MARCHESINI DI ROVERBELLA* ✨\n*Relatório de Fechamento de Turno*\n\n';
+      var msg = '✨ *' + document.getElementById('restaurant-name').innerText.toUpperCase() + '* ✨\n*Relatório de Fechamento de Turno*\n\n';
       dadosSetores.forEach(function(s) {
         msg += '📌 *' + s.title.toUpperCase() + '*\n';
         s.tasks.forEach(function(t, i) {
           var por = estado.tarefasFeitas[s.id + '_' + i];
           msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
         });
-        if(estado.fotosSetores[s.id]) msg += '📸 _Evidência visual registrada no painel._\n';
         msg += '\n';
       });
       document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
     }
 
     function limparMesa() {
-      if(confirm('Deseja zerar as marcações e fotos do turno atual?')) {
-        estado = { usuarioAtivo: "Heitor", tarefasFeitas: {}, fotosSetores: {} };
+      if(confirm('Deseja zerar o turno atual?')) {
+        estado.tarefasFeitas = {};
+        estado.fotosSetores = {};
         salvarEstado();
         renderEquipe();
         montarPainel();
       }
     }
 
-    // Start do Sistema
+    // Inicialização Carregando Memória
+    if(estado.logoRestaurante) {
+      document.getElementById('restaurant-logo').src = estado.logoRestaurante;
+    }
     renderEquipe();
     montarPainel();
     atualizarProgresso();

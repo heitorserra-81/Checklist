@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Marchesini Premium</title>
+  <style>
+    :root {
+      --bg: #09090b;
+      --card-bg: rgba(22, 22, 27, 0.8);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --accent: #c9a054;
+      --accent-light: #e5c386;
+      --text: #ffffff;
+      --muted: #8e8e93;
+      --success: #30d158;
+      --danger: #ff453a;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent; 
+    }
+    
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      padding: 20px 16px 140px 16px; 
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Cabeçalho de Luxo */
+    .app-header {
+      display: flex;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(28, 28, 35, 0.7), rgba(18, 18, 22, 0.7));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      padding: 20px;
+      border-radius: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .app-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      object-fit: cover;
+      border: 1.5px solid var(--accent);
+      margin-right: 16px;
+    }
+
+    .app-info h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
+    .app-info p { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+
+    /* Card de Progresso Premium */
+    .progress-box {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      padding: 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.04); height: 8px; border-radius: 4px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+
+    /* Seletor de Login / Equipe */
+    .section-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 4px; }
+    
+    .team-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .team-scroll::-webkit-scrollbar { display: none; }
+    
+    .team-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Setores Sanfona Animados */
+    .sector-card {
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 22px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    
+    .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
+    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; border: 1px solid rgba(255,255,255,0.02); }
+    .sector-details { flex: 1; }
+    .sector-name { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; }
+    .sector-qty { font-size: 12px; color: var(--muted); margin-top: 2px; transition: color 0.3s; }
+    
+    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
+    .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
+
+    /* Conteúdo com transição suave */
+    .sector-content { 
+      max-height: 0; 
+      overflow: hidden; 
+      transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); 
+      background: rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Itens da Lista */
+    .task-item { 
+      display: flex; 
+      align-items: center; 
+      padding: 15px 18px; 
+      border-bottom: 1px solid rgba(255,255,255,0.01); 
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .task-item:active { background: rgba(255,255,255,0.02); }
+    
+    .check-round { 
+      width: 20px; 
+      height: 20px; 
+      border: 2px solid rgba(255,255,255,0.25); 
+      border-radius: 50%; 
+      margin-right: 14px; 
+      flex-shrink: 0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    }
+    
+    .task-item.done .check-round { background: var(--success); border-color: var(--success); transform: scale(1.05); }
+    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 800; }
+    
+    .task-label { font-size: 14px; flex: 1; color: #e5e5ea; transition: all 0.25s ease; pointer-events: none; }
+    .task-item.done .task-label { text-decoration: line-through; color: var(--muted); opacity: 0.7; }
+
+    .user-badge { font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 7px; border-radius: 5px; margin-left: 8px; color: #000; display: inline-block; animation: popIn 0.3s ease; }
+    @keyframes popIn { 0% { transform: scale(0.7); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* Área de Mídia (Fotos de Evidência) */
+    .photo-area {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, 0.01);
+      border-top: 1px solid rgba(255,255,255,0.03);
+    }
+    .file-wrapper { position: relative; overflow: hidden; display: block; }
+    .btn-camera {
+      background: rgba(199, 160, 84, 0.06);
+      border: 1px dashed rgba(199, 160, 84, 0.4);
+      color: var(--accent-light);
+      padding: 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+    
+    .preview-box { position: relative; margin-top: 10px; display: none; animation: popIn 0.3s ease; }
+    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); }
+    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); }
+
+    /* Rodapé com Botões de Ação Fixo */
+    .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 100; }
+    .btn-action {
+      flex: 1;
+      border: none;
+      padding: 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      transition: transform 0.2s, background-color 0.2s;
+      text-align: center;
+      text-decoration: none;
+    }
+    .btn-action:睫ctive { transform: scale(0.96); }
+    .btn-clear { background: #1c1c24; border: 1px solid rgba(255,255,255,0.08); color: var(--danger); }
+    .btn-send { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="app-header">
+    <img class="app-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150" alt="Logo">
+    <div class="app-info">
+      <h1>Marchesini di Roverbella</h1>
+      <p>Gestão de Turno Premium</p>
+    </div>
+  </div>
+
+  <div class="progress-box">
+    <div class="progress-labels">
+      <span>Conclusão do Checklist</span>
+      <span id="progress-txt">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <div class="section-title">Funcionário Logado</div>
+  <div class="team-scroll" id="team-container"></div>
+
+  <div class="section-title">Setores Operacionais</div>
+  <div id="sectors-container"></div>
+
+  <div class="footer-bar">
+    <button class="btn-action btn-clear" onclick="limparMesa()">Zerar Turno</button>
+    <a class="btn-action btn-send" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">Enviar Relatório</a>
+  </div>
+
+  <script>
+    var equipe = {
+      "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
+      "Pepeo": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
+    };
+
+    var dadosSetores = [
+      {
+        id: "salao", title: "Salão & Área Externa", icon: "🛋️",
+        tasks: [
+          "Levar mesas e cadeiras para a área externa e alinhar.",
+          "Varrer minuciosamente o salão principal e circulação.",
+          "Baixar todas as cadeiras das mesas com cuidado.",
+          "Passar pano com desinfetante no chão do salão.",
+          "Higienizar a superfície das mesas com álcool 70%.",
+          "Limpar detalhadamente os sousplats e jogos americanos.",
+          "Montar as mesas (sousplat, pratos, talheres).",
+          "Abastecer e alinhar as papeleiras e galheteiros."
+        ]
+      },
+      {
+        id: "buffet", title: "Buffet Self-Service", icon: "🍱",
+        tasks: [
+          "Limpar a pista quente e ligar o aquecimento.",
+          "Limpar a pista fria e ligar a refrigeração.",
+          "Organizar a mesa de candy e a bancada de cafés.",
+          "Higienizar pegadores, conchas e utensílios.",
+          "Abastecer pratos e talheres no início da rampa.",
+          "Coordenar com a cozinha o abastecimento das cubas."
+        ]
+      },
+      {
+        id: "bar", title: "Bar & Bebidas", icon: "🍹",
+        tasks: [
+          "Varrer e passar pano no piso do bar.",
+          "Recolher, esvaziar e higienizar as lixeiras do bar.",
+          "Conferir e reabastecer o estoque de gelo.",
+          "Abastecer geladeiras com cervejas, refris e sucos.",
+          "Organizar, polir e alinhar copos e taças."
+        ]
+      },
+      {
+        id: "banheiros", title: "Banheiros", icon: "🧻",
+        tasks: [
+          "Lavar e desinfetar os vasos sanitários e pias.",
+          "Repor rolos de papel higiênico nos suportes.",
+          "Abastecer os dispensers de papel toalha.",
+          "Verificar e abastecer os recipientes de sabonete.",
+          "Limpar espelhos e passar pano perfumado no chão.",
+          "Esvaziar e trocar os sacos plásticos das lixeiras."
+        ]
+      }
+    ];
+
+    var estado = JSON.parse(localStorage.getItem('marchesini_v3_state')) || {
+      usuarioAtivo: "Heitor",
+      tarefasFeitas: {},
+      fotosSetores: {}
+    };
+
+    function salvarEstado() {
+      localStorage.setItem('marchesini_v3_state', JSON.stringify(estado));
+      atualizarProgresso();
+    }
+
+    function renderEquipe() {
+      var container = document.getElementById('team-container');
+      container.innerHTML = '';
+      Object.keys(equipe).forEach(function(nome) {
+        var card = document.createElement('div');
+        card.className = 'team-card';
+        card.innerText = nome;
+        if(estado.usuarioAtivo === nome) {
+          card.style.background = equipe[nome];
+          card.style.color = '#000';
+          card.style.fontWeight = '700';
+          card.style.borderColor = equipe[nome];
+        }
+        card.onclick = function() {
+          estado.usuarioAtivo = nome;
+          salvarEstado();
+          renderEquipe();
+          // Atualiza os crachás sem fechar as abas
+          document.querySelectorAll('.task-item.done').forEach(item => {
+             // Mantém consistência visual do ativo
+          });
+        };
+        container.appendChild(card);
+      });
+    }
+
+    function montarPainel() {
+      var container = document.getElementById('sectors-container');
+      container.innerHTML = '';
+
+      dadosSetores.forEach(function(setor) {
+        var card = document.createElement('div');
+        card.className = 'sector-card';
+        card.id = 'card_' + setor.id;
+
+        var header = document.createElement('div');
+        header.className = 'sector-header';
+        
+        var prontas = contarFeitas(setor.id);
+
+        header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
+                           '<div class="sector-details">' +
+                             '<div class="sector-name">' + setor.title + '</div>' +
+                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
+                           '</div>' +
+                           '<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-width="2.5" fill="none"/></svg>';
+
+        var content = document.createElement('div');
+        content.className = 'sector-content';
+        content.id = 'content_' + setor.id;
+
+        // Injeta tarefas diretamente
+        setor.tasks.forEach(function(tarefa, idx) {
+          var item = document.createElement('div');
+          var chave = setor.id + '_' + idx;
+          item.className = 'task-item' + (estado.tarefasFeitas[chave] ? ' done' : '');
+          item.id = 'item_' + chave;
+          
+          var badgeHtml = '';
+          if(estado.tarefasFeitas[chave]) {
+            var dono = estado.tarefasFeitas[chave];
+            badgeHtml = '<span class="user-badge" style="background:'+ equipe[dono] +'">'+ dono +'</span>';
+          }
+
+          item.innerHTML = '<div class="check-round"></div>' +
+                           '<div class="task-label">' + tarefa + badgeHtml + '</div>';
+
+          // CLIQUE DA TAREFA: Correção do Bug de Fechar a Aba
+          item.onclick = function(e) {
+            e.stopPropagation(); // Trava o fechamento do card pai
+            if(!estado.tarefasFeitas[chave]) {
+              estado.tarefasFeitas[chave] = estado.usuarioAtivo;
+              item.className = 'task-item done';
+              item.querySelector('.task-label').innerHTML = tarefa + '<span class="user-badge" style="background:'+ equipe[estado.usuarioAtivo] +'">'+ estado.usuarioAtivo +'</span>';
+            } else {
+              delete estado.tarefasFeitas[chave];
+              item.className = 'task-item';
+              item.querySelector('.task-label').innerHTML = tarefa;
+            }
+            salvarEstado();
+            
+            // Atualiza apenas os números no topo do card, sem fechar nada
+            var novasProntas = contarFeitas(setor.id);
+            document.getElementById('qty_' + setor.id).innerText = novasProntas + ' de ' + setor.tasks.length + ' feitas';
+          };
+          
+          content.appendChild(item);
+        });
+
+        // Bloco de upload de Foto
+        var fotoDiv = document.createElement('div');
+        fotoDiv.className = 'photo-area';
+        fotoDiv.innerHTML = '<div class="file-wrapper">' +
+                              '<span class="btn-camera" id="lbl_img_'+setor.id+'">📸 Tirar ou Anexar Foto</span>' +
+                              '<input type="file" accept="image/*" onchange="processarFoto(this, \''+setor.id+'\')">' +
+                            '</div>' +
+                            '<div class="preview-box" id="pbox_'+setor.id+'">' +
+                              '<button class="btn-remove-photo" onclick="removerFoto(\''+setor.id+'\', event)">✕</button>' +
+                              '<img class="preview-img" id="img_'+setor.id+'">' +
+                            '</div>';
+        
+        content.appendChild(fotoDiv);
+        card.appendChild(header);
+        card.appendChild(content);
+        container.appendChild(card);
+
+        // Mecanismo Abre/Fecha com Animação
+        header.onclick = function() {
+          var active = card.classList.contains('active');
+          // Fecha todas as outras para manter limpo
+          document.querySelectorAll('.sector-card').forEach(c => {
+            c.classList.remove('active');
+            c.querySelector('.sector-content').style.maxHeight = '0px';
+          });
+          
+          if(!active) {
+            card.classList.add('active');
+            content.style.maxHeight = content.scrollHeight + 100 + 'px';
+          }
+        };
+
+        // Resgata foto se já existir na memória
+        if(estado.fotosSetores[setor.id]) {
+          setTimeout(function() {
+            var pb = document.getElementById('pbox_' + setor.id);
+            var im = document.getElementById('img_' + setor.id);
+            im.src = estado.fotosSetores[setor.id];
+            pb.style.display = 'block';
+            document.getElementById('lbl_img_' + setor.id).innerText = '🔄 Trocar Foto do Setor';
+          }, 20);
+        }
+      });
+    }
+
+    function contarFeitas(setorId) {
+      var s = dadosSetores.find(x => x.id === setorId);
+      var c = 0;
+      s.tasks.forEach((t, i) => { if(estado.tarefasFeitas[setorId + '_' + i]) c++; });
+      return c;
+    }
+
+    function processarFoto(input, setorId) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var b64 = e.target.result;
+          estado.fotosSetores[setorId] = b64;
+          salvarEstado();
+          
+          document.getElementById('img_' + setorId).src = b64;
+          document.getElementById('pbox_' + setorId).style.display = 'block';
+          document.getElementById('lbl_img_' + setorId).innerText = '🔄 Trocar Foto do Setor';
+          
+          // Ajusta tamanho da sanfona para comportar a foto nova
+          var content = document.getElementById('content_' + setorId);
+          content.style.maxHeight = content.scrollHeight + 'px';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function removerFoto(setorId, e) {
+      e.stopPropagation();
+      if(confirm('Remover esta imagem?')) {
+        delete estado.fotosSetores[setorId];
+        salvarEstado();
+        document.getElementById('pbox_' + setorId).style.display = 'none';
+        document.getElementById('lbl_img_' + setorId).innerText = '📸 Tirar ou Anexar Foto';
+        var content = document.getElementById('content_' + setorId);
+        content.style.maxHeight = content.scrollHeight + 'px';
+      }
+    }
+
+    function atualizarProgresso() {
+      var total = 0; var feitas = 0;
+      dadosSetores.forEach(function(s) {
+        s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; });
+      });
+      var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-txt').innerText = pct + '%';
+    }
+
+    function enviarRelatorio(e) {
+      var msg = '✨ *MARCHESINI DI ROVERBELLA* ✨\n*Relatório de Fechamento de Turno*\n\n';
+      dadosSetores.forEach(function(s) {
+        msg += '📌 *' + s.title.toUpperCase() + '*\n';
+        s.tasks.forEach(function(t, i) {
+          var por = estado.tarefasFeitas[s.id + '_' + i];
+          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
+        });
+        if(estado.fotosSetores[s.id]) msg += '📸 _Evidência visual registrada no painel._\n';
+        msg += '\n';
+      });
+      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    }
+
+    function limparMesa() {
+      if(confirm('Deseja zerar as marcações e fotos do turno atual?')) {
+        estado = { usuarioAtivo: "Heitor", tarefasFeitas: {}, fotosSetores: {} };
+        salvarEstado();
+        renderEquipe();
+        montarPainel();
+      }
+    }
+
+    // Start do Sistema
+    renderEquipe();
+    montarPainel();
+    atualizarProgresso();
+  </script>
+</body>
+</html>

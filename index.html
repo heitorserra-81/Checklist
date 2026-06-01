@@ -3,671 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Marchesini Premium v10.5</title>
+  <title>Checklist Premium Dynamic v11.0</title>
   <style>
+    /* Nova Identidade Visual: Design de App Nativo iOS/Android */
     :root {
-      --bg: #09090b;
-      --card-bg: rgba(22, 22, 27, 0.8);
-      --glass-border: rgba(255, 255, 255, 0.06);
-      --accent: #c9a054;
-      --accent-light: #e5c386;
-      --text: #ffffff;
-      --muted: #8e8e93;
-      --success: #30d158;
+      --bg: #0b0e14;
+      --card-bg: #131722;
+      --card-hover: #1c2130;
+      --border: rgba(255, 255, 255, 0.05);
+      --accent: #d4af37; /* Ouro Inicial */
+      --accent-rgb: 212, 175, 55;
+      --text: #f5f6f9;
+      --muted: #7e8494;
+      --success: #34c759;
       --danger: #ff453a;
-      --chat-bg: rgba(18, 18, 24, 0.98);
     }
 
     * { 
       box-sizing: border-box; 
       margin: 0; 
       padding: 0; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent; 
     }
     
     body { 
       background: var(--bg); 
       color: var(--text); 
-      padding: 20px 16px 380px 16px; /* Espaço gigante no fundo para o chat e botões não cobrirem nada */
+      padding: 24px 16px 120px 16px; 
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Cabeçalho de Luxo */
+    /* Topo Totalmente Customizável e Repaginado */
     .app-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: linear-gradient(135deg, rgba(28, 28, 35, 0.7), rgba(18, 18, 22, 0.7));
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      padding: 20px;
-      border-radius: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
 
-    .header-left { display: flex; align-items: center; }
+    .header-left { display: flex; align-items: center; gap: 14px; flex: 1; }
 
-    .logo-wrapper { position: relative; width: 52px; height: 52px; margin-right: 16px; cursor: pointer; }
-    .app-logo { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; border: 1.5px solid var(--accent); }
-    .logo-hint { position: absolute; bottom: -2px; right: -2px; background: var(--accent); font-size: 8px; padding: 1px 4px; border-radius: 4px; color: #000; font-weight: 900; text-transform: uppercase; }
+    .logo-wrapper { position: relative; width: 56px; height: 56px; cursor: pointer; flex-shrink: 0; }
+    .app-logo { width: 100%; height: 100%; border-radius: 16px; object-fit: cover; border: 2px solid var(--accent); }
+    .logo-hint { position: absolute; bottom: -2px; right: -2px; background: var(--accent); font-size: 8px; padding: 2px 4px; border-radius: 4px; color: #000; font-weight: 800; text-transform: uppercase; }
 
-    .app-info h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
-    .app-info p { font-size: 10px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 1px; }
+    .app-info { flex: 1; }
+    .app-info h1 { font-size: 18px; font-weight: 700; color: #fff; cursor: pointer; display: inline-block; }
+    .app-info h1:hover { text-decoration: underline; color: var(--accent); }
+    .app-info p { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
 
     .menu-toggle {
-      background: transparent; border: none; color: var(--accent); font-size: 26px; cursor: pointer; padding: 4px; display: flex; align-items: center;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--accent); width: 44px; height: 44px; border-radius: 12px; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;
     }
 
-    /* Gaveta Lateral (Sidebar) */
-    .sidebar {
-      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0c0f1d; border-left: 1px solid var(--glass-border); z-index: 2500; padding: 30px 20px; transition: right 0.3s ease; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    /* Painel de Configuração Temática Dinâmica (Para Venda) */
+    .setup-panel {
+      background: linear-gradient(135deg, #1a1f2c, #131722);
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 24px;
+      display: none; /* Abre pelo menu ou clicando no nome */
     }
-    .sidebar.open { right: 0; }
-    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-    .sidebar-header h3 { font-size: 16px; font-weight: 700; color: var(--accent); }
-    .sidebar-close { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e9f0; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.01); }
-    .menu-item.active { background: rgba(199, 160, 84, 0.1); color: var(--accent-light); border: 1px solid rgba(199, 160, 84, 0.2); }
+    .setup-panel h3 { font-size: 15px; color: var(--accent); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .setup-grid { display: flex; flex-direction: column; gap: 12px; }
+    .setup-field { display: flex; flex-direction: column; gap: 6px; }
+    .setup-field label { font-size: 12px; font-weight: 600; color: var(--muted); }
+    .setup-input { padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 10px; color: #fff; font-size: 14px; }
+    .setup-input:focus { outline: none; border-color: var(--accent); }
+    .color-presets { display: flex; gap: 10px; margin-top: 4px; }
+    .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+    .color-dot.active { border-color: #fff; transform: scale(1.1); }
 
-    /* Card de Progresso */
+    /* Barra de Progresso Arredondada */
     .progress-box {
-      background: var(--card-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--glass-border); padding: 16px; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      background: var(--card-bg); border: 1px solid var(--border); padding: 16px; border-radius: 16px; margin-bottom: 24px;
     }
     .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
-    .progress-bar-bg { background: rgba(255, 255, 255, 0.04); height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.6s ease; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 10px; border-radius: 20px; overflow: hidden; border: 1px solid rgba(255,255,255,0.02); }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--accent), var(--success)); height: 100%; width: 0%; transition: width 0.5s ease; }
 
-    /* Seletor de Equipe com Fotos Reais */
-    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
-    .section-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
-    .btn-add-member { background: transparent; border: 1px dashed var(--accent); color: var(--accent); font-size: 11px; padding: 4px 10px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+    /* Grid/Scroll de Equipe */
+    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .section-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.8px; }
+    .btn-add-member { background: rgba(255,255,255,0.03); border: 1px dashed var(--accent); color: var(--accent); font-size: 11px; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; }
     
-    .team-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+    .team-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; -webkit-overflow-scrolling: touch; }
     .team-scroll::-webkit-scrollbar { display: none; }
     .team-card { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; position: relative; }
     
-    .avatar-wrapper { position: relative; width: 56px; height: 56px; }
-    .team-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.15); background: #16161e; transition: all 0.2s ease; }
-    .team-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.15); background: #22222a; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; transition: all 0.2s ease; }
+    .avatar-wrapper { position: relative; width: 58px; height: 58px; }
+    .team-avatar { width: 58px; height: 58px; border-radius: 50%; object-fit: cover; border: 2.5px solid rgba(255,255,255,0.1); background: #16161e; transition: all 0.2s ease; }
+    .team-avatar-placeholder { width: 58px; height: 58px; border-radius: 50%; border: 2.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; transition: all 0.2s ease; }
     .team-name { font-size: 12px; font-weight: 600; color: var(--muted); text-align: center; white-space: nowrap; }
     
-    .btn-profile-cam { position: absolute; bottom: -2px; right: -2px; background: var(--accent); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); z-index: 10; }
+    .btn-profile-cam { position: absolute; bottom: -2px; right: -2px; background: var(--accent); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.4); z-index: 10; }
     
-    .team-card.active .team-avatar { border-color: var(--accent) !important; transform: scale(1.05); }
+    .team-card.active .team-avatar { border-color: var(--accent) !important; transform: scale(1.05); box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.3); }
     .team-card.active .team-avatar-placeholder { background: var(--accent) !important; color: #000 !important; border-color: var(--accent) !important; transform: scale(1.05); font-weight: 800; }
     .team-card.active .team-name { color: #fff; font-weight: 700; }
 
-    /* Setores e Sanfona */
+    /* Setores Clean Design */
     .sector-card {
-      background: var(--card-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 22px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s;
     }
-    .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
-    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.04); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; }
+    .sector-header { display: flex; align-items: center; padding: 16px; cursor: pointer; user-select: none; }
+    .sector-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.03); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px; }
     .sector-details { flex: 1; }
     .sector-name { font-size: 15px; font-weight: 600; }
     .sector-qty { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.3s; }
+    .chevron { width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 2.5; transition: transform 0.25s; }
     
-    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
+    .sector-card.active { border-color: rgba(var(--accent-rgb), 0.3); }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; background: rgba(0, 0, 0, 0.15); }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0, 1, 0, 1); background: rgba(0, 0, 0, 0.1); }
     
-    /* Itens de Tarefa */
-    .task-item { display: flex; flex-direction: column; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
-    .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
-    
-    .check-round { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.25); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .task-item.done .check-round { background: var(--success); border-color: var(--success); }
-    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 12px; font-weight: 900; }
-    
-    .task-label { font-size: 14px; flex: 1; color: #e5e5ea; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
-    
-    /* Crachá Premium com Foto de quem fez */
-    .user-badge-premium { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 20px; color: #000; display: inline-flex; align-items: center; gap: 5px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .user-badge-pic { width: 14px; height: 14px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(0,0,0,0.2); }
-
-    /* Área de Evidência por Tarefa */
-    .task-photo-row { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-left: 36px; }
-    .btn-task-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-    .task-img-preview { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1px solid var(--accent); display: none; }
-
-    /* Super Animações Cartoon */
-    .animation-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(9, 9, 11, 0.98); z-index: 3000; align-items: center; justify-content: center;
-    }
-    .anim-box { text-align: center; padding: 24px; }
-    .anim-title { font-size: 24px; font-weight: 800; color: #fff; margin-top: 20px; }
-    .anim-subtitle { font-size: 13px; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; }
-    .cartoon-container { position: relative; width: 160px; height: 160px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-    .cartoon-emoji { font-size: 90px; line-height: 1; display: inline-block; }
-
-    .cartoon-toilet-anim { animation: toiletJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; }
-    @keyframes toiletJump { 0% { transform: scaleX(1.1) scaleY(0.85) translateY(10px); } 100% { transform: scaleX(0.9) scaleY(1.15) translateY(-25px); filter: drop-shadow(0 0 20px rgba(48,209,88,0.4)); } }
-    
-    .cartoon-wipe-anim { animation: wipeDance 0.45s ease-in-out infinite alternate; transform-origin: bottom center; }
-    @keyframes wipeDance { 0% { transform: rotate(-25deg) translateX(-15px); } 100% { transform: rotate(25deg) translateX(15px); } }
-    
-    .cartoon-buffet-anim { animation: buffetSpin 0.7s linear infinite; }
-    @keyframes buffetSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    
-    .cartoon-star-anim { animation: starPop 0.4s ease-in-out infinite alternate; }
-    @keyframes starPop { 0% { transform: scale(0.9); } 100% { transform: scale(1.2); } }
-
-    /* Modais */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
-    .modal-content { background: #121216; border: 1px solid var(--glass-border); padding: 24px; border-radius: 24px; width: 100%; max-width: 320px; }
-    .modal-content h3 { margin-bottom: 16px; color: #fff; text-align: center; font-size: 18px; }
-    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 14px; margin-bottom: 16px; }
-    .modal-btns { display: flex; gap: 10px; }
-    .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; text-align: center; }
-    .btn-m-save { background: var(--accent); color: #000; }
-    .btn-m-cancel { background: rgba(255,255,255,0.05); color: #fff; }
-
-    /* Chat do Turno */
-    .chat-panel {
-      position: fixed; bottom: 94px; left: 16px; right: 16px;
-      background: var(--chat-bg); border: 1px solid var(--glass-border);
-      border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-      display: flex; flex-direction: column; z-index: 150; overflow: hidden;
-    }
-    .chat-header { background: rgba(255,255,255,0.02); padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .chat-header h4 { font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.5px; }
-    .chat-messages { height: 100px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 6px; }
-    .chat-messages::-webkit-scrollbar { display: none; }
-    .msg-bubble { font-size: 12px; padding: 6px 12px; border-radius: 12px; max-width: 85%; width: fit-content; line-height: 1.3; }
-    .msg-received { background: rgba(255,255,255,0.05); align-self: flex-start; color: #e5e5ea; }
-    .msg-sent { background: rgba(199,160,84,0.15); border: 1px solid rgba(199,160,84,0.2); align-self: flex-end; color: #fff; }
-    .msg-author { font-weight: 700; font-size: 10px; color: var(--accent-light); margin-bottom: 2px; text-transform: uppercase; }
-    .chat-footer { display: flex; padding: 8px 12px; background: rgba(0,0,0,0.2); gap: 8px; border-top: 1px solid rgba(255,255,255,0.03); }
-    .chat-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 8px 14px; color: #fff; font-size: 13px; }
-    .chat-input:focus { outline: none; border-color: var(--accent); }
-    .btn-chat-send { background: var(--accent); border: none; padding: 0 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; color: #000; }
-
-    /* Barra Fixa de Ações */
-    .footer-bar { position: fixed; bottom: 24px; left: 16px; right: 16px; display: flex; gap: 12px; z-index: 160; }
-    .btn-action { flex: 1; border: none; padding: 16px; border-radius: 50px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-align: center; text-decoration: none; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .btn-clear { background: #1c1c24; border: 1px solid rgba(255,255,255,0.08); color: var(--danger); }
-    .btn-send { background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 6px; }
-  </style>
-</head>
-<body>
-
-  <div class="sidebar" id="app-sidebar">
-    <div class="sidebar-header">
-      <h3>Menu Marchesini</h3>
-      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
-    </div>
-    <div class="menu-item active" onclick="toggleSidebar()">📋 Checklist Turno</div>
-    <div class="menu-item" onclick="alert('Histórico de Turnos em breve!'); toggleSidebar();">🗄️ Histórico Anterior</div>
-    <div class="menu-item" onclick="alert('Configurações do Painel em breve!'); toggleSidebar();">⚙️ Ajustes Gerais</div>
-  </div>
-
-  <div class="animation-overlay" id="anim-overlay">
-    <div class="anim-box">
-      <div class="cartoon-container">
-        <div class="cartoon-emoji" id="anim-emoji">🚽</div>
-      </div>
-      <div class="anim-title" id="anim-title">Título</div>
-      <div class="anim-subtitle" id="anim-subtitle">Subtítulo</div>
-    </div>
-  </div>
-
-  <input type="file" id="logo-input" accept="image/*" style="display: none;" onchange="atualizarLogo(this)">
-
-  <div class="app-header">
-    <div class="header-left">
-      <div class="logo-wrapper" onclick="document.getElementById('logo-input').click()">
-        <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150" alt="Logo">
-        <div class="logo-hint">Alterar</div>
-      </div>
-      <div class="app-info">
-        <h1 id="restaurant-name">Marchesini di Roverbella</h1>
-        <p>Gestão de Turno Premium</p>
-      </div>
-    </div>
-    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-  </div>
-
-  <div class="progress-box">
-    <div class="progress-labels">
-      <span>Conclusão do Checklist</span>
-      <span id="progress-txt">0%</span>
-    </div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progress-bar"></div>
-    </div>
-  </div>
-
-  <div class="section-header-flex">
-    <div class="section-title">Funcionário Logado</div>
-    <button class="btn-add-member" onclick="abrirModalCadastro()">➕ Integrante</button>
-  </div>
-  <div class="team-scroll" id="team-container"></div>
-
-  <div class="section-title">Setores Operacionais</div>
-  <div id="sectors-container"></div>
-
-  <div class="chat-panel">
-    <div class="chat-header">
-      <h4>Chat Integrado do Turno</h4>
-    </div>
-    <div class="chat-messages" id="chat-messages-box">
-      <div class="msg-bubble msg-received">
-        <div class="msg-author">Gerência</div>
-        Boa noite equipe! Vamos focar no checklist para entregar o salão impecável.
-      </div>
-    </div>
-    <div class="chat-footer">
-      <input type="text" class="chat-input" id="chat-input-field" placeholder="Escreva uma mensagem...">
-      <button class="btn-chat-send" onclick="enviarMensagemSimulada()">Enviar</button>
-    </div>
-  </div>
-
-  <div class="modal" id="cadastro-modal">
-    <div class="modal-content">
-      <h3>Adicionar Integrante</h3>
-      <input type="text" class="modal-input" id="new-member-name" placeholder="Nome do funcionário">
-      <div class="modal-btns">
-        <button class="btn-m btn-m-cancel" onclick="fecharModalCadastro()">Voltar</button>
-        <button class="btn-m btn-m-save" onclick="salvarNovoMembro()">Salvar</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer-bar">
-    <button class="btn-action btn-clear" onclick="limparMesa()">Zerar Turno</button>
-    <a class="btn-action btn-send" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">Enviar Relatório</a>
-  </div>
-
-  <script>
-    // Sintetizador de Áudio Blindado nativo
-    var audioCtx = null;
-    function tocarSomSucesso() {
-      try {
-        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nota Ré
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // Nota Lá
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.35);
-      } catch(e) { console.log("Áudio aguardando interação inicial."); }
-    }
-
-    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
-
-    var coresFixas = {
-      "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
-      "Pepeu": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
-    };
-
-    var dadosSetores = [
-      {
-        id: "salao", title: "Salão & Área Externa", icon: "🛋️",
-        tasks: [
-          "Levar mesas e cadeiras para a área externa e alinhar.",
-          "Varrer minuciosamente o salão principal e circulação.",
-          "Baixar todas as cadeiras das mesas com cuidado.",
-          "Passar pano com desinfetante no chão do salão.",
-          "Higienizar a superfície das mesas com álcool 70%.",
-          "Limpar detalhadamente os sousplats e jogos americanos.",
-          "Montar as mesas (sousplat, pratos, talheres).",
-          "Abastecer e alinhar as papeleiras e galheteiros."
-        ]
-      },
-      {
-        id: "buffet", title: "Buffet Self-Service", icon: "🍱",
-        tasks: [
-          "Limpar a pista quente e ligar o aquecimento.",
-          "Limpar a pista fria e ligar a refrigeração.",
-          "Organizar a mesa de candy e a bancada de cafés.",
-          "Higienizar pegadores, conchas e utensílios.",
-          "Abastecer pratos e talheres no início da rampa.",
-          "Coordenar com a cozinha o abastecimento das cubas."
-        ]
-      },
-      {
-        id: "bar", title: "Bar & Bebidas", icon: "🍹",
-        tasks: [
-          "Varrer e passar pano no piso do bar.",
-          "Recolher, esvaziar e higienizar as lixeiras do bar.",
-          "Conferir e reabastecer o estoque de gelo.",
-          "Abastecer geladeiras com cervejas, refris e sucos.",
-          "Organizar, polir e alinhar copos e taças."
-        ]
-      },
-      {
-        id: "banheiros", title: "Banheiros", icon: "🧻",
-        tasks: [
-          "Lavar e desinfetar os vasos sanitários e pias.",
-          "Repor rolos de papel higiênico nos suportes.",
-          "Abastecer os dispensers de papel toalha.",
-          "Verificar e abastecer os recipientes de sabonete.",
-          "Limpar espelhos e passar pano perfumado no chão.",
-          "Esvaziar e trocar os sacos plásticos das lixeiras."
-        ]
-      }
-    ];
-
-    // CARREGAMENTO BLINDADO DE MEMÓRIA (Se falhar, ele cria o padrão e NÃO trava a tela)
-    var estado;
-    try {
-      var salvo = localStorage.getItem('marchesini_v105_state');
-      if (salvo) {
-        estado = JSON.parse(salvo);
-      } else {
-        throw new Error("Criar novo estado");
-      }
-      if (!estado.listaMembros || !estado.tarefasFeitas) { throw new Error("Incompleto"); }
-    } catch(e) {
-      estado = {
-        usuarioAtivo: "Heitor",
-        listaMembros: ["Heitor", "Danilo", "Bill", "Pepeu", "Eibe", "Suelen", "Gi"],
-        tarefasFeitas: {},
-        fotosTarefas: {},
-        fotosPerfil: {},
-        logoRestaurante: ""
-      };
-    }
-
-    function salvarEstado() {
-      localStorage.setItem('marchesini_v105_state', JSON.stringify(estado));
-      atualizarProgresso();
-    }
-
-    function atualizarLogo(input) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          estado.logoRestaurante = e.target.result;
-          document.getElementById('restaurant-logo').src = e.target.result;
-          salvarEstado();
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    window.capturarFotoPerfil = function(input, nomeMembro) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          estado.fotosPerfil[nomeMembro] = e.target.result;
-          salvarEstado();
-          renderEquipe();
-          montarPainel();
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    };
-
-    function renderEquipe() {
-      var container = document.getElementById('team-container');
-      container.innerHTML = '';
-      
-      estado.listaMembros.forEach(function(nome) {
-        var card = document.createElement('div');
-        card.className = 'team-card' + (estado.usuarioAtivo === nome ? ' active' : '');
-        
-        var fotoSalva = estado.fotosPerfil[nome];
-        var corDoMembro = coresFixas[nome] || "#c9a054";
-        
-        var avatarHtml = fotoSalva ? 
-          '<img class="team-avatar" src="' + fotoSalva + '" style="border-color:' + corDoMembro + '">' : 
-          '<div class="team-avatar-placeholder" style="border-color:' + corDoMembro + '; color:' + corDoMembro + '">' + nome.charAt(0) + '</div>';
-
-        card.innerHTML = 
-          '<div class="avatar-wrapper">' +
-            avatarHtml +
-            '<label class="btn-profile-cam">📸' +
-              '<input type="file" accept="image/*" style="display:none;" onchange="capturarFotoPerfil(this, \'' + nome + '\')">' +
-            '</label>' +
-          '</div>' +
-          '<div class="team-name">' + nome + '</div>';
-          
-        card.onclick = function(e) {
-          if(e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL' || e.target.classList.contains('btn-profile-cam')) return;
-          estado.usuarioAtivo = nome;
-          salvarEstado();
-          renderEquipe();
-        };
-        container.appendChild(card);
-      });
-    }
-
-    function abrirModalCadastro() { document.getElementById('cadastro-modal').style.display = 'flex'; }
-    function fecharModalCadastro() { document.getElementById('cadastro-modal').style.display = 'none'; document.getElementById('new-member-name').value = ''; }
-    function salvarNovoMembro() {
-      var nome = document.getElementById('new-member-name').value.trim();
-      if(!nome) return;
-      if(!estado.listaMembros.includes(nome)) {
-        estado.listaMembros.push(nome);
-        coresFixas[nome] = "#" + Math.floor(Math.random()*16777215).toString(16);
-      }
-      estado.usuarioAtivo = nome;
-      salvarEstado();
-      renderEquipe();
-      fecharModalCadastro();
-    }
-
-    function dispararSuperAnimacao(textoTarefa) {
-      tocarSomSucesso();
-      var overlay = document.getElementById('anim-overlay');
-      var emoji = document.getElementById('anim-emoji');
-      var title = document.getElementById('anim-title');
-      var sub = document.getElementById('anim-subtitle');
-      
-      var txt = textoTarefa.toLowerCase();
-      emoji.className = "cartoon-emoji";
-      
-      if (txt.includes('vaso') || txt.includes('sanitário') || txt.includes('banheiro') || txt.includes('pias')) {
-        emoji.innerText = "🚽👑";
-        emoji.classList.add('cartoon-toilet-anim');
-        title.innerText = "Sanitário Impecável!";
-        sub.innerText = "Vaso dando joinha e pulando de alegria! 🎉";
-      } else if (txt.includes('pano') || txt.includes('varrer') || txt.includes('chão') || txt.includes('piso')) {
-        emoji.innerText = "🧼🧹";
-        emoji.classList.add('cartoon-wipe-anim');
-        title.innerText = "Chão Brilhando!";
-        sub.innerText = "O pano está gingando e dançando de alegria! 💃";
-      } else if (txt.includes('buffet') || txt.includes('pista') || txt.includes('rampa')) {
-        emoji.innerText = "🍱✨";
-        emoji.classList.add('cartoon-buffet-anim');
-        title.innerText = "Pistas Prontas!";
-        sub.innerText = "Giro cartoon radiante com muito brilho! ⭐";
-      } else {
-        emoji.innerText = "🏆";
-        emoji.classList.add('cartoon-star-anim');
-        title.innerText = "Meta Cumprida!";
-        sub.innerText = "Equipe Marchesini arrebentando no salão! 💎";
-      }
-      
-      overlay.style.display = 'flex';
-      setTimeout(function() { overlay.style.display = 'none'; }, 1600);
-    }
-
-    window.tirarFotoTarefa = function(input, chave) {
-      if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-          estado.fotosTarefas[chave] = e.target.result;
-          salvarEstado();
-          var imgElement = document.getElementById('img_prev_' + chave);
-          if (imgElement) { imgElement.src = e.target.result; imgElement.style.display = 'block'; }
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    };
-
-    function montarPainel() {
-      var container = document.getElementById('sectors-container');
-      container.innerHTML = '';
-
-      dadosSetores.forEach(function(setor) {
-        var card = document.createElement('div');
-        card.className = 'sector-card';
-        card.id = 'card_' + setor.id;
-
-        var header = document.createElement('div');
-        header.className = 'sector-header';
-        var prontas = contarFeitas(setor.id);
-
-        header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
-                           '<div class="sector-details">' +
-                             '<div class="sector-name">' + setor.title + '</div>' +
-                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
-                           '</div>' +
-                           '<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>';
-
-        var content = document.createElement('div');
-        content.className = 'sector-content';
-        content.id = 'content_' + setor.id;
-
-        setor.tasks.forEach(function(tarefa, idx) {
-          var item = document.createElement('div');
-          var chave = setor.id + '_' + idx;
-          item.className = 'task-item' + (estado.tarefasFeitas[chave] ? ' done' : '');
-          item.id = 'item_' + chave;
-          
-          var badgeHtml = '';
-          if(estado.tarefasFeitas[chave]) {
-            var dono = estado.tarefasFeitas[chave];
-            var corBadge = coresFixas[dono] || "#c9a054";
-            var fPerfil = estado.fotosPerfil[dono];
-            var picHtml = fPerfil ? '<img class="user-badge-pic" src="' + fPerfil + '">' : '👤 ';
-            badgeHtml = '<span class="user-badge-premium" style="background:' + corBadge + '">' + picHtml + dono + '</span>';
-          }
-
-          item.innerHTML = 
-            '<div class="task-main-row">' +
-              '<div class="check-round"></div>' +
-              '<div class="task-label"><span>' + tarefa + '</span><div id="badge_space_' + chave + '">' + badgeHtml + '</div></div>' +
-            '</div>' +
-            '<div class="task-photo-row">' +
-              '<label class="btn-task-camera">' +
-                '📸 Foto Evidência' +
-                '<input type="file" accept="image/*" style="display:none;" onchange="tirarFotoTarefa(this, \'' + chave + '\')">' +
-              '</label>' +
-              '<img class="task-img-preview" id="img_prev_' + chave + '">';
-
-          item.querySelector('.task-main-row').onclick = function(e) {
-            e.stopPropagation();
-            if(!estado.tarefasFeitas[chave]) {
-              estado.tarefasFeitas[chave] = estado.usuarioAtivo;
-              item.classList.add('done');
-              
-              var uActive = estado.usuarioAtivo;
-              var corB = coresFixas[uActive] || "#c9a054";
-              var fP = estado.fotosPerfil[uActive];
-              var thumbHtml = fP ? '<img class="user-badge-pic" src="' + fP + '">' : '👤 ';
-              document.getElementById('badge_space_' + chave).innerHTML = '<span class="user-badge-premium" style="background:' + corB + '">' + thumbHtml + uActive + '</span>';
-              
-              dispararSuperAnimacao(tarefa);
-            } else {
-              delete estado.tarefasFeitas[chave];
-              item.classList.remove('done');
-              document.getElementById('badge_space_' + chave).innerHTML = '';
-            }
-            salvarEstado();
-            var novasProntas = contarFeitas(setor.id);
-            document.getElementById('qty_' + setor.id).innerText = novasProntas + ' de ' + setor.tasks.length + ' feitas';
-          };
-          
-          content.appendChild(item);
-
-          // Renderiza a foto da tarefa com micro-atraso preventivo
-          setTimeout(function() {
-            if(estado.fotosTarefas && estado.fotosTarefas[chave]) {
-              var pImg = document.getElementById('img_prev_' + chave);
-              if(pImg) { pImg.src = estado.fotosTarefas[chave]; pImg.style.display = 'block'; }
-            }
-          }, 15);
-        });
-
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
-
-        header.onclick = function() {
-          var active = card.classList.contains('active');
-          document.querySelectorAll('.sector-card').forEach(function(c) {
-            c.classList.remove('active');
-            c.querySelector('.sector-content').style.maxHeight = '0px';
-          });
-          if(!active) {
-            card.classList.add('active');
-            content.style.maxHeight = '2000px';
-          }
-        };
-      });
-    }
-
-    function contarFeitas(setorId) {
-      var s = dadosSetores.find(function(x) { return x.id === setorId; });
-      var c = 0;
-      s.tasks.forEach(function(t, i) { if(estado.tarefasFeitas[setorId + '_' + i]) c++; });
-      return c;
-    }
-
-    function atualizarProgresso() {
-      var total = 0; var feitas = 0;
-      dadosSetores.forEach(function(s) { s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
-      var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
-      document.getElementById('progress-bar').style.width = pct + '%';
-      document.getElementById('progress-txt').innerText = pct + '%';
-    }
-
-    window.enviarMensagemSimulada = function() {
-      var campo = document.getElementById('chat-input-field');
-      var texto = campo.value.trim();
-      if(!texto) return;
-
-      var box = document.getElementById('chat-messages-box');
-      var bolha = document.createElement('div');
-      bolha.className = 'msg-bubble msg-sent';
-      bolha.innerHTML = '<div class="msg-author">' + estado.usuarioAtivo + '</div>' + texto;
-      box.appendChild(bolha);
-      campo.value = '';
-      box.scrollTop = box.scrollHeight;
-    };
-
-    document.getElementById('chat-input-field').addEventListener('keypress', function(e) { if(e.key === 'Enter') { enviarMensagemSimulada(); } });
-
-    function enviarRelatorio(e) {
-      var msg = '✨ *' + document.getElementById('restaurant-name').innerText.toUpperCase() + '* ✨\n*Relatório de Fechamento Operacional*\n\n';
-      dadosSetores.forEach(function(s) {
-        msg += '📌 *' + s.title.toUpperCase() + '*\n';
-        s.tasks.forEach(function(t, i) {
-          var por = estado.tarefasFeitas[s.id + '_' + i];
-          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
-        });
-        msg += '\n';
-      });
-      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
-    }
-
-    function limparMesa() {
-      if(confirm('Deseja zerar as marcações do turno atual?')) {
-        estado.tarefasFeitas = {};
-        estado.fotosTarefas = {};
-        salvarEstado();
-        montarPainel();
-      }
-    }
-
-    if(estado.logoRestaurante) { document.getElementById('restaurant-logo').src = estado.logoRestaurante; }
-    renderEquipe();
-    montarPainel();
-    atualizarProgresso();
-  </script>
-</body>
-</html>
+    /* Linhas de Tarefa */
+    .task-item { display: flex; flex-direction

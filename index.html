@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Marchesini Pro v10.2</title>
+  <title>Marchesini Pro v10.3</title>
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0a0d1a 0%, #121526 100%);
@@ -14,6 +14,7 @@
       --text: #ffffff;
       --muted: #8fa0b5;
       --success: #2ecc71;
+      --chat-bg: rgba(15, 18, 36, 0.98);
     }
 
     * { 
@@ -27,16 +28,17 @@
     body { 
       background: var(--bg-gradient); 
       color: var(--text); 
-      padding: 20px 16px 60px 16px; /* Padding menor e limpo sem nada obstruindo */
+      padding: 20px 16px 340px 16px; /* Espaço amplo para o chat fixo e botões no rodapé */
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    /* Topo de Luxo com Botão de Chat Embutido */
+    /* Topo de Luxo com Menu Lateral */
     .app-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       background: rgba(255, 255, 255, 0.01);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -45,33 +47,31 @@
       border-radius: 20px;
       margin-bottom: 20px;
       box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-      position: relative;
     }
-    .logo-wrapper { position: relative; width: 54px; height: 54px; margin-right: 14px; cursor: pointer; }
+    .header-left { display: flex; align-items: center; }
+    .logo-wrapper { position: relative; width: 50px; height: 50px; margin-right: 14px; cursor: pointer; }
     .app-logo { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 2px solid var(--accent); }
     .logo-hint { position: absolute; bottom: -4px; right: -4px; background: var(--accent); font-size: 8px; padding: 1px 4px; border-radius: 4px; color: #000; font-weight: 900; }
-    .app-info { flex: 1; }
     .app-info h1 { font-size: 16px; font-weight: 800; color: #fff; letter-spacing: -0.3px; }
     .app-info p { font-size: 9px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
     
-    /* Botão Flutuante do Chat no Menu Superior */
-    .btn-open-chat {
-      background: rgba(212, 175, 55, 0.15);
-      border: 1px solid var(--accent);
-      color: #fff;
-      font-size: 18px;
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+    /* Botão do Menu Hamburguer ☰ */
+    .menu-toggle {
+      background: transparent; border: none; color: var(--accent); font-size: 26px; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center;
     }
-    .btn-open-chat:active { transform: scale(0.9); }
 
-    /* Barra de Progresso Premium */
+    /* Gaveta de Menu Lateral (Sidebar) */
+    .sidebar {
+      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0c0f1d; border-left: 1px solid var(--glass-border); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .sidebar.open { right: 0; }
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+    .sidebar-header h3 { color: #fff; font-size: 16px; font-weight: 800; }
+    .sidebar-close { background: transparent; border: none; color: var(--muted); font-size: 20px; cursor: pointer; }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e9f0; text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.01); }
+    .menu-item:hover, .menu-item.active { background: rgba(212,175,55,0.1); color: var(--accent); }
+
+    /* Barra de Progresso Fina Premium */
     .progress-box { background: rgba(0, 0, 0, 0.2); padding: 14px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.03); }
     .progress-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 8px; color: var(--muted); }
     .progress-bar-bg { background: rgba(255,255,255,0.05); height: 6px; border-radius: 4px; overflow: hidden; }
@@ -84,23 +84,19 @@
 
     .team-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 4px 10px 4px; width: 100%; }
     .team-scroll::-webkit-scrollbar { display: none; }
-    
     .team-card { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; position: relative; }
     .avatar-wrapper { position: relative; width: 56px; height: 56px; }
     
-    /* Imagens e Letras redondas */
-    .team-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #16192e; transition: all 0.3s ease; }
-    .team-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); background: #16192e; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: var(--accent); transition: all 0.3s ease; }
-    
+    .team-avatar, .team-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); background: #16192e; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; color: var(--accent); }
     .team-name { font-size: 11px; font-weight: 600; color: var(--muted); text-align: center; white-space: nowrap; }
     .btn-profile-cam { position: absolute; bottom: 0; right: 0; background: var(--accent); border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10; }
     
     .team-card.active .team-avatar, .team-card.active .team-avatar-placeholder { border-color: var(--accent); transform: scale(1.05); box-shadow: 0 0 12px var(--accent-glow); }
     .team-card.active .team-name { color: #fff; font-weight: 700; }
 
-    /* Setores */
-    .sector-card { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; margin-bottom: 12px; overflow: hidden; }
-    .sector-card.active { border-color: rgba(212, 175, 55, 0.15); }
+    /* Cards dos Setores Modificados para Abrir Bem na Tela */
+    .sector-card { background: var(--glass-card); border: 1px solid rgba(255,255,255,0.04); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.3s; }
+    .sector-card.active { border-color: rgba(212, 175, 55, 0.35); background: rgba(255,255,255,0.01); }
     .sector-header { display: flex; align-items: center; padding: 16px; cursor: pointer; }
     .sector-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.02); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-right: 12px; }
     .sector-details { flex: 1; }
@@ -108,9 +104,430 @@
     .sector-qty { font-size: 11px; color: var(--muted); }
     .chevron { width: 14px; height: 14px; fill: none; stroke: var(--muted); stroke-width: 3; transition: transform 0.3s; }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease-out; }
     
-    /* Itens de Tarefa */
-    .task-item { display: flex; flex-direction: column; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.02); background: rgba(0,0,0,0.08); }
+    /* Layout de Itens de Tarefa */
+    .task-item { display: flex; flex-direction: column; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.02); background: rgba(0,0,0,0.12); }
     .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
-    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; margin-right:
+    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 6px; margin-right: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .task-item.done .check-round { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 900; }
+    .task-label { font-size: 13px; flex: 1; color: #e5e9f0; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
+    .task-item.done .task-label span { text-decoration: line-through; color: var(--muted); opacity: 0.6; }
+    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 6px; background: rgba(212, 175, 55, 0.1); color: var(--accent); border: 1px solid rgba(212, 175, 55, 0.2); display: flex; align-items: center; gap: 4px; }
+    .user-badge-pic { width: 12px; height: 12px; border-radius: 50%; object-fit: cover; }
+
+    /* Upload de Fotos Individuais da Tarefa */
+    .task-photo-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-left: 32px; }
+    .btn-task-camera { background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); color: var(--muted); padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+    .task-img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--accent); display: none; }
+
+    /* 🔥 SUPER ANIMAÇÕES CARTOON EXCLUSIVAS POR TAREFA 🔥 */
+    .animation-overlay {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 7, 15, 0.97); z-index: 3000; align-items: center; justify-content: center;
+    }
+    .anim-box { text-align: center; padding: 20px; }
+    .anim-title { font-size: 24px; font-weight: 900; color: #fff; margin-top: 20px; letter-spacing: -0.5px; }
+    .anim-subtitle { font-size: 13px; color: var(--accent); font-weight: 700; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; }
+    .cartoon-container { position: relative; width: 160px; height: 160px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    .cartoon-emoji { font-size: 90px; line-height: 1; display: inline-block; }
+
+    /* Animação Exclusiva 1: A Privada Feliz Joinha (Estica e Pula de Alegria) */
+    .cartoon-toilet-anim { animation: crazyToilet 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) infinite alternate; }
+    @keyframes crazyToilet {
+      0% { transform: scaleX(1.15) scaleY(0.8) translateY(10px); }
+      100% { transform: scaleX(0.85) scaleY(1.15) translateY(-30px); filter: drop-shadow(0 0 20px var(--accent-glow)); }
+    }
+
+    /* Animação Exclusiva 2: Esfregão Dançarino Gingado (Ginga Esfregando de um lado pro outro) */
+    .cartoon-wipe-anim { animation: crazyWipe 0.45s ease-in-out infinite alternate; transform-origin: bottom center; }
+    @keyframes crazyWipe {
+      0% { transform: rotate(-30deg) translateX(-20px) scaleY(0.95); }
+      100% { transform: rotate(30deg) translateX(20px) scaleY(1.05); }
+    }
+
+    /* Animação Exclusiva 3: Prato Giratório Radiante */
+    .cartoon-buffet-anim { animation: crazyBuffet 0.6s linear infinite; }
+    @keyframes crazyBuffet {
+      0% { transform: rotate(0deg) scale(0.9); }
+      50% { transform: rotate(180deg) scale(1.1); filter: drop-shadow(0 0 15px var(--accent)); }
+      100% { transform: rotate(360deg) scale(0.9); }
+    }
+
+    /* Animação Exclusiva 4: Estrela Saltitante Padrão */
+    .cartoon-star-anim { animation: crazyStar 0.4s ease-in-out infinite alternate; }
+    @keyframes crazyStar { 0% { transform: scale(0.85) rotate(-10deg); } 100% { transform: scale(1.2) rotate(10deg); } }
+
+    /* Modais */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(10px); padding: 20px; }
+    .modal-content { background: #131622; border: 1px solid var(--glass-border); padding: 24px; border-radius: 24px; width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+    .modal-content h3 { margin-bottom: 16px; color: #fff; text-align: center; font-size: 18px; }
+    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 14px; margin-bottom: 16px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; text-align: center; }
+    .btn-m-save { background: var(--accent); color: #000; }
+    .btn-m-cancel { background: rgba(255,255,255,0.05); color: #fff; }
+
+    /* 💬 CHAT DO TURNO FIXADO 💬 */
+    .chat-panel {
+      position: fixed; bottom: 84px; left: 16px; right: 16px;
+      background: var(--chat-bg); border: 1px solid var(--glass-border);
+      border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      display: flex; flex-direction: column; z-index: 150; overflow: hidden;
+    }
+    .chat-header { background: rgba(255,255,255,0.02); padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+    .chat-header h4 { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
+    .chat-messages { height: 110px; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-messages::-webkit-scrollbar { display: none; }
+    .msg-bubble { font-size: 11px; padding: 6px 10px; border-radius: 10px; max-width: 85%; width: fit-content; line-height: 1.3; word-break: break-word; }
+    .msg-received { background: rgba(255,255,255,0.06); align-self: flex-start; color: #f0f2f5; }
+    .msg-sent { background: rgba(212,175,55,0.18); border: 1px solid rgba(212,175,55,0.2); align-self: flex-end; color: #fff; }
+    .msg-author { font-weight: 800; font-size: 9px; color: var(--accent); margin-bottom: 2px; text-transform: uppercase; }
+    .chat-footer { display: flex; padding: 8px; background: rgba(0,0,0,0.2); gap: 6px; border-top: 1px solid rgba(255,255,255,0.03); }
+    .chat-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 12px; color: #fff; font-size: 12px; }
+    .chat-input:focus { outline: none; border-color: var(--accent); }
+    .btn-chat-send { background: var(--accent); border: none; padding: 0 14px; border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer; color: #000; }
+
+    /* Barra de Botões Finais Modificada (Sem sobrepor nada) */
+    .footer-bar { position: fixed; bottom: 20px; left: 16px; right: 16px; display: flex; gap: 8px; z-index: 160; }
+    .btn-action { border: none; padding: 14px; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; text-align: center; text-decoration: none; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+    .btn-clear { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,69,58,0.3); color: #ff453a; padding: 14px 18px; font-size: 11px; }
+    .btn-send { flex: 1; background: #25d366; color: #fff; display: flex; align-items: center; justify-content: center; gap: 4px; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="app-sidebar">
+    <div class="sidebar-header">
+      <h3>Opções do Sistema</h3>
+      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+    </div>
+    <div class="menu-item active" onclick="toggleSidebar()">📋 Checklist Principal</div>
+    <div class="menu-item" onclick="alert('Funcionalidade de Chat Avançado em breve corporativo!'); toggleSidebar();">💬 Canais de Chat</div>
+    <div class="menu-item" onclick="alert('Modo de Visualização Compacto ativado mentalmente!'); toggleSidebar();">👁️ Mudar Visualização</div>
+  </div>
+
+  <div class="animation-overlay" id="anim-overlay">
+    <div class="anim-box">
+      <div class="cartoon-container">
+        <div class="cartoon-emoji" id="anim-emoji">🚽</div>
+      </div>
+      <div class="anim-title" id="anim-title">Vaso Limpinho!</div>
+      <div class="anim-subtitle" id="anim-subtitle">Trabalho sensacional! 👍</div>
+    </div>
+  </div>
+
+  <input type="file" id="logo-input" accept="image/*" style="display: none;" onchange="atualizarLogo(this)">
+
+  <div class="app-header">
+    <div class="header-left">
+      <div class="logo-wrapper" onclick="document.getElementById('logo-input').click()">
+        <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150" alt="Logo">
+        <div class="logo-hint">Mudar</div>
+      </div>
+      <div class="app-info">
+        <h1 id="restaurant-name">Marchesini di Roverbella</h1>
+        <p>Gestão Operacional de Luxo</p>
+      </div>
+    </div>
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+  </div>
+
+  <div class="progress-box">
+    <div class="progress-labels">
+      <span>Conclusão das Metas</span>
+      <span id="progress-txt">0%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <div class="section-header-flex">
+    <div class="section-title">Equipe Logada no Turno</div>
+    <button class="btn-add-member" onclick="abrirModalCadastro()">➕ Novo</button>
+  </div>
+  <div class="team-scroll" id="team-container"></div>
+
+  <div class="section-title">Setores Operacionais</div>
+  <div id="sectors-container"></div>
+
+  <div class="chat-panel">
+    <div class="chat-header">
+      <h4>Chat Integrado do Turno</h4>
+      <span style="font-size: 8px; background: #2ecc71; color: #000; padding: 2px 4px; border-radius: 4px; font-weight: 900;">LOCAL SIMULADO</span>
+    </div>
+    <div class="chat-messages" id="chat-messages-box">
+      <div class="msg-bubble msg-received">
+        <div class="msg-author">Gerência</div>
+        Boa noite equipe! Vamos focar no checklist para entregar o salão impecável.
+      </div>
+    </div>
+    <div class="chat-footer">
+      <input type="text" class="chat-input" id="chat-input-field" placeholder="Digite uma mensagem para a equipe...">
+      <button class="btn-chat-send" onclick="enviarMensagemSimulada()">Enviar</button>
+    </div>
+  </div>
+
+  <div class="modal" id="cadastro-modal">
+    <div class="modal-content">
+      <h3>Novo Membro</h3>
+      <input type="text" class="modal-input" id="new-member-name" placeholder="Nome do funcionário">
+      <div class="modal-btns">
+        <button class="btn-m btn-m-cancel" onclick="fecharModalCadastro()">Voltar</button>
+        <button class="btn-m btn-m-save" onclick="salvarNovoMembro()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bar">
+    <button class="btn-action btn-clear" onclick="limparMesa()">Zerar Tudo</button>
+    <a class="btn-action btn-send" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">Enviar WhatsApp</a>
+  </div>
+
+  <script>
+    // Sistema Avançado de Som de Sucesso sem falhas
+    var audioCtx = null;
+    function tocarSomSucesso() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+      } catch(e) { console.log("Áudio bloqueado ou indisponível."); }
+    }
+
+    // Controle da Gaveta do Menu Sidebar
+    function toggleSidebar() {
+      document.getElementById('app-sidebar').classList.toggle('open');
+    }
+
+    var equipePadrao = [
+      { nome: "Heitor", foto: "" },
+      { nome: "Danilo", foto: "" },
+      { nome: "Bill", foto: "" },
+      { nome: "Pepeu", foto: "" },
+      { nome: "Eibe", foto: "" },
+      { nome: "Gi", foto: "" },
+      { nome: "Suelen", foto: "" },
+      { nome: "Gerentes", foto: "" }
+    ];
+
+    var dadosSetores = [
+      {
+        id: "salao", title: "Salão & Área Externa", icon: "🛋️",
+        tasks: [
+          "Levar mesas e cadeiras para a área externa e alinhar.",
+          "Varrer minuciosamente o salão principal e circulação.",
+          "Baixar todas as cadeiras das mesas com cuidado.",
+          "Passar pano com desinfetante no chão do salão.",
+          "Higienizar a superfície das mesas com álcool 70%.",
+          "Limpar detalhadamente os sousplats e jogos americanos."
+        ]
+      },
+      {
+        id: "buffet", title: "Buffet Self-Service", icon: "🍱",
+        tasks: [
+          "Limpar a pista quente e ligar o aquecimento.",
+          "Limpar a pista fria e ligar a refrigeração.",
+          "Organizar a mesa de candy e a bancada de cafés."
+        ]
+      },
+      {
+        id: "bar", title: "Bar & Bebidas", icon: "🍹",
+        tasks: [
+          "Varrer e passar pano no piso do bar.",
+          "Recolher, esvaziar e higienizar as lixeiras do bar.",
+          "Conferir e reabastecer o estoque de gelo."
+        ]
+      },
+      {
+        id: "banheiros", title: "Banheiros", icon: "🧻",
+        tasks: [
+          "Lavar e desinfetar os vasos sanitários e pias.",
+          "Repor rolos de papel higiênico nos suportes.",
+          "Abastecer os dispensers de papel toalha."
+        ]
+      }
+    ];
+
+    var estado = JSON.parse(localStorage.getItem('marchesini_v103_state')) || {
+      usuarioAtivo: "Heitor",
+      equipe: equipePadrao,
+      tarefasFeitas: {},
+      fotosTarefas: {},
+      fotosPerfil: {},
+      logoRestaurante: ""
+    };
+
+    function salvarEstado() {
+      localStorage.setItem('marchesini_v103_state', JSON.stringify(estado));
+      atualizarProgresso();
+    }
+
+    function atualizarLogo(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          estado.logoRestaurante = e.target.result;
+          document.getElementById('restaurant-logo').src = e.target.result;
+          salvarEstado();
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    window.capturarFotoPerfil = function(input, nomeMembro) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          estado.fotosPerfil[nomeMembro] = e.target.result;
+          salvarEstado();
+          renderEquipe();
+          montarPainel();
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    function renderEquipe() {
+      var container = document.getElementById('team-container');
+      container.innerHTML = '';
+      estado.equipe.forEach(function(membro) {
+        var card = document.createElement('div');
+        card.className = 'team-card' + (estado.usuarioAtivo === membro.nome ? ' active' : '');
+        
+        var imgSalva = estado.fotosPerfil[membro.nome];
+        var avatarHtml = imgSalva ? '<img class="team-avatar" src="' + imgSalva + '">' : '<div class="team-avatar-placeholder">' + membro.nome.charAt(0) + '</div>';
+        
+        card.innerHTML = 
+          '<div class="avatar-wrapper">' +
+            avatarHtml +
+            '<label class="btn-profile-cam">📸' +
+              '<input type="file" accept="image/*" style="display:none;" onchange="capturarFotoPerfil(this, \''+membro.nome+'\')">' +
+            '</label>' +
+          '</div>' +
+          '<div class="team-name">' + membro.nome + '</div>';
+          
+        card.onclick = function(e) {
+          if(e.target.tagName === 'INPUT' || e.target.tagName === 'LABEL' || e.target.classList.contains('btn-profile-cam')) return;
+          estado.usuarioAtivo = membro.nome;
+          salvarEstado();
+          renderEquipe();
+        };
+        container.appendChild(card);
+      });
+    }
+
+    function abrirModalCadastro() { document.getElementById('cadastro-modal').style.display = 'flex'; }
+    function fecharModalCadastro() { document.getElementById('cadastro-modal').style.display = 'none'; document.getElementById('new-member-name').value = ''; }
+    function salvarNovoMembro() {
+      var nome = document.getElementById('new-member-name').value.trim();
+      if(!nome) return;
+      estado.equipe.push({ nome: nome, foto: "" });
+      estado.usuarioAtivo = nome;
+      salvarEstado();
+      renderEquipe();
+      fecharModalCadastro();
+    }
+
+    // 🔥 ANIMAÇÕES CARTOON INDIVIDUAIS REAIS 🔥
+    function dispararSuperAnimacao(textoTarefa) {
+      tocarSomSucesso();
+      
+      var overlay = document.getElementById('anim-overlay');
+      var emoji = document.getElementById('anim-emoji');
+      var title = document.getElementById('anim-title');
+      var sub = document.getElementById('anim-subtitle');
+      
+      var text = textoTarefa.toLowerCase();
+      emoji.className = "cartoon-emoji"; 
+      
+      if (text.includes('vaso') || text.includes('sanitário') || text.includes('banheiro')) {
+        emoji.innerText = "🚽✨";
+        emoji.classList.add('cartoon-toilet-anim');
+        title.innerText = "Vaso Higienizado!";
+        sub.innerText = "Ele pula de felicidade! 🌟";
+      } else if (text.includes('pano') || text.includes('varrer') || text.includes('chão') || text.includes('piso') || text.includes('vassoura')) {
+        emoji.innerText = "🪣🧼";
+        emoji.classList.add('cartoon-wipe-anim');
+        title.innerText = "Chão Impecável!";
+        sub.innerText = "Dancinha do esfregão alegre! 💃";
+      } else if (text.includes('buffet') || text.includes('pista') || text.includes('mesa')) {
+        emoji.innerText = "🍽️⭐";
+        emoji.classList.add('cartoon-buffet-anim');
+        title.innerText = "Mesa e Buffet Prontos!";
+        sub.innerText = "Brilho extremo na pista! 🍱";
+      } else {
+        emoji.innerText = "👑";
+        emoji.classList.add('cartoon-star-anim');
+        title.innerText = "Metas Cumpridas!";
+        sub.innerText = "Excelente trabalho em equipe! 🏆";
+      }
+      
+      overlay.style.display = 'flex';
+      setTimeout(function() { overlay.style.display = 'none'; }, 1600);
+    }
+
+    window.tirarFotoTarefa = function(input, chave) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          estado.fotosTarefas[chave] = e.target.result;
+          salvarEstado();
+          var imgElement = document.getElementById('img_prev_' + chave);
+          if (imgElement) {
+            imgElement.src = e.target.result;
+            imgElement.style.display = 'block';
+          }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    function montarPainel() {
+      var container = document.getElementById('sectors-container');
+      container.innerHTML = '';
+
+      dadosSetores.forEach(function(setor) {
+        var card = document.createElement('div');
+        card.className = 'sector-card';
+        card.id = 'card_' + setor.id;
+
+        var header = document.createElement('div');
+        header.className = 'sector-header';
+        var prontas = contarFeitas(setor.id);
+
+        header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
+                           '<div class="sector-details">' +
+                             '<div class="sector-name">' + setor.title + '</div>' +
+                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
+                           '</div>' +
+                           '<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>';
+
+        var content = document.createElement('div');
+        content.className = 'sector-content';
+        content.id = 'content_' + setor.id;
+
+        setor.tasks.forEach(function(tarefa, idx) {
+          var item = document.createElement('div');
+          var chave = setor.id + '_' + idx;
+          item.className = 'task-item' + (estado.tarefasFeitas[chave] ? ' done' : '');
+          item.id = 'item_' + chave;
+          
+          var badgeHtml = '';
+          if(estado.tarefasFeitas[chave]) {
+            var user = estado.tarefasFeitas[chave];
+            var fPerfil = estado.fotosPerfil[user];
+            var picHtml

@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Marchesini Premium v19.0</title>
-  <!-- MESMO CSS ANTERIOR, NÃO MUDOU NADA -->
   <style>
     :root {
       --bg: #0b0c10; --card: #14161d; --border: rgba(255, 255, 255, 0.08);
@@ -253,12 +252,11 @@
     </a>
   </div>
 
-  <!-- 🔥 NOVO SCRIPT CORRIGIDO E ROBUSTO -->
+  <!-- 🔥 SCRIPT COMPLETO COM FIRESTORE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-    // Configuração do Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
       authDomain: "staffcheck-d6f20.firebaseapp.com",
@@ -269,14 +267,12 @@
       measurementId: "G-XJG7LSG88D"
     };
 
-    // Inicializa Firebase
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const rootRef = ref(db, '/');
+    const db = getFirestore(app);
+    const docRef = doc(db, 'app', 'liveData');
 
-    // Constantes
     const MASTER_PASS = "1911";
-    
+
     // Estado global
     let liveData = {
       tarefasStatus: {},
@@ -292,45 +288,84 @@
     let loginViewContext = "worker";
     let currentCategoriaBiblio = "tudo";
     let currentViewMode = "list";
-    let dataReady = false;
 
-    // --------------------- CONEXÃO TEMPO REAL ---------------------
-    function initListener() {
-      onValue(rootRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          Object.assign(liveData, data);
-        }
-        dataReady = true;
-        // Se estiver na tela de funcionário, monta o painel automaticamente
-        if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
-          montarPainelDOM();
-        }
-        // Atualizar lista de equipe se o gerente estiver vendo
-        if (document.getElementById('scr-dashboard-manager').classList.contains('active') &&
-            document.getElementById('sub-pane-ver_equipe').style.display === 'block') {
-          renderizarListaEquipeMestre();
-        }
-      });
-    }
-
-    async function salvarFirebase() {
-      if (!db) {
-        alert("Erro: Firebase não conectado. Verifique o console (F12).");
-        return;
+    // ==================== SINCRONIZAÇÃO FIRESTORE EM TEMPO REAL ====================
+    onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        // Mescla os dados, mantendo compatibilidade com subchaves
+        liveData.tarefasStatus = data.tarefasStatus || {};
+        liveData.usuariosSalvos = data.usuariosSalvos || {};
+        liveData.mensagensChat = data.mensagensChat || [];
+        liveData.tarefasCustomizadas = data.tarefasCustomizadas || [];
+        liveData.setoresCustomizados = data.setoresCustomizados || [];
+        liveData.loginAtividade = data.loginAtividade || {};
+      } else {
+        // Primeiro acesso: criar estrutura inicial e salvar
+        popularTarefasPadraoSeVazio();
+        salvarFirestore();
       }
+
+      // Atualizar interface automaticamente
+      if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
+        montarPainelDOM();
+      }
+      if (document.getElementById('scr-dashboard-manager').classList.contains('active') &&
+          document.getElementById('sub-pane-ver_equipe').style.display === 'block') {
+        renderizarListaEquipeMestre();
+      }
+    });
+
+    async function salvarFirestore() {
       try {
-        await set(rootRef, liveData);
+        await setDoc(docRef, {
+          tarefasStatus: liveData.tarefasStatus,
+          usuariosSalvos: liveData.usuariosSalvos,
+          mensagensChat: liveData.mensagensChat,
+          tarefasCustomizadas: liveData.tarefasCustomizadas,
+          setoresCustomizados: liveData.setoresCustomizados,
+          loginAtividade: liveData.loginAtividade
+        }, { merge: true });
       } catch (e) {
-        console.error(e);
-        alert("Falha ao salvar no Firebase. Veja o console para detalhes.");
+        console.error("Erro ao salvar no Firestore:", e);
+        alert("Falha ao salvar. Veja o console (F12).");
       }
     }
 
-    // --------------------- SONS ---------------------
+    function popularTarefasPadraoSeVazio() {
+      if (liveData.tarefasCustomizadas.length === 0) {
+        liveData.tarefasCustomizadas = [
+          { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres)" },
+          { cat: "salao", txt: "Higienizar as mesas com álcool 70%" },
+          { cat: "salao", txt: "Alinhar mesas e cadeiras perfeitamente" },
+          { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal)" },
+          { cat: "salao", txt: "Dobrar e organizar os guardanapos" },
+          { cat: "salao", txt: "Limpar os menus e checar organização do aparador" },
+          { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
+          { cat: "bar", txt: "Polir todas as taças de vinho e copos" },
+          { cat: "bar", txt: "Cortar as guarnições (limão, laranja, hortelã)" },
+          { cat: "bar", txt: "Repor geladeiras com cervejas e refris" },
+          { cat: "bar", txt: "Lavar e secar as esteiras de borracha" },
+          { cat: "bar", txt: "Checar potes de açúcar, adoçante e mexedores" },
+          { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+          { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
+          { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
+          { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
+          { cat: "buffet", txt: "Higienizar a bancada de granito" },
+          { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
+          { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+          { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
+          { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
+          { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
+          { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
+          { cat: "banheiros", txt: "Borrifar odorizador de ambiente" }
+        ];
+      }
+    }
+
+    // ==================== SONS ====================
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioCtx = new AudioContext();
-
     function playTone(freq, type, dur, vol = 0.1) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
@@ -344,19 +379,17 @@
       gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
       osc.stop(audioCtx.currentTime + dur);
     }
-
     function soundPegarTarefa() {
       playTone(440, 'sine', 0.1);
       setTimeout(() => playTone(660, 'sine', 0.15), 100);
     }
-
     function soundConcluirTarefa() {
       playTone(523.25, 'triangle', 0.15);
       setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
       setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
     }
 
-    // --------------------- BIBLIOTECA DE TAREFAS ---------------------
+    // ==================== BIBLIOTECA DE TAREFAS ====================
     const megaLibrary = [
       { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
       { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
@@ -417,20 +450,15 @@
       { keys: ["réchauds", "temperaturas"], emoji: "🔥", cssClass: "act-brilhar", title: "Aquecendo!", desc: "O buffet está na temperatura perfeita." }
     ];
 
-    // --------------------- UTILITÁRIOS ---------------------
-    function obterSetoresTotais() {
-      return [...defaultSectors, ...liveData.setoresCustomizados];
-    }
-
+    // ==================== UTILITÁRIOS ====================
+    function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
     function switchScreen(id) {
       document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
     }
 
-    // --------------------- FUNÇÕES PÚBLICAS (window) ---------------------
-    window.toggleSidebarDropdown = () => {
-      document.getElementById('sidebar-dropdown').classList.toggle('open');
-    };
+    // ==================== FUNÇÕES GLOBAIS (window) ====================
+    window.toggleSidebarDropdown = () => document.getElementById('sidebar-dropdown').classList.toggle('open');
 
     window.mudarContextoLoginGeral = (tipo) => {
       loginViewContext = tipo;
@@ -455,25 +483,21 @@
       window.toggleSidebarDropdown();
       if (!currentWorker || currentWorker === "Gerente") return;
       if (tipo === 'nome') {
-        const novoNome = prompt("Digite o novo nome para o seu perfil:");
-        if (novoNome && novoNome.trim()) {
-          const n = novoNome.trim();
-          liveData.usuariosSalvos[n] = liveData.usuariosSalvos[currentWorker];
-          liveData.loginAtividade[n] = liveData.loginAtividade[currentWorker];
+        const novo = prompt("Novo nome:").trim();
+        if (novo) {
+          liveData.usuariosSalvos[novo] = liveData.usuariosSalvos[currentWorker];
+          liveData.loginAtividade[novo] = liveData.loginAtividade[currentWorker];
           delete liveData.usuariosSalvos[currentWorker];
           delete liveData.loginAtividade[currentWorker];
-          currentWorker = n;
-          document.getElementById('system-context-subline').innerText = "Operador: " + currentWorker.toUpperCase();
-          salvarFirebase();
-          montarPainelDOM();
-          alert("Nome alterado com sucesso!");
+          currentWorker = novo;
+          document.getElementById('system-context-subline').innerText = "Operador: " + novo.toUpperCase();
+          salvarFirestore(); montarPainelDOM(); alert("Nome alterado!");
         }
       } else if (tipo === 'senha') {
-        const novaSenha = prompt("Digite a sua nova senha (4 dígitos):");
-        if (novaSenha && novaSenha.trim()) {
-          liveData.usuariosSalvos[currentWorker].senha = novaSenha.trim();
-          salvarFirebase();
-          alert("Senha alterada com sucesso!");
+        const senha = prompt("Nova senha (4 dígitos):").trim();
+        if (senha) {
+          liveData.usuariosSalvos[currentWorker].senha = senha;
+          salvarFirestore(); alert("Senha alterada!");
         }
       } else if (tipo === 'foto') {
         window.dispararCliqueCamera('update');
@@ -482,14 +506,12 @@
 
     window.solicitarAcessoMestreEmOperacao = () => {
       window.toggleSidebarDropdown();
-      const senha = prompt("Acesso restrito. Digite a senha do gerente:");
+      const senha = prompt("Senha da gerência:");
       if (senha === MASTER_PASS) {
         document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
         switchScreen('scr-dashboard-manager');
         window.fecharSubPaineis();
-      } else if (senha !== null) {
-        alert("Senha Incorreta!");
-      }
+      } else if (senha !== null) alert("Senha incorreta!");
     };
 
     window.dispararCliqueCamera = (contexto) => {
@@ -501,15 +523,11 @@
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const max_size = 150;
         let { width, height } = img;
-        if (width > height) {
-          if (width > max_size) { height *= max_size / width; width = max_size; }
-        } else {
-          if (height > max_size) { width *= max_size / height; height = max_size; }
-        }
-        canvas.width = width;
-        canvas.height = height;
+        const max = 150;
+        if (width > height) { if (width > max) { height *= max / width; width = max; } }
+        else { if (height > max) { width *= max / height; height = max; } }
+        canvas.width = width; canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
         callback(canvas.toDataURL('image/jpeg', 0.6));
@@ -519,53 +537,41 @@
 
     window.fotoCapturadaUniversal = (event) => {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          compressImageCanvas(e.target.result, (compressedBase64) => {
-            if (cameraContext === "login") {
-              base64CamGlobal = compressedBase64;
-              document.getElementById('cam-icon').style.display = 'none';
-              const img = document.getElementById('cam-preview');
-              img.src = compressedBase64;
-              img.style.display = 'block';
-              document.getElementById('cam-msg').innerText = "✓ Foto Pronta!";
-              document.getElementById('cam-msg').style.color = "var(--italia-green)";
-            } else {
-              if (currentWorker && liveData.usuariosSalvos[currentWorker]) {
-                liveData.usuariosSalvos[currentWorker].foto = compressedBase64;
-                salvarFirebase();
-                montarPainelDOM();
-                alert("Sua foto foi atualizada!");
-              }
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        compressImageCanvas(e.target.result, (compressed) => {
+          if (cameraContext === 'login') {
+            base64CamGlobal = compressed;
+            document.getElementById('cam-icon').style.display = 'none';
+            const img = document.getElementById('cam-preview');
+            img.src = compressed; img.style.display = 'block';
+            document.getElementById('cam-msg').innerText = "✓ Foto Pronta!";
+            document.getElementById('cam-msg').style.color = "var(--italia-green)";
+          } else {
+            if (currentWorker && liveData.usuariosSalvos[currentWorker]) {
+              liveData.usuariosSalvos[currentWorker].foto = compressed;
+              salvarFirestore(); montarPainelDOM(); alert("Foto atualizada!");
             }
-          });
-        };
-        reader.readAsDataURL(file);
-      }
+          }
+        });
+      };
+      reader.readAsDataURL(file);
     };
 
     window.detectarFuncionarioExistente = () => {
       const nome = document.getElementById('field-user').value.trim();
-      const msg = document.getElementById('cam-msg');
-      const img = document.getElementById('cam-preview');
-      const icon = document.getElementById('cam-icon');
-      const btn = document.getElementById('btn-login-text');
+      const msg = document.getElementById('cam-msg'), img = document.getElementById('cam-preview'),
+            icon = document.getElementById('cam-icon'), btn = document.getElementById('btn-login-text');
       if (liveData.usuariosSalvos[nome]) {
         base64CamGlobal = liveData.usuariosSalvos[nome].foto;
-        icon.style.display = 'none';
-        img.src = base64CamGlobal;
-        img.style.display = 'block';
-        msg.innerText = "✓ Perfil Encontrado!";
-        msg.style.color = "var(--italia-green)";
+        icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
+        msg.innerText = "✓ Perfil Encontrado!"; msg.style.color = "var(--italia-green)";
         btn.innerText = "Entrar no Turno";
       } else {
-        if (base64CamGlobal.startsWith("data:image")) return;
-        base64CamGlobal = "";
-        img.style.display = 'none';
-        icon.style.display = 'block';
-        msg.innerText = "Toque para tirar foto";
-        msg.style.color = "var(--text-muted)";
+        if (base64CamGlobal && base64CamGlobal.startsWith("data:image")) return;
+        base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
+        msg.innerText = "Toque para tirar foto"; msg.style.color = "var(--text-muted)";
         btn.innerText = "Cadastrar e Entrar";
       }
     };
@@ -578,56 +584,38 @@
           document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
           switchScreen('scr-dashboard-manager');
           window.fecharSubPaineis();
-        } else {
-          alert("Senha Mestra Incorreta!");
-        }
+        } else alert("Senha Mestra Incorreta!");
         return;
       }
-
       const nome = document.getElementById('field-user').value.trim();
-      if (!nome || !pass) {
-        alert("Preencha todos os campos!");
-        return;
-      }
-
-      // Garantir que os dados do Firebase estejam disponíveis
-      if (!dataReady) {
-        alert("Aguarde a conexão com o servidor...");
-        return;
-      }
-
-      let primeiroAcesso = false;
+      if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
+      let primeiro = false;
       if (liveData.usuariosSalvos[nome]) {
-        if (liveData.usuariosSalvos[nome].senha !== pass) {
-          alert("Senha Incorreta!");
-          return;
-        }
+        if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
       } else {
-        primeiroAcesso = true;
-        const fotoFinal = base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80";
-        liveData.usuariosSalvos[nome] = { senha: pass, foto: fotoFinal };
+        primeiro = true;
+        liveData.usuariosSalvos[nome] = {
+          senha: pass,
+          foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80"
+        };
       }
-
       currentWorker = nome;
-      liveData.loginAtividade[currentWorker] = true;
-      document.getElementById('system-context-subline').innerText = "Operador: " + currentWorker.toUpperCase();
+      liveData.loginAtividade[nome] = true;
+      document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
       document.getElementById('opts-before-login').style.display = 'none';
       document.getElementById('opts-after-login').style.display = 'block';
-
-      if (primeiroAcesso) alert("🎉 Perfil criado! Seja bem-vindo à equipe.");
-
-      await salvarFirebase();
+      if (primeiro) alert("🎉 Perfil criado! Bem-vindo à equipe.");
+      await salvarFirestore();
       switchScreen('scr-dashboard-worker');
       montarPainelDOM();
     };
 
     window.efetuarLogoffCompleto = async () => {
-      if (currentWorker && currentWorker !== "Gerente" && liveData.loginAtividade) {
+      if (currentWorker && currentWorker !== "Gerente") {
         liveData.loginAtividade[currentWorker] = false;
-        await salvarFirebase();
+        await salvarFirestore();
       }
-      currentWorker = "";
-      base64CamGlobal = "";
+      currentWorker = ""; base64CamGlobal = "";
       document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
       document.getElementById('opts-after-login').style.display = 'none';
       document.getElementById('opts-before-login').style.display = 'block';
@@ -648,15 +636,14 @@
       if (!zone) return;
       const activeId = document.querySelector('.card-sector.active')?.id?.replace('sect_', '');
       zone.innerHTML = '';
-      const setoresAtuais = obterSetoresTotais();
-      setoresAtuais.forEach((s, sIndex) => {
-        const arr = [];
-        liveData.tarefasCustomizadas.forEach(c => { if (c.cat === s.id) arr.push(c.txt); });
+      const setores = obterSetoresTotais();
+      setores.forEach((s, sIdx) => {
+        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id).map(c => c.txt);
         let feitas = 0;
         arr.forEach((_, i) => { if (liveData.tarefasStatus[s.id + '_' + i]?.status === 'done') feitas++; });
         const card = document.createElement('div');
-        const isOpen = (activeId === s.id) || (currentViewMode === 'card' && !activeId && sIndex === 0);
-        card.className = 'card-sector' + (isOpen ? ' active' : '');
+        const open = (activeId === s.id) || (currentViewMode === 'card' && !activeId && sIdx === 0);
+        card.className = 'card-sector' + (open ? ' active' : '');
         card.id = 'sect_' + s.id;
         card.innerHTML = `
           <div class="sect-hdr" onclick="alternarSetorAbas('${s.id}')">
@@ -672,27 +659,27 @@
         if (arr.length === 0) {
           cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>';
         }
-        arr.forEach((txt, idx) => {
-          const chave = s.id + '_' + idx;
+        arr.forEach((txt, i) => {
+          const chave = s.id + '_' + i;
           const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
           const row = document.createElement('div');
           row.className = 'row-task ' + st.status;
-          let btnsHtml = '';
-          let picHtml = '';
+          let btns = '', pic = '';
           if (st.status === 'idle') {
-            btnsHtml = `<button class="tk-btn btn-take" onclick="gerenciarJob('${chave}','take','${txt.replace(/'/g, "\\'")}',event)">Pegar Tarefa</button>`;
+            btns = `<button class="tk-btn btn-take" onclick="gerenciarJob('${chave}','take','${txt.replace(/'/g, "\\'")}',event)">Pegar Tarefa</button>`;
           } else if (st.status === 'working') {
-            picHtml = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
+            pic = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
             if (st.worker === currentWorker) {
-              btnsHtml = `<button class="tk-btn btn-leave" onclick="gerenciarJob('${chave}','leave','${txt.replace(/'/g, "\\'")}',event)">Largar</button><button class="tk-btn btn-done" onclick="gerenciarJob('${chave}','complete','${txt.replace(/'/g, "\\'")}',event)">Feito ✅</button>`;
+              btns = `<button class="tk-btn btn-leave" onclick="gerenciarJob('${chave}','leave','${txt.replace(/'/g, "\\'")}',event)">Largar</button>
+                      <button class="tk-btn btn-done" onclick="gerenciarJob('${chave}','complete','${txt.replace(/'/g, "\\'")}',event)">Feito ✅</button>`;
             } else {
-              btnsHtml = `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`;
+              btns = `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`;
             }
           } else {
-            picHtml = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
-            btnsHtml = `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
+            pic = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
+            btns = `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
           }
-          row.innerHTML = `<div class="task-txt-side"><div class="dot-status"></div><div>${txt}</div></div><div class="task-actions">${picHtml}${btnsHtml}</div>`;
+          row.innerHTML = `<div class="task-txt-side"><div class="dot-status"></div><div>${txt}</div></div><div class="task-actions">${pic}${btns}</div>`;
           cnt.appendChild(row);
         });
       });
@@ -701,9 +688,9 @@
 
     window.alternarSetorAbas = (id) => {
       const card = document.getElementById('sect_' + id);
-      const isActive = card.classList.contains('active');
+      const active = card.classList.contains('active');
       document.querySelectorAll('.card-sector').forEach(c => c.classList.remove('active'));
-      if (!isActive) card.classList.add('active');
+      if (!active) card.classList.add('active');
     };
 
     window.gerenciarJob = (chave, acao, texto, e) => {
@@ -718,7 +705,7 @@
         soundConcluirTarefa();
         dispararAnimacao(texto, currentWorker);
       }
-      salvarFirebase();
+      salvarFirestore();
       montarPainelDOM();
     };
 
@@ -730,8 +717,7 @@
       }
       const overlay = document.getElementById('animacao-conclusao');
       const icon = document.getElementById('anim-obj-icon');
-      icon.innerText = rule.emoji;
-      icon.className = "anim-object " + rule.cssClass;
+      icon.innerText = rule.emoji; icon.className = "anim-object " + rule.cssClass;
       document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
       document.getElementById('anim-title').innerText = rule.title;
       document.getElementById('anim-desc').innerText = rule.desc;
@@ -744,12 +730,11 @@
     }
 
     function renderizarCarrosselStories() {
-      const bar = document.getElementById('live-stories-bar');
-      if (!bar) return;
+      const bar = document.getElementById('live-stories-bar'); if (!bar) return;
       bar.innerHTML = "";
       Object.keys(liveData.usuariosSalvos).forEach(nome => {
-        const isOnline = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
-        if (!isOnline && nome !== currentWorker) return;
+        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+        if (!online && nome !== currentWorker) return;
         const card = document.createElement('div');
         card.className = "story-card" + (nome === currentWorker ? " me" : "");
         card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
@@ -759,20 +744,18 @@
 
     function atualizarProgresso() {
       let t = 0, f = 0;
-      const setores = obterSetoresTotais();
-      setores.forEach(s => {
-        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
-        arr.forEach((_, i) => {
+      obterSetoresTotais().forEach(s => {
+        liveData.tarefasCustomizadas.filter(c => c.cat === s.id).forEach((_, i) => {
           t++;
           if (liveData.tarefasStatus[s.id + '_' + i]?.status === 'done') f++;
         });
       });
-      const p = t > 0 ? Math.round((f / t) * 100) : 0;
+      const p = t ? Math.round((f / t) * 100) : 0;
       document.getElementById('prog-fill-bar').style.width = p + '%';
       document.getElementById('prog-txt-pct').innerText = p + '%';
     }
 
-    // --------------------- PAINEL DO GERENTE ---------------------
+    // ==================== PAINEL DO GERENTE ====================
     window.abrirSubPainelGerente = (id) => {
       window.fecharSubPaineis();
       document.getElementById('sub-pane-' + id).style.display = 'block';
@@ -780,9 +763,7 @@
       if (id === 'ver_equipe') renderizarListaEquipeMestre();
     };
 
-    window.fecharSubPaineis = () => {
-      document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
-    };
+    window.fecharSubPaineis = () => document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
 
     window.filtrarBiblioCategoria = (cat, btn) => {
       currentCategoriaBiblio = cat;
@@ -793,14 +774,13 @@
 
     function renderizarBibliotecaTarefas() {
       const query = document.getElementById('mgr-search-input').value.toLowerCase();
-      const box = document.getElementById('mgr-search-results-render');
-      box.innerHTML = '';
+      const box = document.getElementById('mgr-search-results-render'); box.innerHTML = '';
       const filtradas = megaLibrary.filter(item => {
         const matchCat = currentCategoriaBiblio === 'tudo' || item.cat === currentCategoriaBiblio;
         const matchBusca = !query || item.txt.toLowerCase().includes(query);
         return matchCat && matchBusca;
       });
-      if (filtradas.length === 0) {
+      if (!filtradas.length) {
         box.innerHTML = '<div style="padding:10px; color:var(--text-muted); text-align:center; font-size:12px;">Nenhuma tarefa encontrada.</div>';
         return;
       }
@@ -810,13 +790,13 @@
         line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto; padding:6px 12px;">➕ Injetar</button>`;
         line.querySelector('button').onclick = () => {
           const setores = obterSetoresTotais();
-          let promptTxt = "Para qual setor quer mandar esta tarefa?\n\nDigite o número:\n";
-          setores.forEach((s, idx) => { promptTxt += `${idx} - ${s.title}\n`; });
-          const escolha = prompt(promptTxt);
+          let msg = "Escolha o setor (número):\n";
+          setores.forEach((s, idx) => msg += `${idx} - ${s.title}\n`);
+          const escolha = prompt(msg);
           if (escolha !== null && setores[escolha]) {
             liveData.tarefasCustomizadas.push({ cat: setores[escolha].id, txt: item.txt });
-            salvarFirebase();
-            alert("✓ Tarefa injetada com sucesso!");
+            salvarFirestore();
+            alert("✓ Tarefa injetada!");
           }
         };
         box.appendChild(line);
@@ -832,34 +812,34 @@
       liveData.setoresCustomizados.push({ id: "custom_" + Date.now(), title: nome, icon: icone });
       document.getElementById('new-sector-name').value = "";
       document.getElementById('new-sector-icon').value = "";
-      salvarFirebase();
+      salvarFirestore();
       alert(`Setor "${nome}" criado!`);
       window.fecharSubPaineis();
     };
 
     function renderizarListaEquipeMestre() {
-      const box = document.getElementById('mgr-team-list-render');
-      box.innerHTML = "";
+      const box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
       Object.keys(liveData.usuariosSalvos).forEach(n => {
-        const isOnline = liveData.loginAtividade && liveData.loginAtividade[n] === true;
-        box.innerHTML += `<div class="search-item-line"><div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div><span style="font-size:10px; font-weight:800; color:${isOnline ? 'var(--italia-green)' : 'var(--text-muted)'}">${isOnline ? 'ONLINE' : 'OFFLINE'}</span></div>`;
+        const online = liveData.loginAtividade[n] === true;
+        box.innerHTML += `<div class="search-item-line">
+          <div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div>
+          <span style="font-size:10px; font-weight:800; color:${online ? 'var(--italia-green)' : 'var(--text-muted)'}">${online ? 'ONLINE' : 'OFFLINE'}</span>
+        </div>`;
       });
     }
-
     window.renderizarListaEquipeMestre = renderizarListaEquipeMestre;
 
-    // --------------------- CHAT & WHATSAPP ---------------------
+    // ==================== CHAT & WHATSAPP ====================
     window.toggleChatWindow = () => {
       const c = document.getElementById('modal-chat');
-      c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
+      c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
       if (c.style.display === 'flex') renderMessages();
     };
 
     function renderMessages() {
-      const w = document.getElementById('chat-wall');
-      w.innerHTML = '';
+      const w = document.getElementById('chat-wall'); w.innerHTML = '';
       liveData.mensagensChat.forEach(m => {
-        w.innerHTML += `<div class="bubble ${(m.user === currentWorker) ? 'bb-out' : 'bb-in'}"><div style="font-size:10px; font-weight:800; color:var(--italia-green); margin-bottom:4px;">${m.user}</div>${m.text}</div>`;
+        w.innerHTML += `<div class="bubble ${m.user === currentWorker ? 'bb-out' : 'bb-in'}"><div style="font-size:10px; font-weight:800; color:var(--italia-green); margin-bottom:4px;">${m.user}</div>${m.text}</div>`;
       });
       w.scrollTop = w.scrollHeight;
     }
@@ -869,17 +849,16 @@
       if (!inp.value.trim()) return;
       liveData.mensagensChat.push({ user: currentWorker, text: inp.value.trim() });
       inp.value = '';
-      salvarFirebase();
+      salvarFirestore();
       renderMessages();
     };
 
     window.gerarRelatorioTurnoWhatsApp = (e) => {
       let msg = '🇮🇹 *FECHAMENTO DE TURNO*\n\n';
-      const setores = obterSetoresTotais();
-      setores.forEach(s => {
+      obterSetoresTotais().forEach(s => {
         msg += `📌 *${s.title.toUpperCase()}*\n`;
         const arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
-        if (arr.length === 0) msg += `- (Nenhuma tarefa no setor)\n`;
+        if (!arr.length) msg += '- (Nenhuma tarefa)\n';
         arr.forEach((c, i) => {
           const obj = liveData.tarefasStatus[s.id + '_' + i];
           let status = '❌ Pendente';
@@ -893,45 +872,19 @@
     };
 
     window.zerarTurnoCompletoNuvem = () => {
-      if (confirm('Atenção: Você vai zerar todos os checklists de hoje. O painel ficará limpo para o próximo dia.')) {
+      if (confirm('Atenção: Isso limpará todas as tarefas e injetará as 24 iniciais novamente.')) {
         liveData.tarefasStatus = {};
         liveData.tarefasCustomizadas = [];
-        // Injeta carga inicial de 24 tarefas
-        liveData.tarefasCustomizadas.push(...[
-          { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres)" },
-          { cat: "salao", txt: "Higienizar as mesas com álcool 70%" },
-          { cat: "salao", txt: "Alinhar mesas e cadeiras perfeitamente" },
-          { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal)" },
-          { cat: "salao", txt: "Dobrar e organizar os guardanapos" },
-          { cat: "salao", txt: "Limpar os menus e checar organização do aparador" },
-          { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
-          { cat: "bar", txt: "Polir todas as taças de vinho e copos" },
-          { cat: "bar", txt: "Cortar as guarnições (limão, laranja, hortelã)" },
-          { cat: "bar", txt: "Repor geladeiras com cervejas e refris" },
-          { cat: "bar", txt: "Lavar e secar as esteiras de borracha" },
-          { cat: "bar", txt: "Checar potes de açúcar, adoçante e mexedores" },
-          { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
-          { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
-          { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
-          { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
-          { cat: "buffet", txt: "Higienizar a bancada de granito" },
-          { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
-          { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
-          { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
-          { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
-          { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
-          { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
-          { cat: "banheiros", txt: "Borrifar odorizador de ambiente" }
-        ]);
-        salvarFirebase();
+        popularTarefasPadraoSeVazio();
+        salvarFirestore();
         window.fecharSubPaineis();
         montarPainelDOM();
-        alert("Turno Zerado e 24 Tarefas Injetadas com sucesso!");
+        alert("Turno zerado e 24 tarefas injetadas!");
       }
     };
 
-    // --------------------- INICIALIZAÇÃO ---------------------
-    initListener();
+    // Inicialização
+    popularTarefasPadraoSeVazio(); // garante dados mínimos enquanto o Firestore carrega
   </script>
 </body>
 </html>

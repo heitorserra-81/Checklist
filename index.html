@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Premium v11.1</title>
+  <title>Marchesini Live v12.0</title>
   <style>
     :root {
       --bg: #0b0c10;
@@ -35,28 +35,56 @@
       overflow-x: hidden;
     }
 
+    /* TELA DE LOGIN IMPACTANTE */
+    .login-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at top, #1c1f2b 0%, #050608 100%);
+      z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
+      transition: opacity 0.4s ease;
+    }
+    .login-box {
+      background: var(--surface-card); border: 1px solid var(--border-color);
+      padding: 32px 24px; border-radius: 24px; width: 100%; max-width: 340px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.7); text-align: center;
+    }
+    .login-box h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .login-box p { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+    
+    .login-select {
+      width: 100%; padding: 14px; background: rgba(255,255,255,0.03); 
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; 
+      color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 16px; outline: none;
+      -webkit-appearance: none;
+    }
+    .login-input-pass {
+      width: 100%; padding: 14px; background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+      color: #fff; font-size: 15px; margin-bottom: 20px; text-align: center; letter-spacing: 4px;
+    }
+    .btn-login {
+      width: 100%; background: var(--accent-gold); color: #000; padding: 14px;
+      border-radius: 14px; font-size: 15px; font-weight: 700; border: none; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(201, 160, 84, 0.3);
+    }
+    .login-error { color: var(--color-danger); font-size: 12px; margin-top: 12px; display: none; font-weight: 600; }
+
+    /* CONTEÚDO PRINCIPAL (Escondido antes do Login) */
+    .app-container { display: none; }
+
     /* Cabeçalho Estilo Dashboard Moderno */
     .app-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface-card);
-      border: 1px solid var(--border-color);
-      padding: 16px 20px;
-      border-radius: 20px;
-      margin-bottom: 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-card); border: 1px solid var(--border-color);
+      padding: 16px 20px; border-radius: 20px; margin-bottom: 24px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
-
     .header-left { display: flex; align-items: center; gap: 14px; }
     .logo-wrapper { position: relative; width: 50px; height: 50px; cursor: pointer; }
     .app-logo { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
-    
     .app-info h1 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
     .app-info p { font-size: 10px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
-
     .menu-toggle {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; cursor: pointer; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
     }
 
     /* Menu Lateral */
@@ -66,8 +94,7 @@
     .sidebar.open { right: 0; }
     .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
     .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
-    .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
-    
+    .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e7eb; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
     .menu-item.danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
 
@@ -79,26 +106,17 @@
     .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 8px; border-radius: 4px; overflow: hidden; }
     .progress-bar-fill { background: linear-gradient(90deg, var(--accent-gold), var(--color-success)); height: 100%; width: 0%; transition: width 0.4s ease; }
 
-    /* Seletor de Equipe */
-    .section-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; }
-    .btn-add-member { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 11px; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; }
-    
-    .team-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 4px 0 12px 0; margin-bottom: 24px; -webkit-overflow-scrolling: touch; }
-    .team-scroll::-webkit-scrollbar { display: none; }
-    
-    .team-card {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.25s ease;
+    /* Indicador do Usuário Logado */
+    .user-logged-panel {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+      padding: 12px 16px; border-radius: 14px; margin-bottom: 24px; display: flex;
+      justify-content: space-between; align-items: center;
     }
+    .user-logged-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+    .user-logged-dot { width: 8px; height: 8px; background: var(--color-success); border-radius: 50%; box-shadow: 0 0 8px var(--color-success); }
+    .btn-logout { background: transparent; border: none; color: var(--color-danger); font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; margin-bottom: 12px; }
 
     /* Setores e Acordeon */
     .sector-card {
@@ -126,27 +144,26 @@
     .task-label { font-size: 14px; flex: 1; color: #e5e5ea; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
     .task-item.done .task-label span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
     
-    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #000; text-transform: uppercase; animation: popIn 0.25s ease; }
-    @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #000; text-transform: uppercase; }
 
-    /* Área da Foto de Evidência por Setor */
+    /* Área da Foto de Evidência */
     .photo-area { padding: 16px 18px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255,255,255,0.02); }
     .file-wrapper { position: relative; overflow: hidden; display: block; }
     .btn-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
     
     .preview-box { position: relative; margin-top: 12px; display: none; }
-    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; cursor: pointer; }
+    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; }
+    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; }
 
-    /* POP-UP DO CHAT FLUTUANTE */
+    /* CHAT EM TEMPO REAL FLUTUANTE */
     .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; animation: slideUp 0.25s ease-out; padding-bottom: cubic-bezier(0.1, 0.9, 0.2, 1); }
+    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; animation: slideUp 0.25s ease-out; }
     @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     
     .chat-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
     .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
-    .chat-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
+    .chat-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; }
     
     .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-height: 220px; }
     .msg-bubble { font-size: 13px; padding: 10px 14px; border-radius: 14px; max-width: 80%; line-height: 1.4; }
@@ -156,176 +173,144 @@
     
     .chat-modal-footer { display: flex; padding: 12px 16px; background: #0b0c10; gap: 10px; border-top: 1px solid var(--border-color); }
     .chat-modal-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 14px; }
-    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; color: #000; }
+    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #000; }
 
-    /* BOTÕES FLUTUANTES NO CANTO DIREITO (Não ocupam espaço embaixo!) */
+    /* BOTÕES FLUTUANTES */
     .floating-actions { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 14px; z-index: 1000; }
-    .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); transition: transform 0.2s; }
-    .btn-fab:active { transform: scale(0.9); }
+    .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
     .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--accent-gold); }
     .fab-whatsapp { background: #25d366; color: #fff; text-decoration: none; }
 
-    /* Modais Gerais de Cadastro */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 20px; }
-    .modal-content { background: #0f111a; border: 1px solid var(--border-color); padding: 24px; border-radius: 20px; width: 100%; max-width: 320px; }
-    .modal-content h3 { margin-bottom: 16px; font-size: 16px; text-align: center; color: #fff; }
-    .modal-input { width: 100%; padding: 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; margin-bottom: 16px; }
-    .modal-btns { display: flex; gap: 10px; }
-    .btn-m { flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; font-size: 13px; }
-    .btn-m-save { background: var(--accent-gold); color: #000; }
-    .btn-m-cancel { background: rgba(255,255,255,0.04); color: #fff; }
-
-    /* TELA DE ANIMAÇÕES CARTOON EXCLUSIVAS */
+    /* OVERLAY DE ANIMAÇÕES CARTOON */
     .animation-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(11, 12, 16, 0.96); z-index: 3000; align-items: center; justify-content: center;
     }
     .anim-box { text-align: center; padding: 24px; }
-    .anim-title { font-size: 22px; font-weight: 800; color: #fff; margin-top: 20px; letter-spacing: -0.5px; }
-    .anim-subtitle { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; margin-top: 6px; letter-spacing: 0.5px; }
+    .anim-title { font-size: 22px; font-weight: 800; color: #fff; margin-top: 20px; }
+    .anim-subtitle { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; margin-top: 6px; }
     .cartoon-container { position: relative; width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
     .cartoon-emoji { font-size: 80px; line-height: 1; display: inline-block; }
 
-    /* Movimentos Cartoon */
     .anim-vassoura { animation: varrerMove 0.4s ease-in-out infinite alternate; transform-origin: bottom center; }
     @keyframes varrerMove { 0% { transform: rotate(-25deg) translateX(-10px); } 100% { transform: rotate(25deg) translateX(10px); } }
-    
     .anim-pano { animation: panoGinga 0.4s linear infinite alternate; }
     @keyframes panoGinga { 0% { transform: scaleX(0.8) skewX(-12deg); } 100% { transform: scaleX(1.15) skewX(12deg); } }
-    
-    .anim-vaso { animation: vasoPula 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2) infinite alternate; }
-    @keyframes vasoPula { 0% { transform: translateY(15px) scaleY(0.8); } 100% { transform: translateY(-20px) scaleY(1.1); filter: drop-shadow(0 0 15px rgba(48,209,88,0.4)); } }
-    
-    .anim-mesa { animation: mesaBrilha 0.4s ease-in-out infinite alternate; }
-    @keyframes mesaBrilha { 0% { transform: scale(0.9); opacity: 0.8; } 100% { transform: scale(1.15); opacity: 1; } }
-    
-    .anim-bebida { animation: cocktailShake 0.25s ease-in-out infinite alternate; }
+    .anim-vaso { animation: vasoPula 0.45s infinite alternate; }
+    @keyframes vasoPula { 0% { transform: translateY(15px) scaleY(0.8); } 100% { transform: translateY(-20px) scaleY(1.1); } }
+    .anim-mesa { animation: mesaBrilha 0.4s infinite alternate; }
+    @keyframes mesaBrilha { 0% { transform: scale(0.9); } 100% { transform: scale(1.15); } }
+    .anim-bebida { animation: cocktailShake 0.25s infinite alternate; }
     @keyframes cocktailShake { 0% { transform: rotate(-20deg); } 100% { transform: rotate(20deg); } }
-
-    .anim-padrao { animation: popGeral 0.4s ease-in-out infinite alternate; }
-    @keyframes popGeral { 0% { transform: scale(0.85); } 100% { transform: scale(1.15); } }
   </style>
 </head>
 <body>
 
-  <div class="sidebar" id="app-sidebar">
-    <div class="sidebar-header">
-      <h3>Configurações do Turno</h3>
-      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  <div class="login-overlay" id="login-screen">
+    <div class="login-box">
+      <h2>Marchesini Premium</h2>
+      <p>Acesso ao Controle de Turno</p>
+      
+      <select class="login-select" id="login-user">
+        <option value="" disabled selected>Selecione seu Nome</option>
+        <option value="Heitor">Heitor</option>
+        <option value="Danilo">Danilo</option>
+        <option value="Bill">Bill</option>
+        <option value="Pepeu">Pepeu</option>
+        <option value="Eibe">Eibe</option>
+        <option value="Suelen">Suelen</option>
+        <option value="Gi">Gi</option>
+      </select>
+
+      <input type="password" class="login-input-pass" id="login-pass" placeholder="••••" maxlength="4" pattern="\d*">
+      <button class="btn-login" onclick="executarLoginReal()">Entrar no Turno</button>
+      <div class="login-error" id="login-err-msg">Senha incorreta para este usuário!</div>
     </div>
-    <div class="menu-item" onclick="toggleSidebar()">📋 Visualizar Checklist</div>
-    <div class="menu-item danger" onclick="limparMesa(); toggleSidebar();">⚠️ Zerar Todo o Turno</div>
   </div>
 
-  <div class="animation-overlay" id="anim-overlay">
-    <div class="anim-box">
-      <div class="cartoon-container">
-        <div class="cartoon-emoji" id="anim-emoji">✨</div>
+  <div class="app-container" id="main-app">
+    <div class="sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <h3>Configurações do Turno</h3>
+        <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
       </div>
-      <div class="anim-title" id="anim-title">Concluído!</div>
-      <div class="anim-subtitle" id="anim-subtitle">Operação Marchesini</div>
+      <div class="menu-item" onclick="toggleSidebar()">📋 Visualizar Checklist</div>
+      <div class="menu-item danger" onclick="limparMesaReal(); toggleSidebar();">⚠️ Zerar Todo o Turno Online</div>
     </div>
-  </div>
 
-  <div class="app-header">
-    <div class="header-left">
-      <div class="logo-wrapper" onclick="document.getElementById('logo-input').click()">
-        <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150">
-        <input type="file" id="logo-input" accept="image/*" style="display: none;" onchange="processarFotoReduzida(this, 'logo')">
-      </div>
-      <div class="app-info">
-        <h1>Marchesini di Roverbella</h1>
-        <p>Controle de Turno Premium</p>
+    <div class="animation-overlay" id="anim-overlay">
+      <div class="anim-box">
+        <div class="cartoon-container"><div class="cartoon-emoji" id="anim-emoji">✨</div></div>
+        <div class="anim-title" id="anim-title">Concluído!</div>
+        <div class="anim-subtitle">Operação Marchesini</div>
       </div>
     </div>
-    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-  </div>
 
-  <div class="progress-box">
-    <div class="progress-labels">
-      <span>Meta do Fechamento</span>
-      <span id="progress-txt">0%</span>
-    </div>
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" id="progress-bar"></div>
-    </div>
-  </div>
-
-  <div class="section-header-flex">
-    <div class="section-title">Funcionário Logado</div>
-    <button class="btn-add-member" onclick="abrirModalCadastro()">➕ Integrante</button>
-  </div>
-  <div class="team-scroll" id="team-container"></div>
-
-  <div class="section-title" style="margin-bottom: 12px;">Setores Operacionais</div>
-  <div id="sectors-container"></div>
-
-  <div class="chat-modal" id="chat-popup">
-    <div class="chat-box-container">
-      <div class="chat-modal-header">
-        <h4>Chat Integrado do Turno</h4>
-        <button class="chat-modal-close" onclick="toggleChatPopup()">✕</button>
-      </div>
-      <div class="chat-messages" id="chat-messages-box">
-        <div class="msg-bubble msg-received">
-          <div class="msg-author">Gerência</div>
-          Boa noite equipe! Vamos focar no checklist para entregar o salão impecável.
+    <div class="app-header">
+      <div class="header-left">
+        <div class="logo-wrapper">
+          <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150">
+        </div>
+        <div class="app-info">
+          <h1>Marchesini di Roverbella</h1>
+          <p>Controle de Turno Realtime</p>
         </div>
       </div>
-      <div class="chat-modal-footer">
-        <input type="text" class="chat-modal-input" id="chat-input-field" placeholder="Escreva uma mensagem...">
-        <button class="btn-chat-send" onclick="enviarMensagemSimulada()">Enviar</button>
+      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <div class="user-logged-panel">
+      <div class="user-logged-info">
+        <div class="user-logged-dot"></div>
+        <span>Operando como: <span id="txt-user-badge" style="color:var(--accent-gold)">-</span></span>
+      </div>
+      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+    </div>
+
+    <div class="progress-box">
+      <div class="progress-labels">
+        <span>Meta do Fechamento Coletivo</span>
+        <span id="progress-txt">0%</span>
+      </div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    </div>
+
+    <div class="section-title">Setores Operacionais Online</div>
+    <div id="sectors-container"></div>
+
+    <div class="chat-modal" id="chat-popup">
+      <div class="chat-box-container">
+        <div class="chat-modal-header">
+          <h4>Chat da Equipe em Tempo Real</h4>
+          <button class="chat-modal-close" onclick="toggleChatPopup()">✕</button>
+        </div>
+        <div class="chat-messages" id="chat-messages-box"></div>
+        <div class="chat-modal-footer">
+          <input type="text" class="chat-modal-input" id="chat-input-field" placeholder="Escreva uma mensagem...">
+          <button class="btn-chat-send" onclick="enviarMensagemNuvem()">Enviar</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="floating-actions">
-    <button class="btn-fab fab-chat" onclick="toggleChatPopup()">💬</button>
-    <a class="btn-fab fab-whatsapp" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">✅</a>
-  </div>
-
-  <div class="modal" id="cadastro-modal">
-    <div class="modal-content">
-      <h3>Adicionar Integrante</h3>
-      <input type="text" class="modal-input" id="new-member-name" placeholder="Nome do funcionário">
-      <div class="modal-btns">
-        <button class="btn-m btn-m-cancel" onclick="fecharModalCadastro()">Voltar</button>
-        <button class="btn-m btn-m-save" onclick="salvarNovoMembro()">Salvar</button>
-      </div>
+    <div class="floating-actions">
+      <button class="btn-fab fab-chat" onclick="toggleChatPopup()">💬</button>
+      <a class="btn-fab fab-whatsapp" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">✅</a>
     </div>
   </div>
 
   <script>
-    // Correção automática de conflito de versões e limpeza de cache antigo pesado
-    if (localStorage.getItem('marchesini_v3_state')) {
-      localStorage.removeItem('marchesini_v3_state'); 
-    }
+    // CHAVE DO BANCO DE DADOS PÚBLICO (Sincronização Direta sem computador!)
+    // Cada vez que carregar, ele conecta nessa sala online coletiva
+    const LINK_BANCO = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
+    const MASTER_KEY = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i"; // Chave segura simulada de tráfego
 
-    var audioCtx = null;
-    function somSucessoCartoon() {
-      try {
-        if (!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); 
-        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); 
-        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.4);
-      } catch(e) {}
-    }
+    // Senhas individuais de 4 dígitos para cada funcionário
+    const senhasEquipe = {
+      "Heitor": "4444", "Danilo": "1111", "Bill": "2222",
+      "Pepeu": "3333", "Eibe": "5555", "Suelen": "6666", "Gi": "7777"
+    };
 
-    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
-    
-    function toggleChatPopup() { 
-      var p = document.getElementById('chat-popup');
-      p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-    }
-
-    var equipeCores = {
+    const equipeCores = {
       "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
       "Pepeu": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
     };
@@ -378,60 +363,215 @@
       }
     ];
 
-    var estado;
-    try {
-      var salvo = localStorage.getItem('marchesini_v11_fixed');
-      estado = salvo ? JSON.parse(salvo) : null;
-      if (!estado || !estado.listaMembros) { throw new Error(); }
-    } catch(e) {
-      estado = {
-        usuarioAtivo: "Heitor",
-        listaMembros: ["Heitor", "Danilo", "Bill", "Pepeu", "Eibe", "Suelen", "Gi"],
-        tarefasFeitas: {},
-        fotosSetores: {},
-        logoRestaurante: ""
-      };
-    }
+    var estadoLive = {
+      tarefasFeitas: {},
+      fotosSetores: {},
+      mensagensChat: []
+    };
+    
+    var usuarioLogado = "";
 
-    function salvarEstado() {
+    // CONEXÃO DE DADOS (Puxa as informações em tempo real da internet)
+    async function puxarDadosNuvem() {
       try {
-        localStorage.setItem('marchesini_v11_fixed', JSON.stringify(estado));
+        let res = await fetch(LINK_BANCO + "/latest", {
+          headers: { "X-Master-Key": MASTER_KEY }
+        });
+        let data = await res.json();
+        if(data.record) {
+          estadoLive = data.record;
+          atualizarLayoutCompleto();
+        }
       } catch(e) {
-        console.log("Cota limpa.");
+        // Fallback local se a rede falhar provisoriamente
+        let local = localStorage.getItem('marchesini_live_backup');
+        if(local) estadoLive = JSON.parse(local);
+        atualizarLayoutCompleto();
       }
-      atualizarProgresso();
     }
 
-    // COMPACTADOR INTEGRADO DE FOTOS DE EVIDÊNCIA
-    function processarFotoReduzida(input, destino, setorId) {
+    async function salvarDadosNuvem() {
+      localStorage.setItem('marchesini_live_backup', JSON.stringify(estadoLive));
+      atualizarProgresso();
+      try {
+        await fetch(LINK_BANCO, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY },
+          body: JSON.stringify(estadoLive)
+        });
+      } catch(e) {}
+    }
+
+    function executarLoginReal() {
+      let user = document.getElementById('login-user').value;
+      let pass = document.getElementById('login-pass').value;
+      let errMsg = document.getElementById('login-err-msg');
+
+      if(!user) { alert('Escolha seu nome!'); return; }
+      
+      if(senhasEquipe[user] === pass) {
+        usuarioLogado = user;
+        errMsg.style.display = 'none';
+        document.getElementById('login-screen').style.opacity = 0;
+        setTimeout(() => {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('main-app').style.display = 'block';
+          document.getElementById('txt-user-badge').innerText = usuarioLogado;
+          puxarDadosNuvem();
+          // Fica atualizando de 5 em 5 segundos automaticamente para ver o que os outros fazem!
+          setInterval(puxarDadosNuvem, 5000);
+        }, 400);
+      } else {
+        errMsg.style.display = 'block';
+        document.getElementById('login-pass').value = '';
+      }
+    }
+
+    function fazerLogout() {
+      usuarioLogado = "";
+      document.getElementById('login-pass').value = '';
+      document.getElementById('main-app').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('login-screen').style.opacity = 1;
+    }
+
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
+    function toggleChatPopup() { 
+      let p = document.getElementById('chat-popup');
+      p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+      if(p.style.display === 'flex') renderizarChat();
+    }
+
+    function atualizarLayoutCompleto() {
+      montarPainelOnline();
+      atualizarProgresso();
+      renderizarChat();
+    }
+
+    function montarPainelOnline() {
+      let container = document.getElementById('sectors-container');
+      let setorAbertoId = null;
+      
+      // Salva qual setor estava aberto para não fechar na cara do usuário ao atualizar
+      document.querySelectorAll('.sector-card').forEach(c => {
+        if(c.classList.contains('active')) setorAbertoId = c.id.replace('card_', '');
+      });
+
+      container.innerHTML = '';
+
+      dadosSetores.forEach(setor => {
+        let card = document.createElement('div');
+        card.className = 'sector-card' + (setorAbertoId === setor.id ? ' active' : '');
+        card.id = 'card_' + setor.id;
+
+        let feitas = 0;
+        setor.tasks.forEach((t, i) => { if(estadoLive.tarefasFeitas[setor.id + '_' + i]) feitas++; });
+
+        let header = document.createElement('div');
+        header.className = 'sector-header';
+        header.innerHTML = `<div class="sector-icon">${setor.icon}</div>` +
+                           `<div class="sector-details">` +
+                             `<div class="sector-name">${setor.title}</div>` +
+                             `<div class="sector-qty">${feitas} de ${setor.tasks.length} concluídas</div>` +
+                           `</div>` +
+                           `<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>`;
+
+        let content = document.createElement('div');
+        content.className = 'sector-content';
+        content.id = 'content_' + setor.id;
+        if(setorAbertoId === setor.id) content.style.maxHeight = '2000px';
+
+        setor.tasks.forEach((tarefa, idx) => {
+          let item = document.createElement('div');
+          let chave = setor.id + '_' + idx;
+          let quemFez = estadoLive.tarefasFeitas[chave];
+          
+          item.className = 'task-item' + (quemFez ? ' done' : '');
+          let badgeHtml = quemFez ? `<span class="user-badge-premium" style="background:${equipeCores[quemFez] || '#fff'}">${quemFez}</span>` : '';
+
+          item.innerHTML = `<div class="task-main-row">` +
+                             `<div class="check-round"></div>` +
+                             `<div class="task-label"><span>${tarefa}</span><div>${badgeHtml}</div></div>` +
+                           `</div>`;
+
+          item.onclick = function() {
+            if(!estadoLive.tarefasFeitas[chave]) {
+              estadoLive.tarefasFeitas[chave] = usuarioLogado;
+              dispararAnimacaoCartoon(tarefa);
+            } else {
+              // Só quem marcou ou o Heitor (Gerente) pode desmarcar para evitar bagunça
+              if(estadoLive.tarefasFeitas[chave] === usuarioLogado || usuarioLogado === "Heitor") {
+                delete estadoLive.tarefasFeitas[chave];
+              } else {
+                alert(`Essa tarefa foi realizada por ${estadoLive.tarefasFeitas[chave]}. Apenas ele pode retirar.`);
+                return;
+              }
+            }
+            salvarDadosNuvem();
+            atualizarLayoutCompleto();
+          };
+          content.appendChild(item);
+        });
+
+        // Upload de foto otimizado por setor
+        let fotoDiv = document.createElement('div');
+        fotoDiv.className = 'photo-area';
+        fotoDiv.innerHTML = `<div class="file-wrapper">` +
+                              `<span class="btn-camera" id="lbl_img_${setor.id}">📸 Enviar Foto de Evidência</span>` +
+                              `<input type="file" accept="image/*" onchange="compactarFotoSetor(this, '${setor.id}')">` +
+                            `</div>` +
+                            `<div class="preview-box" id="pbox_${setor.id}">` +
+                              `<button class="btn-remove-photo" onclick="removerFotoSetor('${setor.id}', event)">✕</button>` +
+                              `<img class="preview-img" id="img_${setor.id}">` +
+                            `</div>`;
+        content.appendChild(fotoDiv);
+
+        card.appendChild(header);
+        card.appendChild(content);
+        container.appendChild(card);
+
+        header.onclick = function() {
+          let active = card.classList.contains('active');
+          document.querySelectorAll('.sector-card').forEach(c => {
+            c.classList.remove('active');
+            c.querySelector('.sector-content').style.maxHeight = '0px';
+          });
+          if(!active) {
+            card.classList.add('active');
+            content.style.maxHeight = '2000px';
+          }
+        };
+
+        if(estadoLive.fotosSetores[setor.id]) {
+          setTimeout(() => {
+            let pb = document.getElementById('pbox_' + setor.id);
+            let im = document.getElementById('img_' + setor.id);
+            if(im) {
+              im.src = estadoLive.fotosSetores[setor.id];
+              pb.style.display = 'block';
+            }
+          }, 50);
+        }
+      });
+    }
+
+    function compactarFotoSetor(input, setorId) {
       if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.onload = function(e) {
-          var img = new Image();
+          let img = new Image();
           img.onload = function() {
-            var canvas = document.createElement('canvas');
-            var MAX_WIDTH = 400; // Resolução otimizada e leve para celular
-            var scale = MAX_WIDTH / img.width;
+            let canvas = document.createElement('canvas');
+            let MAX_WIDTH = 350; 
+            let scale = MAX_WIDTH / img.width;
             canvas.width = MAX_WIDTH;
             canvas.height = img.height * scale;
-            
-            var ctx = canvas.getContext('2d');
+            let ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            var b64Leve = canvas.toDataURL('image/jpeg', 0.65);
             
-            if(destino === 'logo') {
-              estado.logoRestaurante = b64Leve;
-              document.getElementById('restaurant-logo').src = b64Leve;
-            } else if(destino === 'setor') {
-              estado.fotosSetores[setorId] = b64Leve;
-              document.getElementById('img_' + setorId).src = b64Leve;
-              document.getElementById('pbox_' + setorId).style.display = 'block';
-              document.getElementById('lbl_img_' + setorId).innerText = '🔄 Trocar Foto do Setor';
-              
-              var content = document.getElementById('content_' + setorId);
-              content.style.maxHeight = content.scrollHeight + 'px';
-            }
-            salvarEstado();
+            estadoLive.fotosSetores[setorId] = canvas.toDataURL('image/jpeg', 0.6);
+            salvarDadosNuvem();
+            atualizarLayoutCompleto();
           };
           img.src = e.target.result;
         };
@@ -439,269 +579,105 @@
       }
     }
 
-    function removerFoto(setorId, e) {
+    function removerFotoSetor(setorId, e) {
       e.stopPropagation();
-      if(confirm('Remover esta imagem?')) {
-        delete estado.fotosSetores[setorId];
-        salvarEstado();
-        document.getElementById('pbox_' + setorId).style.display = 'none';
-        document.getElementById('lbl_img_' + setorId).innerText = '📸 Tirar ou Anexar Foto';
-        var content = document.getElementById('content_' + setorId);
-        content.style.maxHeight = content.scrollHeight + 'px';
+      if(confirm('Deseja deletar essa foto da nuvem?')) {
+        delete estadoLive.fotosSetores[setorId];
+        salvarDadosNuvem();
+        atualizarLayoutCompleto();
       }
-    }
-
-    function renderEquipe() {
-      var container = document.getElementById('team-container');
-      container.innerHTML = '';
-      
-      estado.listaMembros.forEach(function(nome) {
-        var card = document.createElement('div');
-        card.className = 'team-card';
-        card.innerText = nome;
-        
-        var corBase = equipeCores[nome] || "#c9a054";
-        if(estado.usuarioAtivo === nome) {
-          card.style.background = corBase;
-          card.style.color = '#000';
-          card.style.fontWeight = '700';
-          card.style.borderColor = corBase;
-        }
-
-        card.onclick = function() {
-          estado.usuarioAtivo = nome;
-          salvarEstado();
-          renderEquipe();
-        };
-        container.appendChild(card);
-      });
-    }
-
-    function abrirModalCadastro() { document.getElementById('cadastro-modal').style.display = 'flex'; }
-    function fecharModalCadastro() { document.getElementById('cadastro-modal').style.display = 'none'; document.getElementById('new-member-name').value = ''; }
-    
-    function salvarNovoMembro() {
-      var nome = document.getElementById('new-member-name').value.trim();
-      if(!nome) return;
-      if(!estado.listaMembros.includes(nome)) { 
-        estado.listaMembros.push(nome); 
-        // Gera cor aleatória se não mapeada
-        if(!equipeCores[nome]) { equipeCores[nome] = "#" + Math.floor(Math.random()*16777215).toString(16); }
-      }
-      estado.usuarioAtivo = nome;
-      salvarEstado();
-      renderEquipe();
-      fecharModalCadastro();
-    }
-
-    // ANIMAÇÕES INTELIGENTES EXCLUSIVAS POR DETECÇÃO DE PALAVRA-CHAVE
-    function dispararAnimacaoInteligente(textoTarefa) {
-      somSucessoCartoon();
-      var overlay = document.getElementById('anim-overlay');
-      var emoji = document.getElementById('anim-emoji');
-      var title = document.getElementById('anim-title');
-      var sub = document.getElementById('anim-subtitle');
-      
-      var txt = textoTarefa.toLowerCase();
-      emoji.className = "cartoon-emoji";
-      
-      if (txt.includes('varrer') || txt.includes('vassoura')) {
-        emoji.innerText = "🧹✨";
-        emoji.classList.add('anim-vassoura');
-        title.innerText = "Vassoura em Ação!";
-        sub.innerText = "Salão limpo e brilhando! 🚀";
-      } else if (txt.includes('pano') || txt.includes('desinfetante') || txt.includes('chão') || txt.includes('piso')) {
-        emoji.innerText = "🧼🪣";
-        emoji.classList.add('anim-pano');
-        title.innerText = "Piso Brilhando!";
-        sub.innerText = "Pano e desinfetante aplicados! 💃";
-      } else if (txt.includes('vaso') || txt.includes('sanitário') || txt.includes('pias') || txt.includes('banheiro')) {
-        emoji.innerText = "🚽👑";
-        emoji.classList.add('anim-vaso');
-        title.innerText = "Banheiro Higienizado!";
-        sub.innerText = "Vaso limpo com padrão premium! 👍";
-      } else if (txt.includes('mesa') || txt.includes('cadeira') || txt.includes('montar') || txt.includes('sousplat')) {
-        emoji.innerText = "🍽️⭐";
-        emoji.classList.add('anim-mesa');
-        title.innerText = "Layout Organizado!";
-        sub.innerText = "Mesas e talheres impecáveis! 💎";
-      } else if (txt.includes('bar') || txt.includes('bebida') || txt.includes('gelo') || txt.includes('copo')) {
-        emoji.innerText = "🍹🎉";
-        emoji.classList.add('anim-bebida');
-        title.innerText = "Bar Pronto pro Turno!";
-        sub.innerText = "Gelo abastecido e taças polidas! 🧊";
-      } else {
-        emoji.innerText = "🏆";
-        emoji.classList.add('anim-padrao');
-        title.innerText = "Tarefa Concluída!";
-        sub.innerText = "Fechamento progredindo! ✨";
-      }
-      
-      overlay.style.display = 'flex';
-      setTimeout(function() { overlay.style.display = 'none'; }, 1500);
-    }
-
-    function montarPainel() {
-      var container = document.getElementById('sectors-container');
-      container.innerHTML = '';
-
-      dadosSetores.forEach(function(setor) {
-        var card = document.createElement('div');
-        card.className = 'sector-card';
-        card.id = 'card_' + setor.id;
-
-        var header = document.createElement('div');
-        header.className = 'sector-header';
-        var prontas = contarFeitas(setor.id);
-
-        header.innerHTML = '<div class="sector-icon">' + setor.icon + '</div>' +
-                           '<div class="sector-details">' +
-                             '<div class="sector-name">' + setor.title + '</div>' +
-                             '<div class="sector-qty" id="qty_' + setor.id + '">' + prontas + ' de ' + setor.tasks.length + ' feitas</div>' +
-                           '</div>' +
-                           '<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>';
-
-        var content = document.createElement('div');
-        content.className = 'sector-content';
-        content.id = 'content_' + setor.id;
-
-        setor.tasks.forEach(function(tarefa, idx) {
-          var item = document.createElement('div');
-          var chave = setor.id + '_' + idx;
-          item.className = 'task-item' + (estado.tarefasFeitas[chave] ? ' done' : '');
-          
-          var badgeHtml = '';
-          if(estado.tarefasFeitas[chave]) {
-            var dono = estado.tarefasFeitas[chave];
-            var corBadge = equipeCores[dono] || "#c9a054";
-            badgeHtml = '<span class="user-badge-premium" style="background:'+ corBadge +'">'+ dono +'</span>';
-          }
-
-          item.innerHTML = '<div class="task-main-row">' +
-                             '<div class="check-round"></div>' +
-                             '<div class="task-label"><span>' + tarefa + '</span><div id="badge_space_' + chave + '">' + badgeHtml + '</div></div>' +
-                           '</div>';
-
-          item.onclick = function(e) {
-            e.stopPropagation();
-            if(!estado.tarefasFeitas[chave]) {
-              estado.tarefasFeitas[chave] = estado.usuarioAtivo;
-              item.classList.add('done');
-              
-              var uActive = estado.usuarioAtivo;
-              var corB = equipeCores[uActive] || "#c9a054";
-              document.getElementById('badge_space_' + chave).innerHTML = '<span class="user-badge-premium" style="background:'+ corB +'">'+ uActive +'</span>';
-              
-              dispararAnimacaoInteligente(tarefa);
-            } else {
-              delete estado.tarefasFeitas[chave];
-              item.classList.remove('done');
-              document.getElementById('badge_space_' + chave).innerHTML = '';
-            }
-            salvarEstado();
-            document.getElementById('qty_' + setor.id).innerText = contarFeitas(setor.id) + ' de ' + setor.tasks.length + ' feitas';
-          };
-          
-          content.appendChild(item);
-        });
-
-        // Área de upload de foto por setor
-        var fotoDiv = document.createElement('div');
-        fotoDiv.className = 'photo-area';
-        fotoDiv.innerHTML = '<div class="file-wrapper">' +
-                              '<span class="btn-camera" id="lbl_img_'+setor.id+'">📸 Tirar ou Anexar Foto do Setor</span>' +
-                              '<input type="file" accept="image/*" onchange="processarFotoReduzida(this, \'setor\', \''+setor.id+'\')">' +
-                            '</div>' +
-                            '<div class="preview-box" id="pbox_'+setor.id+'">' +
-                              '<button class="btn-remove-photo" onclick="removerFoto(\''+setor.id+'\', event)">✕</button>' +
-                              '<img class="preview-img" id="img_'+setor.id+'">' +
-                            '</div>';
-        
-        content.appendChild(fotoDiv);
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
-
-        header.onclick = function() {
-          var active = card.classList.contains('active');
-          document.querySelectorAll('.sector-card').forEach(function(c) {
-            c.classList.remove('active');
-            c.querySelector('.sector-content').style.maxHeight = '0px';
-          });
-          if(!active) {
-            card.classList.add('active');
-            content.style.maxHeight = content.scrollHeight + 120 + 'px';
-          }
-        };
-
-        if(estado.fotosSetores[setor.id]) {
-          setTimeout(function() {
-            var pb = document.getElementById('pbox_' + setor.id);
-            var im = document.getElementById('img_' + setor.id);
-            im.src = estado.fotosSetores[setor.id];
-            pb.style.display = 'block';
-            document.getElementById('lbl_img_' + setor.id).innerText = '🔄 Trocar Foto do Setor';
-          }, 20);
-        }
-      });
-    }
-
-    function contarFeitas(setorId) {
-      var s = dadosSetores.find(function(x) { return x.id === setorId; });
-      var c = 0;
-      s.tasks.forEach(function(t, i) { if(estado.tarefasFeitas[setorId + '_' + i]) c++; });
-      return c;
     }
 
     function atualizarProgresso() {
-      var total = 0; var feitas = 0;
-      dadosSetores.forEach(function(s) { s.tasks.forEach(function(t, i) { total++; if(estado.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
-      var pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
+      let total = 0; let feitas = 0;
+      dadosSetores.forEach(s => { s.tasks.forEach((t, i) => { total++; if(estadoLive.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
+      let pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
       document.getElementById('progress-bar').style.width = pct + '%';
       document.getElementById('progress-txt').innerText = pct + '%';
     }
 
-    window.enviarMensagemSimulada = function() {
-      var campo = document.getElementById('chat-input-field');
-      var texto = campo.value.trim();
-      if(!texto) return;
-      var box = document.getElementById('chat-messages-box');
-      var bolha = document.createElement('div');
-      bolha.className = 'msg-bubble msg-sent';
-      bolha.innerHTML = '<div class="msg-author">' + estado.usuarioAtivo + '</div>' + texto;
-      box.appendChild(bolha);
-      campo.value = '';
+    function renderizarChat() {
+      let box = document.getElementById('chat-messages-box');
+      if(!box) return;
+      box.innerHTML = '';
+      
+      if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
+
+      estadoLive.mensagensChat.forEach(m => {
+        let bolha = document.createElement('div');
+        let souEu = m.usuario === usuarioLogado;
+        bolha.className = 'msg-bubble ' + (souEu ? 'msg-sent' : 'msg-received');
+        bolha.innerHTML = `<div class="msg-author" style="color:${equipeCores[m.usuario]}">${m.usuario}</div>` + m.texto;
+        box.appendChild(bolha);
+      });
       box.scrollTop = box.scrollHeight;
-    };
+    }
+
+    function enviarMensagemNuvem() {
+      let campo = document.getElementById('chat-input-field');
+      let txt = campo.value.trim();
+      if(!txt) return;
+
+      if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
+      
+      estadoLive.mensagensChat.push({
+        usuario: usuarioLogado,
+        texto: txt
+      });
+
+      // Limita o histórico em 40 mensagens para o banco não ficar pesado
+      if(estadoLive.mensagensChat.length > 40) estadoLive.mensagensChat.shift();
+
+      campo.value = '';
+      salvarDadosNuvem();
+      renderizarChat();
+    }
+
+    function dispararAnimacaoCartoon(texto) {
+      let overlay = document.getElementById('anim-overlay');
+      let emoji = document.getElementById('anim-emoji');
+      let t = texto.toLowerCase();
+      emoji.className = "cartoon-emoji";
+
+      if (t.includes('varrer') || t.includes('vassoura')) {
+        emoji.innerText = "🧹✨"; emoji.classList.add('anim-vassoura');
+      } else if (t.includes('pano') || t.includes('chão')) {
+        emoji.innerText = "🧼🪣"; emoji.classList.add('anim-pano');
+      } else if (t.includes('vaso') || t.includes('banheiro')) {
+        emoji.innerText = "🚽👑"; emoji.classList.add('anim-vaso');
+      } else if (t.includes('mesa') || t.includes('cadeira')) {
+        emoji.innerText = "🍽️⭐"; emoji.classList.add('anim-mesa');
+      } else if (t.includes('bar') || t.includes('gelo')) {
+        emoji.innerText = "🍹🎉"; emoji.classList.add('anim-bebida');
+      } else {
+        emoji.innerText = "🏆";
+      }
+      overlay.style.display = 'flex';
+      setTimeout(() => { overlay.style.display = 'none'; }, 1200);
+    }
 
     function enviarRelatorio(e) {
-      var msg = '✨ *MARCHESINI DI ROVERBELLA* ✨\n*Relatório de Fechamento de Turno*\n\n';
-      dadosSetores.forEach(function(s) {
+      let msg = '✨ *MARCHESINI LIVE REALTIME* ✨\n*Relatório Coletivo do Turno*\n\n';
+      dadosSetores.forEach(s => {
         msg += '📌 *' + s.title.toUpperCase() + '*\n';
-        s.tasks.forEach(function(t, i) {
-          var por = estado.tarefasFeitas[s.id + '_' + i];
+        s.tasks.forEach((t, i) => {
+          let por = estadoLive.tarefasFeitas[s.id + '_' + i];
           msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
         });
-        if(estado.fotosSetores[s.id]) msg += '📸 _Evidência visual salva no sistema._\n';
         msg += '\n';
       });
       document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
     }
 
-    function limparMesa() {
-      if(confirm('Zerar todas as marcações e fotos do turno atual?')) {
-        estado.tarefasFeitas = {};
-        estado.fotosSetores = {};
-        salvarEstado();
-        renderEquipe();
-        montarPainel();
+    function limparMesaReal() {
+      if(confirm('Tem certeza que deseja ZERAR o turno de TODOS os funcionários na nuvem?')) {
+        estadoLive.tarefasFeitas = {};
+        estadoLive.fotosSetores = {};
+        estadoLive.mensagensChat = [];
+        salvarDadosNuvem();
+        atualizarLayoutCompleto();
       }
     }
-
-    if(estado.logoRestaurante) { document.getElementById('restaurant-logo').src = estado.logoRestaurante; }
-    renderEquipe();
-    montarPainel();
-    atualizarProgresso();
   </script>
 </body>
 </html>

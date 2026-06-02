@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Live v16.0</title>
+  <title>Marchesini Premium v17.0</title>
   <style>
     :root {
       --bg: #0b0c10; --card: #14161d; --border: rgba(255, 255, 255, 0.08);
@@ -11,49 +11,51 @@
       --text: #f3f4f6; --text-muted: #8e8e93; --process: #2f80ed;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: radial-gradient(circle at top, #142118 0%, var(--bg) 100%); color: var(--text); padding: 20px 16px 100px 16px; min-height: 100vh; overflow-x: hidden; }
+    body { background: radial-gradient(circle at top, #142118 0%, var(--bg) 100%) fixed; color: var(--text); padding: 16px 16px 80px 16px; min-height: 100vh; }
     
-    /* MENU SUPERIOR (TRÊS TRACINHOS) */
-    .top-navbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 3px solid var(--italia-green); padding: 12px 16px; border-radius: 16px; margin-bottom: 16px; }
-    .brand-box h1 { font-size: 16px; font-weight: 700; color: #fff; }
+    /* TOP BAR FICA GLOBAL */
+    .top-navbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 3px solid var(--italia-green); padding: 12px 16px; border-radius: 16px; margin-bottom: 12px; }
+    .brand-box h1 { font-size: 15px; font-weight: 700; color: #fff; }
     .brand-box p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-    .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 18px; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     
-    /* SIDEBAR DROPDOWN */
-    .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; overflow-y: auto; }
+    /* CARROSSEL INSTAGRAM (ONLINE AGORA) */
+    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 10px 4px; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); }
+    .stories-container::-webkit-scrollbar { display: none; }
+    .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 55px; flex-shrink: 0; }
+    .story-img-frame { width: 48px; height: 48px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--italia-green), var(--italia-white), var(--italia-red)); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .story-card.me .story-img-frame { background: var(--process); }
+    .story-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); background: #000; }
+    .story-name { font-size: 9px; color: var(--text); font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* MENU CONTEXTUAL POPUP LATERAL (REDUZIDO PARA LOGIN/LOGOFF) */
+    .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; }
     .nav-sidebar.open { right: 0; }
     .side-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-    .side-hdr h3 { font-size: 12px; color: var(--italia-green); text-transform: uppercase; }
-    .side-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; }
     .menu-opt { display: flex; align-items: center; gap: 10px; padding: 12px; color: #fff; font-size: 13px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
-    .mgr-only { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
     
-    /* TELAS DE LOGIN / ENTRADA */
+    /* GATES DE LOGIN */
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 340px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .login-wrapper h2 { font-size: 18px; margin-bottom: 4px; }
-    .login-wrapper p { font-size: 10px; color: var(--italia-red); font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
     .cam-circle { width: 85px; height: 85px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 12px; outline: none; }
     .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
     
-    /* OPERAÇÃO E CHECKLIST */
-    .main-dashboard { display: none; }
-    .user-badge { background: var(--card); border-left: 4px solid var(--italia-green); padding: 12px; border-radius: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .badge-left { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
-    .badge-pic { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid #fff; background: #000; }
+    /* DASHBOARDS CONTÊINERES */
+    .app-screen { display: none; }
+    .app-screen.active { display: block; }
+    
+    /* RECURSOS DO FUNCIONÁRIO */
     .progress-container { background: var(--card); padding: 14px; border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--border); }
     .prog-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
     .prog-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 4px; overflow: hidden; }
     .prog-bar { background: linear-gradient(90deg, var(--italia-red), var(--italia-green)); height: 100%; width: 0%; transition: width 0.3s ease; }
-    
     .sect-title { font-size: 11px; font-weight: 700; color: var(--italia-green); text-transform: uppercase; margin-bottom: 10px; padding-left: 4px; border-left: 2px solid var(--italia-red); }
+    
     .card-sector { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; cursor: pointer; }
-    .sect-hdr-left { display: flex; align-items: center; gap: 10px; }
-    .sect-lbl { font-size: 14px; font-weight: 600; }
     .sect-cnt { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.15); }
-    .card-sector.active .sect-cnt { max-height: 1500px; }
+    .card-sector.active .sect-cnt { max-height: 2000px; }
     
     .row-task { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.02); }
     .task-txt-side { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e5e5ea; flex: 1; }
@@ -61,14 +63,27 @@
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
     .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.4; }
-    
     .task-actions { display: flex; align-items: center; gap: 6px; }
     .tk-btn { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; }
     .btn-take { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-green); color: var(--italia-green); }
     .btn-done { background: var(--italia-green); color: #fff; }
     .btn-leave { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-red); color: var(--italia-red); }
     .mini-pic { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
-    
+
+    /* LAYOUT EXCLUSIVO DO GERENTE (TELA CHEIA GRID) */
+    .mgr-fullscreen-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(206,43,55,0.08); padding: 12px; border-radius: 12px; border: 1px solid rgba(206,43,55,0.2); }
+    .mgr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+    .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .mgr-card-button:active { transform: scale(0.95); }
+    .mgr-card-icon { font-size: 28px; }
+    .mgr-card-title { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; }
+
+    /* INTERFACE DE BUSCA E BIBLIOTECA INTERNA DENTRO DO PAINEL */
+    .sub-pane-window { display: none; background: var(--card); border: 1px solid var(--italia-green); padding: 16px; border-radius: 20px; margin-top: 12px; }
+    .search-row-box { background: rgba(0,0,0,0.3); border-radius: 10px; max-height: 250px; overflow-y: auto; padding: 4px; margin-bottom: 12px; }
+    .search-item-line { padding: 10px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .search-item-line:hover { background: rgba(255,255,255,0.03); }
+
     /* ANIMIDADE INDIVIDUAL POPUP */
     .anim-overlay { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: rgba(20,22,29,0.98); border: 2px solid var(--italia-green); padding: 20px; border-radius: 20px; z-index: 99999; display: none; flex-direction: column; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.8); text-align: center; width: 80%; max-width: 280px; opacity: 0; transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
     .anim-overlay.show { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -76,12 +91,7 @@
     @keyframes bnc { 0% { transform: translateY(0); } 100% { transform: translateY(-10px) rotate(5deg); } }
     .anim-pic { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; margin-top: 8px; }
 
-    /* MODAL BIBLIOTECA / CHAT / FABs */
-    .pop-window { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9990; align-items: center; justify-content: center; padding: 16px; }
-    .pop-box { background: var(--card); border: 1px solid var(--italia-green); border-radius: 20px; width: 100%; max-width: 340px; padding: 20px; }
-    .scroll-area { max-height: 160px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 10px; border: 1px solid var(--border); padding: 6px; margin: 10px 0; }
-    .scroll-row { padding: 8px; font-size: 12px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; }
-    
+    /* FABs FIXOS E CHAT */
     .chat-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9900; align-items: flex-end; }
     .chat-box { width: 100%; background: #0f111a; border-top: 2px solid var(--italia-green); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; max-height: 70vh; }
     .chat-msg-wall { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-height: 200px; }
@@ -89,18 +99,14 @@
     .bb-in { background: rgba(255,255,255,0.04); align-self: flex-start; color: #fff; }
     .bb-out { background: rgba(0,146,70,0.15); border: 1px solid rgba(0,146,70,0.2); align-self: flex-end; color: #fff; }
     .chat-ftr { display: flex; padding: 10px; background: #0b0c10; gap: 8px; }
-    
     .fab-group { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
     .btn-fab { width: 48px; height: 48px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
-    .t-grid { display: grid; grid-template-columns: repeat(3, 100%); gap: 8px; margin-top: 10px; }
-    .t-card { display: flex; flex-direction: column; align-items: center; font-size: 10px; background: rgba(255,255,255,0.02); padding: 6px; border-radius: 8px; }
-    .t-card img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-bottom: 4px; }
   </style>
 </head>
 <body>
 
   <div class="anim-overlay" id="popup-animator">
-    <div class="anim-char" id="render-char-emoji">🧹</div>
+    <div class="anim-char" id="render-char-emoji">🏆</div>
     <div style="font-size:13px; font-weight:700;" id="render-char-txt">-</div>
     <img class="anim-pic" id="render-char-pic" src="">
   </div>
@@ -109,43 +115,33 @@
 
   <div class="top-navbar">
     <div class="brand-box">
-      <h1>Marchesini di Roverbella</h1>
-      <p>Controle de Turno Realtime</p>
+      <h1>Marchesini Premium</h1>
+      <p id="system-context-subline">Controle de Turno Ativo</p>
     </div>
     <button class="menu-btn" onclick="toggleSidebarDropdown()">☰</button>
   </div>
 
   <div class="nav-sidebar" id="sidebar-dropdown">
     <div class="side-hdr">
-      <h3 id="sidebar-menu-title">Opções do Sistema</h3>
-      <button class="side-close" onclick="toggleSidebarDropdown()">✕</button>
+      <h3 style="font-size:11px; color:var(--italia-green)">Opções da Sessão</h3>
+      <button style="background:transparent; border:none; color:var(--text-muted); font-size:16px;" onclick="toggleSidebarDropdown()">✕</button>
     </div>
-    
     <div id="opts-before-login">
-      <div class="menu-opt" onclick="mudarContextoLogin('worker')">👤 Entrar como Funcionário</div>
-      <div class="menu-opt" onclick="mudarContextoLogin('manager_direct')">🔑 Acesso Direto do Gerente</div>
+      <div class="menu-opt" onclick="mudarContextoLoginGeral('worker')">👤 Modo Funcionário</div>
+      <div class="menu-opt" onclick="mudarContextoLoginGeral('manager_direct')">🔑 Entrar como Gerente</div>
     </div>
-
     <div id="opts-after-login" style="display:none;">
       <div class="menu-opt" onclick="perfilAlterarDados('nome')">✏️ Alterar Meu Nome</div>
       <div class="menu-opt" onclick="perfilAlterarDados('senha')">🔢 Alterar Minha Senha</div>
-      <div class="menu-opt" onclick="perfilAlterarDados('foto')">📸 Alterar Minha Foto Perfil</div>
-      <div class="menu-opt" onclick="solicitarPainelMestreNaOperacao()" style="margin-top:15px; color:var(--italia-green)">🔑 Liberar Painel do Gerente</div>
-    </div>
-
-    <div class="mgr-only" id="restricted-manager-area">
-      <div style="font-size:10px; font-weight:700; color:var(--italia-red); margin-bottom:10px; text-transform:uppercase;">Painel Mestre Ativo</div>
-      <div class="menu-opt" onclick="abrirBibliotecaTarefas()">➕ Adicionar Tarefa da Biblioteca</div>
-      <div class="menu-opt" onclick="zerarTurnoCompletoNuvem()" style="background:rgba(206,43,55,0.15); color:var(--italia-red);">⚠️ Limpar Turno de Hoje</div>
-      <div style="font-size:10px; font-weight:700; color:var(--italia-green); margin-top:15px; text-transform:uppercase;">Equipe no Sistema</div>
-      <div class="t-grid" id="manager-team-grid"></div>
+      <div class="menu-opt" onclick="perfilAlterarDados('foto')">📸 Alterar Minha Foto</div>
+      <div class="menu-opt" onclick="solicitarAcessoMestreEmOperacao()" style="margin-top:15px; color:var(--italia-green)">🔑 Chave do Gerente</div>
     </div>
   </div>
 
-  <div class="login-overlay-panel" id="panel-login-gate">
+  <div class="app-screen active" id="scr-login-gate">
     <div class="login-wrapper">
       <h2 id="login-title-txt">Acesso Operacional</h2>
-      <p id="login-subtitle-txt">Digite suas credenciais</p>
+      <p id="login-subtitle-txt" style="color:var(--italia-red); font-size:10px; font-weight:700; margin-bottom:16px;">DIGITE SUAS CREDENCIAIS</p>
       
       <div id="login-avatar-zone">
         <div class="cam-circle" onclick="dispararCliqueCamera('login')">
@@ -158,18 +154,12 @@
       <input type="text" class="main-field" id="field-user" placeholder="Seu Nome (Ex: Heitor)" oninput="detectarFuncionarioExistente()">
       <input type="password" class="main-field" id="field-pass" placeholder="Senha de 4 dígitos" maxlength="4" pattern="\d*">
       
-      <button class="btn-submit" onclick="processarLoginAcesso()">Entrar no Turno</button>
+      <button class="btn-submit" id="btn-login-text" onclick="processarLoginAcesso()">Entrar no Turno</button>
     </div>
   </div>
 
-  <div class="main-dashboard" id="panel-dashboard">
-    <div class="user-badge">
-      <div class="badge-left">
-        <img class="badge-pic" id="my-badge-pic" src="">
-        <span>Funcionário: <span id="my-badge-name" style="color:var(--italia-green)">-</span></span>
-      </div>
-      <button style="background:transparent; border:none; color:var(--italia-red); font-weight:700; font-size:12px; cursor:pointer;" onclick="efetuarLogoff()">Sair</button>
-    </div>
+  <div class="app-screen" id="scr-dashboard-worker">
+    <div class="stories-container" id="live-stories-bar"></div>
 
     <div class="progress-container">
       <div class="prog-labels"><span>Meta do Fechamento Coletivo</span><span id="prog-txt-pct">0%</span></div>
@@ -178,22 +168,67 @@
 
     <div class="sect-title">Setores Operacionais</div>
     <div id="render-sectors-zone"></div>
+    
+    <div style="text-align:center; margin-top:20px;">
+      <button style="background:transparent; border:none; color:var(--italia-red); font-weight:700; font-size:12px; text-transform:uppercase;" onclick="efetuarLogoffCompleto()">Sair do Sistema</button>
+    </div>
   </div>
 
-  <div class="pop-window" id="modal-library">
-    <div class="pop-box">
-      <h4 style="font-size:14px; text-transform:uppercase; text-align:center;">Biblioteca de Tarefas</h4>
-      <select class="main-field" id="lib-cat-select" onchange="atualizarListaItensBiblioteca()" style="margin-top:10px;"></select>
-      <div class="scroll-area" id="lib-scroll-rows"></div>
-      <button class="btn-submit" onclick="fecharBibliotecaTarefas()" style="background:var(--text-muted)">Fechar</button>
+  <div class="app-screen" id="scr-dashboard-manager">
+    <div class="mgr-fullscreen-hdr">
+      <div>
+        <div style="font-size:14px; font-weight:800; color:#fff;">PAINEL MESTRE ADMINISTRATIVO</div>
+        <div style="font-size:9px; color:var(--italia-red); font-weight:700;">GESTÃO GERAL E CONFIGURAÇÃO</div>
+      </div>
+      <button style="background:var(--italia-red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:10px; font-weight:700;" onclick="efetuarLogoffCompleto()">VOLTAR</button>
+    </div>
+
+    <div class="mgr-grid">
+      <div class="mgr-card-button" onclick="abrirSubPainelGerente('busca_tarefas')">
+        <div class="mgr-card-icon">🔍</div>
+        <div class="mgr-card-title">Injetar Tarefa</div>
+      </div>
+      <div class="mgr-card-button" onclick="abrirSubPainelGerente('novo_setor')">
+        <div class="mgr-card-icon">📂</div>
+        <div class="mgr-card-title">Novo Setor</div>
+      </div>
+      <div class="mgr-card-button" onclick="abrirSubPainelGerente('ver_equipe')">
+        <div class="mgr-card-icon">👥</div>
+        <div class="mgr-card-title">Ver Equipe</div>
+      </div>
+      <div class="mgr-card-button" onclick="zerarTurnoCompletoNuvem()" style="border:1px dashed var(--italia-red);">
+        <div class="mgr-card-icon">⚠️</div>
+        <div class="mgr-card-title" style="color:var(--italia-red)">Zerar Dia</div>
+      </div>
+    </div>
+
+    <div class="sub-pane-window" id="sub-pane-busca_tarefas">
+      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Biblioteca & Busca de Tarefas</h3>
+      <input type="text" class="main-field" id="mgr-search-input" placeholder="🔍 Digite para buscar (Ex: Papel, gelo...)" oninput="filtrarBibliotecaAvançada()">
+      <div class="search-row-box" id="mgr-search-results-render"></div>
+      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted)">Voltar ao Menu</button>
+    </div>
+
+    <div class="sub-pane-window" id="sub-pane-novo_setor">
+      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Criar Novo Setor Personalizado</h3>
+      <input type="text" class="main-field" id="new-sector-name" placeholder="Nome do Setor (Ex: Cozinha)">
+      <input type="text" class="main-field" id="new-sector-icon" placeholder="Emoji do Ícone (Ex: 🍳)" maxlength="2">
+      <button class="btn-submit" onclick="salvarSetorCustomizadoGerente()">Criar e Ativar Setor</button>
+      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted); margin-top:8px;">Cancelar</button>
+    </div>
+
+    <div class="sub-pane-window" id="sub-pane-ver_equipe">
+      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Funcionários Cadastrados</h3>
+      <div class="search-row-box" id="mgr-team-list-render"></div>
+      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted)">Voltar ao Menu</button>
     </div>
   </div>
 
   <div class="chat-container" id="modal-chat">
     <div class="chat-box">
-      <div style="display:flex; justify-content:between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border);">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border);">
         <span style="font-size:12px; font-weight:700; color:var(--italia-green); text-transform:uppercase;">Chat Interno Realtime</span>
-        <button style="background:transparent; border:none; color:var(--text-muted); font-size:16px; margin-left:auto; cursor:pointer;" onclick="toggleChatWindow()">✕</button>
+        <button style="background:transparent; border:none; color:var(--text-muted); font-size:16px; cursor:pointer;" onclick="toggleChatWindow()">✕</button>
       </div>
       <div class="chat-msg-wall" id="chat-wall"></div>
       <div class="chat-ftr">
@@ -205,7 +240,7 @@
 
   <div class="fab-group">
     <button class="btn-fab" onclick="toggleChatWindow()" style="background:#171923; color:var(--italia-green); border:1px solid var(--border);">💬</button>
-    <a class="btn-fab" id="whatsapp-link" href="#" onclick="gerarRelatorioTurnoWhatsApp(event)" style="background:#25d366; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center;">✅</a>
+    <a class="btn-fab" id="whatsapp-link" href="#" onclick="gerarRelatorioTurnoWhatsApp(event)" style="background:#25d366; color:#fff; text-decoration:none;">✅</a>
   </div>
 
   <script>
@@ -218,16 +253,37 @@
     var cameraContext = "login"; 
     var loginViewContext = "worker"; 
 
-    var liveData = { tarefasStatus: {}, usuariosSalvos: {}, mensagensChat: [], tarefasCustomizadas: [] };
+    var liveData = { tarefasStatus: {}, usuariosSalvos: {}, mensagensChat: [], tarefasCustomizadas: [], setoresCustomizados: [], loginAtividade: {} };
 
-    const taskLibrary = {
-      salao: ["Varrer minuciosamente o salão principal.","Passar pano com desinfetante no salão.","Higienizar superfícies das mesas com álcool.","Baixar todas as cadeiras das mesas.","Levar mesas e cadeiras para área externa.","Limpar sousplats e jogos americanos.","Montar as mesas (pratos e talheres).","Limpar vidros e aparadores do salão."],
-      buffet: ["Limpar pista quente e ligar aquecimento.","Limpar pista fria e ligar refrigeração.","Organizar mesa de doces e cafés.","Higienizar pegadores e conchas.","Abastecer pratos e talheres na rampa.","Higienizar vidros de proteção do buffet."],
-      bar: ["Varrer e passar pano no piso do bar.","Esvaziar e higienizar lixeiras do bar.","Conferir e reabastecer estoque de gelo.","Abastecer geladeiras com bebidas.","Organizar e polir copos e taças.","Limpar balcão de atendimento."],
-      banheiros: ["Lavar e desinfetar vasos e pias.","Repor rolos de papel higiênico.","Abastecer dispensers de papel toalha.","Verificar e abastecer sabonetes.","Limpar espelhos e passar pano no chão.","Esvaziar lixeiras e trocar sacos."]
-    };
+    // BANCO DE DADOS INTEGRADO OPERACIONAL - SOP RESTAURANTES
+    const staticLibrary = [
+      { cat: "salao", txt: "Montar mesas com pratos, talheres e sousplats" },
+      { cat: "salao", txt: "Alinhar mesas e cadeiras seguindo o mapa" },
+      { cat: "salao", txt: "Checar lâmpadas, ar-condicionado e som ambiente" },
+      { cat: "salao", txt: "Organizar e higienizar galheteiros e saleiros" },
+      { cat: "salao", txt: "Varrer e passar pano no salão e calçada externa" },
+      { cat: "salao", txt: "Limpar vidros, janelas e aparadores" },
+      { cat: "salao", txt: "Higienizar superfícies com álcool 70%" },
+      { cat: "buffet", txt: "Ligar aquecimento da pista quente e fria" },
+      { cat: "buffet", txt: "Abastecer pilha de pratos limpos na rampa" },
+      { cat: "buffet", txt: "Higienizar pegadores e conchas de servir" },
+      { cat: "buffet", txt: "Organizar bancada de sobremesas e cafés" },
+      { cat: "buffet", txt: "Limpar e polir vidros protetores do buffet" },
+      { cat: "bar", txt: "Reabastecer estoque de gelo nas geleiras" },
+      { cat: "bar", txt: "Abastecer geladeiras com bebidas e águas" },
+      { cat: "bar", txt: "Organizar e polir copos e taças de cristal" },
+      { cat: "bar", txt: "Preparar guarnições (limão, hortelã) para drinks" },
+      { cat: "bar", txt: "Limpar balcão de inox e calhas de atendimento" },
+      { cat: "bar", txt: "Esvaziar e higienizar lixeiras do bar" },
+      { cat: "banheiros", txt: "Repor rolos de papel higiênico nos dispensers" },
+      { cat: "banheiros", txt: "Abastecer dispensers de papel toalha de mão" },
+      { cat: "banheiros", txt: "Verificar e encher sabonetes e álcool" },
+      { cat: "banheiros", txt: "Lavar e desinfetar vasos, mictórios e pias" },
+      { cat: "banheiros", txt: "Limpar espelhos e retirar lixos" },
+      { cat: "banheiros", txt: "Lavar o piso e deixar placa de piso molhado" }
+    ];
 
-    const structureSectors = [
+    var defaultSectors = [
       { id: "salao", title: "Salão & Área Externa", icon: "🛋️" },
       { id: "buffet", title: "Buffet Self-Service", icon: "🍱" },
       { id: "bar", title: "Bar & Bebidas", icon: "🍹" },
@@ -235,12 +291,12 @@
     ];
 
     const animationRules = [
-      { keys: ["varrer", "vassoura", "salão", "chão"], emoji: "🧹", msg: "A Vassoura Sorridente varreu tudo com " },
-      { keys: ["pano", "rodo", "passar", "desinfetante"], emoji: "🧽", msg: "O Rodo Satisfeito brilhou o chão com " },
-      { keys: ["álcool", "higienizar", "mesas"], emoji: "🧴", msg: "O Frasco de Spray higienizou tudo com " },
+      { keys: ["varrer", "vassoura", "salão", "chão"], emoji: "🧹", msg: "A Vassoura varreu tudo com " },
+      { keys: ["pano", "rodo", "passar"], emoji: "🧽", msg: "O Rodo espalhou brilho com " },
+      { keys: ["álcool", "higienizar", "mesas"], emoji: "🧴", msg: "O Frasco de Spray esterilizou tudo com " },
       { keys: ["vaso", "sanitário", "pias", "lavar"], emoji: "🚽", msg: "O Vaso Sanitário piscou de limpo para " },
-      { keys: ["papel", "rolos", "toalha"], emoji: "🧻", msg: "O Rolinho de Papel agradece a reposição de " },
-      { keys: ["copos", "taças", "bar", "polir"], emoji: "🍹", msg: "As Taças de Cristal brindam em honra a " }
+      { keys: ["papel", "rolos", "toalha"], emoji: "🧻", msg: "O Rolinho de Papel agradece a " },
+      { keys: ["copos", "taças", "bar", "polir"], emoji: "🍹", msg: "As Taças de Cristal brindam a " }
     ];
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -250,27 +306,30 @@
 
     function toggleSidebarDropdown() { document.getElementById('sidebar-dropdown').classList.toggle('open'); }
 
-    function mudarContextoLogin(tipo) {
+    function switchScreenView(screenId) {
+      document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function mudarContextoLoginGeral(tipo) {
       loginViewContext = tipo;
+      toggleSidebarDropdown();
       let title = document.getElementById('login-title-txt');
-      let subtitle = document.getElementById('login-subtitle-txt');
       let zone = document.getElementById('login-avatar-zone');
       let fName = document.getElementById('field-user');
+      let btnTxt = document.getElementById('btn-login-text');
 
       if (tipo === 'worker') {
         title.innerText = "Acesso Operacional";
-        subtitle.innerText = "Digite suas credenciais";
-        zone.style.display = "block";
-        fName.style.display = "block";
-        fName.value = "";
+        zone.style.display = "block"; fName.style.display = "block";
+        btnTxt.innerText = "Entrar no Turno";
       } else {
         title.innerText = "Acesso do Gerente";
-        subtitle.innerText = "Insira a Senha Mestra Direta";
-        zone.style.display = "none";
-        fName.style.display = "none";
+        zone.style.display = "none"; fName.style.display = "none";
+        btnTxt.innerText = "Entrar no Painel Mestre";
       }
       document.getElementById('field-pass').value = "";
-      toggleSidebarDropdown();
+      switchScreenView('scr-login-gate');
     }
 
     function dispararCliqueCamera(contexto) {
@@ -289,12 +348,11 @@
             document.getElementById('cam-icon').style.display = 'none';
             let img = document.getElementById('cam-preview');
             img.src = b64; img.style.display = 'block';
-            document.getElementById('cam-msg').innerText = "✓ Foto capturada!";
+            document.getElementById('cam-msg').innerText = "✓ Foto Processada!";
             document.getElementById('cam-msg').style.color = "var(--italia-green)";
           } else {
-            if (currentWorker) {
+            if (currentWorker && liveData.usuariosSalvos[currentWorker]) {
               liveData.usuariosSalvos[currentWorker].foto = b64;
-              document.getElementById('my-badge-pic').src = b64;
               salvarDadosServidor();
             }
           }
@@ -306,20 +364,20 @@
     function detectarFuncionarioExistente() {
       let nome = document.getElementById('field-user').value.trim();
       let msg = document.getElementById('cam-msg');
-      let icon = document.getElementById('cam-icon');
       let img = document.getElementById('cam-preview');
+      let icon = document.getElementById('cam-icon');
+      let btn = document.getElementById('btn-login-text');
 
       if (liveData.usuariosSalvos[nome]) {
         base64CamGlobal = liveData.usuariosSalvos[nome].foto;
-        icon.style.display = 'none';
-        img.src = base64CamGlobal; img.style.display = 'block';
-        msg.innerText = "✓ Funcionário reconhecido!";
-        msg.style.color = "var(--italia-green)";
+        icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
+        msg.innerText = "✓ Perfil Reconhecido!"; msg.style.color = "var(--italia-green)";
+        btn.innerText = "Entrar no Turno";
       } else {
         if(base64CamGlobal.startsWith("data:image")) return;
         base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
-        msg.innerText = "A foto é opcional no primeiro login";
-        msg.style.color = "var(--text-muted)";
+        msg.innerText = "Primeiro acesso? Escolha uma foto!"; msg.style.color = "var(--text-muted)";
+        btn.innerText = "Cadastrar e Entrar";
       }
     }
 
@@ -328,85 +386,66 @@
       
       if (loginViewContext === 'manager_direct') {
         if (pass === MASTER_PASS) {
-          document.getElementById('panel-login-gate').style.display = 'none';
-          document.getElementById('panel-dashboard').style.display = 'block';
-          document.getElementById('opts-before-login').style.display = 'none';
-          document.getElementById('restricted-manager-area').style.display = 'block';
           currentWorker = "Gerente";
-          document.getElementById('my-badge-name').innerText = "Gerente Geral";
-          document.getElementById('my-badge-pic').src = "https://images.unsplash.com/photo-1544025162-d76694265947?w=80";
+          document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+          switchScreenView('scr-dashboard-manager');
+          fecharSubPaineis();
         } else { alert("Senha Mestra Incorreta!"); }
         return;
       }
 
       let nome = document.getElementById('field-user').value.trim();
-      if (!nome || !pass) { alert("Preencha Nome e Senha!"); return; }
+      if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
 
+      let primeiroAcesso = false;
       if (liveData.usuariosSalvos[nome]) {
         if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
-        base64CamGlobal = liveData.usuariosSalvos[nome].foto;
       } else {
+        primeiroAcesso = true;
         let fotoFinal = base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80";
         liveData.usuariosSalvos[nome] = { senha: pass, foto: fotoFinal };
       }
 
       currentWorker = nome;
-      document.getElementById('panel-login-gate').style.display = 'none';
-      document.getElementById('panel-dashboard').style.display = 'block';
-      document.getElementById('my-badge-name').innerText = currentWorker;
-      document.getElementById('my-badge-pic').src = liveData.usuariosSalvos[currentWorker].foto;
-      
+      if(!liveData.loginAtividade) liveData.loginAtividade = {};
+      liveData.loginAtividade[currentWorker] = true; 
+
+      document.getElementById('system-context-subline').innerText = "Operador: " + currentWorker.toUpperCase();
       document.getElementById('opts-before-login').style.display = 'none';
       document.getElementById('opts-after-login').style.display = 'block';
 
+      if(primeiroAcesso) alert("🎉 Perfil criado com sucesso! Guarde sua senha de acesso.");
+
       await salvarDadosServidor();
+      switchScreenView('scr-dashboard-worker');
       montarPainelDOM();
     }
 
-    function solicitarPainelMestreNaOperacao() {
+    function solicitarAcessoMestreEmOperacao() {
       let pass = prompt("Insira a Senha Mestra da Gerência:");
       if (pass === MASTER_PASS) {
-        document.getElementById('restricted-manager-area').style.display = 'block';
-        renderizarGridGerencia();
-        alert("Painel do Gerente Liberado com Sucesso!");
+        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+        switchScreenView('scr-dashboard-manager');
+        fecharSubPaineis();
+        toggleSidebarDropdown();
       } else { alert("Senha Incorreta!"); }
     }
 
-    function perfilAlterarDados(tipo) {
-      if (tipo === 'nome') {
-        let n = prompt("Digite o novo nome:", currentWorker);
-        if (n && n.trim() && n !== currentWorker) {
-          liveData.usuariosSalvos[n.trim()] = liveData.usuariosSalvos[currentWorker];
-          delete liveData.usuariosSalvos[currentWorker];
-          currentWorker = n.trim();
-          document.getElementById('my-badge-name').innerText = currentWorker;
-          salvarDadosServidor();
-        }
-      } else if (tipo === 'senha') {
-        let s = prompt("Digite a nova senha de 4 dígitos:");
-        if (s && s.length === 4) {
-          liveData.usuariosSalvos[currentWorker].senha = s;
-          salvarDadosServidor();
-          alert("Senha alterada!");
-        }
-      } else if (tipo === 'foto') {
-        dispararCliqueCamera('perfil');
+    function efetuarLogoffCompleto() {
+      if(currentWorker && currentWorker !== "Gerente" && liveData.loginAtividade) {
+        liveData.loginAtividade[currentWorker] = false;
+        salvarDadosServidor();
       }
-    }
-
-    function efetuarLogoff() {
       currentWorker = ""; base64CamGlobal = "";
-      document.getElementById('panel-dashboard').style.display = 'none';
-      document.getElementById('panel-login-gate').style.display = 'block';
+      document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
       document.getElementById('opts-after-login').style.display = 'none';
-      document.getElementById('restricted-manager-area').style.display = 'none';
       document.getElementById('opts-before-login').style.display = 'block';
-      mudarContextoLogin('worker');
+      mudarContextoLoginGeral('worker');
     }
 
     function triggerSuperAnimation(texto, worker) {
       let analise = texto.toLowerCase();
-      let rule = { emoji: "🏆", msg: "O Troféu Marchesini saúda o fechamento de " };
+      let rule = { emoji: "🏆", msg: "O Checklist saúda o avanço de " };
       for (let r of animationRules) {
         if (r.keys.some(k => analise.includes(k))) { rule = r; break; }
       }
@@ -429,15 +468,18 @@
             if(!liveData.usuariosSalvos) liveData.usuariosSalvos = {};
             if(!liveData.mensagensChat) liveData.mensagensChat = [];
             if(!liveData.tarefasCustomizadas) liveData.tarefasCustomizadas = [];
+            if(!liveData.setoresCustomizados) liveData.setoresCustomizados = [];
+            if(!liveData.loginAtividade) liveData.loginAtividade = {};
           }
         }
       } catch(e){}
-      montarPainelDOM();
-      renderizarGridGerencia();
+      
+      if(document.getElementById('scr-dashboard-worker').classList.contains('active')) {
+        montarPainelDOM();
+      }
     }
 
     async function salvarDadosServidor() {
-      atualizarProgressoBarra();
       try {
         await fetch(BIN_URL, {
           method: "PUT", headers: { "Content-Type": "application/json", "X-Master-Key": BIN_KEY },
@@ -446,14 +488,22 @@
       } catch(e){}
     }
 
+    // RETORNA A LISTA INTEGRAL DE SETORES (ESTÁTICOS + CUSTOMIZADOS DO GERENTE)
+    function obterSetoresTotais() {
+      return [...defaultSectors, ...liveData.setoresCustomizados];
+    }
+
     function montarPainelDOM() {
+      renderizarCarrosselStoriesInstagram();
       let zone = document.getElementById('render-sectors-zone');
       if (!zone) return;
       let activeId = document.querySelector('.card-sector.active')?.id?.replace('sect_', '');
       zone.innerHTML = '';
 
-      structureSectors.forEach(s => {
-        let arr = [...taskLibrary[s.id]];
+      let setoresAtuais = obterSetoresTotais();
+
+      setoresAtuais.forEach(s => {
+        let arr = staticLibrary.filter(x => x.cat === s.id).map(x => x.txt);
         liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) arr.push(c.txt); });
 
         let feitas = 0;
@@ -464,10 +514,10 @@
         card.id = 'sect_' + s.id;
         card.innerHTML = `
           <div class="sect-hdr" onclick="alternarSetorAbas('${s.id}')">
-            <div class="sect-hdr-left"><span>${s.icon}</span><span class="sect-lbl">${s.title}</span></div>
-            <span style="font-size:11px; font-weight:700; color:var(--italia-green)">${feitas}/${arr.length} Prontas</span>
+            <div style="display:flex; align-items:center; gap:10px;"><span>${s.icon}</span><span class="sect-lbl">${s.title}</span></div>
+            <span style="font-size:11px; font-weight:700; color:var(--italia-green)">${feitas}/${arr.length} Fatto</span>
           </div>
-          <div class="sect-cnt" id="cnt_${s.id}" style="${activeId === s.id ? 'max-height:1500px;' : 'max-height:0px;'}"></div>
+          <div class="sect-cnt" id="cnt_${s.id}" style="${activeId === s.id ? 'max-height:2000px;' : 'max-height:0px;'}"></div>
         `;
         zone.appendChild(card);
         let cnt = document.getElementById('cnt_' + s.id);
@@ -503,6 +553,26 @@
       atualizarProgressoBarra();
     }
 
+    function renderizarCarrosselStoriesInstagram() {
+      let bar = document.getElementById('live-stories-bar'); if(!bar) return;
+      bar.innerHTML = "";
+      
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        let isOnline = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+        if (!isOnline && nome !== currentWorker) return; 
+
+        let card = document.createElement('div');
+        card.className = "story-card" + (nome === currentWorker ? " me" : "");
+        card.innerHTML = `
+          <div class="story-img-frame">
+            <img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}">
+          </div>
+          <div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>
+        `;
+        bar.appendChild(card);
+      });
+    }
+
     function gerenciarJob(chave, acao, texto, e) {
       e.stopPropagation();
       if (acao === 'take') { liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker }; }
@@ -519,13 +589,14 @@
       let content = document.getElementById('cnt_' + id);
       let isActive = card.classList.contains('active');
       document.querySelectorAll('.card-sector').forEach(c => { c.classList.remove('active'); c.querySelector('.sect-cnt').style.maxHeight = '0px'; });
-      if (!isActive) { card.classList.add('active'); content.style.maxHeight = '1500px'; }
+      if (!isActive) { card.classList.add('active'); content.style.maxHeight = '2000px'; }
     }
 
     function atualizarProgressoBarra() {
       let t = 0, f = 0;
-      structureSectors.forEach(s => {
-        let len = taskLibrary[s.id].length;
+      let setoresAtuais = obterSetoresTotais();
+      setoresAtuais.forEach(s => {
+        let len = staticLibrary.filter(x => x.cat === s.id).length;
         liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) len++; });
         for(let i=0; i<len; i++) { t++; if(liveData.tarefasStatus[s.id+'_'+i]?.status==='done') f++; }
       });
@@ -534,42 +605,100 @@
       if(document.getElementById('prog-txt-pct')) document.getElementById('prog-txt-pct').innerText = p+'%';
     }
 
-    function renderizarGridGerencia() {
-      let grid = document.getElementById('manager-team-grid'); if(!grid) return; grid.innerHTML = "";
-      Object.keys(liveData.usuariosSalvos).forEach(n => {
-        let c = document.createElement('div'); c.className = "t-card";
-        c.innerHTML = `<img src="${liveData.usuariosSalvos[n].foto}"><div>${n}</div>`;
-        grid.appendChild(c);
+    /* MÉTODOS DOS QUADRADINHOS DO GERENTE */
+    function abrirSubPainelGerente(id) {
+      fecharSubPaineis();
+      document.getElementById('sub-pane-' + id).style.display = 'block';
+      if (id === 'busca_tarefas') filtrarBibliotecaAvançada();
+      if (id === 'ver_equipe') renderizarListaEquipeMestre();
+    }
+    function fecharSubPaineis() {
+      document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
+    }
+
+    function filtrarBibliotecaAvançada() {
+      let query = document.getElementById('mgr-search-input').value.toLowerCase();
+      let box = document.getElementById('mgr-search-results-render');
+      box.innerHTML = "";
+
+      staticLibrary.forEach(item => {
+        if (query && !item.txt.toLowerCase().includes(query)) return;
+        let line = document.createElement('div');
+        line.className = "search-item-line";
+        line.innerHTML = `<span>${item.txt}</span><button class="tk-btn btn-take" style="padding:4px 8px;">Injetar</button>`;
+        line.onclick = () => dispararFluxoInjeçãoSetor(item.txt);
+        box.appendChild(line);
       });
     }
 
-    function abrirBibliotecaTarefas() {
-      document.getElementById('modal-library').style.display = 'flex';
-      let sel = document.getElementById('lib-cat-select'); sel.innerHTML = '';
-      structureSectors.forEach(s => { sel.innerHTML += `<option value="${s.id}">${s.title}</option>`; });
-      atualizarListaItensBiblioteca();
+    function dispararFluxoInjeçãoSetor(textoTarefa) {
+      let setores = obterSetoresTotais();
+      let promptTxt = "Para qual setor quer mandar esta tarefa?\n\nDigite o número correspondente:\n";
+      setores.forEach((s, idx) => { promptTxt += `${idx} - ${s.icon} ${s.title}\n`; });
+      
+      let escolha = prompt(promptTxt);
+      if (escolha !== null && setores[escolha]) {
+        let setorAlvo = setores[escolha].id;
+        liveData.tarefasCustomizadas.push({ cat: setorAlvo, txt: textoTarefa });
+        salvarDadosServidor();
+        alert("✓ Injetada com sucesso!");
+      }
     }
-    function fecharBibliotecaTarefas() { document.getElementById('modal-library').style.display = 'none'; }
-    
-    function atualizarListaItensBiblioteca() {
-      let cat = document.getElementById('lib-cat-select').value;
-      let scroll = document.getElementById('lib-scroll-rows'); scroll.innerHTML = '';
-      taskLibrary[cat].forEach(t => {
-        let r = document.createElement('div'); r.className = "scroll-row"; r.innerText = "➕ " + t;
-        r.onclick = () => {
-          if(!liveData.tarefasCustomizadas.some(x=>x.txt===t)) {
-            liveData.tarefasCustomizadas.push({ cat: cat, txt: t });
-            salvarDadosServidor(); montarPainelDOM(); alert("Injetada no painel!");
-          }
-        };
-        scroll.appendChild(r);
+
+    function salvarSetorCustomizadoGerente() {
+      let nome = document.getElementById('new-sector-name').value.trim();
+      let icone = document.getElementById('new-sector-icon').value.trim() || "📋";
+      if (!nome) { alert("Digite o nome do setor!"); return; }
+      
+      let newId = "custom_" + Date.now();
+      liveData.setoresCustomizados.push({ id: newId, title: nome, icon: icone });
+      
+      document.getElementById('new-sector-name').value = "";
+      document.getElementById('new-sector-icon').value = "";
+      salvarDadosServidor();
+      alert(`Setor "${nome}" foi criado com sucesso e já está integrado!`);
+      fecharSubPaineis();
+    }
+
+    function renderizarListaEquipeMestre() {
+      let box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
+      Object.keys(liveData.usuariosSalvos).forEach(n => {
+        let isOnline = liveData.loginAtividade && liveData.loginAtividade[n] === true;
+        let line = document.createElement('div');
+        line.className = "search-item-line";
+        line.innerHTML = `
+          <div style="display:flex; align-items:center; gap:8px;">
+            <img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic">
+            <span>${n}</span>
+          </div>
+          <span style="font-size:9px; font-weight:700; color:${isOnline ? 'var(--italia-green)' : 'var(--text-muted)'}">
+            ${isOnline ? 'ONLINE' : 'OFFLINE'}
+          </span>
+        `;
+        box.appendChild(line);
       });
+    }
+
+    function perfilAlterarDados(tipo) {
+      if (tipo === 'nome') {
+        let n = prompt("Digite seu novo nome:", currentWorker);
+        if (n && n.trim() && n !== currentWorker) {
+          liveData.usuariosSalvos[n.trim()] = liveData.usuariosSalvos[currentWorker];
+          delete liveData.usuariosSalvos[currentWorker];
+          currentWorker = n.trim();
+          salvarDadosServidor();
+        }
+      } else if (tipo === 'senha') {
+        let s = prompt("Sua nova senha de 4 dígitos:");
+        if (s && s.length === 4) { liveData.usuariosSalvos[currentWorker].senha = s; salvarDadosServidor(); }
+      } else if (tipo === 'foto') { dispararCliqueCamera('perfil'); }
+      toggleSidebarDropdown();
     }
 
     function toggleChatWindow() {
       let c = document.getElementById('modal-chat');
       c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
-      if(c.style.display === 'flex') { renderMessages(); }
+      if(c.style.display === 'flex') renderMessages();
     }
     function renderMessages() {
       let w = document.getElementById('chat-wall'); w.innerHTML = '';
@@ -585,12 +714,11 @@
     }
 
     function gerarRelatorioTurnoWhatsApp(e) {
-      let msg = '🇮🇹 *MARCHESINI DI ROVERBELLA*\n\n';
-      structureSectors.forEach(s => {
+      let msg = '🇮🇹 *MARCHESINI - FECHAMENTO DE TURNO*\n\n';
+      let setores = obterSetoresTotais();
+      setores.forEach(s => {
         msg += `📌 *${s.title.toUpperCase()}*\n`;
-        let len = taskLibrary[s.id].length;
-        liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) len++; });
-        let arr = [...taskLibrary[s.id]];
+        let arr = staticLibrary.filter(x => x.cat === s.id).map(x => x.txt);
         liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) arr.push(c.txt); });
         
         arr.forEach((t, i) => {
@@ -606,9 +734,10 @@
     }
 
     function zerarTurnoCompletoNuvem() {
-      if (confirm('Zerar checklist e mensagens de hoje? Fotos e funcionários continuarão salvos.')) {
+      if (confirm('Zerar checklists, tarefas extras e chat? Equipes e fotos continuarão salvos.')) {
         liveData.tarefasStatus = {}; liveData.mensagensChat = []; liveData.tarefasCustomizadas = [];
-        salvarDadosServidor(); puxarDadosServidor(); toggleSidebarDropdown();
+        salvarDadosServidor(); fecharSubPaineis(); switchScreenView('scr-dashboard-manager');
+        alert("Turno Zerado!");
       }
     }
   </script>

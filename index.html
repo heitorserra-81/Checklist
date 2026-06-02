@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Premium v17.0</title>
+  <title>Marchesini Premium v19.0</title>
   <style>
     :root {
       --bg: #0b0c10; --card: #14161d; --border: rgba(255, 255, 255, 0.08);
@@ -13,14 +13,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: radial-gradient(circle at top, #142118 0%, var(--bg) 100%) fixed; color: var(--text); padding: 16px 16px 80px 16px; min-height: 100vh; }
     
-    /* TOP BAR FICA GLOBAL */
+    /* TOP BAR & NAVBAR */
     .top-navbar { display: flex; justify-content: space-between; align-items: center; background: var(--card); border-bottom: 3px solid var(--italia-green); padding: 12px 16px; border-radius: 16px; margin-bottom: 12px; }
     .brand-box h1 { font-size: 15px; font-weight: 700; color: #fff; }
     .brand-box p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     
-    /* CARROSSEL INSTAGRAM (ONLINE AGORA) */
-    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 10px 4px; margin-bottom: 12px; scrollbar-width: none; -webkit-overflow-scrolling: touch; border-bottom: 1px solid var(--border); }
+    /* STORIES / ONLINE */
+    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 10px 4px; margin-bottom: 12px; scrollbar-width: none; border-bottom: 1px solid var(--border); }
     .stories-container::-webkit-scrollbar { display: none; }
     .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 55px; flex-shrink: 0; }
     .story-img-frame { width: 48px; height: 48px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--italia-green), var(--italia-white), var(--italia-red)); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
@@ -28,90 +28,129 @@
     .story-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); background: #000; }
     .story-name { font-size: 9px; color: var(--text); font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* MENU CONTEXTUAL POPUP LATERAL (REDUZIDO PARA LOGIN/LOGOFF) */
+    /* MENU CONTEXTUAL LATERAL */
     .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; }
     .nav-sidebar.open { right: 0; }
     .side-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .menu-opt { display: flex; align-items: center; gap: 10px; padding: 12px; color: #fff; font-size: 13px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
     
-    /* GATES DE LOGIN */
+    /* GATES E INPUTS */
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 340px; margin: 40px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     .cam-circle { width: 85px; height: 85px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 12px; outline: none; }
-    .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; }
+    .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; }
     
-    /* DASHBOARDS CONTÊINERES */
     .app-screen { display: none; }
     .app-screen.active { display: block; }
     
-    /* RECURSOS DO FUNCIONÁRIO */
-    .progress-container { background: var(--card); padding: 14px; border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--border); }
-    .prog-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted); }
+    /* PROGRESSO */
+    .progress-container { background: var(--card); padding: 14px; border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--border); display:flex; flex-direction:column; gap:8px;}
+    .prog-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-muted); }
     .prog-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 4px; overflow: hidden; }
     .prog-bar { background: linear-gradient(90deg, var(--italia-red), var(--italia-green)); height: 100%; width: 0%; transition: width 0.3s ease; }
-    .sect-title { font-size: 11px; font-weight: 700; color: var(--italia-green); text-transform: uppercase; margin-bottom: 10px; padding-left: 4px; border-left: 2px solid var(--italia-red); }
     
-    .card-sector { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
+    .view-toggles { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; }
+    .view-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .view-btn.active { background: var(--italia-green); border-color: var(--italia-green); }
+
+    /* LAYOUT SETORES (LISTA E CARD) */
+    .card-sector { background: var(--card); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; transition: all 0.3s; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; cursor: pointer; }
     .sect-cnt { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.15); }
-    .card-sector.active .sect-cnt { max-height: 2000px; }
+    .card-sector.active .sect-cnt { max-height: 5000px; padding-bottom: 10px; }
     
-    .row-task { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+    /* MODO LISTA */
+    .view-mode-list .row-task { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+    /* MODO CARD */
+    .view-mode-card .sect-cnt { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding: 10px; gap: 12px; scrollbar-width: none; }
+    .view-mode-card .sect-cnt::-webkit-scrollbar { display: none; }
+    .view-mode-card .row-task { flex: 0 0 85%; scroll-snap-align: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; justify-content: space-between; align-items: center; text-align: center; }
+    
     .task-txt-side { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e5e5ea; flex: 1; }
+    .view-mode-card .task-txt-side { flex-direction: column; font-size: 16px; font-weight: 600; }
+    
     .dot-status { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
     .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.4; }
+    
     .task-actions { display: flex; align-items: center; gap: 6px; }
-    .tk-btn { padding: 6px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; }
+    .view-mode-card .task-actions { width: 100%; justify-content: center; }
+    .tk-btn { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: 100%; max-width: 120px; }
     .btn-take { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-green); color: var(--italia-green); }
-    .btn-done { background: var(--italia-green); color: #fff; }
+    .btn-done { background: var(--italia-green); color: #fff; box-shadow: 0 4px 10px rgba(0,146,70,0.3); }
     .btn-leave { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-red); color: var(--italia-red); }
-    .mini-pic { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
+    .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
 
-    /* LAYOUT EXCLUSIVO DO GERENTE (TELA CHEIA GRID) */
-    .mgr-fullscreen-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: rgba(206,43,55,0.08); padding: 12px; border-radius: 12px; border: 1px solid rgba(206,43,55,0.2); }
+    /* GERENTE LIBRARY */
     .mgr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
-    .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; transition: transform 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-    .mgr-card-button:active { transform: scale(0.95); }
+    .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
     .mgr-card-icon { font-size: 28px; }
-    .mgr-card-title { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; }
+    
+    .lib-category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+    .lib-cat-btn { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 10px; font-size: 11px; font-weight: 700; color: #fff; cursor: pointer; text-transform: uppercase; }
+    .lib-cat-btn.active { background: var(--italia-green); border-color: var(--italia-green); }
 
-    /* INTERFACE DE BUSCA E BIBLIOTECA INTERNA DENTRO DO PAINEL */
     .sub-pane-window { display: none; background: var(--card); border: 1px solid var(--italia-green); padding: 16px; border-radius: 20px; margin-top: 12px; }
     .search-row-box { background: rgba(0,0,0,0.3); border-radius: 10px; max-height: 250px; overflow-y: auto; padding: 4px; margin-bottom: 12px; }
-    .search-item-line { padding: 10px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-    .search-item-line:hover { background: rgba(255,255,255,0.03); }
+    .search-item-line { padding: 12px 10px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 
-    /* ANIMIDADE INDIVIDUAL POPUP */
-    .anim-overlay { position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: rgba(20,22,29,0.98); border: 2px solid var(--italia-green); padding: 20px; border-radius: 20px; z-index: 99999; display: none; flex-direction: column; align-items: center; box-shadow: 0 15px 40px rgba(0,0,0,0.8); text-align: center; width: 80%; max-width: 280px; opacity: 0; transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-    .anim-overlay.show { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-    .anim-char { font-size: 55px; margin-bottom: 10px; animation: bnc 0.5s infinite alternate; }
-    @keyframes bnc { 0% { transform: translateY(0); } 100% { transform: translateY(-10px) rotate(5deg); } }
-    .anim-pic { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #fff; margin-top: 8px; }
+    /* ANIMAÇÃO COMPLEXA DE TAREFA */
+    .super-anim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,12,16,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+    .super-anim-overlay.show { display: flex; opacity: 1; }
+    .anim-scene { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; }
+    
+    /* Emojis Animados */
+    .anim-object { font-size: 80px; position: absolute; z-index: 2; filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); }
+    .anim-worker-thumb { position: absolute; bottom: 10px; right: 10px; z-index: 3; display: flex; flex-direction: column; align-items: center; }
+    .anim-worker-thumb img { width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--italia-green); }
+    .anim-worker-thumb span { font-size: 30px; position: absolute; top: -15px; right: -15px; }
+    
+    .anim-msg-box { background: var(--card); border: 2px solid var(--italia-green); padding: 16px 24px; border-radius: 20px; text-align: center; margin-top: 20px; max-width: 80%; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+    .super-anim-overlay.show .anim-msg-box { transform: scale(1); }
+    
+    /* Keyframes Específicos */
+    @keyframes varrer { 0% { transform: rotate(0deg) translateX(0); } 50% { transform: rotate(-20deg) translateX(-30px); } 100% { transform: rotate(0deg) translateX(0); } }
+    @keyframes esfregar { 0% { transform: translateX(-20px) translateY(10px); } 50% { transform: translateX(20px) translateY(-10px); } 100% { transform: translateX(-20px) translateY(10px); } }
+    @keyframes brilharPular { 0% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px #fff); } 50% { transform: translateY(-30px) scale(1.1); filter: drop-shadow(0 0 40px #009246); } 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px #fff); } }
+    
+    .act-varrer { animation: varrer 0.6s infinite; }
+    .act-esfregar { animation: esfregar 0.5s infinite; }
+    .act-brilhar { animation: brilharPular 0.8s infinite; }
 
-    /* FABs FIXOS E CHAT */
+    /* FAB E CHAT MELHORADOS */
     .chat-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9900; align-items: flex-end; }
     .chat-box { width: 100%; background: #0f111a; border-top: 2px solid var(--italia-green); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; max-height: 70vh; }
-    .chat-msg-wall { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 6px; min-height: 200px; }
-    .bubble { font-size: 12px; padding: 8px 12px; border-radius: 12px; max-width: 75%; line-height: 1.4; }
+    .chat-msg-wall { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-height: 250px; }
+    .bubble { font-size: 13px; padding: 10px 14px; border-radius: 12px; max-width: 80%; line-height: 1.4; }
     .bb-in { background: rgba(255,255,255,0.04); align-self: flex-start; color: #fff; }
-    .bb-out { background: rgba(0,146,70,0.15); border: 1px solid rgba(0,146,70,0.2); align-self: flex-end; color: #fff; }
-    .chat-ftr { display: flex; padding: 10px; background: #0b0c10; gap: 8px; }
-    .fab-group { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 900; }
-    .btn-fab { width: 48px; height: 48px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+    .bb-out { background: rgba(0,146,70,0.15); border: 1px solid rgba(0,146,70,0.3); align-self: flex-end; color: #fff; }
+    .chat-ftr { display: flex; padding: 12px; background: #0b0c10; gap: 8px; }
+    
+    .fab-group { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
+    .btn-fab { height: 50px; border-radius: 25px; border: none; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.5); padding: 0 20px; gap: 8px; }
+    .fab-chat { background: #171923; color: var(--italia-green); border: 1px solid var(--border); }
+    .fab-wpp { background: #25d366; color: #fff; text-decoration: none; }
   </style>
 </head>
 <body>
 
-  <div class="anim-overlay" id="popup-animator">
-    <div class="anim-char" id="render-char-emoji">🏆</div>
-    <div style="font-size:13px; font-weight:700;" id="render-char-txt">-</div>
-    <img class="anim-pic" id="render-char-pic" src="">
+  <div class="super-anim-overlay" id="animacao-conclusao">
+    <div class="anim-scene">
+      <div class="anim-object" id="anim-obj-icon">✨</div>
+      <div class="anim-worker-thumb">
+        <img id="anim-worker-pic" src="">
+        <span>👍</span>
+      </div>
+    </div>
+    <div class="anim-msg-box">
+      <h3 style="color:var(--italia-green); font-size:18px; margin-bottom:4px;" id="anim-title">Bravíssimo!</h3>
+      <p style="color:#fff; font-size:14px; font-weight:600;" id="anim-desc">Tudo limpinho e brilhando.</p>
+    </div>
   </div>
 
-  <input type="file" accept="image/*" style="display:none;" id="universal-camera" onchange="fotoCapturadaUniversal(event)">
+  <input type="file" accept="image/*" capture="user" style="display:none;" id="universal-camera" onchange="fotoCapturadaUniversal(event)">
 
   <div class="top-navbar">
     <div class="brand-box">
@@ -123,7 +162,7 @@
 
   <div class="nav-sidebar" id="sidebar-dropdown">
     <div class="side-hdr">
-      <h3 style="font-size:11px; color:var(--italia-green)">Opções da Sessão</h3>
+      <h3 style="font-size:11px; color:var(--italia-green)">Menu do Sistema</h3>
       <button style="background:transparent; border:none; color:var(--text-muted); font-size:16px;" onclick="toggleSidebarDropdown()">✕</button>
     </div>
     <div id="opts-before-login">
@@ -134,21 +173,21 @@
       <div class="menu-opt" onclick="perfilAlterarDados('nome')">✏️ Alterar Meu Nome</div>
       <div class="menu-opt" onclick="perfilAlterarDados('senha')">🔢 Alterar Minha Senha</div>
       <div class="menu-opt" onclick="perfilAlterarDados('foto')">📸 Alterar Minha Foto</div>
-      <div class="menu-opt" onclick="solicitarAcessoMestreEmOperacao()" style="margin-top:15px; color:var(--italia-green)">🔑 Chave do Gerente</div>
+      <div class="menu-opt" onclick="solicitarAcessoMestreEmOperacao()" style="margin-top:15px; color:var(--italia-green)">🔑 Painel do Gerente</div>
     </div>
   </div>
 
   <div class="app-screen active" id="scr-login-gate">
     <div class="login-wrapper">
       <h2 id="login-title-txt">Acesso Operacional</h2>
-      <p id="login-subtitle-txt" style="color:var(--italia-red); font-size:10px; font-weight:700; margin-bottom:16px;">DIGITE SUAS CREDENCIAIS</p>
+      <p id="login-subtitle-txt" style="color:var(--text-muted); font-size:11px; margin-bottom:16px;">Selecione sua foto e entre no turno</p>
       
       <div id="login-avatar-zone">
         <div class="cam-circle" onclick="dispararCliqueCamera('login')">
-          <span id="cam-icon">📸</span>
+          <span id="cam-icon" style="font-size:24px">📸</span>
           <img id="cam-preview" src="">
         </div>
-        <div style="font-size:11px; color:var(--text-muted); margin-top:-8px; margin-bottom:14px;" id="cam-msg">A foto é opcional no primeiro login</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:-8px; margin-bottom:14px;" id="cam-msg">Toque para tirar foto</div>
       </div>
 
       <input type="text" class="main-field" id="field-user" placeholder="Seu Nome (Ex: Heitor)" oninput="detectarFuncionarioExistente()">
@@ -162,88 +201,108 @@
     <div class="stories-container" id="live-stories-bar"></div>
 
     <div class="progress-container">
-      <div class="prog-labels"><span>Meta do Fechamento Coletivo</span><span id="prog-txt-pct">0%</span></div>
+      <div class="prog-labels"><span>Progresso do Restaurante</span><span id="prog-txt-pct" style="color:var(--italia-green)">0%</span></div>
       <div class="prog-bg"><div class="prog-bar" id="prog-fill-bar"></div></div>
     </div>
 
-    <div class="sect-title">Setores Operacionais</div>
-    <div id="render-sectors-zone"></div>
+    <div class="view-toggles">
+      <button class="view-btn active" id="btn-view-list" onclick="alterarModoVisualizacao('list')">📄 Modo Lista</button>
+      <button class="view-btn" id="btn-view-card" onclick="alterarModoVisualizacao('card')">🃏 Modo Card</button>
+    </div>
+
+    <div id="render-sectors-zone" class="view-mode-list"></div>
     
-    <div style="text-align:center; margin-top:20px;">
-      <button style="background:transparent; border:none; color:var(--italia-red); font-weight:700; font-size:12px; text-transform:uppercase;" onclick="efetuarLogoffCompleto()">Sair do Sistema</button>
+    <div style="text-align:center; margin-top:30px;">
+      <button style="background:transparent; border:none; color:var(--italia-red); font-weight:700; font-size:12px; text-transform:uppercase;" onclick="efetuarLogoffCompleto()">Deslogar do Sistema</button>
     </div>
   </div>
 
   <div class="app-screen" id="scr-dashboard-manager">
-    <div class="mgr-fullscreen-hdr">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(206,43,55,0.08); padding:12px; border-radius:12px; border:1px solid rgba(206,43,55,0.2);">
       <div>
-        <div style="font-size:14px; font-weight:800; color:#fff;">PAINEL MESTRE ADMINISTRATIVO</div>
-        <div style="font-size:9px; color:var(--italia-red); font-weight:700;">GESTÃO GERAL E CONFIGURAÇÃO</div>
+        <div style="font-size:14px; font-weight:800; color:#fff;">PAINEL DA GERÊNCIA</div>
+        <div style="font-size:9px; color:var(--italia-red); font-weight:700;">GESTÃO AVANÇADA</div>
       </div>
       <button style="background:var(--italia-red); color:#fff; border:none; padding:6px 12px; border-radius:8px; font-size:10px; font-weight:700;" onclick="efetuarLogoffCompleto()">VOLTAR</button>
     </div>
 
     <div class="mgr-grid">
       <div class="mgr-card-button" onclick="abrirSubPainelGerente('busca_tarefas')">
-        <div class="mgr-card-icon">🔍</div>
-        <div class="mgr-card-title">Injetar Tarefa</div>
+        <div class="mgr-card-icon">📚</div>
+        <div style="font-size:12px; font-weight:700; color:#fff;">Biblioteca de Tarefas</div>
       </div>
       <div class="mgr-card-button" onclick="abrirSubPainelGerente('novo_setor')">
         <div class="mgr-card-icon">📂</div>
-        <div class="mgr-card-title">Novo Setor</div>
+        <div style="font-size:12px; font-weight:700; color:#fff;">Criar Setor</div>
       </div>
       <div class="mgr-card-button" onclick="abrirSubPainelGerente('ver_equipe')">
         <div class="mgr-card-icon">👥</div>
-        <div class="mgr-card-title">Ver Equipe</div>
+        <div style="font-size:12px; font-weight:700; color:#fff;">Equipe</div>
       </div>
       <div class="mgr-card-button" onclick="zerarTurnoCompletoNuvem()" style="border:1px dashed var(--italia-red);">
         <div class="mgr-card-icon">⚠️</div>
-        <div class="mgr-card-title" style="color:var(--italia-red)">Zerar Dia</div>
+        <div style="font-size:12px; font-weight:700; color:var(--italia-red)">Zerar Dia</div>
       </div>
     </div>
 
     <div class="sub-pane-window" id="sub-pane-busca_tarefas">
-      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Biblioteca & Busca de Tarefas</h3>
-      <input type="text" class="main-field" id="mgr-search-input" placeholder="🔍 Digite para buscar (Ex: Papel, gelo...)" oninput="filtrarBibliotecaAvançada()">
-      <div class="search-row-box" id="mgr-search-results-render"></div>
+      <h3 style="font-size:13px; text-transform:uppercase; margin-bottom:12px; color:var(--italia-green)">Injetar Tarefas Prontas</h3>
+      
+      <div class="lib-category-grid">
+        <button class="lib-cat-btn active" onclick="filtrarBiblioCategoria('tudo', this)">Tudo</button>
+        <button class="lib-cat-btn" onclick="filtrarBiblioCategoria('limpeza', this)">🧹 Limpeza</button>
+        <button class="lib-cat-btn" onclick="filtrarBiblioCategoria('salao', this)">🍷 Salão</button>
+        <button class="lib-cat-btn" onclick="filtrarBiblioCategoria('bar', this)">🍹 Bar/Café</button>
+        <button class="lib-cat-btn" onclick="filtrarBiblioCategoria('buffet', this)">🍲 Buffet</button>
+        <button class="lib-cat-btn" onclick="filtrarBiblioCategoria('fechamento', this)">🔒 Fechar</button>
+      </div>
+
+      <input type="text" class="main-field" id="mgr-search-input" placeholder="🔍 Buscar tarefa específica..." oninput="renderizarBibliotecaTarefas()">
+      
+      <div class="search-row-box" id="mgr-search-results-render" style="max-height: 350px;"></div>
       <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted)">Voltar ao Menu</button>
     </div>
 
     <div class="sub-pane-window" id="sub-pane-novo_setor">
-      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Criar Novo Setor Personalizado</h3>
-      <input type="text" class="main-field" id="new-sector-name" placeholder="Nome do Setor (Ex: Cozinha)">
-      <input type="text" class="main-field" id="new-sector-icon" placeholder="Emoji do Ícone (Ex: 🍳)" maxlength="2">
-      <button class="btn-submit" onclick="salvarSetorCustomizadoGerente()">Criar e Ativar Setor</button>
-      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted); margin-top:8px;">Cancelar</button>
+      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Novo Setor Operacional</h3>
+      <input type="text" class="main-field" id="new-sector-name" placeholder="Nome (Ex: Deck Externo)">
+      <input type="text" class="main-field" id="new-sector-icon" placeholder="Emoji do Ícone (Ex: 🌳)" maxlength="2">
+      <button class="btn-submit" onclick="salvarSetorCustomizadoGerente()">Ativar Setor</button>
+      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted);">Cancelar</button>
     </div>
 
     <div class="sub-pane-window" id="sub-pane-ver_equipe">
-      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Funcionários Cadastrados</h3>
+      <h3 style="font-size:12px; text-transform:uppercase; margin-bottom:10px;">Funcionários</h3>
       <div class="search-row-box" id="mgr-team-list-render"></div>
-      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted)">Voltar ao Menu</button>
+      <button class="btn-submit" onclick="fecharSubPaineis()" style="background:var(--text-muted)">Voltar</button>
     </div>
   </div>
 
   <div class="chat-container" id="modal-chat">
     <div class="chat-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border);">
-        <span style="font-size:12px; font-weight:700; color:var(--italia-green); text-transform:uppercase;">Chat Interno Realtime</span>
-        <button style="background:transparent; border:none; color:var(--text-muted); font-size:16px; cursor:pointer;" onclick="toggleChatWindow()">✕</button>
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border);">
+        <span style="font-size:13px; font-weight:800; color:var(--italia-green); text-transform:uppercase;">💬 Chat da Equipe</span>
+        <button style="background:transparent; border:none; color:var(--text-muted); font-size:18px; cursor:pointer;" onclick="toggleChatWindow()">✕</button>
       </div>
       <div class="chat-msg-wall" id="chat-wall"></div>
       <div class="chat-ftr">
-        <input type="text" class="main-field" id="chat-input" placeholder="Digite uma mensagem..." style="margin-bottom:0;">
-        <button class="btn-submit" onclick="enviarMensagemChat()" style="width:auto; padding:0 16px;">Enviar</button>
+        <input type="text" class="main-field" id="chat-input" placeholder="Escreva aqui..." style="margin-bottom:0;">
+        <button class="btn-submit" onclick="enviarMensagemChat()" style="width:auto; padding:0 20px;">Enviar</button>
       </div>
     </div>
   </div>
 
   <div class="fab-group">
-    <button class="btn-fab" onclick="toggleChatWindow()" style="background:#171923; color:var(--italia-green); border:1px solid var(--border);">💬</button>
-    <a class="btn-fab" id="whatsapp-link" href="#" onclick="gerarRelatorioTurnoWhatsApp(event)" style="background:#25d366; color:#fff; text-decoration:none;">✅</a>
+    <button class="btn-fab fab-chat" onclick="toggleChatWindow()">
+      <span style="font-size:20px">💬</span> Chat Interno
+    </button>
+    <a class="btn-fab fab-wpp" id="whatsapp-link" href="#" onclick="gerarRelatorioTurnoWhatsApp(event)">
+      <span style="font-size:20px">✅</span> Relatório Wpp
+    </a>
   </div>
 
   <script>
+    // CONFIGURAÇÕES DO BANCO E VARIÁVEIS GLOBAIS
     const BIN_URL = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
     const BIN_KEY = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i";
     const MASTER_PASS = "1911";
@@ -252,56 +311,107 @@
     var currentWorker = "";
     var cameraContext = "login"; 
     var loginViewContext = "worker"; 
+    var currentCategoriaBiblio = "tudo";
+    var currentViewMode = "list"; 
 
     var liveData = { tarefasStatus: {}, usuariosSalvos: {}, mensagensChat: [], tarefasCustomizadas: [], setoresCustomizados: [], loginAtividade: {} };
 
-    // BANCO DE DADOS INTEGRADO OPERACIONAL - SOP RESTAURANTES
-    const staticLibrary = [
-      { cat: "salao", txt: "Montar mesas com pratos, talheres e sousplats" },
-      { cat: "salao", txt: "Alinhar mesas e cadeiras seguindo o mapa" },
-      { cat: "salao", txt: "Checar lâmpadas, ar-condicionado e som ambiente" },
-      { cat: "salao", txt: "Organizar e higienizar galheteiros e saleiros" },
-      { cat: "salao", txt: "Varrer e passar pano no salão e calçada externa" },
-      { cat: "salao", txt: "Limpar vidros, janelas e aparadores" },
-      { cat: "salao", txt: "Higienizar superfícies com álcool 70%" },
-      { cat: "buffet", txt: "Ligar aquecimento da pista quente e fria" },
-      { cat: "buffet", txt: "Abastecer pilha de pratos limpos na rampa" },
-      { cat: "buffet", txt: "Higienizar pegadores e conchas de servir" },
-      { cat: "buffet", txt: "Organizar bancada de sobremesas e cafés" },
-      { cat: "buffet", txt: "Limpar e polir vidros protetores do buffet" },
-      { cat: "bar", txt: "Reabastecer estoque de gelo nas geleiras" },
-      { cat: "bar", txt: "Abastecer geladeiras com bebidas e águas" },
-      { cat: "bar", txt: "Organizar e polir copos e taças de cristal" },
-      { cat: "bar", txt: "Preparar guarnições (limão, hortelã) para drinks" },
-      { cat: "bar", txt: "Limpar balcão de inox e calhas de atendimento" },
-      { cat: "bar", txt: "Esvaziar e higienizar lixeiras do bar" },
-      { cat: "banheiros", txt: "Repor rolos de papel higiênico nos dispensers" },
-      { cat: "banheiros", txt: "Abastecer dispensers de papel toalha de mão" },
-      { cat: "banheiros", txt: "Verificar e encher sabonetes e álcool" },
-      { cat: "banheiros", txt: "Lavar e desinfetar vasos, mictórios e pias" },
-      { cat: "banheiros", txt: "Limpar espelhos e retirar lixos" },
-      { cat: "banheiros", txt: "Lavar o piso e deixar placa de piso molhado" }
+    // SINTETIZADOR DE ÁUDIO JS
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+
+    function playTone(freq, type, dur, vol=0.1) {
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.type = type; 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.connect(gain); 
+      gain.connect(audioCtx.destination);
+      osc.start(); 
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
+      osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function soundPegarTarefa() {
+      playTone(440, 'sine', 0.1, 0.1); setTimeout(() => playTone(660, 'sine', 0.15, 0.1), 100);
+    }
+
+    function soundConcluirTarefa() {
+      playTone(523.25, 'triangle', 0.15, 0.1); setTimeout(() => playTone(659.25, 'triangle', 0.15, 0.1), 120); setTimeout(() => playTone(783.99, 'triangle', 0.3, 0.1), 240);
+    }
+
+    // MEGA BIBLIOTECA DE TAREFAS - EXPANDIDA
+    const megaLibrary = [
+      // Limpeza
+      { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
+      { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
+      { cat: "limpeza", txt: "Limpar e polir os vidros e portas de entrada" },
+      { cat: "limpeza", txt: "Higienizar as cadeiras de bebê (cadeirões)" },
+      { cat: "limpeza", txt: "Recolher o lixo de todos os setores e levar para fora" },
+      { cat: "limpeza", txt: "Lavar as lixeiras de todos os setores" },
+      { cat: "limpeza", txt: "Varrer e passar pano no deck/área externa" },
+      // Salão
+      { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres alinhados)" },
+      { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal e pimenta)" },
+      { cat: "salao", txt: "Revisar alinhamento de mesas e cadeiras pelo mapa" },
+      { cat: "salao", txt: "Dobrar e organizar guardanapos de tecido" },
+      { cat: "salao", txt: "Checar iluminação, ar-condicionado e som ambiente" },
+      { cat: "salao", txt: "Organizar a praça de garçons e gavetas dos aparadores" },
+      { cat: "salao", txt: "Repor paliteiros e porta-copos" },
+      { cat: "salao", txt: "Limpar os menus e cartas de vinho com álcool" },
+      // Bar
+      { cat: "bar", txt: "Polir todas as taças de vinho e copos de cristal" },
+      { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
+      { cat: "bar", txt: "Repor geladeiras com refrigerantes, águas e cervejas" },
+      { cat: "bar", txt: "Limpar e purgar a máquina de café expresso" },
+      { cat: "bar", txt: "Cortar guarnições (limão, laranja, hortelã)" },
+      { cat: "bar", txt: "Repor potes de açúcar, adoçante e mexedores" },
+      { cat: "bar", txt: "Checar validade dos xaropes e sucos abertos" },
+      { cat: "bar", txt: "Lavar as esteiras de borracha (bar mats)" },
+      // Buffet e Cozinha
+      { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+      { cat: "buffet", txt: "Checar as temperaturas das pistas quentes e frias" },
+      { cat: "buffet", txt: "Repor a pilha de pratos limpos no início do buffet" },
+      { cat: "buffet", txt: "Organizar e polir os pegadores e conchas" },
+      { cat: "buffet", txt: "Higienizar a bancada de granito do buffet" },
+      { cat: "buffet", txt: "Abastecer os molhos e temperos da ilha de saladas" },
+      { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
+      { cat: "buffet", txt: "Checar validade das etiquetas nas cubas da geladeira" },
+      // Banheiros
+      { cat: "limpeza", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+      { cat: "limpeza", txt: "Limpar e polir os espelhos dos banheiros" },
+      { cat: "limpeza", txt: "Repor papel toalha e papel higiênico" },
+      { cat: "limpeza", txt: "Repor sabonete líquido nos dispensers" },
+      { cat: "limpeza", txt: "Borrifar odorizador de ambiente nos banheiros" },
+      // Fechamento
+      { cat: "fechamento", txt: "Desligar todos os equipamentos térmicos e ar-condicionado" },
+      { cat: "fechamento", txt: "Fechar o caixa e imprimir relatórios Z" },
+      { cat: "fechamento", txt: "Verificar se as geladeiras ficaram trancadas/fechadas" },
+      { cat: "fechamento", txt: "Trancar portas, janelas e ativar o alarme" }
     ];
 
     var defaultSectors = [
-      { id: "salao", title: "Salão & Área Externa", icon: "🛋️" },
-      { id: "buffet", title: "Buffet Self-Service", icon: "🍱" },
+      { id: "salao", title: "Salão & Praças", icon: "🍷" },
       { id: "bar", title: "Bar & Bebidas", icon: "🍹" },
+      { id: "buffet", title: "Buffet & Cozinha", icon: "🍲" },
       { id: "banheiros", title: "Banheiros", icon: "🧻" }
     ];
 
-    const animationRules = [
-      { keys: ["varrer", "vassoura", "salão", "chão"], emoji: "🧹", msg: "A Vassoura varreu tudo com " },
-      { keys: ["pano", "rodo", "passar"], emoji: "🧽", msg: "O Rodo espalhou brilho com " },
-      { keys: ["álcool", "higienizar", "mesas"], emoji: "🧴", msg: "O Frasco de Spray esterilizou tudo com " },
-      { keys: ["vaso", "sanitário", "pias", "lavar"], emoji: "🚽", msg: "O Vaso Sanitário piscou de limpo para " },
-      { keys: ["papel", "rolos", "toalha"], emoji: "🧻", msg: "O Rolinho de Papel agradece a " },
-      { keys: ["copos", "taças", "bar", "polir"], emoji: "🍹", msg: "As Taças de Cristal brindam a " }
+    const animationBrain = [
+      { keys: ["varrer", "vassoura", "chão"], emoji: "🧹", cssClass: "act-varrer", title: "Tudo Limpo!", desc: "A vassoura varreu toda a sujeira e está feliz!" },
+      { keys: ["pano", "rodo", "úmido", "passar"], emoji: "🧽", cssClass: "act-esfregar", title: "Brilhando!", desc: "O rodo deixou o chão parecendo um espelho." },
+      { keys: ["vaso", "sanitário", "privada"], emoji: "🚽", cssClass: "act-brilhar", title: "Estou Limpinho!", desc: "O vaso sanitário está reluzindo de alegria." },
+      { keys: ["álcool", "mesas", "higienizar"], emoji: "🧴", cssClass: "act-esfregar", title: "Esterilizado!", desc: "As bactérias foram eliminadas com sucesso." },
+      { keys: ["taças", "copos", "polir"], emoji: "✨", cssClass: "act-brilhar", title: "Cristalino!", desc: "As taças estão prontas para o vinho." },
+      { keys: ["lixo", "recolher"], emoji: "🗑️", cssClass: "act-brilhar", title: "Lixeira Vazia!", desc: "Ambiente livre de odores." },
+      { keys: ["réchauds", "temperaturas"], emoji: "🔥", cssClass: "act-brilhar", title: "Aquecendo!", desc: "O buffet está na temperatura perfeita." }
     ];
 
     window.addEventListener('DOMContentLoaded', () => {
       puxarDadosServidor();
-      setInterval(puxarDadosServidor, 5000);
+      setInterval(puxarDadosServidor, 6000); 
     });
 
     function toggleSidebarDropdown() { document.getElementById('sidebar-dropdown').classList.toggle('open'); }
@@ -313,28 +423,83 @@
 
     function mudarContextoLoginGeral(tipo) {
       loginViewContext = tipo;
-      toggleSidebarDropdown();
+      document.getElementById('sidebar-dropdown').classList.remove('open');
       let title = document.getElementById('login-title-txt');
+      let sub = document.getElementById('login-subtitle-txt');
       let zone = document.getElementById('login-avatar-zone');
       let fName = document.getElementById('field-user');
       let btnTxt = document.getElementById('btn-login-text');
 
       if (tipo === 'worker') {
-        title.innerText = "Acesso Operacional";
-        zone.style.display = "block"; fName.style.display = "block";
-        btnTxt.innerText = "Entrar no Turno";
+        title.innerText = "Acesso Operacional"; sub.innerText = "Selecione sua foto e entre no turno";
+        zone.style.display = "block"; fName.style.display = "block"; btnTxt.innerText = "Entrar no Turno";
       } else {
-        title.innerText = "Acesso do Gerente";
-        zone.style.display = "none"; fName.style.display = "none";
-        btnTxt.innerText = "Entrar no Painel Mestre";
+        title.innerText = "Acesso Mestre"; sub.innerText = "Acesso exclusivo da gerência";
+        zone.style.display = "none"; fName.style.display = "none"; btnTxt.innerText = "Acessar Painel";
       }
       document.getElementById('field-pass').value = "";
       switchScreenView('scr-login-gate');
     }
 
+    function perfilAlterarDados(tipo) {
+      toggleSidebarDropdown();
+      if (!currentWorker || currentWorker === "Gerente") return;
+
+      if (tipo === 'nome') {
+        let novoNome = prompt("Digite o novo nome para o seu perfil:");
+        if (novoNome && novoNome.trim() !== "") {
+          let n = novoNome.trim();
+          liveData.usuariosSalvos[n] = liveData.usuariosSalvos[currentWorker];
+          liveData.loginAtividade[n] = liveData.loginAtividade[currentWorker];
+          delete liveData.usuariosSalvos[currentWorker];
+          delete liveData.loginAtividade[currentWorker];
+          
+          currentWorker = n;
+          document.getElementById('system-context-subline').innerText = "Operador: " + currentWorker.toUpperCase();
+          salvarDadosServidor(); montarPainelDOM(); alert("Nome alterado com sucesso!");
+        }
+      } else if (tipo === 'senha') {
+        let novaSenha = prompt("Digite a sua nova senha (4 dígitos):");
+        if (novaSenha && novaSenha.trim() !== "") {
+          liveData.usuariosSalvos[currentWorker].senha = novaSenha.trim();
+          salvarDadosServidor(); alert("Senha alterada com sucesso!");
+        }
+      } else if (tipo === 'foto') {
+        dispararCliqueCamera('update');
+      }
+    }
+
+    function solicitarAcessoMestreEmOperacao() {
+      toggleSidebarDropdown();
+      let senha = prompt("Acesso restrito. Digite a senha do gerente:");
+      if (senha === MASTER_PASS) {
+        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+        switchScreenView('scr-dashboard-manager');
+        fecharSubPaineis();
+      } else if (senha !== null) {
+        alert("Senha Incorreta!");
+      }
+    }
+
+    // CAMERA E LOGIN
     function dispararCliqueCamera(contexto) {
       cameraContext = contexto;
       document.getElementById('universal-camera').click();
+    }
+
+    function compressImageCanvas(imgSrc, callback) {
+      let img = new Image();
+      img.onload = function() {
+        let canvas = document.createElement('canvas');
+        let max_size = 150; 
+        let width = img.width; let height = img.height;
+        if (width > height) { if (width > max_size) { height *= max_size / width; width = max_size; } } 
+        else { if (height > max_size) { width *= max_size / height; height = max_size; } }
+        canvas.width = width; canvas.height = height;
+        let ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', 0.6)); 
+      }
+      img.src = imgSrc;
     }
 
     function fotoCapturadaUniversal(event) {
@@ -342,20 +507,21 @@
       if (file) {
         let reader = new FileReader();
         reader.onload = function(e) {
-          let b64 = e.target.result;
-          if (cameraContext === "login") {
-            base64CamGlobal = b64;
-            document.getElementById('cam-icon').style.display = 'none';
-            let img = document.getElementById('cam-preview');
-            img.src = b64; img.style.display = 'block';
-            document.getElementById('cam-msg').innerText = "✓ Foto Processada!";
-            document.getElementById('cam-msg').style.color = "var(--italia-green)";
-          } else {
-            if (currentWorker && liveData.usuariosSalvos[currentWorker]) {
-              liveData.usuariosSalvos[currentWorker].foto = b64;
-              salvarDadosServidor();
+          compressImageCanvas(e.target.result, function(compressedBase64) {
+            if (cameraContext === "login") {
+              base64CamGlobal = compressedBase64;
+              document.getElementById('cam-icon').style.display = 'none';
+              let img = document.getElementById('cam-preview');
+              img.src = compressedBase64; img.style.display = 'block';
+              document.getElementById('cam-msg').innerText = "✓ Foto Pronta!";
+              document.getElementById('cam-msg').style.color = "var(--italia-green)";
+            } else {
+              if (currentWorker && liveData.usuariosSalvos[currentWorker]) {
+                liveData.usuariosSalvos[currentWorker].foto = compressedBase64;
+                salvarDadosServidor(); montarPainelDOM(); alert("Sua foto foi atualizada!");
+              }
             }
-          }
+          });
         }
         reader.readAsDataURL(file);
       }
@@ -363,20 +529,18 @@
 
     function detectarFuncionarioExistente() {
       let nome = document.getElementById('field-user').value.trim();
-      let msg = document.getElementById('cam-msg');
-      let img = document.getElementById('cam-preview');
-      let icon = document.getElementById('cam-icon');
-      let btn = document.getElementById('btn-login-text');
+      let msg = document.getElementById('cam-msg'); let img = document.getElementById('cam-preview');
+      let icon = document.getElementById('cam-icon'); let btn = document.getElementById('btn-login-text');
 
       if (liveData.usuariosSalvos[nome]) {
         base64CamGlobal = liveData.usuariosSalvos[nome].foto;
         icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
-        msg.innerText = "✓ Perfil Reconhecido!"; msg.style.color = "var(--italia-green)";
+        msg.innerText = "✓ Perfil Encontrado!"; msg.style.color = "var(--italia-green)";
         btn.innerText = "Entrar no Turno";
       } else {
         if(base64CamGlobal.startsWith("data:image")) return;
         base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
-        msg.innerText = "Primeiro acesso? Escolha uma foto!"; msg.style.color = "var(--text-muted)";
+        msg.innerText = "Toque para tirar foto"; msg.style.color = "var(--text-muted)";
         btn.innerText = "Cadastrar e Entrar";
       }
     }
@@ -388,8 +552,7 @@
         if (pass === MASTER_PASS) {
           currentWorker = "Gerente";
           document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
-          switchScreenView('scr-dashboard-manager');
-          fecharSubPaineis();
+          switchScreenView('scr-dashboard-manager'); fecharSubPaineis();
         } else { alert("Senha Mestra Incorreta!"); }
         return;
       }
@@ -414,27 +577,16 @@
       document.getElementById('opts-before-login').style.display = 'none';
       document.getElementById('opts-after-login').style.display = 'block';
 
-      if(primeiroAcesso) alert("🎉 Perfil criado com sucesso! Guarde sua senha de acesso.");
+      if(primeiroAcesso) alert("🎉 Perfil criado! Seja bem-vindo à equipe.");
 
       await salvarDadosServidor();
       switchScreenView('scr-dashboard-worker');
       montarPainelDOM();
     }
 
-    function solicitarAcessoMestreEmOperacao() {
-      let pass = prompt("Insira a Senha Mestra da Gerência:");
-      if (pass === MASTER_PASS) {
-        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
-        switchScreenView('scr-dashboard-manager');
-        fecharSubPaineis();
-        toggleSidebarDropdown();
-      } else { alert("Senha Incorreta!"); }
-    }
-
     function efetuarLogoffCompleto() {
       if(currentWorker && currentWorker !== "Gerente" && liveData.loginAtividade) {
-        liveData.loginAtividade[currentWorker] = false;
-        salvarDadosServidor();
+        liveData.loginAtividade[currentWorker] = false; salvarDadosServidor();
       }
       currentWorker = ""; base64CamGlobal = "";
       document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
@@ -443,20 +595,7 @@
       mudarContextoLoginGeral('worker');
     }
 
-    function triggerSuperAnimation(texto, worker) {
-      let analise = texto.toLowerCase();
-      let rule = { emoji: "🏆", msg: "O Checklist saúda o avanço de " };
-      for (let r of animationRules) {
-        if (r.keys.some(k => analise.includes(k))) { rule = r; break; }
-      }
-      let box = document.getElementById('popup-animator');
-      document.getElementById('render-char-emoji').innerText = rule.emoji;
-      document.getElementById('render-char-txt').innerHTML = `${rule.msg} <span style='color:var(--italia-green)'>${worker.toUpperCase()}</span>!`;
-      document.getElementById('render-char-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
-      box.style.display = 'flex'; setTimeout(() => box.classList.add('show'), 30);
-      setTimeout(() => { box.classList.remove('show'); setTimeout(() => box.style.display='none', 300); }, 2500);
-    }
-
+    // REDE DADOS (JSONBin) E SEED DE DADOS MASSIVO
     async function puxarDadosServidor() {
       try {
         let res = await fetch(BIN_URL + "/latest", { headers: { "X-Master-Key": BIN_KEY } });
@@ -470,12 +609,51 @@
             if(!liveData.tarefasCustomizadas) liveData.tarefasCustomizadas = [];
             if(!liveData.setoresCustomizados) liveData.setoresCustomizados = [];
             if(!liveData.loginAtividade) liveData.loginAtividade = {};
+            
+            popularTarefasPadraoSeVazio();
           }
         }
-      } catch(e){}
+      } catch(e) { console.log("Erro silencioso de rede."); }
       
       if(document.getElementById('scr-dashboard-worker').classList.contains('active')) {
         montarPainelDOM();
+      }
+    }
+
+    function popularTarefasPadraoSeVazio() {
+      // Se o array de tarefas estiver vazio, injetamos a carga massiva inicial
+      if (liveData.tarefasCustomizadas.length === 0) {
+        liveData.tarefasCustomizadas = [
+          // Salão
+          { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres)" },
+          { cat: "salao", txt: "Higienizar as mesas com álcool 70%" },
+          { cat: "salao", txt: "Alinhar mesas e cadeiras perfeitamente" },
+          { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal)" },
+          { cat: "salao", txt: "Dobrar e organizar os guardanapos" },
+          { cat: "salao", txt: "Limpar os menus e checar organização do aparador" },
+          // Bar
+          { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
+          { cat: "bar", txt: "Polir todas as taças de vinho e copos" },
+          { cat: "bar", txt: "Cortar as guarnições (limão, laranja, hortelã)" },
+          { cat: "bar", txt: "Repor geladeiras com cervejas e refris" },
+          { cat: "bar", txt: "Lavar e secar as esteiras de borracha" },
+          { cat: "bar", txt: "Checar potes de açúcar, adoçante e mexedores" },
+          // Buffet
+          { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+          { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
+          { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
+          { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
+          { cat: "buffet", txt: "Higienizar a bancada de granito" },
+          { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
+          // Banheiros
+          { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+          { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
+          { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
+          { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
+          { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
+          { cat: "banheiros", txt: "Borrifar odorizador de ambiente" }
+        ];
+        salvarDadosServidor();
       }
     }
 
@@ -485,42 +663,55 @@
           method: "PUT", headers: { "Content-Type": "application/json", "X-Master-Key": BIN_KEY },
           body: JSON.stringify(liveData)
         });
-      } catch(e){}
+      } catch(e) { console.log("Aviso: Conexão instável."); }
     }
 
-    // RETORNA A LISTA INTEGRAL DE SETORES (ESTÁTICOS + CUSTOMIZADOS DO GERENTE)
-    function obterSetoresTotais() {
-      return [...defaultSectors, ...liveData.setoresCustomizados];
+    // RENDERIZAÇÃO DO PAINEL
+    function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
+
+    function alterarModoVisualizacao(modo) {
+      currentViewMode = modo;
+      document.getElementById('btn-view-list').classList.toggle('active', modo === 'list');
+      document.getElementById('btn-view-card').classList.toggle('active', modo === 'card');
+      
+      let zone = document.getElementById('render-sectors-zone');
+      zone.className = modo === 'list' ? 'view-mode-list' : 'view-mode-card';
+      montarPainelDOM();
     }
 
     function montarPainelDOM() {
       renderizarCarrosselStoriesInstagram();
-      let zone = document.getElementById('render-sectors-zone');
-      if (!zone) return;
+      let zone = document.getElementById('render-sectors-zone'); if (!zone) return;
       let activeId = document.querySelector('.card-sector.active')?.id?.replace('sect_', '');
       zone.innerHTML = '';
 
       let setoresAtuais = obterSetoresTotais();
 
-      setoresAtuais.forEach(s => {
-        let arr = staticLibrary.filter(x => x.cat === s.id).map(x => x.txt);
-        liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) arr.push(c.txt); });
-
-        let feitas = 0;
-        arr.forEach((t, i) => { if(liveData.tarefasStatus[s.id+'_'+i]?.status === 'done') feitas++; });
+      setoresAtuais.forEach((s, sIndex) => {
+        let arr = []; liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) arr.push(c.txt); });
+        let feitas = 0; arr.forEach((t, i) => { if(liveData.tarefasStatus[s.id+'_'+i]?.status === 'done') feitas++; });
 
         let card = document.createElement('div');
-        card.className = 'card-sector' + (activeId === s.id ? ' active' : '');
+        let isOpen = (activeId === s.id) || (currentViewMode==='card' && !activeId && sIndex===0);
+        
+        card.className = 'card-sector' + (isOpen ? ' active' : '');
         card.id = 'sect_' + s.id;
         card.innerHTML = `
           <div class="sect-hdr" onclick="alternarSetorAbas('${s.id}')">
-            <div style="display:flex; align-items:center; gap:10px;"><span>${s.icon}</span><span class="sect-lbl">${s.title}</span></div>
-            <span style="font-size:11px; font-weight:700; color:var(--italia-green)">${feitas}/${arr.length} Fatto</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px">${s.icon}</span>
+              <span style="font-weight:700; text-transform:uppercase">${s.title}</span>
+            </div>
+            <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
           </div>
-          <div class="sect-cnt" id="cnt_${s.id}" style="${activeId === s.id ? 'max-height:2000px;' : 'max-height:0px;'}"></div>
+          <div class="sect-cnt" id="cnt_${s.id}"></div>
         `;
         zone.appendChild(card);
         let cnt = document.getElementById('cnt_' + s.id);
+
+        if (arr.length === 0) {
+          cnt.innerHTML = `<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>`;
+        }
 
         arr.forEach((txt, idx) => {
           let chave = s.id + '_' + idx;
@@ -528,22 +719,18 @@
           let row = document.createElement('div');
           row.className = 'row-task ' + st.status;
 
-          let btnsHtml = '';
-          let picHtml = '';
+          let btnsHtml = ''; let picHtml = '';
 
           if (st.status === 'idle') {
-            btnsHtml = `<button class="tk-btn btn-take" onclick="gerenciarJob('${chave}','take','${txt.replace(/'/g, "\\'")}',event)">Pegar</button>`;
+            btnsHtml = `<button class="tk-btn btn-take" onclick="gerenciarJob('${chave}','take','${txt.replace(/'/g, "\\'")}',event)">Pegar Tarefa</button>`;
           } else if (st.status === 'working') {
             picHtml = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
             if (st.worker === currentWorker) {
-              btnsHtml = `
-                <button class="tk-btn btn-leave" onclick="gerenciarJob('${chave}','leave','${txt.replace(/'/g, "\\'")}',event)">Largar</button>
-                <button class="tk-btn btn-done" onclick="gerenciarJob('${chave}','complete','${txt.replace(/'/g, "\\'")}',event)">Fatto</button>
-              `;
-            } else { btnsHtml = `<span style="font-size:9px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`; }
+              btnsHtml = `<button class="tk-btn btn-leave" onclick="gerenciarJob('${chave}','leave','${txt.replace(/'/g, "\\'")}',event)">Largar</button><button class="tk-btn btn-done" onclick="gerenciarJob('${chave}','complete','${txt.replace(/'/g, "\\'")}',event)">Feito ✅</button>`;
+            } else { btnsHtml = `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`; }
           } else {
             picHtml = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
-            btnsHtml = `<span style="font-size:10px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
+            btnsHtml = `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
           }
 
           row.innerHTML = `<div class="task-txt-side"><div class="dot-status"></div><div>${txt}</div></div><div class="task-actions">${picHtml}${btnsHtml}</div>`;
@@ -556,154 +743,134 @@
     function renderizarCarrosselStoriesInstagram() {
       let bar = document.getElementById('live-stories-bar'); if(!bar) return;
       bar.innerHTML = "";
-      
       Object.keys(liveData.usuariosSalvos).forEach(nome => {
         let isOnline = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
         if (!isOnline && nome !== currentWorker) return; 
-
         let card = document.createElement('div');
         card.className = "story-card" + (nome === currentWorker ? " me" : "");
-        card.innerHTML = `
-          <div class="story-img-frame">
-            <img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}">
-          </div>
-          <div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>
-        `;
+        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
         bar.appendChild(card);
       });
     }
 
+    function alternarSetorAbas(id) {
+      let card = document.getElementById('sect_' + id);
+      let isActive = card.classList.contains('active');
+      document.querySelectorAll('.card-sector').forEach(c => c.classList.remove('active'));
+      if (!isActive) card.classList.add('active');
+    }
+
+    // AÇÕES DE TAREFA E ANIMAÇÃO
     function gerenciarJob(chave, acao, texto, e) {
       e.stopPropagation();
-      if (acao === 'take') { liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker }; }
+      if (acao === 'take') { liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker }; soundPegarTarefa(); }
       else if (acao === 'leave') { liveData.tarefasStatus[chave] = { status: 'idle', worker: '' }; }
       else if (acao === 'complete') {
         liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker };
-        triggerSuperAnimation(texto, currentWorker);
+        soundConcluirTarefa(); dispararAnimacaoCompleta(texto, currentWorker);
       }
       salvarDadosServidor(); montarPainelDOM();
     }
 
-    function alternarSetorAbas(id) {
-      let card = document.getElementById('sect_' + id);
-      let content = document.getElementById('cnt_' + id);
-      let isActive = card.classList.contains('active');
-      document.querySelectorAll('.card-sector').forEach(c => { c.classList.remove('active'); c.querySelector('.sect-cnt').style.maxHeight = '0px'; });
-      if (!isActive) { card.classList.add('active'); content.style.maxHeight = '2000px'; }
+    function dispararAnimacaoCompleta(texto, worker) {
+      let analise = texto.toLowerCase();
+      let rule = { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho Excelente!", desc: "A gerência agradece o esforço." };
+      for (let r of animationBrain) { if (r.keys.some(k => analise.includes(k))) { rule = r; break; } }
+      
+      let overlay = document.getElementById('animacao-conclusao');
+      let icon = document.getElementById('anim-obj-icon');
+      
+      icon.innerText = rule.emoji; icon.className = "anim-object " + rule.cssClass;
+      document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
+      document.getElementById('anim-title').innerText = rule.title; document.getElementById('anim-desc').innerText = rule.desc;
+      
+      overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('show'), 10);
+      setTimeout(() => { overlay.classList.remove('show'); setTimeout(() => overlay.style.display='none', 300); }, 3500);
     }
 
     function atualizarProgressoBarra() {
-      let t = 0, f = 0;
-      let setoresAtuais = obterSetoresTotais();
+      let t = 0, f = 0; let setoresAtuais = obterSetoresTotais();
       setoresAtuais.forEach(s => {
-        let len = staticLibrary.filter(x => x.cat === s.id).length;
-        liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) len++; });
-        for(let i=0; i<len; i++) { t++; if(liveData.tarefasStatus[s.id+'_'+i]?.status==='done') f++; }
+        let arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
+        arr.forEach((_, i) => { t++; if(liveData.tarefasStatus[s.id+'_'+i]?.status==='done') f++; });
       });
       let p = t > 0 ? Math.round((f/t)*100) : 0;
       if(document.getElementById('prog-fill-bar')) document.getElementById('prog-fill-bar').style.width = p+'%';
       if(document.getElementById('prog-txt-pct')) document.getElementById('prog-txt-pct').innerText = p+'%';
     }
 
-    /* MÉTODOS DOS QUADRADINHOS DO GERENTE */
+    /* PAINEL DO GERENTE */
     function abrirSubPainelGerente(id) {
-      fecharSubPaineis();
-      document.getElementById('sub-pane-' + id).style.display = 'block';
-      if (id === 'busca_tarefas') filtrarBibliotecaAvançada();
+      fecharSubPaineis(); document.getElementById('sub-pane-' + id).style.display = 'block';
+      if (id === 'busca_tarefas') renderizarBibliotecaTarefas();
       if (id === 'ver_equipe') renderizarListaEquipeMestre();
     }
-    function fecharSubPaineis() {
-      document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
+    
+    function fecharSubPaineis() { document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none'); }
+
+    function filtrarBiblioCategoria(cat, btnElement) {
+      currentCategoriaBiblio = cat; document.querySelectorAll('.lib-cat-btn').forEach(b => b.classList.remove('active'));
+      btnElement.classList.add('active'); renderizarBibliotecaTarefas();
     }
 
-    function filtrarBibliotecaAvançada() {
+    function renderizarBibliotecaTarefas() {
       let query = document.getElementById('mgr-search-input').value.toLowerCase();
-      let box = document.getElementById('mgr-search-results-render');
-      box.innerHTML = "";
+      let box = document.getElementById('mgr-search-results-render'); box.innerHTML = "";
 
-      staticLibrary.forEach(item => {
-        if (query && !item.txt.toLowerCase().includes(query)) return;
-        let line = document.createElement('div');
-        line.className = "search-item-line";
-        line.innerHTML = `<span>${item.txt}</span><button class="tk-btn btn-take" style="padding:4px 8px;">Injetar</button>`;
-        line.onclick = () => dispararFluxoInjeçãoSetor(item.txt);
-        box.appendChild(line);
+      let filtradas = megaLibrary.filter(item => {
+        let matchCat = (currentCategoriaBiblio === 'tudo' || item.cat === currentCategoriaBiblio);
+        let matchBusca = (!query || item.txt.toLowerCase().includes(query));
+        return matchCat && matchBusca;
+      });
+
+      if (filtradas.length === 0) { box.innerHTML = `<div style="padding:10px; color:var(--text-muted); text-align:center; font-size:12px;">Nenhuma tarefa encontrada.</div>`; return; }
+
+      filtradas.forEach(item => {
+        let line = document.createElement('div'); line.className = "search-item-line";
+        line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto; padding:6px 12px;">➕ Injetar</button>`;
+        line.onclick = () => dispararFluxoInjeçãoSetor(item.txt); box.appendChild(line);
       });
     }
 
     function dispararFluxoInjeçãoSetor(textoTarefa) {
-      let setores = obterSetoresTotais();
-      let promptTxt = "Para qual setor quer mandar esta tarefa?\n\nDigite o número correspondente:\n";
-      setores.forEach((s, idx) => { promptTxt += `${idx} - ${s.icon} ${s.title}\n`; });
+      let setores = obterSetoresTotais(); let promptTxt = "Para qual setor quer mandar esta tarefa?\n\nDigite o número:\n";
+      setores.forEach((s, idx) => { promptTxt += `${idx} - ${s.title}\n`; });
       
       let escolha = prompt(promptTxt);
       if (escolha !== null && setores[escolha]) {
         let setorAlvo = setores[escolha].id;
         liveData.tarefasCustomizadas.push({ cat: setorAlvo, txt: textoTarefa });
-        salvarDadosServidor();
-        alert("✓ Injetada com sucesso!");
+        salvarDadosServidor(); alert("✓ Tarefa injetada com sucesso!");
       }
     }
 
     function salvarSetorCustomizadoGerente() {
       let nome = document.getElementById('new-sector-name').value.trim();
       let icone = document.getElementById('new-sector-icon').value.trim() || "📋";
-      if (!nome) { alert("Digite o nome do setor!"); return; }
-      
+      if (!nome) { alert("Digite o nome!"); return; }
       let newId = "custom_" + Date.now();
       liveData.setoresCustomizados.push({ id: newId, title: nome, icon: icone });
-      
-      document.getElementById('new-sector-name').value = "";
-      document.getElementById('new-sector-icon').value = "";
-      salvarDadosServidor();
-      alert(`Setor "${nome}" foi criado com sucesso e já está integrado!`);
-      fecharSubPaineis();
+      document.getElementById('new-sector-name').value = ""; document.getElementById('new-sector-icon').value = "";
+      salvarDadosServidor(); alert(`Setor "${nome}" criado!`); fecharSubPaineis();
     }
 
     function renderizarListaEquipeMestre() {
       let box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
       Object.keys(liveData.usuariosSalvos).forEach(n => {
         let isOnline = liveData.loginAtividade && liveData.loginAtividade[n] === true;
-        let line = document.createElement('div');
-        line.className = "search-item-line";
-        line.innerHTML = `
-          <div style="display:flex; align-items:center; gap:8px;">
-            <img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic">
-            <span>${n}</span>
-          </div>
-          <span style="font-size:9px; font-weight:700; color:${isOnline ? 'var(--italia-green)' : 'var(--text-muted)'}">
-            ${isOnline ? 'ONLINE' : 'OFFLINE'}
-          </span>
-        `;
-        box.appendChild(line);
+        box.innerHTML += `<div class="search-item-line"><div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div><span style="font-size:10px; font-weight:800; color:${isOnline ? 'var(--italia-green)' : 'var(--text-muted)'}">${isOnline ? 'ONLINE' : 'OFFLINE'}</span></div>`;
       });
     }
 
-    function perfilAlterarDados(tipo) {
-      if (tipo === 'nome') {
-        let n = prompt("Digite seu novo nome:", currentWorker);
-        if (n && n.trim() && n !== currentWorker) {
-          liveData.usuariosSalvos[n.trim()] = liveData.usuariosSalvos[currentWorker];
-          delete liveData.usuariosSalvos[currentWorker];
-          currentWorker = n.trim();
-          salvarDadosServidor();
-        }
-      } else if (tipo === 'senha') {
-        let s = prompt("Sua nova senha de 4 dígitos:");
-        if (s && s.length === 4) { liveData.usuariosSalvos[currentWorker].senha = s; salvarDadosServidor(); }
-      } else if (tipo === 'foto') { dispararCliqueCamera('perfil'); }
-      toggleSidebarDropdown();
-    }
-
+    /* CHAT E WPP */
     function toggleChatWindow() {
-      let c = document.getElementById('modal-chat');
-      c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
+      let c = document.getElementById('modal-chat'); c.style.display = (c.style.display === 'flex') ? 'none' : 'flex';
       if(c.style.display === 'flex') renderMessages();
     }
     function renderMessages() {
       let w = document.getElementById('chat-wall'); w.innerHTML = '';
       liveData.mensagensChat.forEach(m => {
-        w.innerHTML += `<div class="bubble ${(m.user===currentWorker)?'bb-out':'bb-in'}"><div style="font-size:9px; font-weight:700; color:var(--italia-green)">${m.user}</div>${m.text}</div>`;
+        w.innerHTML += `<div class="bubble ${(m.user===currentWorker)?'bb-out':'bb-in'}"><div style="font-size:10px; font-weight:800; color:var(--italia-green); margin-bottom:4px;">${m.user}</div>${m.text}</div>`;
       });
       w.scrollTop = w.scrollHeight;
     }
@@ -714,19 +881,16 @@
     }
 
     function gerarRelatorioTurnoWhatsApp(e) {
-      let msg = '🇮🇹 *MARCHESINI - FECHAMENTO DE TURNO*\n\n';
-      let setores = obterSetoresTotais();
+      let msg = '🇮🇹 *FECHAMENTO DE TURNO*\n\n'; let setores = obterSetoresTotais();
       setores.forEach(s => {
         msg += `📌 *${s.title.toUpperCase()}*\n`;
-        let arr = staticLibrary.filter(x => x.cat === s.id).map(x => x.txt);
-        liveData.tarefasCustomizadas.forEach(c => { if(c.cat === s.id) arr.push(c.txt); });
-        
-        arr.forEach((t, i) => {
-          let obj = liveData.tarefasStatus[s.id+'_'+i];
-          let status = '❌ Livre';
+        let arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
+        if (arr.length === 0) msg += `- (Nenhuma tarefa no setor)\n`;
+        arr.forEach((c, i) => {
+          let obj = liveData.tarefasStatus[s.id+'_'+i]; let status = '❌ Pendente';
           if(obj?.status === 'working') status = '⏳ Com ' + obj.worker;
-          if(obj?.status === 'done') status = '✅ Fatto por ' + obj.worker;
-          msg += `- ${t} [${status}]\n`;
+          if(obj?.status === 'done') status = '✅ Feito por ' + obj.worker;
+          msg += `- ${c.txt} [${status}]\n`;
         });
         msg += '\n';
       });
@@ -734,10 +898,19 @@
     }
 
     function zerarTurnoCompletoNuvem() {
-      if (confirm('Zerar checklists, tarefas extras e chat? Equipes e fotos continuarão salvos.')) {
-        liveData.tarefasStatus = {}; liveData.mensagensChat = []; liveData.tarefasCustomizadas = [];
-        salvarDadosServidor(); fecharSubPaineis(); switchScreenView('scr-dashboard-manager');
-        alert("Turno Zerado!");
+      if (confirm('Atenção: Você vai zerar todos os checklists de hoje. O painel ficará limpo para o próximo dia.')) {
+        // 1. Limpa tudo o que estava feito
+        liveData.tarefasStatus = {}; 
+        liveData.tarefasCustomizadas = [];
+        
+        // 2. Injeta a carga massiva de 24 tarefas na mesma hora
+        popularTarefasPadraoSeVazio();
+        
+        // 3. Fecha os painéis e atualiza a tela para o gerente sem precisar recarregar a página!
+        fecharSubPaineis(); 
+        montarPainelDOM();
+        
+        alert("Turno Zerado e 24 Tarefas Injetadas com sucesso!");
       }
     }
   </script>

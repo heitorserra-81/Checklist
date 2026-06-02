@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Live v14.0</title>
+  <title>Marchesini Live v15.0</title>
   <style>
     :root {
       --bg: #0b0c10;
       --surface-card: #14161d;
       --surface-nested: #1b1e26;
-      --border-color: rgba(212, 175, 55, 0.12);
-      --accent-gold: #c9a054;
-      --accent-light: #f3e5ab;
+      --border-color: rgba(255, 255, 255, 0.08);
+      
+      /* Cores Temáticas: Bandeira da Itália */
+      --italia-green: #009246;
+      --italia-white: #ffffff;
+      --italia-red: #ce2b37;
+      
       --text-main: #f3f4f6;
       --text-muted: #8e8e93;
-      --color-success: #30d158;
-      --color-danger: #ff453a;
       --color-process: #2f80ed;
     }
 
@@ -28,7 +30,7 @@
     }
     
     body { 
-      background: radial-gradient(circle at top, #161923 0%, var(--bg) 100%); 
+      background: radial-gradient(circle at top, #1a231c 0%, var(--bg) 100%); 
       color: var(--text-main); 
       padding: 24px 16px 140px 16px; 
       min-height: 100vh;
@@ -39,17 +41,17 @@
     /* TELA DE LOGIN / REGISTRO */
     .login-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at top, #1c1f2b 0%, #050608 100%);
+      background: radial-gradient(circle at top, #142118 0%, #050608 100%);
       z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
       transition: opacity 0.4s ease; overflow-y: auto;
     }
     .login-box {
-      background: var(--surface-card); border: 1px solid var(--border-color);
+      background: var(--surface-card); border: 2px solid var(--italia-green);
       padding: 32px 24px; border-radius: 24px; width: 100%; max-width: 350px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.7); text-align: center;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.8); text-align: center;
     }
-    .login-box h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .login-box p { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
+    .login-box h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .login-box p { font-size: 11px; color: var(--italia-red); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
     
     .login-input-text {
       width: 100%; padding: 14px; background: rgba(255,255,255,0.03); 
@@ -64,68 +66,68 @@
 
     /* SISTEMA DE CÂMERA DE SELFIE */
     .camera-zone { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-    .avatar-preview-box { width: 90px; height: 90px; border-radius: 50%; border: 2px dashed var(--accent-gold); overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); position: relative; }
+    .avatar-preview-box { width: 95px; height: 95px; border-radius: 50%; border: 3px dashed var(--italia-green); overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); position: relative; cursor: pointer; }
     .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
     .avatar-preview-box span { font-size: 28px; }
     
-    /* INPUT OCULTO DE CÂMERA DO IPHONE */
     .file-input-hidden { display: none; }
 
     .btn-login {
-      width: 100%; background: var(--accent-gold); color: #000; padding: 14px;
+      width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 14px;
       border-radius: 14px; font-size: 15px; font-weight: 700; border: none; cursor: pointer;
-      box-shadow: 0 4px 15px rgba(201, 160, 84, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     }
-    .login-error { color: var(--color-danger); font-size: 12px; margin-top: 12px; display: none; font-weight: 600; }
+    .login-error { color: var(--italia-red); font-size: 12px; margin-top: 12px; display: none; font-weight: 600; }
 
     /* CONTEÚDO PRINCIPAL DO APP */
     .app-container { display: none; }
 
     .app-header {
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--surface-card); border: 1px solid var(--border-color);
+      background: var(--surface-card); border-bottom: 3px solid var(--italia-green);
       padding: 16px 20px; border-radius: 20px; margin-bottom: 16px;
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .logo-wrapper { width: 45px; height: 45px; }
-    .app-logo { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
-    .app-info h1 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
-    .app-info p { font-size: 10px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+    .app-logo { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 1.5px solid var(--italia-white); }
+    .app-info h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
+    .app-info p { font-size: 10px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
     
     .menu-toggle {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: #fff; font-size: 20px; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
     }
 
     .sidebar {
-      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 1px solid var(--border-color); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     .sidebar.open { right: 0; }
     .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-    .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
+    .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--italia-green); text-transform: uppercase; }
     .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e7eb; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-    .menu-item.danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
+    .menu-item.danger { color: #fff; background: var(--italia-red); margin-top: 20px; }
 
-    /* CRANCHÁ DO USUÁRIO NO TOPO DO PAINEL */
+    /* CRACHÁ DO OPERADOR */
     .user-logged-panel {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
+      background: var(--surface-card); border-left: 4px solid var(--italia-green);
       padding: 12px 16px; border-radius: 14px; margin-bottom: 16px; display: flex;
       justify-content: space-between; align-items: center;
     }
     .user-logged-info { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 600; }
-    .user-logged-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--accent-gold); background: #000; }
-    .btn-logout { background: transparent; border: none; color: var(--color-danger); font-size: 12px; font-weight: 700; cursor: pointer; }
+    .user-logged-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--italia-white); background: #000; }
+    .btn-logout { background: transparent; border: none; color: var(--italia-red); font-size: 12px; font-weight: 700; cursor: pointer; }
 
+    /* BARRA DE PROGRESSO ITALIANA */
     .progress-box {
-      background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; margin-bottom: 20px;
     }
     .progress-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent-gold), var(--color-success)); height: 100%; width: 0%; transition: width 0.4s ease; }
+    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 10px; border-radius: 5px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--italia-red), var(--italia-green)); height: 100%; width: 0%; transition: width 0.4s ease; }
 
-    .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; margin-bottom: 12px; }
+    .section-title { font-size: 12px; font-weight: 700; color: var(--italia-green); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; margin-bottom: 12px; border-left: 3px solid var(--italia-red); padding-left: 8px; }
 
-    /* LAYOUT DOS SETORES */
+    /* SETORES */
     .sector-card {
       background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 18px; margin-bottom: 14px; overflow: hidden; display: block !important;
     }
@@ -136,56 +138,73 @@
     .sector-qty { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .chevron { width: 18px; height: 18px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; transition: transform 0.25s ease; }
     
-    .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent-gold); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); background: rgba(0, 0, 0, 0.15); }
+    .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--italia-green); }
+    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s ease-out; background: rgba(0, 0, 0, 0.2); }
     
-    /* ITEMS DE TAREFA EM 2 ETAPAS */
-    .task-item { display: flex; flex-direction: column; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+    /* ITEMS EM 2 ETAPAS */
+    .task-item { display: flex; flex-direction: column; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); position: relative; transition: background 0.3s; }
+    .task-item.working { background: rgba(47, 128, 237, 0.05); }
+    .task-item.done { background: rgba(0, 146, 70, 0.04); }
+
     .task-main-row { display: flex; align-items: center; justify-content: space-between; width: 100%; }
-    
     .task-left-block { display: flex; align-items: center; flex: 1; margin-right: 10px; }
-    .status-dot-indicator { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.1); margin-right: 12px; flex-shrink: 0; }
-    .task-item.working .status-dot-indicator { background: var(--color-process); box-shadow: 0 0 8px var(--color-process); }
-    .task-item.done .status-dot-indicator { background: var(--color-success); box-shadow: 0 0 8px var(--color-success); }
     
-    .task-label { font-size: 14px; color: #e5e5ea; line-height: 1.4; }
-    .task-item.done .task-label { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+    .status-dot-indicator { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.15); margin-right: 12px; flex-shrink: 0; }
+    .task-item.working .status-dot-indicator { background: var(--color-process); box-shadow: 0 0 10px var(--color-process); }
+    .task-item.done .status-dot-indicator { background: var(--italia-green); box-shadow: 0 0 10px var(--italia-green); }
+    
+    .task-label { font-size: 14px; color: #e5e5ea; line-height: 1.4; transition: all 0.2s; }
+    .task-item.done .task-label { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
     
     .task-right-block { display: flex; align-items: center; gap: 10px; }
-    .mini-worker-photo { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid var(--accent-gold); }
+    .mini-worker-photo { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--italia-white); background: #000; }
     
     .btn-task-action {
-      padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase;
+      padding: 8px 14px; border-radius: 10px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; transition: transform 0.1s;
     }
-    .btn-action-take { background: rgba(255,255,255,0.05); border: 1px solid var(--accent-gold); color: var(--accent-gold); }
-    .btn-action-complete { background: var(--color-success); color: #000; }
+    .btn-task-action:active { transform: scale(0.95); }
+    .btn-action-take { background: rgba(255,255,255,0.05); border: 1px solid var(--italia-green); color: var(--italia-green); }
+    .btn-action-complete { background: var(--italia-green); color: #fff; }
+
+    /* ANIMAÇÃO VISUAL DE CONCLUSÃO POPUP */
+    .success-celebration {
+      position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+      background: var(--surface-nested); border: 2px solid var(--italia-green); padding: 20px;
+      border-radius: 20px; z-index: 9999; display: none; flex-direction: column; align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .success-celebration.show { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    .celebration-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--italia-white); margin-bottom: 10px; }
+    .celebration-text { font-size: 14px; font-weight: 700; color: #fff; text-align: center; }
 
     /* CHAT DE EQUIPE INTEGRADO */
     .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; }
-    
+    .chat-box-container { width: 100%; background: #0f111a; border-top: 2px solid var(--italia-green); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; }
     .chat-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
-    .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
+    .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--italia-green); text-transform: uppercase; }
     .chat-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; }
-    
     .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-height: 220px; }
     .msg-bubble { font-size: 13px; padding: 10px 14px; border-radius: 14px; max-width: 80%; line-height: 1.4; }
     .msg-received { background: rgba(255,255,255,0.04); align-self: flex-start; color: #e5e5ea; }
-    .msg-sent { background: rgba(199, 160, 84, 0.15); border: 1px solid rgba(199, 160, 84, 0.2); align-self: flex-end; color: #fff; }
-    .msg-author { font-weight: 700; font-size: 10px; color: var(--accent-gold); margin-bottom: 2px; text-transform: uppercase; }
-    
+    .msg-sent { background: rgba(0, 146, 70, 0.15); border: 1px solid rgba(0,146,70,0.2); align-self: flex-end; color: #fff; }
+    .msg-author { font-weight: 700; font-size: 10px; color: var(--italia-green); margin-bottom: 2px; text-transform: uppercase; }
     .chat-modal-footer { display: flex; padding: 12px 16px; background: #0b0c10; gap: 10px; border-top: 1px solid var(--border-color); }
     .chat-modal-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 14px; }
-    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #000; }
+    .btn-chat-send { background: var(--italia-green); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #fff; }
 
     /* BOTÕES FLUTUANTES */
     .floating-actions { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 14px; z-index: 1000; }
     .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
-    .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--accent-gold); }
+    .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--italia-green); }
     .fab-whatsapp { background: #25d366; color: #fff; text-decoration: none; }
   </style>
 </head>
 <body>
+
+  <div class="success-celebration" id="celebration-box">
+    <img class="celebration-avatar" id="celebration-img" src="">
+    <div class="celebration-text" id="celebration-txt">Tarefa Concluída!</div>
+  </div>
 
   <div class="login-overlay" id="login-screen">
     <div class="login-box">
@@ -205,7 +224,7 @@
       <input type="password" class="login-input-pass" id="login-pass" placeholder="Senha 4 dígitos" maxlength="4" pattern="\d*">
       
       <button class="btn-login" onclick="executarAcessoPremium()">Entrar no Turno</button>
-      <div class="login-error" id="login-err-msg">Por favor, preencha seu nome, senha e tire sua foto!</div>
+      <div class="login-error" id="login-err-msg">Por favor, digite seu Nome, Senha e tire sua Foto!</div>
     </div>
   </div>
 
@@ -235,7 +254,7 @@
     <div class="user-logged-panel">
       <div class="user-logged-info">
         <img class="user-logged-avatar" id="app-user-photo" src="">
-        <span>Operando como: <span id="txt-user-badge" style="color:var(--accent-gold)">-</span></span>
+        <span>Operando como: <span id="txt-user-badge" style="color:var(--italia-green)">-</span></span>
       </div>
       <button class="btn-logout" onclick="fazerLogout()">Sair</button>
     </div>
@@ -273,31 +292,11 @@
   </div>
 
   <script>
-    // BANCO DE DADOS INTEGRADO VIA JSONBIN (Blindado e aceito pelo GitHub Pages)
     const LINK_BANCO_SECURE = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
     const MASTER_KEY_SECURE = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i";
 
-    // API de Áudio Nativa do Navegador para o Efeito Sonoro Pim-Prim
-    const somPimPrim = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==");
-    
-    // Função para tocar o efeito sonoro de sucesso customizado
-    function tocarSomSucesso() {
-      try {
-        // Criando um sinal eletrônico agradável (Pim-Prim) nativo
-        let ctx = new (window.AudioContext || window.webkitAudioContext)();
-        let osc = ctx.createOscillator();
-        let gain = ctx.createGain();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(880, ctx.currentTime); // Primeiro som agudo (Pim)
-        osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1); // Segundo som (Prim)
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.3);
-      } catch(e) {}
-    }
+    var fotoBase64Global = ""; 
+    var usuarioLogado = "";
 
     var dadosSetores = [
       {
@@ -347,12 +346,315 @@
       }
     ];
 
-    // Estrutura Live sincronizada com foto em formato Base64
     var estadoLive = {
-      tarefasStatus: {}, // Chave: { status: 'idle'|'working'|'done', worker: '', photo: '' }
-      usuariosSalvos: {}, // Guarda fotos e senhas geradas localmente na nuvem
+      tarefasStatus: {}, 
+      usuariosSalvos: {}, 
       mensagensChat: []
     };
-    
-    var usuarioLogado = "";
-    var
+
+    function abrirCameraIphone() {
+      document.getElementById('camera-file-input').click();
+    }
+
+    function fotoCapturada(event) {
+      let file = event.target.files[0];
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          fotoBase64Global = e.target.result;
+          document.getElementById('avatar-placeholder').style.display = 'none';
+          let img = document.getElementById('avatar-img-preview');
+          img.src = fotoBase64Global;
+          img.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function tocarSomSucesso() {
+      try {
+        let ctx = new (window.AudioContext || window.webkitAudioContext)();
+        let osc = ctx.createOscillator();
+        let gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(880, ctx.currentTime); 
+        osc.frequency.setValueAtTime(1250, ctx.currentTime + 0.08); 
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.25);
+      } catch(e) {}
+    }
+
+    function rodarAnimacaoPopup(nome, foto) {
+      let box = document.getElementById('celebration-box');
+      let img = document.getElementById('celebration-img');
+      let txt = document.getElementById('celebration-txt');
+      
+      img.src = foto || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100";
+      txt.innerHTML = `<span style="color:var(--italia-green)">${nome}</span><br>concluiu a tarefa! 🌟`;
+      
+      box.style.display = 'flex';
+      setTimeout(() => box.classList.add('show'), 50);
+      
+      setTimeout(() => {
+        box.classList.remove('show');
+        setTimeout(() => box.style.display = 'none', 300);
+      }, 2200);
+    }
+
+    async function puxarDadosNuvem() {
+      try {
+        let res = await fetch(LINK_BANCO_SECURE + "/latest", {
+          headers: { "X-Master-Key": MASTER_KEY_SECURE }
+        });
+        if (res.ok) {
+          let data = await res.json();
+          if(data.record) {
+            estadoLive = data.record;
+            if(!estadoLive.tarefasStatus) estadoLive.tarefasStatus = {};
+            if(!estadoLive.usuariosSalvos) estadoLive.usuariosSalvos = {};
+            if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
+          }
+        }
+      } catch(e) {
+        let local = localStorage.getItem('marchesini_backup_v15');
+        if(local) estadoLive = JSON.parse(local);
+      }
+      montarPainelOnline();
+      atualizarProgresso();
+    }
+
+    async function salvarDadosNuvem() {
+      localStorage.setItem('marchesini_backup_v15', JSON.stringify(estadoLive));
+      atualizarProgresso();
+      try {
+        await fetch(LINK_BANCO_SECURE, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY_SECURE },
+          body: JSON.stringify(estadoLive)
+        });
+      } catch(e) {}
+    }
+
+    function executarAcessoPremium() {
+      let nome = document.getElementById('login-user').value.trim();
+      let pass = document.getElementById('login-pass').value.trim();
+      let errMsg = document.getElementById('login-err-msg');
+
+      if (!nome || !pass || !fotoBase64Global) {
+        errMsg.style.display = 'block';
+        return;
+      }
+
+      usuarioLogado = nome;
+      estadoLive.usuariosSalvos[nome] = { senha: pass, foto: fotoBase64Global };
+      
+      errMsg.style.display = 'none';
+      document.getElementById('login-screen').style.opacity = 0;
+      
+      setTimeout(() => {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+        document.getElementById('txt-user-badge').innerText = usuarioLogado;
+        document.getElementById('app-user-photo').src = fotoBase64Global;
+        
+        salvarDadosNuvem();
+        puxarDadosNuvem();
+        setInterval(puxarDadosNuvem, 5000);
+      }, 400);
+    }
+
+    function fazerLogout() {
+      usuarioLogado = "";
+      document.getElementById('main-app').style.display = 'none';
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('login-screen').style.opacity = 1;
+    }
+
+    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
+    function toggleChatPopup() { 
+      let p = document.getElementById('chat-popup');
+      p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+      if(p.style.display === 'flex') renderizarChat();
+    }
+
+    function montarPainelOnline() {
+      let container = document.getElementById('sectors-container');
+      if (!container) return;
+      
+      let setorAbertoId = null;
+      document.querySelectorAll('.sector-card').forEach(c => {
+        if(c.classList.contains('active')) setorAbertoId = c.id.replace('card_', '');
+      });
+
+      container.innerHTML = '';
+
+      dadosSetores.forEach(setor => {
+        let card = document.createElement('div');
+        card.className = 'sector-card' + (setorAbertoId === setor.id ? ' active' : '');
+        card.id = 'card_' + setor.id;
+
+        let feitas = 0;
+        setor.tasks.forEach((t, i) => { 
+          let obj = estadoLive.tarefasStatus[setor.id + '_' + i];
+          if(obj && obj.status === 'done') feitas++; 
+        });
+
+        card.innerHTML = `
+          <div class="sector-header" onclick="alternarSetor('${setor.id}')">
+            <div class="sector-icon">${setor.icon}</div>
+            <div class="sector-details">
+              <div class="sector-name">${setor.title}</div>
+              <div class="sector-qty" style="color:var(--italia-green)">${feitas} de ${setor.tasks.length} feitas</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+          </div>
+          <div class="sector-content" id="content_${setor.id}" style="${setorAbertoId === setor.id ? 'max-height:2000px;' : 'max-height:0px;'}">
+          </div>
+        `;
+
+        container.appendChild(card);
+        let contentDiv = document.getElementById('content_' + setor.id);
+
+        setor.tasks.forEach((tarefa, idx) => {
+          let item = document.createElement('div');
+          let chave = setor.id + '_' + idx;
+          let objStatus = estadoLive.tarefasStatus[chave] || { status: 'idle', worker: '' };
+          
+          item.className = 'task-item ' + objStatus.status;
+
+          let botaoHtml = '';
+          let fotoHtml = '';
+
+          if (objStatus.status === 'idle') {
+            botaoHtml = `<button class="btn-task-action btn-action-take" onclick="acaoTarefa('${chave}', 'take', event)">Pegar</button>`;
+          } else if (objStatus.status === 'working') {
+            let uFoto = estadoLive.usuariosSalvos[objStatus.worker]?.foto || "";
+            if (uFoto) fotoHtml = `<img class="mini-worker-photo" src="${uFoto}">`;
+            
+            if (objStatus.worker === usuarioLogado) {
+              botaoHtml = `<button class="btn-task-action btn-action-complete" onclick="acaoTarefa('${chave}', 'complete', event)">Concluir</button>`;
+            } else {
+              botaoHtml = `<span style="font-size:11px;color:var(--color-process);font-weight:700;">COM ${objStatus.worker.toUpperCase()}</span>`;
+            }
+          } else if (objStatus.status === 'done') {
+            let uFoto = estadoLive.usuariosSalvos[objStatus.worker]?.foto || "";
+            if (uFoto) fotoHtml = `<img class="mini-worker-photo" src="${uFoto}">`;
+            botaoHtml = `<span style="font-size:11px;color:var(--italia-green);font-weight:800;">✓ ${objStatus.worker.toUpperCase()}</span>`;
+          }
+
+          item.innerHTML = `
+            <div class="task-main-row">
+              <div class="task-left-block">
+                <div class="status-dot-indicator"></div>
+                <div class="task-label">${tarefa}</div>
+              </div>
+              <div class="task-right-block">
+                ${fotoHtml}
+                ${botaoHtml}
+              </div>
+            </div>
+          `;
+          contentDiv.appendChild(item);
+        });
+      });
+    }
+
+    function alternarSetor(id) {
+      let card = document.getElementById('card_' + id);
+      let content = document.getElementById('content_' + id);
+      let estaAtivo = card.classList.contains('active');
+
+      document.querySelectorAll('.sector-card').forEach(c => {
+        c.classList.remove('active');
+        let contentDiv = c.querySelector('.sector-content');
+        if(contentDiv) contentDiv.style.maxHeight = '0px';
+      });
+
+      if(!estaAtivo) {
+        card.classList.add('active');
+        content.style.maxHeight = '2000px';
+      }
+    }
+
+    function acaoTarefa(chave, acao, event) {
+      event.stopPropagation();
+      if (acao === 'take') {
+        estadoLive.tarefasStatus[chave] = { status: 'working', worker: usuarioLogado };
+      } else if (acao === 'complete') {
+        estadoLive.tarefasStatus[chave].status = 'done';
+        tocarSomSucesso();
+        let minhaFoto = estadoLive.usuariosSalvos[usuarioLogado]?.foto || "";
+        rodarAnimacaoPopup(usuarioLogado, minhaFoto);
+      }
+      salvarDadosNuvem();
+      montarPainelOnline();
+    }
+
+    function atualizarProgresso() {
+      let total = 0; let feitas = 0;
+      dadosSetores.forEach(s => { s.tasks.forEach((t, i) => { total++; let obj = estadoLive.tarefasStatus[s.id + '_' + i]; if(obj && obj.status === 'done') feitas++; }); });
+      let pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
+      let bar = document.getElementById('progress-bar');
+      let txt = document.getElementById('progress-txt');
+      if(bar) bar.style.width = pct + '%';
+      if(txt) txt.innerText = pct + '%';
+    }
+
+    function renderizarChat() {
+      let box = document.getElementById('chat-messages-box');
+      if(!box) return;
+      box.innerHTML = '';
+      if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
+      estadoLive.mensagensChat.forEach(m => {
+        let bolha = document.createElement('div');
+        let souEu = m.usuario === usuarioLogado;
+        bolha.className = 'msg-bubble ' + (souEu ? 'msg-sent' : 'msg-received');
+        bolha.innerHTML = `<div class="msg-author">${m.usuario}</div>` + m.texto;
+        box.appendChild(bolha);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function enviarMensagemNuvem() {
+      let campo = document.getElementById('chat-input-field');
+      let txt = campo.value.trim();
+      if(!txt) return;
+      estadoLive.mensagensChat.push({ usuario: usuarioLogado, texto: txt });
+      campo.value = '';
+      salvarDadosNuvem();
+      renderizarChat();
+    }
+
+    function enviarRelatorio(e) {
+      let msg = '🇮🇹 *MARCHESINI DI ROVERBELLA* 🇮🇹\n*Fechamento Coletivo Realtime*\n\n';
+      dadosSetores.forEach(s => {
+        msg += '📌 *' + s.title.toUpperCase() + '*\n';
+        s.tasks.forEach((t, i) => {
+          let obj = estadoLive.tarefasStatus[s.id + '_' + i];
+          let statusStr = '❌ Disponível';
+          if(obj) {
+            if(obj.status === 'working') statusStr = '⏳ Com ' + obj.worker;
+            if(obj.status === 'done') statusStr = '✅ Concluída por ' + obj.worker;
+          }
+          msg += '- ' + t + ' -> *' + statusStr + '*\n';
+        });
+        msg += '\n';
+      });
+      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    }
+
+    function limparMesaReal() {
+      if(confirm('Zerar o turno de TODOS na nuvem?')) {
+        estadoLive.tarefasStatus = {};
+        estadoLive.mensagensChat = [];
+        salvarDadosNuvem();
+        puxarDadosNuvem();
+      }
+    }
+  </script>
+</body>
+</html>

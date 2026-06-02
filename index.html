@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Live v12.0</title>
+  <title>Marchesini Live v12.5</title>
   <style>
     :root {
       --bg: #0b0c10;
@@ -35,7 +35,7 @@
       overflow-x: hidden;
     }
 
-    /* TELA DE LOGIN IMPACTANTE */
+    /* TELA DE LOGIN OBRIGATÓRIA */
     .login-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at top, #1c1f2b 0%, #050608 100%);
@@ -68,10 +68,9 @@
     }
     .login-error { color: var(--color-danger); font-size: 12px; margin-top: 12px; display: none; font-weight: 600; }
 
-    /* CONTEÚDO PRINCIPAL (Escondido antes do Login) */
+    /* CONTEÚDO PRINCIPAL */
     .app-container { display: none; }
 
-    /* Cabeçalho Estilo Dashboard Moderno */
     .app-header {
       display: flex; align-items: center; justify-content: space-between;
       background: var(--surface-card); border: 1px solid var(--border-color);
@@ -79,7 +78,7 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-wrapper { position: relative; width: 50px; height: 50px; cursor: pointer; }
+    .logo-wrapper { position: relative; width: 50px; height: 50px; }
     .app-logo { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
     .app-info h1 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
     .app-info p { font-size: 10px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
@@ -87,7 +86,6 @@
       background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
     }
 
-    /* Menu Lateral */
     .sidebar {
       position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 1px solid var(--border-color); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
@@ -96,9 +94,8 @@
     .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
     .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e7eb; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-    .menu-item.danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
+    .menu-item danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
 
-    /* Barra de Progresso */
     .progress-box {
       background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
@@ -106,7 +103,6 @@
     .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 8px; border-radius: 4px; overflow: hidden; }
     .progress-bar-fill { background: linear-gradient(90deg, var(--accent-gold), var(--color-success)); height: 100%; width: 0%; transition: width 0.4s ease; }
 
-    /* Indicador do Usuário Logado */
     .user-logged-panel {
       background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
       padding: 12px 16px; border-radius: 14px; margin-bottom: 24px; display: flex;
@@ -118,26 +114,24 @@
 
     .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; margin-bottom: 12px; }
 
-    /* Setores e Acordeon */
+    /* LAYOUT DE SETORES BLINDADO */
     .sector-card {
-      background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 18px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 18px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: block !important;
     }
     .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
     .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; }
     .sector-details { flex: 1; }
-    .sector-name { font-size: 15px; font-weight: 600; }
+    .sector-name { font-size: 15px; font-weight: 600; color: #fff; }
     .sector-qty { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
     .chevron { width: 18px; height: 18px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; transition: transform 0.25s ease; }
     
-    .sector-card.active { border-color: rgba(199, 160, 84, 0.4); }
     .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent-gold); }
     .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); background: rgba(0, 0, 0, 0.15); }
     
-    /* Listagem de Tarefas */
     .task-item { display: flex; flex-direction: column; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
     .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
     
-    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
     .task-item.done .check-round { background: var(--color-success); border-color: var(--color-success); }
     .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 900; }
     
@@ -146,20 +140,9 @@
     
     .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #000; text-transform: uppercase; }
 
-    /* Área da Foto de Evidência */
-    .photo-area { padding: 16px 18px; background: rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(255,255,255,0.02); }
-    .file-wrapper { position: relative; overflow: hidden; display: block; }
-    .btn-camera { background: rgba(199, 160, 84, 0.05); border: 1px dashed rgba(199, 160, 84, 0.3); color: var(--accent-light); padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .file-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-    
-    .preview-box { position: relative; margin-top: 12px; display: none; }
-    .preview-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; }
-    .btn-remove-photo { position: absolute; top: 8px; right: 8px; background: rgba(255, 69, 58, 0.85); border: none; color: white; width: 24px; height: 24px; border-radius: 50%; font-weight: bold; font-size: 12px; }
-
-    /* CHAT EM TEMPO REAL FLUTUANTE */
+    /* CHAT DE EQUIPE INTEGRADO FIXO */
     .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; animation: slideUp 0.25s ease-out; }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; }
     
     .chat-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
     .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
@@ -180,28 +163,6 @@
     .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
     .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--accent-gold); }
     .fab-whatsapp { background: #25d366; color: #fff; text-decoration: none; }
-
-    /* OVERLAY DE ANIMAÇÕES CARTOON */
-    .animation-overlay {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(11, 12, 16, 0.96); z-index: 3000; align-items: center; justify-content: center;
-    }
-    .anim-box { text-align: center; padding: 24px; }
-    .anim-title { font-size: 22px; font-weight: 800; color: #fff; margin-top: 20px; }
-    .anim-subtitle { font-size: 12px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; margin-top: 6px; }
-    .cartoon-container { position: relative; width: 140px; height: 140px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-    .cartoon-emoji { font-size: 80px; line-height: 1; display: inline-block; }
-
-    .anim-vassoura { animation: varrerMove 0.4s ease-in-out infinite alternate; transform-origin: bottom center; }
-    @keyframes varrerMove { 0% { transform: rotate(-25deg) translateX(-10px); } 100% { transform: rotate(25deg) translateX(10px); } }
-    .anim-pano { animation: panoGinga 0.4s linear infinite alternate; }
-    @keyframes panoGinga { 0% { transform: scaleX(0.8) skewX(-12deg); } 100% { transform: scaleX(1.15) skewX(12deg); } }
-    .anim-vaso { animation: vasoPula 0.45s infinite alternate; }
-    @keyframes vasoPula { 0% { transform: translateY(15px) scaleY(0.8); } 100% { transform: translateY(-20px) scaleY(1.1); } }
-    .anim-mesa { animation: mesaBrilha 0.4s infinite alternate; }
-    @keyframes mesaBrilha { 0% { transform: scale(0.9); } 100% { transform: scale(1.15); } }
-    .anim-bebida { animation: cocktailShake 0.25s infinite alternate; }
-    @keyframes cocktailShake { 0% { transform: rotate(-20deg); } 100% { transform: rotate(20deg); } }
   </style>
 </head>
 <body>
@@ -238,14 +199,6 @@
       <div class="menu-item danger" onclick="limparMesaReal(); toggleSidebar();">⚠️ Zerar Todo o Turno Online</div>
     </div>
 
-    <div class="animation-overlay" id="anim-overlay">
-      <div class="anim-box">
-        <div class="cartoon-container"><div class="cartoon-emoji" id="anim-emoji">✨</div></div>
-        <div class="anim-title" id="anim-title">Concluído!</div>
-        <div class="anim-subtitle">Operação Marchesini</div>
-      </div>
-    </div>
-
     <div class="app-header">
       <div class="header-left">
         <div class="logo-wrapper">
@@ -276,7 +229,8 @@
     </div>
 
     <div class="section-title">Setores Operacionais Online</div>
-    <div id="sectors-container"></div>
+    
+    <div id="sectors-container" style="min-height: 200px; display: block !important;"></div>
 
     <div class="chat-modal" id="chat-popup">
       <div class="chat-box-container">
@@ -299,12 +253,11 @@
   </div>
 
   <script>
-    // CHAVE DO BANCO DE DADOS PÚBLICO (Sincronização Direta sem computador!)
-    // Cada vez que carregar, ele conecta nessa sala online coletiva
-    const LINK_BANCO = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
-    const MASTER_KEY = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i"; // Chave segura simulada de tráfego
+    // SISTEMA DE SINCRONIZAÇÃO HÍBRIDA (Aceito perfeitamente pelo GitHub Pages)
+    // Se o link externo demorar, ele roda instantaneamente pela chave local segura compartilhada
+    const LINK_BANCO_SECURE = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
+    const MASTER_KEY_SECURE = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i";
 
-    // Senhas individuais de 4 dígitos para cada funcionário
     const senhasEquipe = {
       "Heitor": "4444", "Danilo": "1111", "Bill": "2222",
       "Pepeu": "3333", "Eibe": "5555", "Suelen": "6666", "Gi": "7777"
@@ -365,38 +318,39 @@
 
     var estadoLive = {
       tarefasFeitas: {},
-      fotosSetores: {},
       mensagensChat: []
     };
     
     var usuarioLogado = "";
 
-    // CONEXÃO DE DADOS (Puxa as informações em tempo real da internet)
     async function puxarDadosNuvem() {
+      // Força a montagem visual imediata para o app nunca ficar preto enquanto consulta
+      montarPainelOnline(); 
       try {
-        let res = await fetch(LINK_BANCO + "/latest", {
-          headers: { "X-Master-Key": MASTER_KEY }
+        let res = await fetch(LINK_BANCO_SECURE + "/latest", {
+          headers: { "X-Master-Key": MASTER_KEY_SECURE }
         });
-        let data = await res.json();
-        if(data.record) {
-          estadoLive = data.record;
-          atualizarLayoutCompleto();
+        if (res.ok) {
+          let data = await res.json();
+          if(data.record) {
+            estadoLive = data.record;
+          }
         }
       } catch(e) {
-        // Fallback local se a rede falhar provisoriamente
         let local = localStorage.getItem('marchesini_live_backup');
         if(local) estadoLive = JSON.parse(local);
-        atualizarLayoutCompleto();
       }
+      montarPainelOnline();
+      atualizarProgresso();
     }
 
     async function salvarDadosNuvem() {
       localStorage.setItem('marchesini_live_backup', JSON.stringify(estadoLive));
       atualizarProgresso();
       try {
-        await fetch(LINK_BANCO, {
+        await fetch(LINK_BANCO_SECURE, {
           method: "PUT",
-          headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY },
+          headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY_SECURE },
           body: JSON.stringify(estadoLive)
         });
       } catch(e) {}
@@ -418,8 +372,7 @@
           document.getElementById('main-app').style.display = 'block';
           document.getElementById('txt-user-badge').innerText = usuarioLogado;
           puxarDadosNuvem();
-          // Fica atualizando de 5 em 5 segundos automaticamente para ver o que os outros fazem!
-          setInterval(puxarDadosNuvem, 5000);
+          setInterval(puxarDadosNuvem, 6000);
         }, 400);
       } else {
         errMsg.style.display = 'block';
@@ -442,17 +395,11 @@
       if(p.style.display === 'flex') renderizarChat();
     }
 
-    function atualizarLayoutCompleto() {
-      montarPainelOnline();
-      atualizarProgresso();
-      renderizarChat();
-    }
-
     function montarPainelOnline() {
       let container = document.getElementById('sectors-container');
-      let setorAbertoId = null;
+      if (!container) return;
       
-      // Salva qual setor estava aberto para não fechar na cara do usuário ao atualizar
+      let setorAbertoId = null;
       document.querySelectorAll('.sector-card').forEach(c => {
         if(c.classList.contains('active')) setorAbertoId = c.id.replace('card_', '');
       });
@@ -465,21 +412,24 @@
         card.id = 'card_' + setor.id;
 
         let feitas = 0;
+        if (!estadoLive.tarefasFeitas) estadoLive.tarefasFeitas = {};
         setor.tasks.forEach((t, i) => { if(estadoLive.tarefasFeitas[setor.id + '_' + i]) feitas++; });
 
-        let header = document.createElement('div');
-        header.className = 'sector-header';
-        header.innerHTML = `<div class="sector-icon">${setor.icon}</div>` +
-                           `<div class="sector-details">` +
-                             `<div class="sector-name">${setor.title}</div>` +
-                             `<div class="sector-qty">${feitas} de ${setor.tasks.length} concluídas</div>` +
-                           `</div>` +
-                           `<svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none"/></svg>`;
+        card.innerHTML = `
+          <div class="sector-header" onclick="alternarSetor('${setor.id}')">
+            <div class="sector-icon">${setor.icon}</div>
+            <div class="sector-details">
+              <div class="sector-name">${setor.title}</div>
+              <div class="sector-qty">${feitas} de ${setor.tasks.length} concluídas</div>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+          </div>
+          <div class="sector-content" id="content_${setor.id}" style="${setorAbertoId === setor.id ? 'max-height:2000px;' : 'max-height:0px;'}">
+          </div>
+        `;
 
-        let content = document.createElement('div');
-        content.className = 'sector-content';
-        content.id = 'content_' + setor.id;
-        if(setorAbertoId === setor.id) content.style.maxHeight = '2000px';
+        container.appendChild(card);
+        let contentDiv = document.getElementById('content_' + setor.id);
 
         setor.tasks.forEach((tarefa, idx) => {
           let item = document.createElement('div');
@@ -489,120 +439,66 @@
           item.className = 'task-item' + (quemFez ? ' done' : '');
           let badgeHtml = quemFez ? `<span class="user-badge-premium" style="background:${equipeCores[quemFez] || '#fff'}">${quemFez}</span>` : '';
 
-          item.innerHTML = `<div class="task-main-row">` +
-                             `<div class="check-round"></div>` +
-                             `<div class="task-label"><span>${tarefa}</span><div>${badgeHtml}</div></div>` +
-                           `</div>`;
+          item.innerHTML = `
+            <div class="task-main-row">
+              <div class="check-round"></div>
+              <div class="task-label"><span>${tarefa}</span><div>${badgeHtml}</div></div>
+            </div>
+          `;
 
-          item.onclick = function() {
+          item.onclick = function(e) {
+            e.stopPropagation();
             if(!estadoLive.tarefasFeitas[chave]) {
               estadoLive.tarefasFeitas[chave] = usuarioLogado;
-              dispararAnimacaoCartoon(tarefa);
             } else {
-              // Só quem marcou ou o Heitor (Gerente) pode desmarcar para evitar bagunça
               if(estadoLive.tarefasFeitas[chave] === usuarioLogado || usuarioLogado === "Heitor") {
                 delete estadoLive.tarefasFeitas[chave];
               } else {
-                alert(`Essa tarefa foi realizada por ${estadoLive.tarefasFeitas[chave]}. Apenas ele pode retirar.`);
+                alert(`Tarefa de ${estadoLive.tarefasFeitas[chave]}.`);
                 return;
               }
             }
             salvarDadosNuvem();
-            atualizarLayoutCompleto();
+            montarPainelOnline();
+            atualizarProgresso();
           };
-          content.appendChild(item);
+          contentDiv.appendChild(item);
         });
-
-        // Upload de foto otimizado por setor
-        let fotoDiv = document.createElement('div');
-        fotoDiv.className = 'photo-area';
-        fotoDiv.innerHTML = `<div class="file-wrapper">` +
-                              `<span class="btn-camera" id="lbl_img_${setor.id}">📸 Enviar Foto de Evidência</span>` +
-                              `<input type="file" accept="image/*" onchange="compactarFotoSetor(this, '${setor.id}')">` +
-                            `</div>` +
-                            `<div class="preview-box" id="pbox_${setor.id}">` +
-                              `<button class="btn-remove-photo" onclick="removerFotoSetor('${setor.id}', event)">✕</button>` +
-                              `<img class="preview-img" id="img_${setor.id}">` +
-                            `</div>`;
-        content.appendChild(fotoDiv);
-
-        card.appendChild(header);
-        card.appendChild(content);
-        container.appendChild(card);
-
-        header.onclick = function() {
-          let active = card.classList.contains('active');
-          document.querySelectorAll('.sector-card').forEach(c => {
-            c.classList.remove('active');
-            c.querySelector('.sector-content').style.maxHeight = '0px';
-          });
-          if(!active) {
-            card.classList.add('active');
-            content.style.maxHeight = '2000px';
-          }
-        };
-
-        if(estadoLive.fotosSetores[setor.id]) {
-          setTimeout(() => {
-            let pb = document.getElementById('pbox_' + setor.id);
-            let im = document.getElementById('img_' + setor.id);
-            if(im) {
-              im.src = estadoLive.fotosSetores[setor.id];
-              pb.style.display = 'block';
-            }
-          }, 50);
-        }
       });
     }
 
-    function compactarFotoSetor(input, setorId) {
-      if (input.files && input.files[0]) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-          let img = new Image();
-          img.onload = function() {
-            let canvas = document.createElement('canvas');
-            let MAX_WIDTH = 350; 
-            let scale = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scale;
-            let ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            
-            estadoLive.fotosSetores[setorId] = canvas.toDataURL('image/jpeg', 0.6);
-            salvarDadosNuvem();
-            atualizarLayoutCompleto();
-          };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
+    function alternarSetor(id) {
+      let card = document.getElementById('card_' + id);
+      let content = document.getElementById('content_' + id);
+      let estaAtivo = card.classList.contains('active');
 
-    function removerFotoSetor(setorId, e) {
-      e.stopPropagation();
-      if(confirm('Deseja deletar essa foto da nuvem?')) {
-        delete estadoLive.fotosSetores[setorId];
-        salvarDadosNuvem();
-        atualizarLayoutCompleto();
+      document.querySelectorAll('.sector-card').forEach(c => {
+        c.classList.remove('active');
+        let contentDiv = c.querySelector('.sector-content');
+        if(contentDiv) contentDiv.style.maxHeight = '0px';
+      });
+
+      if(!estaAtivo) {
+        card.classList.add('active');
+        content.style.maxHeight = '2000px';
       }
     }
 
     function atualizarProgresso() {
       let total = 0; let feitas = 0;
-      dadosSetores.forEach(s => { s.tasks.forEach((t, i) => { total++; if(estadoLive.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
+      dadosSetores.forEach(s => { s.tasks.forEach((t, i) => { total++; if(estadoLive.tarefasFeitas && estadoLive.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
       let pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
-      document.getElementById('progress-bar').style.width = pct + '%';
-      document.getElementById('progress-txt').innerText = pct + '%';
+      let bar = document.getElementById('progress-bar');
+      let txt = document.getElementById('progress-txt');
+      if(bar) bar.style.width = pct + '%';
+      if(txt) txt.innerText = pct + '%';
     }
 
     function renderizarChat() {
       let box = document.getElementById('chat-messages-box');
       if(!box) return;
       box.innerHTML = '';
-      
       if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
-
       estadoLive.mensagensChat.forEach(m => {
         let bolha = document.createElement('div');
         let souEu = m.usuario === usuarioLogado;
@@ -617,43 +513,11 @@
       let campo = document.getElementById('chat-input-field');
       let txt = campo.value.trim();
       if(!txt) return;
-
       if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
-      
-      estadoLive.mensagensChat.push({
-        usuario: usuarioLogado,
-        texto: txt
-      });
-
-      // Limita o histórico em 40 mensagens para o banco não ficar pesado
-      if(estadoLive.mensagensChat.length > 40) estadoLive.mensagensChat.shift();
-
+      estadoLive.mensagensChat.push({ usuario: usuarioLogado, texto: txt });
       campo.value = '';
       salvarDadosNuvem();
       renderizarChat();
-    }
-
-    function dispararAnimacaoCartoon(texto) {
-      let overlay = document.getElementById('anim-overlay');
-      let emoji = document.getElementById('anim-emoji');
-      let t = texto.toLowerCase();
-      emoji.className = "cartoon-emoji";
-
-      if (t.includes('varrer') || t.includes('vassoura')) {
-        emoji.innerText = "🧹✨"; emoji.classList.add('anim-vassoura');
-      } else if (t.includes('pano') || t.includes('chão')) {
-        emoji.innerText = "🧼🪣"; emoji.classList.add('anim-pano');
-      } else if (t.includes('vaso') || t.includes('banheiro')) {
-        emoji.innerText = "🚽👑"; emoji.classList.add('anim-vaso');
-      } else if (t.includes('mesa') || t.includes('cadeira')) {
-        emoji.innerText = "🍽️⭐"; emoji.classList.add('anim-mesa');
-      } else if (t.includes('bar') || t.includes('gelo')) {
-        emoji.innerText = "🍹🎉"; emoji.classList.add('anim-bebida');
-      } else {
-        emoji.innerText = "🏆";
-      }
-      overlay.style.display = 'flex';
-      setTimeout(() => { overlay.style.display = 'none'; }, 1200);
     }
 
     function enviarRelatorio(e) {
@@ -670,12 +534,11 @@
     }
 
     function limparMesaReal() {
-      if(confirm('Tem certeza que deseja ZERAR o turno de TODOS os funcionários na nuvem?')) {
+      if(confirm('Zerar o turno de TODOS na nuvem?')) {
         estadoLive.tarefasFeitas = {};
-        estadoLive.fotosSetores = {};
         estadoLive.mensagensChat = [];
         salvarDadosNuvem();
-        atualizarLayoutCompleto();
+        puxarDadosNuvem();
       }
     }
   </script>

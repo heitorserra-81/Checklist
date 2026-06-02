@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Marchesini Live v12.5</title>
+  <title>Marchesini Live v13.0</title>
   <style>
     :root {
       --bg: #0b0c10;
@@ -16,6 +16,7 @@
       --text-muted: #8e8e93;
       --color-success: #30d158;
       --color-danger: #ff453a;
+      --color-process: #2f80ed;
     }
 
     * { 
@@ -35,32 +36,43 @@
       overflow-x: hidden;
     }
 
-    /* TELA DE LOGIN OBRIGATÓRIA */
+    /* TELA DE REGISTRO E LOGIN OPTIMIZADA */
     .login-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(circle at top, #1c1f2b 0%, #050608 100%);
       z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.4s ease; overflow-y: auto;
     }
     .login-box {
       background: var(--surface-card); border: 1px solid var(--border-color);
-      padding: 32px 24px; border-radius: 24px; width: 100%; max-width: 340px;
+      padding: 32px 24px; border-radius: 24px; width: 100%; max-width: 350px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.7); text-align: center;
     }
     .login-box h2 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .login-box p { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+    .login-box p { font-size: 11px; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; }
     
     .login-select {
       width: 100%; padding: 14px; background: rgba(255,255,255,0.03); 
       border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; 
       color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 16px; outline: none;
-      -webkit-appearance: none;
     }
     .login-input-pass {
       width: 100%; padding: 14px; background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
-      color: #fff; font-size: 15px; margin-bottom: 20px; text-align: center; letter-spacing: 4px;
+      color: #fff; font-size: 15px; margin-bottom: 16px; text-align: center; letter-spacing: 4px;
     }
+
+    /* CÂMERA E INSTANTÂNEO DE SELFIE */
+    .camera-zone { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .avatar-preview-box { width: 90px; height: 90px; border-radius: 50%; border: 2px dashed var(--accent-gold); overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); position: relative; }
+    .avatar-preview-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .avatar-preview-box span { font-size: 24px; }
+    .btn-capture { background: rgba(255,255,255,0.05); border: 1px dashed var(--accent-gold); color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; cursor: pointer; display: inline-block; }
+    .photo-confirm-panel { display: none; gap: 10px; margin-top: 5px; }
+    .btn-photo-action { padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; }
+    .btn-photo-redo { background: var(--color-danger); color: #fff; }
+    .btn-photo-ok { background: var(--color-success); color: #000; }
+
     .btn-login {
       width: 100%; background: var(--accent-gold); color: #000; padding: 14px;
       border-radius: 14px; font-size: 15px; font-weight: 700; border: none; cursor: pointer;
@@ -74,473 +86,9 @@
     .app-header {
       display: flex; align-items: center; justify-content: space-between;
       background: var(--surface-card); border: 1px solid var(--border-color);
-      padding: 16px 20px; border-radius: 20px; margin-bottom: 24px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      padding: 16px 20px; border-radius: 20px; margin-bottom: 16px;
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
-    .logo-wrapper { position: relative; width: 50px; height: 50px; }
-    .app-logo { width: 100%; height: 100%; border-radius: 14px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
-    .app-info h1 { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: -0.2px; }
-    .app-info p { font-size: 10px; color: var(--accent-gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
-    .menu-toggle {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); color: var(--accent-gold); font-size: 20px; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    }
-
-    .sidebar {
-      position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 1px solid var(--border-color); z-index: 2500; padding: 30px 20px; transition: right 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-    }
-    .sidebar.open { right: 0; }
-    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; }
-    .sidebar-header h3 { font-size: 14px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
-    .sidebar-close { background: transparent; border: none; color: var(--text-muted); font-size: 20px; }
-    .menu-item { display: flex; align-items: center; gap: 12px; padding: 14px; color: #e5e7eb; font-size: 14px; font-weight: 600; border-radius: 12px; margin-bottom: 8px; cursor: pointer; }
-    .menu-item danger { color: var(--color-danger); background: rgba(255, 71, 87, 0.08); margin-top: 20px; border: 1px solid rgba(255, 71, 87, 0.15); }
-
-    .progress-box {
-      background: var(--surface-card); border: 1px solid var(--border-color); padding: 16px; border-radius: 18px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    .progress-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-    .progress-bar-bg { background: rgba(255, 255, 255, 0.03); height: 8px; border-radius: 4px; overflow: hidden; }
-    .progress-bar-fill { background: linear-gradient(90deg, var(--accent-gold), var(--color-success)); height: 100%; width: 0%; transition: width 0.4s ease; }
-
-    .user-logged-panel {
-      background: rgba(255,255,255,0.02); border: 1px solid var(--border-color);
-      padding: 12px 16px; border-radius: 14px; margin-bottom: 24px; display: flex;
-      justify-content: space-between; align-items: center;
-    }
-    .user-logged-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
-    .user-logged-dot { width: 8px; height: 8px; background: var(--color-success); border-radius: 50%; box-shadow: 0 0 8px var(--color-success); }
-    .btn-logout { background: transparent; border: none; color: var(--color-danger); font-size: 12px; font-weight: 700; cursor: pointer; }
-
-    .section-title { font-size: 11px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; padding-left: 4px; margin-bottom: 12px; }
-
-    /* LAYOUT DE SETORES BLINDADO */
-    .sector-card {
-      background: var(--surface-card); border: 1px solid var(--border-color); border-radius: 18px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); display: block !important;
-    }
-    .sector-header { display: flex; align-items: center; padding: 18px; cursor: pointer; user-select: none; }
-    .sector-icon { width: 38px; height: 38px; background: rgba(255,255,255,0.03); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-right: 14px; }
-    .sector-details { flex: 1; }
-    .sector-name { font-size: 15px; font-weight: 600; color: #fff; }
-    .sector-qty { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .chevron { width: 18px; height: 18px; fill: none; stroke: var(--text-muted); stroke-width: 2.5; transition: transform 0.25s ease; }
-    
-    .sector-card.active .chevron { transform: rotate(180deg); stroke: var(--accent-gold); }
-    .sector-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.25, 1, 0.5, 1); background: rgba(0, 0, 0, 0.15); }
-    
-    .task-item { display: flex; flex-direction: column; padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,0.02); }
-    .task-main-row { display: flex; align-items: center; width: 100%; cursor: pointer; }
-    
-    .check-round { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-radius: 50%; margin-right: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-    .task-item.done .check-round { background: var(--color-success); border-color: var(--color-success); }
-    .task-item.done .check-round::after { content: "✓"; color: #000; font-size: 11px; font-weight: 900; }
-    
-    .task-label { font-size: 14px; flex: 1; color: #e5e5ea; display: flex; align-items: center; justify-content: space-between; gap: 8px; line-height: 1.4; }
-    .task-item.done .task-label span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
-    
-    .user-badge-premium { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #000; text-transform: uppercase; }
-
-    /* CHAT DE EQUIPE INTEGRADO FIXO */
-    .chat-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2200; align-items: flex-end; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-    .chat-box-container { width: 100%; background: #0f111a; border-top: 1px solid var(--border-color); border-radius: 24px 24px 0 0; display: flex; flex-direction: column; max-height: 75vh; }
-    
-    .chat-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border-color); }
-    .chat-modal-header h4 { font-size: 13px; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; }
-    .chat-modal-close { background: transparent; border: none; color: var(--text-muted); font-size: 18px; }
-    
-    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-height: 220px; }
-    .msg-bubble { font-size: 13px; padding: 10px 14px; border-radius: 14px; max-width: 80%; line-height: 1.4; }
-    .msg-received { background: rgba(255,255,255,0.04); align-self: flex-start; color: #e5e5ea; }
-    .msg-sent { background: rgba(199, 160, 84, 0.15); border: 1px solid rgba(199, 160, 84, 0.2); align-self: flex-end; color: #fff; }
-    .msg-author { font-weight: 700; font-size: 10px; color: var(--accent-gold); margin-bottom: 2px; text-transform: uppercase; }
-    
-    .chat-modal-footer { display: flex; padding: 12px 16px; background: #0b0c10; gap: 10px; border-top: 1px solid var(--border-color); }
-    .chat-modal-input { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 14px; }
-    .btn-chat-send { background: var(--accent-gold); border: none; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #000; }
-
-    /* BOTÕES FLUTUANTES */
-    .floating-actions { position: fixed; bottom: 30px; right: 20px; display: flex; flex-direction: column; gap: 14px; z-index: 1000; }
-    .btn-fab { width: 54px; height: 54px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.6); }
-    .fab-chat { background: #171923; border: 1px solid var(--border-color); color: var(--accent-gold); }
-    .fab-whatsapp { background: #25d366; color: #fff; text-decoration: none; }
-  </style>
-</head>
-<body>
-
-  <div class="login-overlay" id="login-screen">
-    <div class="login-box">
-      <h2>Marchesini Premium</h2>
-      <p>Acesso ao Controle de Turno</p>
-      
-      <select class="login-select" id="login-user">
-        <option value="" disabled selected>Selecione seu Nome</option>
-        <option value="Heitor">Heitor</option>
-        <option value="Danilo">Danilo</option>
-        <option value="Bill">Bill</option>
-        <option value="Pepeu">Pepeu</option>
-        <option value="Eibe">Eibe</option>
-        <option value="Suelen">Suelen</option>
-        <option value="Gi">Gi</option>
-      </select>
-
-      <input type="password" class="login-input-pass" id="login-pass" placeholder="••••" maxlength="4" pattern="\d*">
-      <button class="btn-login" onclick="executarLoginReal()">Entrar no Turno</button>
-      <div class="login-error" id="login-err-msg">Senha incorreta para este usuário!</div>
-    </div>
-  </div>
-
-  <div class="app-container" id="main-app">
-    <div class="sidebar" id="app-sidebar">
-      <div class="sidebar-header">
-        <h3>Configurações do Turno</h3>
-        <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
-      </div>
-      <div class="menu-item" onclick="toggleSidebar()">📋 Visualizar Checklist</div>
-      <div class="menu-item danger" onclick="limparMesaReal(); toggleSidebar();">⚠️ Zerar Todo o Turno Online</div>
-    </div>
-
-    <div class="app-header">
-      <div class="header-left">
-        <div class="logo-wrapper">
-          <img class="app-logo" id="restaurant-logo" src="https://images.unsplash.com/photo-1544025162-d76694265947?w=150">
-        </div>
-        <div class="app-info">
-          <h1>Marchesini di Roverbella</h1>
-          <p>Controle de Turno Realtime</p>
-        </div>
-      </div>
-      <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-    </div>
-
-    <div class="user-logged-panel">
-      <div class="user-logged-info">
-        <div class="user-logged-dot"></div>
-        <span>Operando como: <span id="txt-user-badge" style="color:var(--accent-gold)">-</span></span>
-      </div>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
-    </div>
-
-    <div class="progress-box">
-      <div class="progress-labels">
-        <span>Meta do Fechamento Coletivo</span>
-        <span id="progress-txt">0%</span>
-      </div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
-    </div>
-
-    <div class="section-title">Setores Operacionais Online</div>
-    
-    <div id="sectors-container" style="min-height: 200px; display: block !important;"></div>
-
-    <div class="chat-modal" id="chat-popup">
-      <div class="chat-box-container">
-        <div class="chat-modal-header">
-          <h4>Chat da Equipe em Tempo Real</h4>
-          <button class="chat-modal-close" onclick="toggleChatPopup()">✕</button>
-        </div>
-        <div class="chat-messages" id="chat-messages-box"></div>
-        <div class="chat-modal-footer">
-          <input type="text" class="chat-modal-input" id="chat-input-field" placeholder="Escreva uma mensagem...">
-          <button class="btn-chat-send" onclick="enviarMensagemNuvem()">Enviar</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="floating-actions">
-      <button class="btn-fab fab-chat" onclick="toggleChatPopup()">💬</button>
-      <a class="btn-fab fab-whatsapp" id="whatsapp-btn" href="#" onclick="enviarRelatorio(event)">✅</a>
-    </div>
-  </div>
-
-  <script>
-    // SISTEMA DE SINCRONIZAÇÃO HÍBRIDA (Aceito perfeitamente pelo GitHub Pages)
-    // Se o link externo demorar, ele roda instantaneamente pela chave local segura compartilhada
-    const LINK_BANCO_SECURE = "https://api.jsonbin.io/v3/b/665bbf1ee41b4d34e4fce944";
-    const MASTER_KEY_SECURE = "$2a$10$R8vH2Fw4r0m7M3L6K8k9I.eO8g9eX8JvC6o8H5O4w3e2r1t0y9u8i";
-
-    const senhasEquipe = {
-      "Heitor": "4444", "Danilo": "1111", "Bill": "2222",
-      "Pepeu": "3333", "Eibe": "5555", "Suelen": "6666", "Gi": "7777"
-    };
-
-    const equipeCores = {
-      "Heitor": "#4a90e2", "Danilo": "#34c759", "Bill": "#ff9500",
-      "Pepeu": "#af52de", "Eibe": "#ff2d55", "Suelen": "#5ac8fa", "Gi": "#ffcc00"
-    };
-
-    var dadosSetores = [
-      {
-        id: "salao", title: "Salão & Área Externa", icon: "🛋️",
-        tasks: [
-          "Levar mesas e cadeiras para a área externa e alinhar.",
-          "Varrer minuciosamente o salão principal e circulação.",
-          "Baixar todas as cadeiras das mesas com cuidado.",
-          "Passar pano com desinfetante no chão do salão.",
-          "Higienizar a superfície das mesas com álcool 70%.",
-          "Limpar detalhadamente os sousplats e jogos americanos.",
-          "Montar as mesas (sousplat, pratos, talheres).",
-          "Abastecer e alinhar as papeleiras e galheteiros."
-        ]
-      },
-      {
-        id: "buffet", title: "Buffet Self-Service", icon: "🍱",
-        tasks: [
-          "Limpar a pista quente e ligar o aquecimento.",
-          "Limpar a pista fria e ligar a refrigeração.",
-          "Organizar a mesa de candy e a bancada de cafés.",
-          "Higienizar pegadores, conchas e utensílios.",
-          "Abastecer pratos e talheres no início da rampa.",
-          "Coordenar com a cozinha o abastecimento das cubas."
-        ]
-      },
-      {
-        id: "bar", title: "Bar & Bebidas", icon: "🍹",
-        tasks: [
-          "Varrer e passar pano no piso do bar.",
-          "Recolher, esvaziar e higienizar as lixeiras do bar.",
-          "Conferir e reabastecer o estoque de gelo.",
-          "Abastecer geladeiras com cervejas, refris e sucos.",
-          "Organizar, polir e alinhar copos e taças."
-        ]
-      },
-      {
-        id: "banheiros", title: "Banheiros", icon: "🧻",
-        tasks: [
-          "Lavar e desinfetar os vasos sanitários e pias.",
-          "Repor rolos de papel higiênico nos suportes.",
-          "Abastecer os dispensers de papel toalha.",
-          "Verificar e abastecer os recipientes de sabonete.",
-          "Limpar espelhos e passar pano perfumado no chão.",
-          "Esvaziar e trocar os sacos plásticos das lixeiras."
-        ]
-      }
-    ];
-
-    var estadoLive = {
-      tarefasFeitas: {},
-      mensagensChat: []
-    };
-    
-    var usuarioLogado = "";
-
-    async function puxarDadosNuvem() {
-      // Força a montagem visual imediata para o app nunca ficar preto enquanto consulta
-      montarPainelOnline(); 
-      try {
-        let res = await fetch(LINK_BANCO_SECURE + "/latest", {
-          headers: { "X-Master-Key": MASTER_KEY_SECURE }
-        });
-        if (res.ok) {
-          let data = await res.json();
-          if(data.record) {
-            estadoLive = data.record;
-          }
-        }
-      } catch(e) {
-        let local = localStorage.getItem('marchesini_live_backup');
-        if(local) estadoLive = JSON.parse(local);
-      }
-      montarPainelOnline();
-      atualizarProgresso();
-    }
-
-    async function salvarDadosNuvem() {
-      localStorage.setItem('marchesini_live_backup', JSON.stringify(estadoLive));
-      atualizarProgresso();
-      try {
-        await fetch(LINK_BANCO_SECURE, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json", "X-Master-Key": MASTER_KEY_SECURE },
-          body: JSON.stringify(estadoLive)
-        });
-      } catch(e) {}
-    }
-
-    function executarLoginReal() {
-      let user = document.getElementById('login-user').value;
-      let pass = document.getElementById('login-pass').value;
-      let errMsg = document.getElementById('login-err-msg');
-
-      if(!user) { alert('Escolha seu nome!'); return; }
-      
-      if(senhasEquipe[user] === pass) {
-        usuarioLogado = user;
-        errMsg.style.display = 'none';
-        document.getElementById('login-screen').style.opacity = 0;
-        setTimeout(() => {
-          document.getElementById('login-screen').style.display = 'none';
-          document.getElementById('main-app').style.display = 'block';
-          document.getElementById('txt-user-badge').innerText = usuarioLogado;
-          puxarDadosNuvem();
-          setInterval(puxarDadosNuvem, 6000);
-        }, 400);
-      } else {
-        errMsg.style.display = 'block';
-        document.getElementById('login-pass').value = '';
-      }
-    }
-
-    function fazerLogout() {
-      usuarioLogado = "";
-      document.getElementById('login-pass').value = '';
-      document.getElementById('main-app').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'flex';
-      document.getElementById('login-screen').style.opacity = 1;
-    }
-
-    function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('open'); }
-    function toggleChatPopup() { 
-      let p = document.getElementById('chat-popup');
-      p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
-      if(p.style.display === 'flex') renderizarChat();
-    }
-
-    function montarPainelOnline() {
-      let container = document.getElementById('sectors-container');
-      if (!container) return;
-      
-      let setorAbertoId = null;
-      document.querySelectorAll('.sector-card').forEach(c => {
-        if(c.classList.contains('active')) setorAbertoId = c.id.replace('card_', '');
-      });
-
-      container.innerHTML = '';
-
-      dadosSetores.forEach(setor => {
-        let card = document.createElement('div');
-        card.className = 'sector-card' + (setorAbertoId === setor.id ? ' active' : '');
-        card.id = 'card_' + setor.id;
-
-        let feitas = 0;
-        if (!estadoLive.tarefasFeitas) estadoLive.tarefasFeitas = {};
-        setor.tasks.forEach((t, i) => { if(estadoLive.tarefasFeitas[setor.id + '_' + i]) feitas++; });
-
-        card.innerHTML = `
-          <div class="sector-header" onclick="alternarSetor('${setor.id}')">
-            <div class="sector-icon">${setor.icon}</div>
-            <div class="sector-details">
-              <div class="sector-name">${setor.title}</div>
-              <div class="sector-qty">${feitas} de ${setor.tasks.length} concluídas</div>
-            </div>
-            <svg class="chevron" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
-          </div>
-          <div class="sector-content" id="content_${setor.id}" style="${setorAbertoId === setor.id ? 'max-height:2000px;' : 'max-height:0px;'}">
-          </div>
-        `;
-
-        container.appendChild(card);
-        let contentDiv = document.getElementById('content_' + setor.id);
-
-        setor.tasks.forEach((tarefa, idx) => {
-          let item = document.createElement('div');
-          let chave = setor.id + '_' + idx;
-          let quemFez = estadoLive.tarefasFeitas[chave];
-          
-          item.className = 'task-item' + (quemFez ? ' done' : '');
-          let badgeHtml = quemFez ? `<span class="user-badge-premium" style="background:${equipeCores[quemFez] || '#fff'}">${quemFez}</span>` : '';
-
-          item.innerHTML = `
-            <div class="task-main-row">
-              <div class="check-round"></div>
-              <div class="task-label"><span>${tarefa}</span><div>${badgeHtml}</div></div>
-            </div>
-          `;
-
-          item.onclick = function(e) {
-            e.stopPropagation();
-            if(!estadoLive.tarefasFeitas[chave]) {
-              estadoLive.tarefasFeitas[chave] = usuarioLogado;
-            } else {
-              if(estadoLive.tarefasFeitas[chave] === usuarioLogado || usuarioLogado === "Heitor") {
-                delete estadoLive.tarefasFeitas[chave];
-              } else {
-                alert(`Tarefa de ${estadoLive.tarefasFeitas[chave]}.`);
-                return;
-              }
-            }
-            salvarDadosNuvem();
-            montarPainelOnline();
-            atualizarProgresso();
-          };
-          contentDiv.appendChild(item);
-        });
-      });
-    }
-
-    function alternarSetor(id) {
-      let card = document.getElementById('card_' + id);
-      let content = document.getElementById('content_' + id);
-      let estaAtivo = card.classList.contains('active');
-
-      document.querySelectorAll('.sector-card').forEach(c => {
-        c.classList.remove('active');
-        let contentDiv = c.querySelector('.sector-content');
-        if(contentDiv) contentDiv.style.maxHeight = '0px';
-      });
-
-      if(!estaAtivo) {
-        card.classList.add('active');
-        content.style.maxHeight = '2000px';
-      }
-    }
-
-    function atualizarProgresso() {
-      let total = 0; let feitas = 0;
-      dadosSetores.forEach(s => { s.tasks.forEach((t, i) => { total++; if(estadoLive.tarefasFeitas && estadoLive.tarefasFeitas[s.id + '_' + i]) feitas++; }); });
-      let pct = total > 0 ? Math.round((feitas / total) * 100) : 0;
-      let bar = document.getElementById('progress-bar');
-      let txt = document.getElementById('progress-txt');
-      if(bar) bar.style.width = pct + '%';
-      if(txt) txt.innerText = pct + '%';
-    }
-
-    function renderizarChat() {
-      let box = document.getElementById('chat-messages-box');
-      if(!box) return;
-      box.innerHTML = '';
-      if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
-      estadoLive.mensagensChat.forEach(m => {
-        let bolha = document.createElement('div');
-        let souEu = m.usuario === usuarioLogado;
-        bolha.className = 'msg-bubble ' + (souEu ? 'msg-sent' : 'msg-received');
-        bolha.innerHTML = `<div class="msg-author" style="color:${equipeCores[m.usuario]}">${m.usuario}</div>` + m.texto;
-        box.appendChild(bolha);
-      });
-      box.scrollTop = box.scrollHeight;
-    }
-
-    function enviarMensagemNuvem() {
-      let campo = document.getElementById('chat-input-field');
-      let txt = campo.value.trim();
-      if(!txt) return;
-      if(!estadoLive.mensagensChat) estadoLive.mensagensChat = [];
-      estadoLive.mensagensChat.push({ usuario: usuarioLogado, texto: txt });
-      campo.value = '';
-      salvarDadosNuvem();
-      renderizarChat();
-    }
-
-    function enviarRelatorio(e) {
-      let msg = '✨ *MARCHESINI LIVE REALTIME* ✨\n*Relatório Coletivo do Turno*\n\n';
-      dadosSetores.forEach(s => {
-        msg += '📌 *' + s.title.toUpperCase() + '*\n';
-        s.tasks.forEach((t, i) => {
-          let por = estadoLive.tarefasFeitas[s.id + '_' + i];
-          msg += (por ? '✅ ' : '❌ ') + t + (por ? ' (_' + por + '_)' : '') + '\n';
-        });
-        msg += '\n';
-      });
-      document.getElementById('whatsapp-btn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
-    }
-
-    function limparMesaReal() {
-      if(confirm('Zerar o turno de TODOS na nuvem?')) {
-        estadoLive.tarefasFeitas = {};
-        estadoLive.mensagensChat = [];
-        salvarDadosNuvem();
-        puxarDadosNuvem();
-      }
-    }
-  </script>
-</body>
-</html>
+    .logo-wrapper { width: 45px; height: 45px; }
+    .app-logo { width: 100%; height: 100%; border-radius: 12px; object-fit: cover; border: 1.5px solid var(--accent-gold); }
+    .app-info h1 { font

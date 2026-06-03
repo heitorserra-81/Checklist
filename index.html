@@ -4,18 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Staff Check</title>
-  
-  <!-- ==================== PWA / INSTALAÇÃO ==================== -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Staff Check">
   <meta name="msapplication-TileColor" content="#009246">
   <meta name="theme-color" content="#0b0c10">
-  
   <link rel="icon" type="image/png" sizes="192x192" id="icon-192">
   <link rel="apple-touch-icon" sizes="192x192" id="apple-icon-192">
   <link rel="manifest" id="manifest-link">
-
   <style>
     :root {
       --bg: #0b0c10; --card: #14161d; --border: rgba(255, 255, 255, 0.08);
@@ -32,19 +28,14 @@
       overflow-x: hidden;
       max-width: 100vw;
     }
-    .app-logo-container {
-      display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;
-    }
+    .app-logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .app-logo-icon {
       width: 70px; height: 70px; background: linear-gradient(135deg, var(--italia-green), #1b5e20);
       border-radius: 20px; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 8px 20px rgba(0,0,0,0.4); margin-bottom: 6px;
     }
     .app-logo-icon svg { width: 40px; height: 40px; }
-    .app-logo-text {
-      font-size: 18px; font-weight: 800; color: var(--italia-green);
-      text-shadow: 0 0 10px rgba(0,146,70,0.4); letter-spacing: 1px;
-    }
+    .app-logo-text { font-size: 18px; font-weight: 800; color: var(--italia-green); text-shadow: 0 0 10px rgba(0,146,70,0.4); letter-spacing: 1px; }
     .top-navbar {
       display: flex; justify-content: space-between; align-items: center;
       background: var(--card); border-bottom: 3px solid var(--italia-green);
@@ -52,14 +43,10 @@
       gap: 10px; flex-wrap: wrap;
     }
     .brand-box { display: flex; align-items: center; gap: 10px; flex: 1; }
-    .brand-logo {
-      width: 40px; height: 40px; border-radius: 10px; object-fit: cover;
-      background: #fff; display: none;
-    }
+    .brand-logo { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; background: #fff; display: none; }
     .brand-text h1 { font-size: 15px; font-weight: 700; color: #fff; }
     .brand-text p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
     .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 10px 4px; margin-bottom: 12px; scrollbar-width: none; border-bottom: 1px solid var(--border); }
     .stories-container::-webkit-scrollbar { display: none; }
     .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 55px; flex-shrink: 0; }
@@ -67,12 +54,10 @@
     .story-card.me .story-img-frame { background: var(--process); }
     .story-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); background: #000; }
     .story-name { font-size: 9px; color: var(--text); font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
     .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; overflow-y: auto; }
     .nav-sidebar.open { right: 0; }
     .side-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .menu-opt { display: flex; align-items: center; gap: 10px; padding: 12px; color: #fff; font-size: 13px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
-
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 340px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
     .cam-circle { width: 85px; height: 85px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -80,38 +65,38 @@
     .cam-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
     .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 12px; outline: none; }
     .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; }
-
     .app-screen { display: none; }
     .app-screen.active { display: block; }
-
     .progress-container { background: var(--card); padding: 14px; border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
     .prog-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-muted); }
     .prog-bg { background: rgba(255,255,255,0.03); height: 8px; border-radius: 4px; overflow: hidden; }
     .prog-bar { background: linear-gradient(90deg, var(--italia-red), var(--italia-green)); height: 100%; width: 0%; transition: width 0.3s ease; }
-
     .sector-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 0 4px 12px 4px; scrollbar-width: none; margin-bottom: 8px; }
     .sector-tabs::-webkit-scrollbar { display: none; }
     .sector-tab { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; cursor: pointer; }
     .sector-tab.active { background: var(--italia-green); border-color: var(--italia-green); }
-
     .card-sector { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; margin-bottom: 10px; overflow: hidden; display: none; }
     .card-sector.active { display: block; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(0,146,70,0.08); cursor: pointer; }
     .sect-cnt { background: rgba(0,0,0,0.2); padding: 10px 0; }
-    .row-task { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s; }
-    .row-task:active { background: rgba(255,255,255,0.02); }
+    .row-task { display: flex; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s; }
+    .row-task-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; cursor: pointer; }
+    .row-task-header:active { background: rgba(255,255,255,0.02); }
     .task-txt-side { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e5e5ea; flex: 1; }
     .dot-status { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
     .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.4; }
     .task-actions { display: flex; align-items: center; gap: 6px; }
+    .task-details { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.3s; background: rgba(255,255,255,0.02); padding: 0 14px; }
+    .task-details.open { max-height: 600px; padding: 12px 14px; }
+    .task-steps { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; white-space: pre-line; }
+    .task-steps strong { color: var(--italia-green); }
     .tk-btn { padding: 8px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: auto; }
     .btn-take { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-green); color: var(--italia-green); }
     .btn-done { background: var(--italia-green); color: #fff; box-shadow: 0 4px 10px rgba(0,146,70,0.3); }
     .btn-leave { background: rgba(255,255,255,0.04); border: 1px solid var(--italia-red); color: var(--italia-red); }
     .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
-
     .mgr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
     .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
     .mgr-card-icon { font-size: 28px; }
@@ -121,7 +106,6 @@
     .sub-pane-window { display: none; background: var(--card); border: 1px solid var(--italia-green); padding: 16px; border-radius: 20px; margin-top: 12px; }
     .search-row-box { background: rgba(0,0,0,0.3); border-radius: 10px; max-height: 250px; overflow-y: auto; padding: 4px; margin-bottom: 12px; }
     .search-item-line { padding: 12px 10px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-
     .super-anim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,12,16,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
     .super-anim-overlay.show { display: flex; opacity: 1; }
     .anim-scene { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; }
@@ -131,14 +115,12 @@
     .anim-worker-thumb span { font-size: 30px; position: absolute; top: -15px; right: -15px; }
     .anim-msg-box { background: var(--card); border: 2px solid var(--italia-green); padding: 16px 24px; border-radius: 20px; text-align: center; margin-top: 20px; max-width: 80%; transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
     .super-anim-overlay.show .anim-msg-box { transform: scale(1); }
-
     @keyframes varrer { 0% { transform: rotate(0deg) translateX(0); } 50% { transform: rotate(-20deg) translateX(-30px); } 100% { transform: rotate(0deg) translateX(0); } }
     @keyframes esfregar { 0% { transform: translateX(-20px) translateY(10px); } 50% { transform: translateX(20px) translateY(-10px); } 100% { transform: translateX(-20px) translateY(10px); } }
     @keyframes brilharPular { 0% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px #fff); } 50% { transform: translateY(-30px) scale(1.1); filter: drop-shadow(0 0 40px #009246); } 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 10px #fff); } }
     .act-varrer { animation: varrer 0.6s infinite; }
     .act-esfregar { animation: esfregar 0.5s infinite; }
     .act-brilhar { animation: brilharPular 0.8s infinite; }
-
     .chat-container { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9900; align-items: flex-end; }
     .chat-box { width: 100%; background: #0f111a; border-top: 2px solid var(--italia-green); border-radius: 20px 20px 0 0; display: flex; flex-direction: column; max-height: 70vh; }
     .chat-msg-wall { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; min-height: 250px; }
@@ -153,8 +135,6 @@
   </style>
 </head>
 <body>
-
-  <!-- ==================== MODAL DE INSTALAÇÃO ==================== -->
   <div id="install-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
     <div style="background:var(--card); border-radius:24px; padding:30px 24px; max-width:320px; text-align:center; border:2px solid var(--italia-green);">
       <div style="font-size:48px; margin-bottom:16px;">📲</div>
@@ -165,7 +145,6 @@
     </div>
   </div>
 
-  <!-- ==================== DEMAIS ELEMENTOS (IGUAIS AO ANTERIOR) ==================== -->
   <div class="super-anim-overlay" id="animacao-conclusao">
     <div class="anim-scene">
       <div class="anim-object" id="anim-obj-icon">✨</div>
@@ -221,6 +200,7 @@
       <div class="menu-opt" onclick="perfilAlterarDados('foto')">📸 Alterar Minha Foto</div>
       <div class="menu-opt" onclick="solicitarAcessoMestreEmOperacao()" style="margin-top:15px; color:var(--italia-green)">🔑 Painel do Gerente</div>
       <div class="menu-opt" onclick="alterarDadosRestaurante()">🏷️ Personalizar Restaurante</div>
+      <div class="menu-opt" id="menu-install-btn" onclick="showInstallPrompt()" style="display:none;">📲 Instalar App</div>
     </div>
   </div>
 
@@ -337,9 +317,7 @@
     </a>
   </div>
 
-  <!-- ==================== SCRIPT COMPLETO (FIREBASE + FUNÇÕES + PWA) ==================== -->
   <script type="module">
-    // ==================== CONFIGURAÇÃO FIREBASE ====================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -358,7 +336,6 @@
     const docRef = doc(db, 'app', 'liveData');
     const MASTER_PASS = "1911";
 
-    // ==================== ESTADO GLOBAL ====================
     let liveData = {
       tarefasStatus: {},
       usuariosSalvos: {},
@@ -374,8 +351,9 @@
     let loginViewContext = "worker";
     let currentCategoriaBiblio = "tudo";
     let activeSectorTab = null;
+    let deferredPrompt;
 
-    // ==================== SINCRONIZAÇÃO FIRESTORE ====================
+    // Sincronização Firestore
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -413,7 +391,7 @@
       } else { loginLogo.style.display = 'none'; }
     }
 
-    // ==================== BIBLIOTECA DE TAREFAS ====================
+    // ==================== BIBLIOTECA E DESCRIÇÕES ====================
     const megaLibrary = [
       { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
       { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
@@ -457,6 +435,65 @@
       { cat: "fechamento", txt: "Trancar portas, janelas e ativar o alarme" }
     ];
 
+    const taskDescriptions = {
+      "Varrer todo o chão do salão e rodapés": "1. Afaste as cadeiras.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés.\n4. Recolha com pá e descarte.",
+      "Passar pano úmido com rodo e desinfetante no salão": "1. Encha balde com água morna e desinfetante.\n2. Molhe o pano e torça.\n3. Passe o rodo uniformemente.\n4. Deixe secar.",
+      "Limpar e polir os vidros e portas de entrada": "1. Aplique limpa-vidros.\n2. Use pano de microfibra.\n3. Esfregue em círculos.\n4. Seque os cantos.",
+      "Higienizar as cadeiras de bebê (cadeirões)": "1. Desmonte partes removíveis.\n2. Lave com água e sabão.\n3. Desinfete com álcool 70%.\n4. Seque e remonte.",
+      "Recolher o lixo de todos os setores e levar para fora": "1. Amarre os sacos.\n2. Recolha de todos os setores.\n3. Leve à área externa.\n4. Troque os sacos.",
+      "Lavar as lixeiras de todos os setores": "1. Retire os sacos.\n2. Lave internamente com detergente.\n3. Use escova para resíduos.\n4. Enxágue e seque.",
+      "Varrer e passar pano no deck/área externa": "1. Varra folhas e poeira.\n2. Se possível, jogue água.\n3. Esfregue com vassoura dura.\n4. Enxágue e deixe escorrer.",
+      "Montar as mesas (pratos, sousplats e talheres alinhados)": "1. Posicione sousplat.\n2. Coloque prato principal.\n3. Garfo à esquerda, faca à direita.\n4. Alinhe todas as peças.",
+      "Repor galheteiros (azeite, vinagre, sal e pimenta)": "1. Verifique níveis.\n2. Limpe os bicos.\n3. Complete com produtos frescos.\n4. Recoloque na mesa.",
+      "Revisar alinhamento de mesas e cadeiras pelo mapa": "1. Consulte o mapa.\n2. Verifique posição exata.\n3. Ajuste as cadeiras.\n4. Confira espaçamento.",
+      "Dobrar e organizar guardanapos de tecido": "1. Passe se necessário.\n2. Dobre em formato desejado.\n3. Disponha sobre os pratos.\n4. Armazene extras.",
+      "Checar iluminação, ar-condicionado e som ambiente": "1. Ligue luzes, troque lâmpadas queimadas.\n2. Ajuste termostato para 22-24°C.\n3. Selecione playlist suave.\n4. Caminhe para conferir.",
+      "Organizar a praça de garçons e gavetas dos aparadores": "1. Limpe com álcool.\n2. Reponha talheres e guardanapos.\n3. Verifique porta-copos.\n4. Deixe gavetas organizadas.",
+      "Repor paliteiros e porta-copos": "1. Lave se sujos.\n2. Encha com palitos novos.\n3. Distribua uniformemente.",
+      "Limpar os menus e cartas de vinho com álcool": "1. Umedeça pano com álcool 70%.\n2. Passe nas capas e páginas.\n3. Deixe secar antes de guardar.",
+      "Polir todas as taças de vinho e copos de cristal": "1. Lave com água morna e detergente neutro.\n2. Esfregue o bojo com pano macio.\n3. Enxágue.\n4. Seque com microfibra até brilhar.",
+      "Abastecer as geleiras com gelo novo": "1. Esvazie gelo velho.\n2. Lave o recipiente.\n3. Encha com gelo fresco.\n4. Mantenha a colher limpa.",
+      "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique validade.\n2. Retire vencidos.\n3. Organize por tipo.\n4. Anote o que precisa repor.",
+      "Limpar e purgar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro e limpe.\n3. Purgue bicos de vapor.\n4. Lave reservatório.",
+      "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem.\n2. Corte em rodelas ou gomos.\n3. Separe folhas.\n4. Armazene em recipientes refrigerados.",
+      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes.\n2. Encha com os itens.\n3. Feche bem.\n4. Disponha no balcão.",
+      "Checar validade dos xaropes e sucos abertos": "1. Verifique datas.\n2. Descarte vencidos.\n3. Limpe bordas.\n4. Organize por validade.",
+      "Lavar as esteiras de borracha (bar mats)": "1. Retire do balcão.\n2. Lave com água quente e detergente.\n3. Escove as ranhuras.\n4. Enxágue e seque virado.",
+      "Ligar os réchauds e abastecer com água": "1. Verifique nível de água.\n2. Ligue e ajuste temperatura.\n3. Coloque cubas sobre eles.\n4. Monitore durante o serviço.",
+      "Checar as temperaturas das pistas quentes e frias": "1. Use termômetro.\n2. Pista quente: 65°C.\n3. Pista fria: 5°C.\n4. Ajuste controles.",
+      "Repor a pilha de pratos limpos no início do buffet": "1. Lave e seque pratos.\n2. Empilhe ao lado das cubas.\n3. Certifique-se do alcance.",
+      "Organizar e polir os pegadores e conchas": "1. Lave com água e sabão.\n2. Seque com pano.\n3. Polir para dar brilho.\n4. Disponha em frente a cada cuba.",
+      "Higienizar a bancada de granito do buffet": "1. Remova objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.",
+      "Abastecer os molhos e temperos da ilha de saladas": "1. Verifique cubas de molho.\n2. Complete com molho fresco.\n3. Reponha colheres.\n4. Confira etiquetas.",
+      "Limpar a boqueta de saída de pratos quentes": "1. Desligue.\n2. Use escova fina.\n3. Passe pano úmido.\n4. Ligue novamente.",
+      "Checar validade das etiquetas nas cubas da geladeira": "1. Abra cada cuba.\n2. Verifique data de preparo.\n3. Remova itens vencidos.\n4. Atualize etiquetas.",
+      "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel.\n2. Esfregue com escova.\n3. Deixe agir 5 min.\n4. Dê descarga.",
+      "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Movimentos circulares.\n4. Verifique manchas.",
+      "Repor papel toalha e papel higiênico": "1. Abra dispensers.\n2. Coloque novos rolos.\n3. Confira saída do papel.\n4. Feche.",
+      "Repor sabonete líquido nos dispensers": "1. Desenrosque.\n2. Encha com sabonete.\n3. Recoloque e bombeie.",
+      "Borrifar odorizador de ambiente nos banheiros": "1. Agite o frasco.\n2. Borrife no centro.\n3. Evite superfícies.\n4. Deixe fechado 5 min.",
+      "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue botões.\n2. Verifique luzes apagadas.\n3. Anote anomalias.",
+      "Fechar o caixa e imprimir relatórios Z": "1. Confira vendas.\n2. Feche o caixa.\n3. Imprima relatório Z.\n4. Guarde.",
+      "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada uma.\n2. Puxe a porta para confirmar.\n3. Verifique termostato.",
+      "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação."
+    };
+
+    function getDescricaoTarefa(txt) {
+      if (taskDescriptions[txt]) return taskDescriptions[txt];
+      const lower = txt.toLowerCase();
+      for (const key in taskDescriptions) {
+        if (lower.includes(key.toLowerCase())) return taskDescriptions[key];
+      }
+      return "Realize a tarefa com atenção aos detalhes.\nUse os EPIs necessários.\nAo final, confira se o ambiente ficou limpo e organizado.";
+    }
+
+    const defaultSectors = [
+      { id: "salao", title: "Salão & Praças", icon: "🍷" },
+      { id: "bar", title: "Bar & Bebidas", icon: "🍹" },
+      { id: "buffet", title: "Buffet & Cozinha", icon: "🍲" },
+      { id: "banheiros", title: "Banheiros", icon: "🧻" }
+    ];
+
     function popularTarefasPadraoSeVazio() {
       if (liveData.tarefasCustomizadas.length === 0) {
         liveData.tarefasCustomizadas = [
@@ -483,4 +520,617 @@
           { cat: "bar", txt: "Repor azeitonas e snacks do balcão" },
           { cat: "bar", txt: "Organizar a prateleira de destilados" },
           { cat: "bar", txt: "Checar o funcionamento do moedor de gelo" },
-          { cat: "bar", txt:
+          { cat: "bar", txt: "Limpar as cubas de apoio do bar" },
+          { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+          { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
+          { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
+          { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
+          { cat: "buffet", txt: "Higienizar a bancada de granito" },
+          { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
+          { cat: "buffet", txt: "Verificar o funcionamento dos aquecedores" },
+          { cat: "buffet", txt: "Repor pães e torradas no setor de sopas" },
+          { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
+          { cat: "buffet", txt: "Organizar as cubas de sobremesa" },
+          { cat: "buffet", txt: "Checar nível do gás da cozinha" },
+          { cat: "buffet", txt: "Conferir a limpeza do exaustor" },
+          { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+          { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
+          { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
+          { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
+          { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
+          { cat: "banheiros", txt: "Borrifar odorizador de ambiente" },
+          { cat: "banheiros", txt: "Checar o funcionamento das descargas" },
+          { cat: "banheiros", txt: "Limpar as portas e maçanetas" },
+          { cat: "banheiros", txt: "Verificar a iluminação das pias" },
+          { cat: "banheiros", txt: "Repor o estoque de produtos de limpeza" },
+          { cat: "banheiros", txt: "Secar o piso com rodo após a lavagem" },
+          { cat: "banheiros", txt: "Checar a validade dos produtos de higiene" }
+        ];
+      }
+    }
+
+    // ==================== SONS E ANIMAÇÕES ====================
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+    function playTone(freq, type, dur, vol = 0.1) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
+      osc.stop(audioCtx.currentTime + dur);
+    }
+    function soundPegarTarefa() { playTone(440, 'sine', 0.1); setTimeout(() => playTone(660, 'sine', 0.15), 100); }
+    function soundConcluirTarefa() {
+      playTone(523.25, 'triangle', 0.15);
+      setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
+      setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
+    }
+
+    const taskAnimations = [
+      { keys: ["varrer", "vassoura", "chão"], emoji: "🧹", cssClass: "act-varrer", title: "Varrendo com energia!", desc: "A vassoura não deixa nem poeira para trás." },
+      { keys: ["pano", "rodo", "úmido", "passar pano"], emoji: "🧽", cssClass: "act-esfregar", title: "Brilhando como espelho!", desc: "O rodo deixou tudo reluzente." },
+      { keys: ["vaso", "sanitário", "privada"], emoji: "🚽", cssClass: "act-brilhar", title: "Sanitário impecável!", desc: "Cheirinho de limpeza e flor." },
+      { keys: ["álcool", "mesas", "higienizar"], emoji: "🧴", cssClass: "act-esfregar", title: "Superfície esterilizada!", desc: "Álcool 70% fez a mágica." },
+      { keys: ["taças", "copos", "polir"], emoji: "✨", cssClass: "act-brilhar", title: "Cristais reluzentes!", desc: "Prontos para o brinde." },
+      { keys: ["lixo", "recolher"], emoji: "🗑️", cssClass: "act-brilhar", title: "Lixo fora!", desc: "Ambiente limpo e arejado." },
+      { keys: ["cadeiras", "cadeirões"], emoji: "🪑", cssClass: "act-brilhar", title: "Cadeiras impecáveis!", desc: "Todas alinhadas e limpas." },
+      { keys: ["guardanapos"], emoji: "🍽️", cssClass: "act-brilhar", title: "Guardanapos dobrados!", desc: "Mesa posta com elegância." }
+    ];
+
+    function obterAnimacao(texto) {
+      const lower = texto.toLowerCase();
+      for (const rule of taskAnimations) {
+        if (rule.keys.some(k => lower.includes(k))) return rule;
+      }
+      return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece." };
+    }
+
+    // ==================== UTILITÁRIOS ====================
+    function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
+    function switchScreen(id) {
+      document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ==================== GLOBAIS ====================
+    window.toggleSidebarDropdown = () => document.getElementById('sidebar-dropdown').classList.toggle('open');
+
+    window.mudarContextoLoginGeral = (tipo) => {
+      loginViewContext = tipo;
+      window.toggleSidebarDropdown();
+      const title = document.getElementById('login-title-txt');
+      const sub = document.getElementById('login-subtitle-txt');
+      const zone = document.getElementById('login-avatar-zone');
+      const fName = document.getElementById('field-user');
+      const btnTxt = document.getElementById('btn-login-text');
+      if (tipo === 'worker') {
+        title.innerText = "Acesso Operacional"; sub.innerText = "Selecione sua foto e entre no turno";
+        zone.style.display = "block"; fName.style.display = "block"; btnTxt.innerText = "Entrar no Turno";
+      } else {
+        title.innerText = "Acesso Mestre"; sub.innerText = "Acesso exclusivo da gerência";
+        zone.style.display = "none"; fName.style.display = "none"; btnTxt.innerText = "Acessar Painel";
+      }
+      document.getElementById('field-pass').value = "";
+      switchScreen('scr-login-gate');
+    };
+
+    window.perfilAlterarDados = (tipo) => {
+      window.toggleSidebarDropdown();
+      if (!currentWorker || currentWorker === "Gerente") return;
+      if (tipo === 'nome') {
+        const novo = prompt("Novo nome:").trim();
+        if (novo) {
+          liveData.usuariosSalvos[novo] = liveData.usuariosSalvos[currentWorker];
+          liveData.loginAtividade[novo] = liveData.loginAtividade[currentWorker];
+          delete liveData.usuariosSalvos[currentWorker];
+          delete liveData.loginAtividade[currentWorker];
+          currentWorker = novo;
+          document.getElementById('system-context-subline').innerText = "Operador: " + novo.toUpperCase();
+          salvarFirestore(); montarPainelDOM(); alert("Nome alterado!");
+        }
+      } else if (tipo === 'senha') {
+        const senha = prompt("Nova senha (4 dígitos):").trim();
+        if (senha) { liveData.usuariosSalvos[currentWorker].senha = senha; salvarFirestore(); alert("Senha alterada!"); }
+      } else if (tipo === 'foto') {
+        cameraContext = 'update'; document.getElementById('camera-input').click();
+      }
+    };
+
+    window.alterarDadosRestaurante = () => {
+      window.toggleSidebarDropdown();
+      const novoNome = prompt("Nome do restaurante:", liveData.restaurante.nome || "Marchesini Premium");
+      if (novoNome !== null) liveData.restaurante.nome = novoNome.trim() || "Marchesini Premium";
+      const novaFonte = prompt("Fonte (ex: Arial, Georgia, Courier New):", liveData.restaurante.fonte || "Arial");
+      if (novaFonte !== null) liveData.restaurante.fonte = novaFonte.trim() || "Arial";
+      const querLogo = confirm("Deseja atualizar a imagem do logo?");
+      if (querLogo) {
+        document.getElementById('logo-input').click();
+      } else {
+        salvarFirestore(); aplicarDadosRestaurante();
+      }
+    };
+
+    window.logoAtualizada = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        compressImageCanvas(e.target.result, (compressed) => {
+          liveData.restaurante.logo = compressed;
+          salvarFirestore(); aplicarDadosRestaurante();
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.solicitarAcessoMestreEmOperacao = () => {
+      window.toggleSidebarDropdown();
+      const senha = prompt("Senha da gerência:");
+      if (senha === MASTER_PASS) {
+        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+        switchScreen('scr-dashboard-manager');
+        window.fecharSubPaineis();
+      } else if (senha !== null) alert("Senha incorreta!");
+    };
+
+    function compressImageCanvas(imgSrc, callback) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        const max = 150;
+        if (width > height) { if (width > max) { height *= max / width; width = max; } }
+        else { if (height > max) { width *= max / height; height = max; } }
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', 0.6));
+      };
+      img.src = imgSrc;
+    }
+
+    window.fotoCapturadaUniversal = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        compressImageCanvas(e.target.result, (compressed) => {
+          if (cameraContext === 'login') {
+            base64CamGlobal = compressed;
+            document.getElementById('cam-icon').style.display = 'none';
+            const img = document.getElementById('cam-preview');
+            img.src = compressed; img.style.display = 'block';
+            document.getElementById('cam-msg').innerText = "✓ Foto Pronta!";
+            document.getElementById('cam-msg').style.color = "var(--italia-green)";
+          } else if (cameraContext === 'update' && currentWorker && liveData.usuariosSalvos[currentWorker]) {
+            liveData.usuariosSalvos[currentWorker].foto = compressed;
+            salvarFirestore(); montarPainelDOM(); alert("Foto atualizada!");
+          }
+        });
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.detectarFuncionarioExistente = () => {
+      const nome = document.getElementById('field-user').value.trim();
+      const msg = document.getElementById('cam-msg'), img = document.getElementById('cam-preview'),
+            icon = document.getElementById('cam-icon'), btn = document.getElementById('btn-login-text');
+      if (liveData.usuariosSalvos[nome]) {
+        base64CamGlobal = liveData.usuariosSalvos[nome].foto;
+        icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
+        msg.innerText = "✓ Perfil Encontrado!"; msg.style.color = "var(--italia-green)";
+        btn.innerText = "Entrar no Turno";
+      } else {
+        if (base64CamGlobal && base64CamGlobal.startsWith("data:image")) return;
+        base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
+        msg.innerText = "Toque para tirar foto"; msg.style.color = "var(--text-muted)";
+        btn.innerText = "Cadastrar e Entrar";
+      }
+    };
+
+    window.processarLoginAcesso = async () => {
+      const pass = document.getElementById('field-pass').value.trim();
+      if (loginViewContext === 'manager_direct') {
+        if (pass === MASTER_PASS) {
+          currentWorker = "Gerente";
+          document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+          switchScreen('scr-dashboard-manager');
+          window.fecharSubPaineis();
+        } else alert("Senha Mestra Incorreta!");
+        return;
+      }
+      const nome = document.getElementById('field-user').value.trim();
+      if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
+      let primeiro = false;
+      if (liveData.usuariosSalvos[nome]) {
+        if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
+      } else {
+        primeiro = true;
+        liveData.usuariosSalvos[nome] = {
+          senha: pass,
+          foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80"
+        };
+      }
+      currentWorker = nome;
+      liveData.loginAtividade[nome] = true;
+      document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
+      document.getElementById('opts-before-login').style.display = 'none';
+      document.getElementById('opts-after-login').style.display = 'block';
+      if (primeiro) alert("🎉 Perfil criado! Bem-vindo à equipe.");
+      await salvarFirestore();
+      switchScreen('scr-dashboard-worker');
+      montarPainelDOM();
+    };
+
+    window.efetuarLogoffCompleto = async () => {
+      if (currentWorker && currentWorker !== "Gerente") {
+        liveData.loginAtividade[currentWorker] = false;
+        await salvarFirestore();
+      }
+      currentWorker = ""; base64CamGlobal = "";
+      document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
+      document.getElementById('opts-after-login').style.display = 'none';
+      document.getElementById('opts-before-login').style.display = 'block';
+      window.mudarContextoLoginGeral('worker');
+    };
+
+    // ==================== PAINEL FUNCIONÁRIO ====================
+    function montarPainelDOM() {
+      renderizarCarrosselStories();
+      const tabsContainer = document.getElementById('sector-tabs');
+      const zone = document.getElementById('render-sectors-zone');
+      if (!tabsContainer || !zone) return;
+      const setores = obterSetoresTotais();
+      tabsContainer.innerHTML = '';
+      setores.forEach((s, idx) => {
+        const tab = document.createElement('div');
+        tab.className = 'sector-tab';
+        tab.innerText = s.icon + ' ' + s.title;
+        tab.onclick = () => { activeSectorTab = s.id; montarPainelDOM(); };
+        if (!activeSectorTab && idx === 0) activeSectorTab = s.id;
+        if (s.id === activeSectorTab) tab.classList.add('active');
+        tabsContainer.appendChild(tab);
+      });
+      if (!activeSectorTab) activeSectorTab = setores[0]?.id;
+      zone.innerHTML = '';
+      const setor = setores.find(s => s.id === activeSectorTab);
+      if (!setor) return;
+      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+      let feitas = 0;
+      arr.forEach((_, i) => { if (liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done') feitas++; });
+      const card = document.createElement('div');
+      card.className = 'card-sector active';
+      card.innerHTML = `
+        <div class="sect-hdr">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:20px">${setor.icon}</span>
+            <span style="font-weight:700; text-transform:uppercase">${setor.title}</span>
+          </div>
+          <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
+        </div>
+        <div class="sect-cnt" id="cnt_${setor.id}"></div>`;
+      zone.appendChild(card);
+      const cnt = document.getElementById('cnt_' + setor.id);
+      if (arr.length === 0) {
+        cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>';
+        return;
+      }
+
+      arr.forEach((txt, idx) => {
+        const chave = setor.id + '_' + idx;
+        const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
+        const desc = getDescricaoTarefa(txt);
+        const row = document.createElement('div');
+        row.className = 'row-task ' + st.status;
+        row.id = 'row_' + chave;
+
+        let dotClass = 'dot-status';
+        let headerHTML = `<div class="row-task-header" onclick="toggleTaskDetails('${chave}')">`;
+        headerHTML += `<div class="task-txt-side"><div class="${dotClass}"></div><div>${txt}</div></div>`;
+        let miniHTML = '';
+        if (st.status === 'working' || st.status === 'done') {
+          miniHTML = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
+          if (st.status === 'working' && st.worker !== currentWorker) {
+            miniHTML += `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`;
+          } else if (st.status === 'done') {
+            miniHTML += `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
+          }
+        }
+        headerHTML += `<div class="task-actions">${miniHTML}</div></div>`;
+        row.innerHTML = headerHTML;
+
+        const details = document.createElement('div');
+        details.className = 'task-details';
+        details.id = 'det_' + chave;
+        let actionBtns = '';
+        if (st.status === 'idle') {
+          actionBtns = `<button class="tk-btn btn-take" onclick="gerenciarJob('${chave}','take','${txt.replace(/'/g, "\\'")}',event)">Pegar Tarefa</button>`;
+        } else if (st.status === 'working' && st.worker === currentWorker) {
+          actionBtns = `<button class="tk-btn btn-leave" onclick="gerenciarJob('${chave}','leave','${txt.replace(/'/g, "\\'")}',event)">Largar</button>
+                        <button class="tk-btn btn-done" onclick="gerenciarJob('${chave}','complete','${txt.replace(/'/g, "\\'")}',event)">Feito ✅</button>`;
+        }
+        details.innerHTML = `
+          <div class="task-steps"><strong>COMO FAZER:</strong>\n${desc}</div>
+          <div style="display:flex; gap:10px; justify-content:flex-end;">${actionBtns}</div>`;
+        row.appendChild(details);
+        cnt.appendChild(row);
+      });
+      atualizarProgresso();
+    }
+
+    window.toggleTaskDetails = (chave) => {
+      const details = document.getElementById('det_' + chave);
+      if (!details) return;
+      const parent = details.closest('.sect-cnt');
+      if (parent) {
+        parent.querySelectorAll('.task-details.open').forEach(d => {
+          if (d !== details) d.classList.remove('open');
+        });
+      }
+      details.classList.toggle('open');
+    };
+
+    window.gerenciarJob = (chave, acao, texto, e) => {
+      if (e) e.stopPropagation();
+      if (acao === 'take') {
+        liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker };
+        soundPegarTarefa();
+      } else if (acao === 'leave') {
+        liveData.tarefasStatus[chave] = { status: 'idle', worker: '' };
+      } else if (acao === 'complete') {
+        liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker };
+        soundConcluirTarefa();
+        dispararAnimacao(texto, currentWorker);
+      }
+      salvarFirestore();
+      montarPainelDOM();
+    };
+
+    function dispararAnimacao(texto, worker) {
+      const anim = obterAnimacao(texto);
+      const overlay = document.getElementById('animacao-conclusao');
+      const icon = document.getElementById('anim-obj-icon');
+      icon.innerText = anim.emoji; icon.className = "anim-object " + anim.cssClass;
+      document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
+      document.getElementById('anim-title').innerText = anim.title;
+      document.getElementById('anim-desc').innerText = anim.desc;
+      overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('show'), 10);
+      setTimeout(() => { overlay.classList.remove('show'); setTimeout(() => overlay.style.display = 'none', 300); }, 3500);
+    }
+
+    function renderizarCarrosselStories() {
+      const bar = document.getElementById('live-stories-bar'); if (!bar) return;
+      bar.innerHTML = "";
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+        if (!online && nome !== currentWorker) return;
+        const card = document.createElement('div');
+        card.className = "story-card" + (nome === currentWorker ? " me" : "");
+        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
+        bar.appendChild(card);
+      });
+    }
+
+    function atualizarProgresso() {
+      let t = 0, f = 0;
+      obterSetoresTotais().forEach(s => {
+        liveData.tarefasCustomizadas.filter(c => c.cat === s.id).forEach((_, i) => {
+          t++; if (liveData.tarefasStatus[s.id + '_' + i]?.status === 'done') f++;
+        });
+      });
+      const p = t ? Math.round((f / t) * 100) : 0;
+      document.getElementById('prog-fill-bar').style.width = p + '%';
+      document.getElementById('prog-txt-pct').innerText = p + '%';
+    }
+
+    // ==================== GERENTE ====================
+    window.abrirSubPainelGerente = (id) => {
+      window.fecharSubPaineis();
+      document.getElementById('sub-pane-' + id).style.display = 'block';
+      if (id === 'busca_tarefas') renderizarBibliotecaTarefas();
+      if (id === 'ver_equipe') renderizarListaEquipeMestre();
+    };
+    window.fecharSubPaineis = () => document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
+    window.filtrarBiblioCategoria = (cat, btn) => {
+      currentCategoriaBiblio = cat;
+      document.querySelectorAll('.lib-cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderizarBibliotecaTarefas();
+    };
+
+    function renderizarBibliotecaTarefas() {
+      const query = document.getElementById('mgr-search-input').value.toLowerCase();
+      const box = document.getElementById('mgr-search-results-render'); box.innerHTML = '';
+      const filtradas = megaLibrary.filter(item => {
+        const matchCat = currentCategoriaBiblio === 'tudo' || item.cat === currentCategoriaBiblio;
+        const matchBusca = !query || item.txt.toLowerCase().includes(query);
+        return matchCat && matchBusca;
+      });
+      if (!filtradas.length) {
+        box.innerHTML = '<div style="padding:10px; color:var(--text-muted); text-align:center; font-size:12px;">Nenhuma tarefa encontrada.</div>';
+        return;
+      }
+      filtradas.forEach(item => {
+        const line = document.createElement('div');
+        line.className = "search-item-line";
+        line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto; padding:6px 12px;">➕ Injetar</button>`;
+        line.querySelector('button').onclick = () => {
+          const setores = obterSetoresTotais();
+          let msg = "Escolha o setor (número):\n";
+          setores.forEach((s, idx) => msg += `${idx} - ${s.title}\n`);
+          const escolha = prompt(msg);
+          if (escolha !== null && setores[escolha]) {
+            liveData.tarefasCustomizadas.push({ cat: setores[escolha].id, txt: item.txt });
+            salvarFirestore(); alert("✓ Tarefa injetada!");
+          }
+        };
+        box.appendChild(line);
+      });
+    }
+    window.renderizarBibliotecaTarefas = renderizarBibliotecaTarefas;
+
+    window.salvarSetorCustomizadoGerente = () => {
+      const nome = document.getElementById('new-sector-name').value.trim();
+      const icone = document.getElementById('new-sector-icon').value.trim() || "📋";
+      if (!nome) { alert("Digite o nome!"); return; }
+      liveData.setoresCustomizados.push({ id: "custom_" + Date.now(), title: nome, icon: icone });
+      document.getElementById('new-sector-name').value = "";
+      document.getElementById('new-sector-icon').value = "";
+      salvarFirestore(); alert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
+    };
+
+    function renderizarListaEquipeMestre() {
+      const box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
+      Object.keys(liveData.usuariosSalvos).forEach(n => {
+        const online = liveData.loginAtividade[n] === true;
+        box.innerHTML += `<div class="search-item-line">
+          <div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div>
+          <span style="font-size:10px; font-weight:800; color:${online ? 'var(--italia-green)' : 'var(--text-muted)'}">${online ? 'ONLINE' : 'OFFLINE'}</span>
+        </div>`;
+      });
+    }
+    window.renderizarListaEquipeMestre = renderizarListaEquipeMestre;
+
+    window.toggleChatWindow = () => {
+      const c = document.getElementById('modal-chat');
+      c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
+      if (c.style.display === 'flex') renderMessages();
+    };
+    function renderMessages() {
+      const w = document.getElementById('chat-wall'); w.innerHTML = '';
+      liveData.mensagensChat.forEach(m => {
+        w.innerHTML += `<div class="bubble ${m.user === currentWorker ? 'bb-out' : 'bb-in'}"><div style="font-size:10px; font-weight:800; color:var(--italia-green); margin-bottom:4px;">${m.user}</div>${m.text}</div>`;
+      });
+      w.scrollTop = w.scrollHeight;
+    }
+    window.enviarMensagemChat = () => {
+      const inp = document.getElementById('chat-input');
+      if (!inp.value.trim()) return;
+      liveData.mensagensChat.push({ user: currentWorker, text: inp.value.trim() });
+      inp.value = ''; salvarFirestore(); renderMessages();
+    };
+    window.gerarRelatorioTurnoWhatsApp = (e) => {
+      let msg = '🇮🇹 *FECHAMENTO DE TURNO*\n\n';
+      obterSetoresTotais().forEach(s => {
+        msg += `📌 *${s.title.toUpperCase()}*\n`;
+        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
+        if (!arr.length) msg += '- (Nenhuma tarefa)\n';
+        arr.forEach((c, i) => {
+          const obj = liveData.tarefasStatus[s.id + '_' + i];
+          let status = '❌ Pendente';
+          if (obj?.status === 'working') status = '⏳ Com ' + obj.worker;
+          if (obj?.status === 'done') status = '✅ Feito por ' + obj.worker;
+          msg += `- ${c.txt} [${status}]\n`;
+        });
+        msg += '\n';
+      });
+      document.getElementById('whatsapp-link').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+    };
+    window.zerarTurnoCompletoNuvem = () => {
+      if (confirm('Zerar todas as tarefas e repor as 48 iniciais?')) {
+        liveData.tarefasStatus = {};
+        liveData.tarefasCustomizadas = [];
+        popularTarefasPadraoSeVazio();
+        salvarFirestore();
+        window.fecharSubPaineis();
+        montarPainelDOM();
+        alert("Turno zerado com sucesso!");
+      }
+    };
+
+    // ==================== PWA / INSTALAÇÃO ====================
+    function generateIcons() {
+      const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M9 12l2 2l4-4"/><circle cx="12" cy="12" r="10"/><path d="M8 8h8M8 16h4"/></svg>`;
+      const canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#009246';
+      ctx.fillRect(0, 0, 512, 512);
+      const img = new Image();
+      const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+      img.onload = () => {
+        ctx.drawImage(img, 80, 80, 352, 352);
+        const pngData = canvas.toDataURL('image/png');
+        document.getElementById('icon-192').href = pngData;
+        document.getElementById('apple-icon-192').href = pngData;
+        const manifest = {
+          name: "Staff Check",
+          short_name: "StaffCheck",
+          start_url: window.location.href,
+          display: "standalone",
+          background_color: "#0b0c10",
+          theme_color: "#009246",
+          icons: [
+            { src: pngData, sizes: "192x192", type: "image/png" },
+            { src: pngData, sizes: "512x512", type: "image/png" }
+          ]
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        document.getElementById('manifest-link').href = manifestUrl;
+      };
+      img.src = url;
+    }
+    generateIcons();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(
+        URL.createObjectURL(new Blob([`
+          self.addEventListener('install', e => self.skipWaiting());
+          self.addEventListener('activate', e => self.clients.claim());
+          self.addEventListener('fetch', e => {});
+        `], { type: 'application/javascript' }))
+      );
+    }
+
+    const installModal = document.getElementById('install-modal');
+    const installYes = document.getElementById('install-yes');
+    const installNo = document.getElementById('install-no');
+    const menuInstallBtn = document.getElementById('menu-install-btn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (menuInstallBtn) menuInstallBtn.style.display = 'block';
+      if (!localStorage.getItem('staffcheck-install-prompt') && !window.matchMedia('(display-mode: standalone)').matches) {
+        installModal.style.display = 'flex';
+        localStorage.setItem('staffcheck-install-prompt', 'shown');
+      }
+    });
+
+    window.showInstallPrompt = () => {
+      if (deferredPrompt) {
+        installModal.style.display = 'flex';
+      } else {
+        alert("Para instalar, use a opção do navegador: 'Adicionar à tela inicial'.");
+      }
+    };
+
+    installYes.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installModal.style.display = 'none';
+      }
+    });
+
+    installNo.addEventListener('click', () => {
+      installModal.style.display = 'none';
+      localStorage.setItem('staffcheck-install-prompt', 'dismissed');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installModal.style.display = 'none';
+    });
+
+    // Inicialização
+    popularTarefasPadraoSeVazio();
+    aplicarDadosRestaurante();
+  </script>
+</body>
+</html>

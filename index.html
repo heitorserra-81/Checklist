@@ -28,19 +28,14 @@
       overflow-x: hidden;
       max-width: 100vw;
     }
-    .app-logo-container {
-      display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;
-    }
+    .app-logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
     .app-logo-icon {
       width: 90px; height: 90px; background: linear-gradient(135deg, var(--italia-green), #1b5e20);
       border-radius: 24px; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 8px;
     }
     .app-logo-icon svg { width: 52px; height: 52px; }
-    .app-logo-text {
-      font-size: 22px; font-weight: 800; color: var(--italia-green);
-      text-shadow: 0 0 12px rgba(0,146,70,0.5); letter-spacing: 1.5px;
-    }
+    .app-logo-text { font-size: 22px; font-weight: 800; color: var(--italia-green); text-shadow: 0 0 12px rgba(0,146,70,0.5); letter-spacing: 1.5px; }
     .top-navbar {
       display: flex; justify-content: space-between; align-items: center;
       background: var(--card); border-bottom: 3px solid var(--italia-green);
@@ -49,7 +44,7 @@
     }
     .brand-box { display: flex; align-items: center; gap: 10px; flex: 1; }
     .brand-logo {
-      width: 44px; height: 44px; border-radius: 12px; object-fit: cover;
+      width: 48px; height: 48px; border-radius: 12px; object-fit: cover;
       background: #fff; display: none;
     }
     .brand-text h1 { font-size: 15px; font-weight: 700; color: #fff; }
@@ -72,8 +67,6 @@
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 340px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
     .cam-circle { width: 85px; height: 85px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .cam-actions { display: flex; gap: 10px; justify-content: center; margin-top: -8px; margin-bottom: 14px; }
-    .cam-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 12px; padding: 6px 10px; border-radius: 8px; cursor: pointer; }
     .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 12px; outline: none; }
     .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; }
 
@@ -118,8 +111,9 @@
     .task-modal-desc strong { color: var(--italia-green); }
     .task-modal-timer { font-size: 24px; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 16px; font-family: monospace; }
     .task-modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .task-modal-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
 
-    /* Gerente etc. */
+    /* Gerente etc. (mantido) */
     .mgr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
     .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
     .mgr-card-icon { font-size: 28px; }
@@ -161,20 +155,7 @@
   </style>
 </head>
 <body>
-
-  <!-- Modal de Tarefa (saltando) -->
-  <div class="task-modal-overlay" id="task-modal">
-    <div class="task-modal-card">
-      <div class="task-modal-title" id="tm-title"></div>
-      <div class="task-modal-status" id="tm-status"></div>
-      <div class="task-modal-timer" id="tm-timer"></div>
-      <div class="task-modal-desc" id="tm-desc"></div>
-      <div class="task-modal-actions" id="tm-actions"></div>
-      <button style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:8px 16px; border-radius:8px; margin-top:12px; width:100%; cursor:pointer;" onclick="fecharModalTarefa()">Fechar</button>
-    </div>
-  </div>
-
-  <!-- Modal de Instalação -->
+  <!-- Modal de Instalação PWA -->
   <div id="install-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
     <div style="background:var(--card); border-radius:24px; padding:30px 24px; max-width:320px; text-align:center; border:2px solid var(--italia-green);">
       <div style="font-size:48px; margin-bottom:16px;">📲</div>
@@ -185,6 +166,7 @@
     </div>
   </div>
 
+  <!-- Overlay de animação final -->
   <div class="super-anim-overlay" id="animacao-conclusao">
     <div class="anim-scene">
       <div class="anim-object" id="anim-obj-icon">✨</div>
@@ -199,10 +181,12 @@
     </div>
   </div>
 
+  <!-- Inputs -->
   <input type="file" accept="image/*" capture="user" style="display:none;" id="camera-input" onchange="fotoCapturadaUniversal(event)">
   <input type="file" accept="image/*" style="display:none;" id="gallery-input" onchange="fotoCapturadaUniversal(event)">
   <input type="file" accept="image/*" style="display:none;" id="logo-input" onchange="logoAtualizada(event)">
 
+  <!-- Logo do Staff Check -->
   <div class="app-logo-container">
     <div class="app-logo-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
@@ -214,6 +198,7 @@
     <span class="app-logo-text">STAFF CHECK</span>
   </div>
 
+  <!-- Header -->
   <div class="top-navbar">
     <div class="brand-box">
       <img class="brand-logo" id="brand-logo-img" src="" alt="Logo" style="display:none;">
@@ -225,6 +210,7 @@
     <button class="menu-btn" onclick="toggleSidebarDropdown()">☰</button>
   </div>
 
+  <!-- Sidebar -->
   <div class="nav-sidebar" id="sidebar-dropdown">
     <div class="side-hdr">
       <h3 style="font-size:11px; color:var(--italia-green)">Menu do Sistema</h3>
@@ -244,10 +230,12 @@
     </div>
   </div>
 
+  <!-- Tela de Login (com logo do restaurante centralizado) -->
   <div class="app-screen active" id="scr-login-gate">
-    <div style="text-align:center; margin-bottom:20px;" id="restaurant-logo-area">
+    <div style="text-align:center; margin-bottom:20px;">
       <img id="restaurant-logo-img" src="" style="max-width:200px; max-height:90px; object-fit:contain; display:none; margin:0 auto;">
     </div>
+    <div style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700; color:#fff;" id="login-restaurant-name"></div>
     <div class="login-wrapper">
       <h2 id="login-title-txt">Acesso Operacional</h2>
       <p id="login-subtitle-txt" style="color:var(--text-muted); font-size:11px; margin-bottom:16px;">Selecione sua foto e entre no turno</p>
@@ -264,6 +252,7 @@
     </div>
   </div>
 
+  <!-- Dashboard do funcionário -->
   <div class="app-screen" id="scr-dashboard-worker">
     <div class="stories-container" id="live-stories-bar"></div>
     <div class="progress-container">
@@ -277,6 +266,7 @@
     </div>
   </div>
 
+  <!-- Painel do Gerente -->
   <div class="app-screen" id="scr-dashboard-manager">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(206,43,55,0.08); padding:12px; border-radius:12px; border:1px solid rgba(206,43,55,0.2);">
       <div>
@@ -331,6 +321,19 @@
     </div>
   </div>
 
+  <!-- Modal de Tarefa (saltando) -->
+  <div class="task-modal-overlay" id="task-modal" onclick="if(event.target===this) fecharModalTarefa()">
+    <div class="task-modal-card">
+      <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
+      <div class="task-modal-title" id="tm-title"></div>
+      <div class="task-modal-status" id="tm-status"></div>
+      <div class="task-modal-timer" id="tm-timer"></div>
+      <div class="task-modal-desc" id="tm-desc"></div>
+      <div class="task-modal-actions" id="tm-actions"></div>
+    </div>
+  </div>
+
+  <!-- Chat -->
   <div class="chat-container" id="modal-chat">
     <div class="chat-box">
       <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border);">
@@ -345,6 +348,7 @@
     </div>
   </div>
 
+  <!-- FABs -->
   <div class="fab-group">
     <button class="btn-fab fab-chat" onclick="toggleChatWindow()">
       <span style="font-size:20px">💬</span> Chat Interno
@@ -354,6 +358,7 @@
     </a>
   </div>
 
+  <!-- SCRIPT COMPLETO -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -373,6 +378,7 @@
     const docRef = doc(db, 'app', 'liveData');
     const MASTER_PASS = "1911";
 
+    // Estado global
     let liveData = {
       tarefasStatus: {},
       usuariosSalvos: {},
@@ -391,8 +397,10 @@
     let deferredPrompt;
     let modalChaveAtual = null;
     let cronometroInterval = null;
+    // Para limpar intervalos das badges na lista
+    window._cronometrosLista = {};
 
-    // Sincronização Firestore
+    // Sincronização Firestore em tempo real
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
@@ -424,17 +432,22 @@
     function aplicarDadosRestaurante() {
       document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
       document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
+      // Header logo
       const logoImg = document.getElementById('brand-logo-img');
       if (liveData.restaurante.logo) {
         logoImg.src = liveData.restaurante.logo; logoImg.style.display = 'block';
       } else { logoImg.style.display = 'none'; }
+      // Login: logo e nome centralizados
       const loginLogo = document.getElementById('restaurant-logo-img');
+      const loginName = document.getElementById('login-restaurant-name');
       if (liveData.restaurante.logo) {
         loginLogo.src = liveData.restaurante.logo; loginLogo.style.display = 'block';
       } else { loginLogo.style.display = 'none'; }
+      loginName.innerText = liveData.restaurante.nome || "Marchesini Premium";
+      loginName.style.fontFamily = liveData.restaurante.fonte || "Arial";
     }
 
-    // ==================== BIBLIOTECA E DESCRIÇÕES ====================
+    // ==================== BIBLIOTECA DE TAREFAS E DESCRIÇÕES ====================
     const megaLibrary = [
       { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
       { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
@@ -638,13 +651,12 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // ==================== GLOBAIS ====================
+    // ==================== FUNÇÕES GLOBAIS (window) ====================
     window.toggleSidebarDropdown = () => document.getElementById('sidebar-dropdown').classList.toggle('open');
 
-    // Pergunta câmera ou galeria
     window.perguntarCameraOuGaleria = (contexto) => {
       cameraContext = contexto;
-      const escolha = confirm("Deseja tirar uma foto agora?\n\nOK = Câmera\nCancelar = Escolher da galeria");
+      const escolha = confirm("Tirar foto agora?\n\nOK = Câmera\nCancelar = Escolher da galeria");
       if (escolha) {
         document.getElementById('camera-input').click();
       } else {
@@ -831,7 +843,7 @@
       window.mudarContextoLoginGeral('worker');
     };
 
-    // ==================== MODAL DE TAREFA (SALTANDO) ====================
+    // ==================== MODAL DE TAREFA ====================
     window.abrirModalTarefa = (chave) => {
       modalChaveAtual = chave;
       const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
@@ -863,7 +875,7 @@
       }
       document.getElementById('tm-status').innerHTML = statusHTML;
 
-      // Cronômetro
+      // Cronômetro ao vivo
       if (st.status === 'working' && st.startTime) {
         iniciarCronometroVisual(st.startTime);
       } else {
@@ -871,7 +883,7 @@
         document.getElementById('tm-timer').innerText = '';
       }
 
-      // Botões
+      // Botões de ação
       let botoes = '';
       if (st.status === 'idle') {
         botoes += `<button class="tk-btn btn-take" onclick="gerenciarJobModal('pegar')">Pegar Tarefa</button>`;
@@ -939,7 +951,6 @@
       }
       salvarFirestore();
       montarPainelDOM();
-      // Reabre o modal com dados atualizados
       if (modalChaveAtual) {
         setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
       }
@@ -1004,7 +1015,6 @@
           }
         }
 
-        // Mostrar cronômetro na lista
         let timerBadge = '';
         if (st.status === 'working' && st.startTime) {
           timerBadge = `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>`;
@@ -1018,7 +1028,7 @@
         cnt.appendChild(row);
       });
 
-      // Iniciar cronômetros visuais na lista
+      // Iniciar cronômetros na lista
       arr.forEach((_, idx) => {
         const chave = setor.id + '_' + idx;
         const st = liveData.tarefasStatus[chave] || {};
@@ -1033,6 +1043,7 @@
     function iniciarCronometroLista(chave, startTime) {
       const el = document.getElementById('cron_list_' + chave);
       if (!el) return;
+      if (window._cronometrosLista[chave]) clearInterval(window._cronometrosLista[chave]);
       const interval = setInterval(() => {
         const agora = Date.now();
         const diff = Math.round((agora - startTime) / 1000);
@@ -1040,9 +1051,6 @@
         const seg = diff % 60;
         el.innerText = `⏱️ ${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
       }, 1000);
-      // Guarda referência para limpar quando necessário
-      if (!window._cronometrosLista) window._cronometrosLista = {};
-      if (window._cronometrosLista[chave]) clearInterval(window._cronometrosLista[chave]);
       window._cronometrosLista[chave] = interval;
     }
 
@@ -1271,7 +1279,8 @@
       if (deferredPrompt) {
         installModal.style.display = 'flex';
       } else {
-        alert("Para instalar, use a opção do navegador: 'Adicionar à tela inicial'.");
+        // Fallback para iOS ou navegadores que não suportam beforeinstallprompt
+        alert("Para instalar, use a opção do navegador:\n• iPhone/iPad: toque em 'Compartilhar' e depois 'Adicionar à Tela de Início'.\n• Android: toque em '⋮' > 'Adicionar à tela inicial'.");
       }
     };
 

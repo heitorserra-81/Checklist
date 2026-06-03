@@ -28,16 +28,17 @@
       min-height: 100vh;
       overflow-x: hidden;
       max-width: 100vw;
+      width: 100%;
     }
-    .app-logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; }
+    .app-logo-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; }
     .app-logo-icon {
-      width: 90px; height: 90px; background: linear-gradient(135deg, var(--italia-green), #1b5e20);
-      border-radius: 24px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 8px;
+      width: 70px; height: 70px; background: linear-gradient(135deg, var(--italia-green), #1b5e20);
+      border-radius: 20px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4); margin-bottom: 6px;
     }
-    .app-logo-icon svg { width: 52px; height: 52px; }
-    .app-logo-text { font-size: 22px; font-weight: 800; color: var(--italia-green); text-shadow: 0 0 12px rgba(0,146,70,0.5); letter-spacing: 1.5px; }
-    .app-credits { font-size: 10px; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.5px; }
+    .app-logo-icon svg { width: 42px; height: 42px; }
+    .app-logo-text { font-size: 18px; font-weight: 800; color: var(--italia-green); text-shadow: 0 0 8px rgba(0,146,70,0.4); letter-spacing: 1px; }
+    .app-credits { font-size: 9px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.3px; }
 
     /* Menu de login no canto superior direito */
     .login-menu-btn {
@@ -56,10 +57,10 @@
     }
     .brand-box { display: flex; align-items: center; gap: 10px; flex: 1; }
     .brand-logo {
-      width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+      width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
       background: #fff; display: none;
     }
-    .brand-text h1 { font-size: 15px; font-weight: 700; color: #fff; }
+    .brand-text h1 { font-size: 14px; font-weight: 700; color: #fff; }
     .brand-text p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
@@ -79,11 +80,12 @@
     .side-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .menu-opt { display: flex; align-items: center; gap: 10px; padding: 12px; color: #fff; font-size: 13px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
 
-    .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 340px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
-    .cam-circle { width: 85px; height: 85px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); }
+    .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 20px 16px; border-radius: 20px; text-align: center; max-width: 340px; margin: 12px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
+    .cam-circle { width: 80px; height: 80px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); position: relative; }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 12px; outline: none; }
-    .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 8px; }
+    .cam-circle .cam-hint { position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); font-size: 8px; color: var(--text-muted); background: rgba(0,0,0,0.6); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+    .main-field { width: 100%; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: #fff; font-size: 14px; text-align: center; margin-bottom: 10px; outline: none; }
+    .btn-submit { width: 100%; background: linear-gradient(90deg, var(--italia-green), var(--italia-red)); color: #fff; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; margin-bottom: 6px; }
 
     .app-screen { display: none; }
     .app-screen.active { display: block; }
@@ -118,9 +120,10 @@
     .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .cronometro-badge { font-size: 10px; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 8px; color: var(--accent); }
 
+    /* MODAL DE TAREFA CORRIGIDO */
     .task-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: none; align-items: center; justify-content: center; }
     .task-modal-overlay.show { display: flex; }
-    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; max-width: 420px; width: 92%; position: relative; transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s; }
+    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; max-width: 420px; width: 92%; position: relative; transform: translateY(0); opacity: 1; transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s; }
     .task-modal-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .task-modal-setor-badge { display: inline-block; background: var(--italia-green); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
     .task-modal-status { font-size: 12px; margin-bottom: 16px; }
@@ -289,19 +292,19 @@
   </div>
 
   <div class="app-screen active" id="scr-login-gate">
-    <div style="text-align:center; margin-bottom:20px;">
-      <img id="restaurant-logo-img" src="" style="max-width:120px; max-height:120px; border-radius:50%; object-fit:cover; display:none; margin:0 auto;">
+    <div style="text-align:center; margin-bottom:12px;">
+      <img id="restaurant-logo-img" src="" style="max-width:90px; max-height:90px; border-radius:50%; object-fit:cover; display:none; margin:0 auto;">
     </div>
-    <div style="text-align:center; margin-bottom:15px; font-size:16px; font-weight:700; color:#fff;" id="login-restaurant-name"></div>
+    <div style="text-align:center; margin-bottom:10px; font-size:15px; font-weight:700; color:#fff;" id="login-restaurant-name"></div>
     <div class="login-wrapper">
       <h2 id="login-title-txt">Acesso Operacional</h2>
-      <p id="login-subtitle-txt" style="color:var(--text-muted); font-size:11px; margin-bottom:16px;">Selecione sua foto e entre no turno</p>
+      <p id="login-subtitle-txt" style="color:var(--text-muted); font-size:11px; margin-bottom:12px;">Selecione sua foto e entre no turno</p>
       <div id="login-avatar-zone">
         <div class="cam-circle" onclick="abrirPhotoPicker('login')">
           <span id="cam-icon" style="font-size:24px">📸</span>
           <img id="cam-preview" src="">
+          <div class="cam-hint" id="cam-msg">Toque para foto</div>
         </div>
-        <div style="font-size:11px; color:var(--text-muted); margin-top:6px;" id="cam-msg">Toque para adicionar foto</div>
       </div>
       <input type="text" class="main-field" id="field-user" placeholder="Seu Nome (Ex: Heitor)" oninput="detectarFuncionarioExistente()">
       <input type="password" class="main-field" id="field-pass" placeholder="Senha de 4 dígitos" maxlength="4" pattern="\d*">
@@ -420,876 +423,1147 @@
   </div>
 
 <script type="module">
-    // ==================== CONFIGURAÇÃO FIREBASE ====================
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
-      authDomain: "staffcheck-d6f20.firebaseapp.com",
-      projectId: "staffcheck-d6f20",
-      storageBucket: "staffcheck-d6f20.firebasestorage.app",
-      messagingSenderId: "1055570421019",
-      appId: "1:1055570421019:web:7b5dcc564bfe1c30189fbe",
-      measurementId: "G-XJG7LSG88D"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
+    authDomain: "staffcheck-d6f20.firebaseapp.com",
+    projectId: "staffcheck-d6f20",
+    storageBucket: "staffcheck-d6f20.firebasestorage.app",
+    messagingSenderId: "1055570421019",
+    appId: "1:1055570421019:web:7b5dcc564bfe1c30189fbe",
+    measurementId: "G-XJG7LSG88D"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const docRef = doc(db, 'app', 'liveData');
-    const MASTER_PASS = "1911";
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const docRef = doc(db, 'app', 'liveData');
+  const MASTER_PASS = "1911";
 
-    // ==================== ESTADO GLOBAL ====================
-    let liveData = {
-      tarefasStatus: {},
-      usuariosSalvos: {},
-      mensagensChat: [],
-      tarefasCustomizadas: [],
-      setoresCustomizados: [],
-      loginAtividade: {},
-      restaurante: { nome: "Marchesini Premium", logo: "", fonte: "Arial" }
-    };
-    let base64CamGlobal = "";
-    let currentWorker = "";
-    let cameraContext = "login";
-    let loginViewContext = "worker";
-    let currentCategoriaBiblio = "tudo";
-    let activeSectorTab = null;
-    let deferredPrompt;
-    let modalChaveAtual = null;
-    let cronometroInterval = null;
-    window._cronometrosLista = {};
+  let liveData = {
+    tarefasStatus: {},
+    usuariosSalvos: {},
+    mensagensChat: [],
+    tarefasCustomizadas: [],
+    setoresCustomizados: [],
+    loginAtividade: {},
+    restaurante: { nome: "Marchesini Premium", logo: "", fonte: "Arial" }
+  };
+  let base64CamGlobal = "";
+  let currentWorker = "";
+  let cameraContext = "login";
+  let loginViewContext = "worker";
+  let currentCategoriaBiblio = "tudo";
+  let activeSectorTab = null;
+  let deferredPrompt;
+  let modalChaveAtual = null;
+  let cronometroInterval = null;
+  window._cronometrosLista = {};
 
-    // Variáveis para o recorte circular
-    let cropImageFile = null;
-    let cropContext = "";
-    let cropScale = 1;
-    let cropTranslateX = 0;
-    let cropTranslateY = 0;
+  let cropImageFile = null;
+  let cropContext = "";
+  let cropScale = 1;
+  let cropTranslateX = 0;
+  let cropTranslateY = 0;
 
-    // ==================== SINCRONIZAÇÃO EM TEMPO REAL ====================
-    onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        const oldMensagens = liveData.mensagensChat || [];
-        liveData.tarefasStatus = data.tarefasStatus || {};
-        liveData.usuariosSalvos = data.usuariosSalvos || {};
-        liveData.mensagensChat = data.mensagensChat || [];
-        liveData.tarefasCustomizadas = data.tarefasCustomizadas || [];
-        liveData.setoresCustomizados = data.setoresCustomizados || [];
-        liveData.loginAtividade = data.loginAtividade || {};
-        liveData.restaurante = data.restaurante || { nome: "Marchesini Premium", logo: "", fonte: "Arial" };
-        if (liveData.mensagensChat.length > oldMensagens.length && oldMensagens.length > 0) {
-          tocarSomMensagem();
-        }
-      } else {
-        popularTarefasPadraoSeVazio();
-        salvarFirestore();
+  onSnapshot(docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const oldMensagens = liveData.mensagensChat || [];
+      liveData.tarefasStatus = data.tarefasStatus || {};
+      liveData.usuariosSalvos = data.usuariosSalvos || {};
+      liveData.mensagensChat = data.mensagensChat || [];
+      liveData.tarefasCustomizadas = data.tarefasCustomizadas || [];
+      liveData.setoresCustomizados = data.setoresCustomizados || [];
+      liveData.loginAtividade = data.loginAtividade || {};
+      liveData.restaurante = data.restaurante || { nome: "Marchesini Premium", logo: "", fonte: "Arial" };
+      if (liveData.mensagensChat.length > oldMensagens.length && oldMensagens.length > 0) {
+        tocarSomMensagem();
       }
-      aplicarDadosRestaurante();
-      if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
-        montarPainelDOM();
-      }
-      if (modalChaveAtual && document.getElementById('task-modal').classList.contains('show')) {
-        abrirModalTarefa(modalChaveAtual);
-      }
-      // Mostrar botão do WhatsApp apenas para gerente
-      const wppBtn = document.getElementById('whatsapp-link');
-      if (wppBtn) {
-        wppBtn.style.display = (currentWorker === "Gerente") ? 'flex' : 'none';
-      }
-    });
-
-    async function salvarFirestore() {
-      try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
+    } else {
+      popularTarefasPadraoSeVazio();
+      salvarFirestore();
     }
-
-    // ==================== SOM DO CHAT ====================
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function tocarSomMensagem() {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
-      osc.stop(audioCtx.currentTime + 0.15);
+    aplicarDadosRestaurante();
+    if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
+      montarPainelDOM();
     }
-
-    // ==================== ATUALIZAÇÃO DA INTERFACE DO RESTAURANTE ====================
-    function aplicarDadosRestaurante() {
-      document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
-      document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
-      const logoImg = document.getElementById('brand-logo-img');
-      if (liveData.restaurante.logo) {
-        logoImg.src = liveData.restaurante.logo;
-      }
-      const loginLogo = document.getElementById('restaurant-logo-img');
-      const loginName = document.getElementById('login-restaurant-name');
-      if (liveData.restaurante.logo) {
-        loginLogo.src = liveData.restaurante.logo; loginLogo.style.display = 'block';
-      } else { loginLogo.style.display = 'none'; }
-      loginName.innerText = liveData.restaurante.nome || "Marchesini Premium";
-      loginName.style.fontFamily = liveData.restaurante.fonte || "Arial";
-      atualizarVisibilidadeLogin();
+    if (modalChaveAtual && document.getElementById('task-modal').classList.contains('show')) {
+      abrirModalTarefa(modalChaveAtual);
     }
-
-    function atualizarVisibilidadeLogin() {
-      const loginActive = document.getElementById('scr-login-gate').classList.contains('active');
-      document.getElementById('top-navbar').style.display = loginActive ? 'none' : 'flex';
-      document.getElementById('login-menu-btn').style.display = loginActive ? 'block' : 'none';
-      document.getElementById('fab-group').style.display = loginActive ? 'none' : 'flex';
-      document.getElementById('brand-logo-img').style.display = loginActive ? 'none' : (liveData.restaurante.logo ? 'block' : 'none');
+    const wppBtn = document.getElementById('whatsapp-link');
+    if (wppBtn) {
+      wppBtn.style.display = (currentWorker === "Gerente") ? 'flex' : 'none';
     }
+  });
 
-    // ==================== BIBLIOTECA DE TAREFAS (completa) ====================
-    const megaLibrary = [
-      { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
-      { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
-      { cat: "limpeza", txt: "Limpar e polir os vidros e portas de entrada" },
-      { cat: "limpeza", txt: "Higienizar as cadeiras de bebê (cadeirões)" },
-      { cat: "limpeza", txt: "Recolher o lixo de todos os setores e levar para fora" },
-      { cat: "limpeza", txt: "Lavar as lixeiras de todos os setores" },
-      { cat: "limpeza", txt: "Varrer e passar pano no deck/área externa" },
-      { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres alinhados)" },
-      { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal e pimenta)" },
-      { cat: "salao", txt: "Revisar alinhamento de mesas e cadeiras pelo mapa" },
-      { cat: "salao", txt: "Dobrar e organizar guardanapos de tecido" },
-      { cat: "salao", txt: "Checar iluminação, ar-condicionado e som ambiente" },
-      { cat: "salao", txt: "Organizar a praça de garçons e gavetas dos aparadores" },
-      { cat: "salao", txt: "Repor paliteiros e porta-copos" },
-      { cat: "salao", txt: "Limpar os menus e cartas de vinho com álcool" },
-      { cat: "bar", txt: "Polir todas as taças de vinho e copos de cristal" },
-      { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
-      { cat: "bar", txt: "Repor geladeiras com refrigerantes, águas e cervejas" },
-      { cat: "bar", txt: "Limpar e purgar a máquina de café expresso" },
-      { cat: "bar", txt: "Cortar guarnições (limão, laranja, hortelã)" },
-      { cat: "bar", txt: "Repor potes de açúcar, adoçante e mexedores" },
-      { cat: "bar", txt: "Checar validade dos xaropes e sucos abertos" },
-      { cat: "bar", txt: "Lavar as esteiras de borracha (bar mats)" },
-      { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
-      { cat: "buffet", txt: "Checar as temperaturas das pistas quentes e frias" },
-      { cat: "buffet", txt: "Repor a pilha de pratos limpos no início do buffet" },
-      { cat: "buffet", txt: "Organizar e polir os pegadores e conchas" },
-      { cat: "buffet", txt: "Higienizar a bancada de granito do buffet" },
-      { cat: "buffet", txt: "Abastecer os molhos e temperos da ilha de saladas" },
-      { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
-      { cat: "buffet", txt: "Checar validade das etiquetas nas cubas da geladeira" },
-      { cat: "limpeza", txt: "Lavar e esfregar o vaso sanitário com cloro" },
-      { cat: "limpeza", txt: "Limpar e polir os espelhos dos banheiros" },
-      { cat: "limpeza", txt: "Repor papel toalha e papel higiênico" },
-      { cat: "limpeza", txt: "Repor sabonete líquido nos dispensers" },
-      { cat: "limpeza", txt: "Borrifar odorizador de ambiente nos banheiros" },
-      { cat: "fechamento", txt: "Desligar todos os equipamentos térmicos e ar-condicionado" },
-      { cat: "fechamento", txt: "Fechar o caixa e imprimir relatórios Z" },
-      { cat: "fechamento", txt: "Verificar se as geladeiras ficaram trancadas/fechadas" },
-      { cat: "fechamento", txt: "Trancar portas, janelas e ativar o alarme" }
-    ];
+  async function salvarFirestore() {
+    try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
+  }
 
-    const taskDescriptions = {
-      "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando a sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Confira se não ficaram resíduos sob as mesas.",
-      "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
-      "Limpar e polir os vidros e portas de entrada": "1. Aplique limpa-vidros.\n2. Use pano de microfibra.\n3. Esfregue em círculos.\n4. Seque os cantos.\n5. Verifique contra a luz.",
-      "Higienizar as cadeiras de bebê (cadeirões)": "1. Desmonte as partes removíveis.\n2. Lave com água e sabão.\n3. Desinfete com álcool 70%.\n4. Seque e remonte.\n5. Teste as travas.",
-      "Recolher o lixo de todos os setores e levar para fora": "1. Amarre os sacos.\n2. Recolha de todos os setores.\n3. Leve à área externa.\n4. Higienize as mãos.\n5. Coloque sacos novos.",
-      "Lavar as lixeiras de todos os setores": "1. Retire os sacos.\n2. Lave com água e detergente.\n3. Esfregue com escova.\n4. Enxágue e seque.\n5. Recoloque sacos limpos.",
-      "Varrer e passar pano no deck/área externa": "1. Varra folhas e poeira.\n2. Jogue água com mangueira.\n3. Esfregue com vassoura e detergente.\n4. Enxágue.\n5. Deixe escorrer.",
-      "Montar as mesas (pratos, sousplats e talheres alinhados)": "1. Posicione o sousplat.\n2. Coloque o prato principal.\n3. Garfo à esquerda, faca à direita.\n4. Alinhe todas as peças.\n5. Verifique limpeza.",
-      "Repor galheteiros (azeite, vinagre, sal e pimenta)": "1. Verifique níveis.\n2. Limpe os bicos.\n3. Complete com produtos frescos.\n4. Recoloque na mesa.\n5. Confira as tampas.",
-      "Revisar alinhamento de mesas e cadeiras pelo mapa": "1. Consulte o mapa.\n2. Verifique a posição exata.\n3. Ajuste as cadeiras.\n4. Confira o espaçamento.\n5. Ajuste fino.",
-      "Dobrar e organizar guardanapos de tecido": "1. Passe se necessário.\n2. Dobre no formato desejado.\n3. Disponha sobre os pratos.\n4. Armazene extras.\n5. Verifique manchas.",
-      "Checar iluminação, ar-condicionado e som ambiente": "1. Ligue as luzes.\n2. Ajuste o termostato.\n3. Selecione playlist.\n4. Caminhe pelo salão.\n5. Anote irregularidades.",
-      "Organizar a praça de garçons e gavetas dos aparadores": "1. Limpe com álcool.\n2. Reponha talheres e guardanapos.\n3. Verifique porta-copos.\n4. Deixe gavetas organizadas.\n5. Confira limpeza.",
-      "Repor paliteiros e porta-copos": "1. Lave se necessário.\n2. Encha com palitos.\n3. Distribua uniformemente.\n4. Verifique vazios.\n5. Guarde excedente.",
-      "Limpar os menus e cartas de vinho com álcool": "1. Umedeça pano com álcool 70%.\n2. Passe nas capas e páginas.\n3. Deixe secar.\n4. Verifique páginas soltas.\n5. Organize.",
-      "Polir todas as taças de vinho e copos de cristal": "1. Lave com água morna e detergente.\n2. Esfregue o bojo.\n3. Enxágue.\n4. Seque com microfibra.\n5. Verifique manchas.",
-      "Abastecer as geleiras com gelo novo": "1. Esvazie gelo velho.\n2. Lave o recipiente.\n3. Encha com gelo fresco.\n4. Mantenha colher limpa.\n5. Verifique o nível.",
-      "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique validade.\n2. Retire vencidos.\n3. Organize por tipo.\n4. Anote reposições.\n5. Limpe prateleiras.",
-      "Limpar e purgar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro.\n3. Purgue bicos.\n4. Lave reservatório.\n5. Recoloque e ligue.",
-      "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem.\n2. Corte em rodelas.\n3. Separe folhas.\n4. Armazene em geladeira.\n5. Reponha conforme necessário.",
-      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes.\n2. Encha com os itens.\n3. Feche bem.\n4. Disponha no balcão.\n5. Verifique validade.",
-      "Checar validade dos xaropes e sucos abertos": "1. Verifique datas.\n2. Descarte vencidos.\n3. Limpe bordas.\n4. Organize por validade.\n5. Anote reposições.",
-      "Lavar as esteiras de borracha (bar mats)": "1. Retire do balcão.\n2. Lave com água quente e detergente.\n3. Esfregue ranhuras.\n4. Enxágue.\n5. Seque virado.",
-      "Ligar os réchauds e abastecer com água": "1. Verifique o nível de água.\n2. Ligue e ajuste.\n3. Coloque as cubas.\n4. Monitore.\n5. Desligue ao final.",
-      "Checar as temperaturas das pistas quentes e frias": "1. Use termômetro.\n2. Pista quente: 65°C.\n3. Pista fria: 5°C.\n4. Ajuste controles.\n5. Registre.",
-      "Repor a pilha de pratos limpos no início do buffet": "1. Lave e seque.\n2. Empilhe ao lado das cubas.\n3. Certifique-se do alcance.\n4. Mantenha reserva.\n5. Verifique lascados.",
-      "Organizar e polir os pegadores e conchas": "1. Lave com água e sabão.\n2. Seque.\n3. Polir com pano seco.\n4. Disponha em frente às cubas.\n5. Verifique estado.",
-      "Higienizar a bancada de granito do buffet": "1. Remova objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.\n5. Recoloque itens.",
-      "Abastecer os molhos e temperos da ilha de saladas": "1. Verifique cubas.\n2. Complete com molho fresco.\n3. Reponha colheres.\n4. Confira etiquetas.\n5. Verifique temperatura.",
-      "Limpar a boqueta de saída de pratos quentes": "1. Desligue.\n2. Use escova fina.\n3. Passe pano úmido.\n4. Ligue novamente.\n5. Teste.",
-      "Checar validade das etiquetas nas cubas da geladeira": "1. Abra cada cuba.\n2. Verifique data de preparo.\n3. Remova vencidos.\n4. Atualize etiquetas.\n5. Anote irregularidades.",
-      "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel.\n2. Esfregue com escova.\n3. Deixe agir 5 min.\n4. Dê descarga.\n5. Limpe a parte externa.",
-      "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Movimentos circulares.\n4. Verifique manchas.\n5. Seque bordas.",
-      "Repor papel toalha e papel higiênico": "1. Abra dispensers.\n2. Coloque novos rolos.\n3. Confira saída do papel.\n4. Feche.\n5. Deixe reservas.",
-      "Repor sabonete líquido nos dispensers": "1. Desenrosque.\n2. Encha com sabonete.\n3. Recoloque e bombeie.\n4. Limpe respingos.\n5. Verifique o nível.",
-      "Borrifar odorizador de ambiente nos banheiros": "1. Agite o frasco.\n2. Borrife no centro.\n3. Evite superfícies.\n4. Deixe agir 5 min.\n5. Reponha frasco vazio.",
-      "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue todos os botões.\n2. Verifique luzes apagadas.\n3. Anote anomalias.\n4. Confira portas de geladeiras.\n5. Desligue disjuntor.",
-      "Fechar o caixa e imprimir relatórios Z": "1. Confira vendas.\n2. Feche o caixa.\n3. Imprima relatório Z.\n4. Guarde.\n5. Confira com o gerente.",
-      "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada uma.\n2. Puxe a porta.\n3. Verifique o termostato.\n4. Anote problemas.\n5. Avise manutenção.",
-      "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação.\n5. Verifique luzes apagadas.",
-      "Higienizar as mesas com álcool 70%": "1. Retire objetos da mesa.\n2. Borrife álcool 70%.\n3. Esfregue com microfibra em círculos.\n4. Atenção às bordas.\n5. Deixe secar antes de repor.",
-      "Alinhar mesas e cadeiras perfeitamente": "1. Posicione conforme o mapa.\n2. Use fio para alinhar.\n3. Ajuste cadeiras paralelamente.\n4. Olhe de longe para conferir.\n5. Reposicione mesas tortas.",
-      "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras.\n2. Teste a estabilidade.\n3. Verifique os pés.\n4. Anote as danificadas.\n5. Leve para manutenção.",
-      "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador.\n2. Passe por toda a superfície.\n3. Use bocal de frestas nos cantos.\n4. Esvazie o reservatório.\n5. Guarde o aspirador.",
-      "Limpar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro e lave.\n3. Escove os furos do filtro.\n4. Purgue bicos de vapor.\n5. Lave reservatório e ligue.",
-      "Verificar validade dos xaropes": "1. Pegue cada frasco.\n2. Confira a data.\n3. Descarte vencidos.\n4. Limpe bordas.\n5. Organize por validade.",
-      "Repor azeitonas e snacks do balcão": "1. Retire embalagens vazias.\n2. Lave recipientes.\n3. Abasteça com produtos frescos.\n4. Verifique validade.\n5. Disponha no balcão.",
-      "Organizar a prateleira de destilados": "1. Retire garrafas.\n2. Limpe a prateleira.\n3. Organize por tipo.\n4. Coloque as mais usadas na frente.\n5. Descarte vazias.",
-      "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque gelo.\n3. Verifique moagem uniforme.\n4. Desligue e limpe.\n5. Anote barulho estranho.",
-      "Limpar as cubas de apoio do bar": "1. Retire utensílios.\n2. Lave com água e detergente.\n3. Esfregue os cantos.\n4. Enxágue e seque.\n5. Recoloque utensílios.",
-      "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor.\n2. Veja a luz de funcionamento.\n3. Sinta a temperatura.\n4. Anote se não aquecer.\n5. Desligue após teste.",
-      "Repor pães e torradas no setor de sopas": "1. Verifique estoque.\n2. Reponha cestos com pães frescos.\n3. Troque torradas murchas.\n4. Organize próximo à sopa.\n5. Anote necessidade de reposição.",
-      "Organizar as cubas de sobremesa": "1. Retire cubas vazias.\n2. Lave e seque.\n3. Distribua sobremesas.\n4. Coloque etiquetas.\n5. Verifique temperatura.",
-      "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível.\n4. Se abaixo de 20%, solicite reposição.\n5. Feche a tampa.",
-      "Conferir a limpeza do exaustor": "1. Desligue.\n2. Remova filtros.\n3. Lave com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e teste.",
-      "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Veja se a água escoa.\n3. Observe vazamentos.\n4. Anote problemas.\n5. Avise manutenção.",
-      "Limpar as portas e maçanetas": "1. Umedeça pano com álcool 70%.\n2. Passe em todas as maçanetas.\n3. Limpe ao redor.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
-      "Verificar a iluminação das pias": "1. Acenda as luzes.\n2. Substitua lâmpadas queimadas.\n3. Limpe luminárias.\n4. Verifique intensidade.\n5. Anote faltas.",
-      "Repor o estoque de produtos de limpeza": "1. Verifique o armário.\n2. Liste itens em falta.\n3. Pegue no almoxarifado.\n4. Organize por tipo e validade.\n5. Tranque o armário.",
-      "Secar o piso com rodo após a lavagem": "1. Passe rodo com pano seco.\n2. Comece do fundo para a saída.\n3. Retire excesso de água.\n4. Deixe arejar.\n5. Coloque placa de piso molhado.",
-      "Checar a validade dos produtos de higiene": "1. Pegue cada produto.\n2. Confira a data.\n3. Descarte vencidos.\n4. Anote próximos do vencimento.\n5. Organize por validade."
-    };
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function tocarSomMensagem() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
+    osc.stop(audioCtx.currentTime + 0.15);
+  }
 
-    function getDescricaoTarefa(txt) {
-      if (taskDescriptions[txt]) return taskDescriptions[txt];
-      const lower = txt.toLowerCase();
-      for (const key in taskDescriptions) {
-        if (lower.includes(key.toLowerCase())) return taskDescriptions[key];
-      }
-      return "Realize a tarefa conforme o procedimento padrão.\nAo final, verifique se o ambiente está limpo e organizado.";
+  function aplicarDadosRestaurante() {
+    document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
+    document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
+    const logoImg = document.getElementById('brand-logo-img');
+    if (liveData.restaurante.logo) {
+      logoImg.src = liveData.restaurante.logo;
     }
+    const loginLogo = document.getElementById('restaurant-logo-img');
+    const loginName = document.getElementById('login-restaurant-name');
+    if (liveData.restaurante.logo) {
+      loginLogo.src = liveData.restaurante.logo; loginLogo.style.display = 'block';
+    } else { loginLogo.style.display = 'none'; }
+    loginName.innerText = liveData.restaurante.nome || "Marchesini Premium";
+    loginName.style.fontFamily = liveData.restaurante.fonte || "Arial";
+    atualizarVisibilidadeLogin();
+  }
 
-    const defaultSectors = [
-      { id: "salao", title: "Salão Principal", icon: "🍽️", color: "var(--color-salao)" },
-      { id: "bar", title: "Bar & Drinks", icon: "🍸", color: "var(--color-bar)" },
-      { id: "buffet", title: "Buffet & Serviço", icon: "🍲", color: "var(--color-buffet)" },
-      { id: "banheiros", title: "Banheiros & Limpeza", icon: "🚻", color: "var(--color-banheiros)" }
-    ];
+  function atualizarVisibilidadeLogin() {
+    const loginActive = document.getElementById('scr-login-gate').classList.contains('active');
+    document.getElementById('top-navbar').style.display = loginActive ? 'none' : 'flex';
+    document.getElementById('login-menu-btn').style.display = loginActive ? 'block' : 'none';
+    document.getElementById('fab-group').style.display = loginActive ? 'none' : 'flex';
+    document.getElementById('brand-logo-img').style.display = loginActive ? 'none' : (liveData.restaurante.logo ? 'block' : 'none');
+  }
 
-    function popularTarefasPadraoSeVazio() {
-      if (liveData.tarefasCustomizadas.length === 0) {
-        liveData.tarefasCustomizadas = [
-          { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres)" },
-          { cat: "salao", txt: "Higienizar as mesas com álcool 70%" },
-          { cat: "salao", txt: "Alinhar mesas e cadeiras perfeitamente" },
-          { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal)" },
-          { cat: "salao", txt: "Dobrar e organizar os guardanapos" },
-          { cat: "salao", txt: "Limpar os menus e checar organização do aparador" },
-          { cat: "salao", txt: "Revisar iluminação e som ambiente" },
-          { cat: "salao", txt: "Repor paliteiros e porta-copos" },
-          { cat: "salao", txt: "Checar ar-condicionado e ventiladores" },
-          { cat: "salao", txt: "Organizar a praça de garçons" },
-          { cat: "salao", txt: "Verificar se há cadeiras quebradas" },
-          { cat: "salao", txt: "Passar aspirador nos tapetes do salão" },
-          { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
-          { cat: "bar", txt: "Polir todas as taças de vinho e copos" },
-          { cat: "bar", txt: "Cortar as guarnições (limão, laranja, hortelã)" },
-          { cat: "bar", txt: "Repor geladeiras com cervejas e refris" },
-          { cat: "bar", txt: "Lavar e secar as esteiras de borracha" },
-          { cat: "bar", txt: "Checar potes de açúcar, adoçante e mexedores" },
-          { cat: "bar", txt: "Limpar a máquina de café expresso" },
-          { cat: "bar", txt: "Verificar validade dos xaropes" },
-          { cat: "bar", txt: "Repor azeitonas e snacks do balcão" },
-          { cat: "bar", txt: "Organizar a prateleira de destilados" },
-          { cat: "bar", txt: "Checar o funcionamento do moedor de gelo" },
-          { cat: "bar", txt: "Limpar as cubas de apoio do bar" },
-          { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
-          { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
-          { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
-          { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
-          { cat: "buffet", txt: "Higienizar a bancada de granito" },
-          { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
-          { cat: "buffet", txt: "Verificar o funcionamento dos aquecedores" },
-          { cat: "buffet", txt: "Repor pães e torradas no setor de sopas" },
-          { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
-          { cat: "buffet", txt: "Organizar as cubas de sobremesa" },
-          { cat: "buffet", txt: "Checar nível do gás da cozinha" },
-          { cat: "buffet", txt: "Conferir a limpeza do exaustor" },
-          { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
-          { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
-          { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
-          { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
-          { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
-          { cat: "banheiros", txt: "Borrifar odorizador de ambiente" },
-          { cat: "banheiros", txt: "Checar o funcionamento das descargas" },
-          { cat: "banheiros", txt: "Limpar as portas e maçanetas" },
-          { cat: "banheiros", txt: "Verificar a iluminação das pias" },
-          { cat: "banheiros", txt: "Repor o estoque de produtos de limpeza" },
-          { cat: "banheiros", txt: "Secar o piso com rodo após a lavagem" },
-          { cat: "banheiros", txt: "Checar a validade dos produtos de higiene" }
-        ];
-      }
+  const megaLibrary = [
+    { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
+    { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
+    { cat: "limpeza", txt: "Limpar e polir os vidros e portas de entrada" },
+    { cat: "limpeza", txt: "Higienizar as cadeiras de bebê (cadeirões)" },
+    { cat: "limpeza", txt: "Recolher o lixo de todos os setores e levar para fora" },
+    { cat: "limpeza", txt: "Lavar as lixeiras de todos os setores" },
+    { cat: "limpeza", txt: "Varrer e passar pano no deck/área externa" },
+    { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres alinhados)" },
+    { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal e pimenta)" },
+    { cat: "salao", txt: "Revisar alinhamento de mesas e cadeiras pelo mapa" },
+    { cat: "salao", txt: "Dobrar e organizar guardanapos de tecido" },
+    { cat: "salao", txt: "Checar iluminação, ar-condicionado e som ambiente" },
+    { cat: "salao", txt: "Organizar a praça de garçons e gavetas dos aparadores" },
+    { cat: "salao", txt: "Repor paliteiros e porta-copos" },
+    { cat: "salao", txt: "Limpar os menus e cartas de vinho com álcool" },
+    { cat: "bar", txt: "Polir todas as taças de vinho e copos de cristal" },
+    { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
+    { cat: "bar", txt: "Repor geladeiras com refrigerantes, águas e cervejas" },
+    { cat: "bar", txt: "Limpar e purgar a máquina de café expresso" },
+    { cat: "bar", txt: "Cortar guarnições (limão, laranja, hortelã)" },
+    { cat: "bar", txt: "Repor potes de açúcar, adoçante e mexedores" },
+    { cat: "bar", txt: "Checar validade dos xaropes e sucos abertos" },
+    { cat: "bar", txt: "Lavar as esteiras de borracha (bar mats)" },
+    { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+    { cat: "buffet", txt: "Checar as temperaturas das pistas quentes e frias" },
+    { cat: "buffet", txt: "Repor a pilha de pratos limpos no início do buffet" },
+    { cat: "buffet", txt: "Organizar e polir os pegadores e conchas" },
+    { cat: "buffet", txt: "Higienizar a bancada de granito do buffet" },
+    { cat: "buffet", txt: "Abastecer os molhos e temperos da ilha de saladas" },
+    { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
+    { cat: "buffet", txt: "Checar validade das etiquetas nas cubas da geladeira" },
+    { cat: "limpeza", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+    { cat: "limpeza", txt: "Limpar e polir os espelhos dos banheiros" },
+    { cat: "limpeza", txt: "Repor papel toalha e papel higiênico" },
+    { cat: "limpeza", txt: "Repor sabonete líquido nos dispensers" },
+    { cat: "limpeza", txt: "Borrifar odorizador de ambiente nos banheiros" },
+    { cat: "fechamento", txt: "Desligar todos os equipamentos térmicos e ar-condicionado" },
+    { cat: "fechamento", txt: "Fechar o caixa e imprimir relatórios Z" },
+    { cat: "fechamento", txt: "Verificar se as geladeiras ficaram trancadas/fechadas" },
+    { cat: "fechamento", txt: "Trancar portas, janelas e ativar o alarme" }
+  ];
+
+  const taskDescriptions = {
+    "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando a sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Confira se não ficaram resíduos sob as mesas.",
+    "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
+    "Limpar e polir os vidros e portas de entrada": "1. Aplique limpa-vidros.\n2. Use pano de microfibra.\n3. Esfregue em círculos.\n4. Seque os cantos.\n5. Verifique contra a luz.",
+    "Higienizar as cadeiras de bebê (cadeirões)": "1. Desmonte as partes removíveis.\n2. Lave com água e sabão.\n3. Desinfete com álcool 70%.\n4. Seque e remonte.\n5. Teste as travas.",
+    "Recolher o lixo de todos os setores e levar para fora": "1. Amarre os sacos.\n2. Recolha de todos os setores.\n3. Leve à área externa.\n4. Higienize as mãos.\n5. Coloque sacos novos.",
+    "Lavar as lixeiras de todos os setores": "1. Retire os sacos.\n2. Lave com água e detergente.\n3. Esfregue com escova.\n4. Enxágue e seque.\n5. Recoloque sacos limpos.",
+    "Varrer e passar pano no deck/área externa": "1. Varra folhas e poeira.\n2. Jogue água com mangueira.\n3. Esfregue com vassoura e detergente.\n4. Enxágue.\n5. Deixe escorrer.",
+    "Montar as mesas (pratos, sousplats e talheres alinhados)": "1. Posicione o sousplat.\n2. Coloque o prato principal.\n3. Garfo à esquerda, faca à direita.\n4. Alinhe todas as peças.\n5. Verifique limpeza.",
+    "Repor galheteiros (azeite, vinagre, sal e pimenta)": "1. Verifique níveis.\n2. Limpe os bicos.\n3. Complete com produtos frescos.\n4. Recoloque na mesa.\n5. Confira as tampas.",
+    "Revisar alinhamento de mesas e cadeiras pelo mapa": "1. Consulte o mapa.\n2. Verifique a posição exata.\n3. Ajuste as cadeiras.\n4. Confira o espaçamento.\n5. Ajuste fino.",
+    "Dobrar e organizar guardanapos de tecido": "1. Passe se necessário.\n2. Dobre no formato desejado.\n3. Disponha sobre os pratos.\n4. Armazene extras.\n5. Verifique manchas.",
+    "Checar iluminação, ar-condicionado e som ambiente": "1. Ligue as luzes.\n2. Ajuste o termostato.\n3. Selecione playlist.\n4. Caminhe pelo salão.\n5. Anote irregularidades.",
+    "Organizar a praça de garçons e gavetas dos aparadores": "1. Limpe com álcool.\n2. Reponha talheres e guardanapos.\n3. Verifique porta-copos.\n4. Deixe gavetas organizadas.\n5. Confira limpeza.",
+    "Repor paliteiros e porta-copos": "1. Lave se necessário.\n2. Encha com palitos.\n3. Distribua uniformemente.\n4. Verifique vazios.\n5. Guarde excedente.",
+    "Limpar os menus e cartas de vinho com álcool": "1. Umedeça pano com álcool 70%.\n2. Passe nas capas e páginas.\n3. Deixe secar.\n4. Verifique páginas soltas.\n5. Organize.",
+    "Polir todas as taças de vinho e copos de cristal": "1. Lave com água morna e detergente.\n2. Esfregue o bojo.\n3. Enxágue.\n4. Seque com microfibra.\n5. Verifique manchas.",
+    "Abastecer as geleiras com gelo novo": "1. Esvazie gelo velho.\n2. Lave o recipiente.\n3. Encha com gelo fresco.\n4. Mantenha colher limpa.\n5. Verifique o nível.",
+    "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique validade.\n2. Retire vencidos.\n3. Organize por tipo.\n4. Anote reposições.\n5. Limpe prateleiras.",
+    "Limpar e purgar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro.\n3. Purgue bicos.\n4. Lave reservatório.\n5. Recoloque e ligue.",
+    "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem.\n2. Corte em rodelas.\n3. Separe folhas.\n4. Armazene em geladeira.\n5. Reponha conforme necessário.",
+    "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes.\n2. Encha com os itens.\n3. Feche bem.\n4. Disponha no balcão.\n5. Verifique validade.",
+    "Checar validade dos xaropes e sucos abertos": "1. Verifique datas.\n2. Descarte vencidos.\n3. Limpe bordas.\n4. Organize por validade.\n5. Anote reposições.",
+    "Lavar as esteiras de borracha (bar mats)": "1. Retire do balcão.\n2. Lave com água quente e detergente.\n3. Esfregue ranhuras.\n4. Enxágue.\n5. Seque virado.",
+    "Ligar os réchauds e abastecer com água": "1. Verifique o nível de água.\n2. Ligue e ajuste.\n3. Coloque as cubas.\n4. Monitore.\n5. Desligue ao final.",
+    "Checar as temperaturas das pistas quentes e frias": "1. Use termômetro.\n2. Pista quente: 65°C.\n3. Pista fria: 5°C.\n4. Ajuste controles.\n5. Registre.",
+    "Repor a pilha de pratos limpos no início do buffet": "1. Lave e seque.\n2. Empilhe ao lado das cubas.\n3. Certifique-se do alcance.\n4. Mantenha reserva.\n5. Verifique lascados.",
+    "Organizar e polir os pegadores e conchas": "1. Lave com água e sabão.\n2. Seque.\n3. Polir com pano seco.\n4. Disponha em frente às cubas.\n5. Verifique estado.",
+    "Higienizar a bancada de granito do buffet": "1. Remova objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.\n5. Recoloque itens.",
+    "Abastecer os molhos e temperos da ilha de saladas": "1. Verifique cubas.\n2. Complete com molho fresco.\n3. Reponha colheres.\n4. Confira etiquetas.\n5. Verifique temperatura.",
+    "Limpar a boqueta de saída de pratos quentes": "1. Desligue.\n2. Use escova fina.\n3. Passe pano úmido.\n4. Ligue novamente.\n5. Teste.",
+    "Checar validade das etiquetas nas cubas da geladeira": "1. Abra cada cuba.\n2. Verifique data de preparo.\n3. Remova vencidos.\n4. Atualize etiquetas.\n5. Anote irregularidades.",
+    "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel.\n2. Esfregue com escova.\n3. Deixe agir 5 min.\n4. Dê descarga.\n5. Limpe a parte externa.",
+    "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Movimentos circulares.\n4. Verifique manchas.\n5. Seque bordas.",
+    "Repor papel toalha e papel higiênico": "1. Abra dispensers.\n2. Coloque novos rolos.\n3. Confira saída do papel.\n4. Feche.\n5. Deixe reservas.",
+    "Repor sabonete líquido nos dispensers": "1. Desenrosque.\n2. Encha com sabonete.\n3. Recoloque e bombeie.\n4. Limpe respingos.\n5. Verifique o nível.",
+    "Borrifar odorizador de ambiente nos banheiros": "1. Agite o frasco.\n2. Borrife no centro.\n3. Evite superfícies.\n4. Deixe agir 5 min.\n5. Reponha frasco vazio.",
+    "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue todos os botões.\n2. Verifique luzes apagadas.\n3. Anote anomalias.\n4. Confira portas de geladeiras.\n5. Desligue disjuntor.",
+    "Fechar o caixa e imprimir relatórios Z": "1. Confira vendas.\n2. Feche o caixa.\n3. Imprima relatório Z.\n4. Guarde.\n5. Confira com o gerente.",
+    "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada uma.\n2. Puxe a porta.\n3. Verifique o termostato.\n4. Anote problemas.\n5. Avise manutenção.",
+    "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação.\n5. Verifique luzes apagadas.",
+    "Higienizar as mesas com álcool 70%": "1. Retire objetos da mesa.\n2. Borrife álcool 70%.\n3. Esfregue com microfibra em círculos.\n4. Atenção às bordas.\n5. Deixe secar antes de repor.",
+    "Alinhar mesas e cadeiras perfeitamente": "1. Posicione conforme o mapa.\n2. Use fio para alinhar.\n3. Ajuste cadeiras paralelamente.\n4. Olhe de longe para conferir.\n5. Reposicione mesas tortas.",
+    "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras.\n2. Teste a estabilidade.\n3. Verifique os pés.\n4. Anote as danificadas.\n5. Leve para manutenção.",
+    "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador.\n2. Passe por toda a superfície.\n3. Use bocal de frestas nos cantos.\n4. Esvazie o reservatório.\n5. Guarde o aspirador.",
+    "Limpar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro e lave.\n3. Escove os furos do filtro.\n4. Purgue bicos de vapor.\n5. Lave reservatório e ligue.",
+    "Verificar validade dos xaropes": "1. Pegue cada frasco.\n2. Confira a data.\n3. Descarte vencidos.\n4. Limpe bordas.\n5. Organize por validade.",
+    "Repor azeitonas e snacks do balcão": "1. Retire embalagens vazias.\n2. Lave recipientes.\n3. Abasteça com produtos frescos.\n4. Verifique validade.\n5. Disponha no balcão.",
+    "Organizar a prateleira de destilados": "1. Retire garrafas.\n2. Limpe a prateleira.\n3. Organize por tipo.\n4. Coloque as mais usadas na frente.\n5. Descarte vazias.",
+    "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque gelo.\n3. Verifique moagem uniforme.\n4. Desligue e limpe.\n5. Anote barulho estranho.",
+    "Limpar as cubas de apoio do bar": "1. Retire utensílios.\n2. Lave com água e detergente.\n3. Esfregue os cantos.\n4. Enxágue e seque.\n5. Recoloque utensílios.",
+    "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor.\n2. Veja a luz de funcionamento.\n3. Sinta a temperatura.\n4. Anote se não aquecer.\n5. Desligue após teste.",
+    "Repor pães e torradas no setor de sopas": "1. Verifique estoque.\n2. Reponha cestos com pães frescos.\n3. Troque torradas murchas.\n4. Organize próximo à sopa.\n5. Anote necessidade de reposição.",
+    "Organizar as cubas de sobremesa": "1. Retire cubas vazias.\n2. Lave e seque.\n3. Distribua sobremesas.\n4. Coloque etiquetas.\n5. Verifique temperatura.",
+    "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível.\n4. Se abaixo de 20%, solicite reposição.\n5. Feche a tampa.",
+    "Conferir a limpeza do exaustor": "1. Desligue.\n2. Remova filtros.\n3. Lave com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e teste.",
+    "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Veja se a água escoa.\n3. Observe vazamentos.\n4. Anote problemas.\n5. Avise manutenção.",
+    "Limpar as portas e maçanetas": "1. Umedeça pano com álcool 70%.\n2. Passe em todas as maçanetas.\n3. Limpe ao redor.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
+    "Verificar a iluminação das pias": "1. Acenda as luzes.\n2. Substitua lâmpadas queimadas.\n3. Limpe luminárias.\n4. Verifique intensidade.\n5. Anote faltas.",
+    "Repor o estoque de produtos de limpeza": "1. Verifique o armário.\n2. Liste itens em falta.\n3. Pegue no almoxarifado.\n4. Organize por tipo e validade.\n5. Tranque o armário.",
+    "Secar o piso com rodo após a lavagem": "1. Passe rodo com pano seco.\n2. Comece do fundo para a saída.\n3. Retire excesso de água.\n4. Deixe arejar.\n5. Coloque placa de piso molhado.",
+    "Checar a validade dos produtos de higiene": "1. Pegue cada produto.\n2. Confira a data.\n3. Descarte vencidos.\n4. Anote próximos do vencimento.\n5. Organize por validade."
+  };
+
+  function getDescricaoTarefa(txt) {
+    if (taskDescriptions[txt]) return taskDescriptions[txt];
+    const lower = txt.toLowerCase();
+    for (const key in taskDescriptions) {
+      if (lower.includes(key.toLowerCase())) return taskDescriptions[key];
     }
+    return "Realize a tarefa conforme o procedimento padrão.\nAo final, verifique se o ambiente está limpo e organizado.";
+  }
 
-    // ==================== FUNÇÕES DE INTERFACE ====================
-    function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
-    function switchScreen(id) {
-      document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      atualizarVisibilidadeLogin();
+  const defaultSectors = [
+    { id: "salao", title: "Salão Principal", icon: "🍽️", color: "var(--color-salao)" },
+    { id: "bar", title: "Bar & Drinks", icon: "🍸", color: "var(--color-bar)" },
+    { id: "buffet", title: "Buffet & Serviço", icon: "🍲", color: "var(--color-buffet)" },
+    { id: "banheiros", title: "Banheiros & Limpeza", icon: "🚻", color: "var(--color-banheiros)" }
+  ];
+
+  function popularTarefasPadraoSeVazio() {
+    if (liveData.tarefasCustomizadas.length === 0) {
+      liveData.tarefasCustomizadas = [
+        { cat: "salao", txt: "Montar as mesas (pratos, sousplats e talheres)" },
+        { cat: "salao", txt: "Higienizar as mesas com álcool 70%" },
+        { cat: "salao", txt: "Alinhar mesas e cadeiras perfeitamente" },
+        { cat: "salao", txt: "Repor galheteiros (azeite, vinagre, sal)" },
+        { cat: "salao", txt: "Dobrar e organizar os guardanapos" },
+        { cat: "salao", txt: "Limpar os menus e checar organização do aparador" },
+        { cat: "salao", txt: "Revisar iluminação e som ambiente" },
+        { cat: "salao", txt: "Repor paliteiros e porta-copos" },
+        { cat: "salao", txt: "Checar ar-condicionado e ventiladores" },
+        { cat: "salao", txt: "Organizar a praça de garçons" },
+        { cat: "salao", txt: "Verificar se há cadeiras quebradas" },
+        { cat: "salao", txt: "Passar aspirador nos tapetes do salão" },
+        { cat: "bar", txt: "Abastecer as geleiras com gelo novo" },
+        { cat: "bar", txt: "Polir todas as taças de vinho e copos" },
+        { cat: "bar", txt: "Cortar as guarnições (limão, laranja, hortelã)" },
+        { cat: "bar", txt: "Repor geladeiras com cervejas e refris" },
+        { cat: "bar", txt: "Lavar e secar as esteiras de borracha" },
+        { cat: "bar", txt: "Checar potes de açúcar, adoçante e mexedores" },
+        { cat: "bar", txt: "Limpar a máquina de café expresso" },
+        { cat: "bar", txt: "Verificar validade dos xaropes" },
+        { cat: "bar", txt: "Repor azeitonas e snacks do balcão" },
+        { cat: "bar", txt: "Organizar a prateleira de destilados" },
+        { cat: "bar", txt: "Checar o funcionamento do moedor de gelo" },
+        { cat: "bar", txt: "Limpar as cubas de apoio do bar" },
+        { cat: "buffet", txt: "Ligar os réchauds e abastecer com água" },
+        { cat: "buffet", txt: "Organizar e polir conchas e pegadores" },
+        { cat: "buffet", txt: "Repor pilha de pratos limpos do início" },
+        { cat: "buffet", txt: "Abastecer os molhos da ilha de saladas" },
+        { cat: "buffet", txt: "Higienizar a bancada de granito" },
+        { cat: "buffet", txt: "Checar etiquetas e temperatura da pista fria" },
+        { cat: "buffet", txt: "Verificar o funcionamento dos aquecedores" },
+        { cat: "buffet", txt: "Repor pães e torradas no setor de sopas" },
+        { cat: "buffet", txt: "Limpar a boqueta de saída de pratos quentes" },
+        { cat: "buffet", txt: "Organizar as cubas de sobremesa" },
+        { cat: "buffet", txt: "Checar nível do gás da cozinha" },
+        { cat: "buffet", txt: "Conferir a limpeza do exaustor" },
+        { cat: "banheiros", txt: "Lavar e esfregar o vaso sanitário com cloro" },
+        { cat: "banheiros", txt: "Limpar e polir os espelhos dos banheiros" },
+        { cat: "banheiros", txt: "Esvaziar lixeiras e trocar os sacos" },
+        { cat: "banheiros", txt: "Repor papel toalha e higiênico" },
+        { cat: "banheiros", txt: "Repor sabonete líquido nos dispensers" },
+        { cat: "banheiros", txt: "Borrifar odorizador de ambiente" },
+        { cat: "banheiros", txt: "Checar o funcionamento das descargas" },
+        { cat: "banheiros", txt: "Limpar as portas e maçanetas" },
+        { cat: "banheiros", txt: "Verificar a iluminação das pias" },
+        { cat: "banheiros", txt: "Repor o estoque de produtos de limpeza" },
+        { cat: "banheiros", txt: "Secar o piso com rodo após a lavagem" },
+        { cat: "banheiros", txt: "Checar a validade dos produtos de higiene" }
+      ];
     }
+  }
 
-    window.toggleSidebarDropdown = () => {
-      const sidebar = document.getElementById('sidebar-dropdown');
-      const overlay = document.getElementById('sidebar-overlay');
-      sidebar.classList.toggle('open');
-      overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+  function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
+  function switchScreen(id) {
+    document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    atualizarVisibilidadeLogin();
+  }
+
+  window.toggleSidebarDropdown = () => {
+    const sidebar = document.getElementById('sidebar-dropdown');
+    const overlay = document.getElementById('sidebar-overlay');
+    sidebar.classList.toggle('open');
+    overlay.style.display = sidebar.classList.contains('open') ? 'block' : 'none';
+  };
+
+  window.abrirPhotoPicker = (contexto) => {
+    cameraContext = contexto;
+    document.getElementById('photo-picker').style.display = 'flex';
+  };
+  window.fecharPhotoPicker = () => {
+    document.getElementById('photo-picker').style.display = 'none';
+  };
+  window.escolherFoto = (tipo) => {
+    fecharPhotoPicker();
+    cropContext = cameraContext;
+    if (tipo === 'camera') document.getElementById('camera-input').click();
+    else document.getElementById('gallery-input').click();
+  };
+
+  window.prepararRecorte = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    cropImageFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      document.getElementById('crop-image').src = e.target.result;
+      document.getElementById('crop-overlay').style.display = 'flex';
+      cropScale = 1;
+      cropTranslateX = 0;
+      cropTranslateY = 0;
+      aplicarTransformacaoCrop();
     };
+    reader.readAsDataURL(file);
+  };
 
-    window.abrirPhotoPicker = (contexto) => {
-      cameraContext = contexto;
-      document.getElementById('photo-picker').style.display = 'flex';
-    };
-    window.fecharPhotoPicker = () => {
-      document.getElementById('photo-picker').style.display = 'none';
-    };
-    window.escolherFoto = (tipo) => {
-      fecharPhotoPicker();
-      cropContext = cameraContext;
-      if (tipo === 'camera') document.getElementById('camera-input').click();
-      else document.getElementById('gallery-input').click();
-    };
+  function aplicarTransformacaoCrop() {
+    const img = document.getElementById('crop-image');
+    img.style.transform = `translate(${cropTranslateX}px, ${cropTranslateY}px) scale(${cropScale})`;
+  }
 
-    // ==================== RECORTE CIRCULAR ====================
-    window.prepararRecorte = (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      cropImageFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('crop-image').src = e.target.result;
-        document.getElementById('crop-overlay').style.display = 'flex';
-        cropScale = 1;
-        cropTranslateX = 0;
-        cropTranslateY = 0;
-        aplicarTransformacaoCrop();
-      };
-      reader.readAsDataURL(file);
-    };
+  window.cancelarRecorte = () => {
+    document.getElementById('crop-overlay').style.display = 'none';
+    cropImageFile = null;
+  };
 
-    function aplicarTransformacaoCrop() {
-      const img = document.getElementById('crop-image');
-      img.style.transform = `translate(${cropTranslateX}px, ${cropTranslateY}px) scale(${cropScale})`;
-    }
-
-    window.cancelarRecorte = () => {
-      document.getElementById('crop-overlay').style.display = 'none';
-      cropImageFile = null;
-    };
-
-    window.confirmarRecorte = () => {
-      if (!cropImageFile) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const size = 150;
-          canvas.width = size;
-          canvas.height = size;
-          const ctx = canvas.getContext('2d');
-          const scale = cropScale;
-          const tx = cropTranslateX;
-          const ty = cropTranslateY;
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
-          ctx.clip();
-          ctx.drawImage(img, tx, ty, img.width * scale, img.height * scale);
-          ctx.restore();
-          const compressed = canvas.toDataURL('image/jpeg', 0.7);
-          document.getElementById('crop-overlay').style.display = 'none';
-          if (cropContext === 'login') {
-            base64CamGlobal = compressed;
-            document.getElementById('cam-icon').style.display = 'none';
-            const preview = document.getElementById('cam-preview');
-            preview.src = compressed; preview.style.display = 'block';
-            document.getElementById('cam-msg').innerText = "✓ Foto Pronta!";
-            document.getElementById('cam-msg').style.color = "var(--italia-green)";
-          } else if (cropContext === 'update' && currentWorker && liveData.usuariosSalvos[currentWorker]) {
-            liveData.usuariosSalvos[currentWorker].foto = compressed;
-            salvarFirestore(); montarPainelDOM(); alert("Foto atualizada!");
-          }
-          cropImageFile = null;
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(cropImageFile);
-    };
-
-    // Habilitar arraste e zoom na imagem de recorte
-    (function initCropGestures() {
-      const container = document.getElementById('crop-container');
-      let isDragging = false, lastX = 0, lastY = 0, lastDist = 0;
-      container.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-          isDragging = true;
-          lastX = e.touches[0].clientX;
-          lastY = e.touches[0].clientY;
-        } else if (e.touches.length === 2) {
-          isDragging = false;
-          lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-        }
-      });
-      container.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        if (e.touches.length === 1 && isDragging) {
-          const dx = e.touches[0].clientX - lastX;
-          const dy = e.touches[0].clientY - lastY;
-          cropTranslateX += dx;
-          cropTranslateY += dy;
-          lastX = e.touches[0].clientX;
-          lastY = e.touches[0].clientY;
-          aplicarTransformacaoCrop();
-        } else if (e.touches.length === 2) {
-          const newDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-          if (lastDist) {
-            const scaleChange = newDist / lastDist;
-            cropScale = Math.min(3, Math.max(0.5, cropScale * scaleChange));
-            aplicarTransformacaoCrop();
-          }
-          lastDist = newDist;
-        }
-      });
-      container.addEventListener('touchend', () => { isDragging = false; lastDist = 0; });
-    })();
-
-    window.mudarContextoLoginGeral = (tipo) => {
-      loginViewContext = tipo;
-      window.toggleSidebarDropdown();
-      const title = document.getElementById('login-title-txt');
-      const sub = document.getElementById('login-subtitle-txt');
-      const zone = document.getElementById('login-avatar-zone');
-      const fName = document.getElementById('field-user');
-      const btnTxt = document.getElementById('btn-login-text');
-      if (tipo === 'worker') {
-        title.innerText = "Acesso Operacional"; sub.innerText = "Selecione sua foto e entre no turno";
-        zone.style.display = "block"; fName.style.display = "block"; btnTxt.innerText = "Entrar no Turno";
-      } else {
-        title.innerText = "Acesso Mestre"; sub.innerText = "Acesso exclusivo da gerência";
-        zone.style.display = "none"; fName.style.display = "none"; btnTxt.innerText = "Acessar Painel";
-      }
-      document.getElementById('field-pass').value = "";
-      switchScreen('scr-login-gate');
-    };
-
-    // ... (mantenha todas as outras funções: perfilAlterarDados, processarLoginAcesso, etc. – elas estão intactas)
-    window.perfilAlterarDados = (tipo) => {
-      window.toggleSidebarDropdown();
-      if (!currentWorker || currentWorker === "Gerente") return;
-      if (tipo === 'nome') {
-        const novo = prompt("Novo nome:").trim();
-        if (novo) {
-          liveData.usuariosSalvos[novo] = liveData.usuariosSalvos[currentWorker];
-          liveData.loginAtividade[novo] = liveData.loginAtividade[currentWorker];
-          delete liveData.usuariosSalvos[currentWorker];
-          delete liveData.loginAtividade[currentWorker];
-          currentWorker = novo;
-          document.getElementById('system-context-subline').innerText = "Operador: " + novo.toUpperCase();
-          salvarFirestore(); montarPainelDOM(); alert("Nome alterado!");
-        }
-      } else if (tipo === 'senha') {
-        const senha = prompt("Nova senha (4 dígitos):").trim();
-        if (senha) { liveData.usuariosSalvos[currentWorker].senha = senha; salvarFirestore(); alert("Senha alterada!"); }
-      } else if (tipo === 'foto') {
-        window.abrirPhotoPicker('update');
-      }
-    };
-
-    window.alterarDadosRestaurante = () => {
-      window.toggleSidebarDropdown();
-      const novoNome = prompt("Nome do restaurante:", liveData.restaurante.nome || "Marchesini Premium");
-      if (novoNome !== null) liveData.restaurante.nome = novoNome.trim() || "Marchesini Premium";
-      const novaFonte = prompt("Fonte (ex: Arial, Georgia, Courier New):", liveData.restaurante.fonte || "Arial");
-      if (novaFonte !== null) liveData.restaurante.fonte = novaFonte.trim() || "Arial";
-      const querLogo = confirm("Deseja atualizar a imagem do logo?");
-      if (querLogo) {
-        document.getElementById('logo-input').click();
-      } else {
-        salvarFirestore(); aplicarDadosRestaurante();
-      }
-    };
-
-    window.logoAtualizada = (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        compressImageCanvas(e.target.result, (compressed) => {
-          liveData.restaurante.logo = compressed;
-          salvarFirestore(); aplicarDadosRestaurante();
-        });
-      };
-      reader.readAsDataURL(file);
-    };
-
-    window.solicitarAcessoMestreEmOperacao = () => {
-      window.toggleSidebarDropdown();
-      const senha = prompt("Senha da gerência:");
-      if (senha === MASTER_PASS) {
-        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
-        switchScreen('scr-dashboard-manager');
-        window.fecharSubPaineis();
-      } else if (senha !== null) alert("Senha incorreta!");
-    };
-
-    function compressImageCanvas(imgSrc, callback) {
+  window.confirmarRecorte = () => {
+    if (!cropImageFile) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        let { width, height } = img;
-        const max = 150;
-        if (width > height) { if (width > max) { height *= max / width; width = max; } }
-        else { if (height > max) { width *= max / height; height = max; } }
-        canvas.width = width; canvas.height = height;
+        const size = 150;
+        canvas.width = size;
+        canvas.height = size;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.6));
+        const scale = cropScale;
+        const tx = cropTranslateX;
+        const ty = cropTranslateY;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(size/2, size/2, size/2, 0, Math.PI*2);
+        ctx.clip();
+        ctx.drawImage(img, tx, ty, img.width * scale, img.height * scale);
+        ctx.restore();
+        const compressed = canvas.toDataURL('image/jpeg', 0.7);
+        document.getElementById('crop-overlay').style.display = 'none';
+        if (cropContext === 'login') {
+          base64CamGlobal = compressed;
+          document.getElementById('cam-icon').style.display = 'none';
+          const preview = document.getElementById('cam-preview');
+          preview.src = compressed; preview.style.display = 'block';
+          document.getElementById('cam-msg').innerText = "✓";
+          document.getElementById('cam-msg').style.color = "var(--italia-green)";
+        } else if (cropContext === 'update' && currentWorker && liveData.usuariosSalvos[currentWorker]) {
+          liveData.usuariosSalvos[currentWorker].foto = compressed;
+          salvarFirestore(); montarPainelDOM(); alert("Foto atualizada!");
+        }
+        cropImageFile = null;
       };
-      img.src = imgSrc;
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(cropImageFile);
+  };
+
+  (function initCropGestures() {
+    const container = document.getElementById('crop-container');
+    let isDragging = false, lastX = 0, lastY = 0, lastDist = 0;
+    container.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+      } else if (e.touches.length === 2) {
+        isDragging = false;
+        lastDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      }
+    });
+    container.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (e.touches.length === 1 && isDragging) {
+        const dx = e.touches[0].clientX - lastX;
+        const dy = e.touches[0].clientY - lastY;
+        cropTranslateX += dx;
+        cropTranslateY += dy;
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+        aplicarTransformacaoCrop();
+      } else if (e.touches.length === 2) {
+        const newDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+        if (lastDist) {
+          const scaleChange = newDist / lastDist;
+          cropScale = Math.min(3, Math.max(0.5, cropScale * scaleChange));
+          aplicarTransformacaoCrop();
+        }
+        lastDist = newDist;
+      }
+    });
+    container.addEventListener('touchend', () => { isDragging = false; lastDist = 0; });
+  })();
+
+  window.mudarContextoLoginGeral = (tipo) => {
+    loginViewContext = tipo;
+    window.toggleSidebarDropdown();
+    const title = document.getElementById('login-title-txt');
+    const sub = document.getElementById('login-subtitle-txt');
+    const zone = document.getElementById('login-avatar-zone');
+    const fName = document.getElementById('field-user');
+    const btnTxt = document.getElementById('btn-login-text');
+    if (tipo === 'worker') {
+      title.innerText = "Acesso Operacional"; sub.innerText = "Selecione sua foto e entre no turno";
+      zone.style.display = "block"; fName.style.display = "block"; btnTxt.innerText = "Entrar no Turno";
+    } else {
+      title.innerText = "Acesso Mestre"; sub.innerText = "Acesso exclusivo da gerência";
+      zone.style.display = "none"; fName.style.display = "none"; btnTxt.innerText = "Acessar Painel";
+    }
+    document.getElementById('field-pass').value = "";
+    switchScreen('scr-login-gate');
+  };
+
+  window.perfilAlterarDados = (tipo) => {
+    window.toggleSidebarDropdown();
+    if (!currentWorker || currentWorker === "Gerente") return;
+    if (tipo === 'nome') {
+      const novo = prompt("Novo nome:").trim();
+      if (novo) {
+        liveData.usuariosSalvos[novo] = liveData.usuariosSalvos[currentWorker];
+        liveData.loginAtividade[novo] = liveData.loginAtividade[currentWorker];
+        delete liveData.usuariosSalvos[currentWorker];
+        delete liveData.loginAtividade[currentWorker];
+        currentWorker = novo;
+        document.getElementById('system-context-subline').innerText = "Operador: " + novo.toUpperCase();
+        salvarFirestore(); montarPainelDOM(); alert("Nome alterado!");
+      }
+    } else if (tipo === 'senha') {
+      const senha = prompt("Nova senha (4 dígitos):").trim();
+      if (senha) { liveData.usuariosSalvos[currentWorker].senha = senha; salvarFirestore(); alert("Senha alterada!"); }
+    } else if (tipo === 'foto') {
+      window.abrirPhotoPicker('update');
+    }
+  };
+
+  window.alterarDadosRestaurante = () => {
+    window.toggleSidebarDropdown();
+    const novoNome = prompt("Nome do restaurante:", liveData.restaurante.nome || "Marchesini Premium");
+    if (novoNome !== null) liveData.restaurante.nome = novoNome.trim() || "Marchesini Premium";
+    const novaFonte = prompt("Fonte (ex: Arial, Georgia, Courier New):", liveData.restaurante.fonte || "Arial");
+    if (novaFonte !== null) liveData.restaurante.fonte = novaFonte.trim() || "Arial";
+    const querLogo = confirm("Deseja atualizar a imagem do logo?");
+    if (querLogo) {
+      document.getElementById('logo-input').click();
+    } else {
+      salvarFirestore(); aplicarDadosRestaurante();
+    }
+  };
+
+  window.logoAtualizada = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      compressImageCanvas(e.target.result, (compressed) => {
+        liveData.restaurante.logo = compressed;
+        salvarFirestore(); aplicarDadosRestaurante();
+      });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  window.solicitarAcessoMestreEmOperacao = () => {
+    window.toggleSidebarDropdown();
+    const senha = prompt("Senha da gerência:");
+    if (senha === MASTER_PASS) {
+      document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+      switchScreen('scr-dashboard-manager');
+      window.fecharSubPaineis();
+    } else if (senha !== null) alert("Senha incorreta!");
+  };
+
+  function compressImageCanvas(imgSrc, callback) {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let { width, height } = img;
+      const max = 150;
+      if (width > height) { if (width > max) { height *= max / width; width = max; } }
+      else { if (height > max) { width *= max / height; height = max; } }
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvas.toDataURL('image/jpeg', 0.6));
+    };
+    img.src = imgSrc;
+  }
+
+  window.detectarFuncionarioExistente = () => {
+    const nome = document.getElementById('field-user').value.trim();
+    const msg = document.getElementById('cam-msg'), img = document.getElementById('cam-preview'),
+          icon = document.getElementById('cam-icon'), btn = document.getElementById('btn-login-text');
+    if (liveData.usuariosSalvos[nome]) {
+      base64CamGlobal = liveData.usuariosSalvos[nome].foto;
+      icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
+      msg.innerText = "✓ Perfil Encontrado!"; msg.style.color = "var(--italia-green)";
+      btn.innerText = "Entrar no Turno";
+    } else {
+      if (base64CamGlobal && base64CamGlobal.startsWith("data:image")) return;
+      base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
+      msg.innerText = "Toque para foto"; msg.style.color = "var(--text-muted)";
+      btn.innerText = "Cadastrar e Entrar";
+    }
+  };
+
+  window.processarLoginAcesso = async () => {
+    const pass = document.getElementById('field-pass').value.trim();
+    if (loginViewContext === 'manager_direct') {
+      if (pass === MASTER_PASS) {
+        currentWorker = "Gerente";
+        document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
+        switchScreen('scr-dashboard-manager');
+        window.fecharSubPaineis();
+      } else alert("Senha Mestra Incorreta!");
+      return;
+    }
+    const nome = document.getElementById('field-user').value.trim();
+    if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
+    let primeiro = false;
+    if (liveData.usuariosSalvos[nome]) {
+      if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
+    } else {
+      primeiro = true;
+      liveData.usuariosSalvos[nome] = {
+        senha: pass,
+        foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80"
+      };
+    }
+    currentWorker = nome;
+    liveData.loginAtividade[nome] = true;
+    document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
+    document.getElementById('opts-before-login').style.display = 'none';
+    document.getElementById('opts-after-login').style.display = 'block';
+    if (primeiro) alert("🎉 Perfil criado! Bem-vindo à equipe.");
+    await salvarFirestore();
+    switchScreen('scr-dashboard-worker');
+    montarPainelDOM();
+  };
+
+  window.efetuarLogoffCompleto = async () => {
+    if (currentWorker && currentWorker !== "Gerente") {
+      liveData.loginAtividade[currentWorker] = false;
+      await salvarFirestore();
+    }
+    currentWorker = ""; base64CamGlobal = "";
+    document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
+    document.getElementById('opts-after-login').style.display = 'none';
+    document.getElementById('opts-before-login').style.display = 'block';
+    window.mudarContextoLoginGeral('worker');
+  };
+
+  window.abrirModalTarefa = (chave) => {
+    modalChaveAtual = chave;
+    const partes = chave.split('_');
+    const setorId = partes[0];
+    const idx = parseInt(partes[1]);
+    const setor = obterSetoresTotais().find(s => s.id === setorId);
+    if (!setor) return;
+    const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+    const total = arr.length;
+    atualizarConteudoModal(setor, idx, arr);
+    document.getElementById('task-modal').classList.add('show');
+    destacarLinha(chave);
+    const card = document.querySelector('.task-modal-card');
+    card.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+    card.addEventListener('touchend', (e) => {
+      endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) navegarTarefa(1);
+        else navegarTarefa(-1);
+      }
+    });
+  };
+
+  window.fecharModalTarefa = () => {
+    document.getElementById('task-modal').classList.remove('show');
+    modalChaveAtual = null;
+    pararCronometroVisual();
+    document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+  };
+
+  function atualizarConteudoModal(setor, idx, arr) {
+    const txt = arr[idx];
+    const chave = setor.id + '_' + idx;
+    const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
+    document.getElementById('tm-setor').innerText = setor.icon + ' ' + setor.title;
+    document.getElementById('tm-title').innerText = txt;
+    document.getElementById('tm-desc').innerHTML = `<strong>COMO FAZER:</strong>\n${getDescricaoTarefa(txt)}`;
+
+    let statusHTML = '';
+    if (st.status === 'done') {
+      statusHTML = `<span style="color:var(--italia-green);">✅ Concluída por ${st.worker.toUpperCase()}</span>`;
+      if (st.endTime && st.startTime) {
+        const duracao = Math.round((st.endTime - st.startTime) / 1000);
+        const minutos = Math.floor(duracao / 60);
+        const segundos = duracao % 60;
+        statusHTML += ` - Tempo: ${minutos}m ${segundos}s`;
+      }
+    } else if (st.status === 'working') {
+      statusHTML = `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
+    } else {
+      statusHTML = `<span style="color:var(--text-muted);">📋 Disponível</span>`;
+    }
+    document.getElementById('tm-status').innerHTML = statusHTML;
+
+    if (st.status === 'working' && st.startTime) {
+      iniciarCronometroVisual(st.startTime);
+    } else {
+      pararCronometroVisual();
+      document.getElementById('tm-timer').innerText = '';
     }
 
-    window.fotoCapturadaUniversal = (event) => {
-      // Esta função não será mais utilizada, o recorte substitui
-    };
+    let botoes = '';
+    if (st.status === 'idle') {
+      botoes += `<button class="tk-btn btn-take" onclick="gerenciarJobModal('pegar')">Pegar Tarefa</button>`;
+    } else if (st.status === 'working' && st.worker === currentWorker) {
+      botoes += `<button class="tk-btn btn-leave" onclick="gerenciarJobModal('largar')">Largar</button>`;
+      botoes += `<button class="tk-btn btn-done" onclick="gerenciarJobModal('feito')">Feito ✅</button>`;
+    }
+    document.getElementById('tm-actions').innerHTML = botoes;
 
-    window.detectarFuncionarioExistente = () => {
-      const nome = document.getElementById('field-user').value.trim();
-      const msg = document.getElementById('cam-msg'), img = document.getElementById('cam-preview'),
-            icon = document.getElementById('cam-icon'), btn = document.getElementById('btn-login-text');
-      if (liveData.usuariosSalvos[nome]) {
-        base64CamGlobal = liveData.usuariosSalvos[nome].foto;
-        icon.style.display = 'none'; img.src = base64CamGlobal; img.style.display = 'block';
-        msg.innerText = "✓ Perfil Encontrado!"; msg.style.color = "var(--italia-green)";
-        btn.innerText = "Entrar no Turno";
-      } else {
-        if (base64CamGlobal && base64CamGlobal.startsWith("data:image")) return;
-        base64CamGlobal = ""; img.style.display = 'none'; icon.style.display = 'block';
-        msg.innerText = "Toque para adicionar foto"; msg.style.color = "var(--text-muted)";
-        btn.innerText = "Cadastrar e Entrar";
-      }
-    };
+    const dotsContainer = document.getElementById('page-dots');
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < arr.length; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'page-dot' + (i === idx ? ' active' : '');
+      dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
+      dotsContainer.appendChild(dot);
+    }
 
-    window.processarLoginAcesso = async () => {
-      const pass = document.getElementById('field-pass').value.trim();
-      if (loginViewContext === 'manager_direct') {
-        if (pass === MASTER_PASS) {
-          currentWorker = "Gerente";
-          document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
-          switchScreen('scr-dashboard-manager');
-          window.fecharSubPaineis();
-        } else alert("Senha Mestra Incorreta!");
-        return;
-      }
-      const nome = document.getElementById('field-user').value.trim();
-      if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
-      let primeiro = false;
-      if (liveData.usuariosSalvos[nome]) {
-        if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
-      } else {
-        primeiro = true;
-        liveData.usuariosSalvos[nome] = {
-          senha: pass,
-          foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80"
-        };
-      }
-      currentWorker = nome;
-      liveData.loginAtividade[nome] = true;
-      document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
-      document.getElementById('opts-before-login').style.display = 'none';
-      document.getElementById('opts-after-login').style.display = 'block';
-      if (primeiro) alert("🎉 Perfil criado! Bem-vindo à equipe.");
-      await salvarFirestore();
-      switchScreen('scr-dashboard-worker');
-      montarPainelDOM();
-    };
+    window._modalSetor = setor;
+    window._modalArr = arr;
+  }
 
-    window.efetuarLogoffCompleto = async () => {
-      if (currentWorker && currentWorker !== "Gerente") {
-        liveData.loginAtividade[currentWorker] = false;
-        await salvarFirestore();
-      }
-      currentWorker = ""; base64CamGlobal = "";
-      document.getElementById('system-context-subline').innerText = "Controle de Turno Ativo";
-      document.getElementById('opts-after-login').style.display = 'none';
-      document.getElementById('opts-before-login').style.display = 'block';
-      window.mudarContextoLoginGeral('worker');
-    };
+  window.navegarTarefa = (dir) => {
+    if (!window._modalSetor || !window._modalArr) return;
+    const setor = window._modalSetor;
+    const arr = window._modalArr;
+    const partes = modalChaveAtual.split('_');
+    let idx = parseInt(partes[1]);
+    idx += dir;
+    if (idx < 0) idx = arr.length - 1;
+    if (idx >= arr.length) idx = 0;
+    modalChaveAtual = setor.id + '_' + idx;
+    atualizarConteudoModal(setor, idx, arr);
+    destacarLinha(modalChaveAtual);
+  };
 
-    // ==================== MODAL DE TAREFA COM NAVEGAÇÃO ====================
-    window.abrirModalTarefa = (chave) => {
-      modalChaveAtual = chave;
-      const partes = chave.split('_');
+  function iniciarCronometroVisual(startTime) {
+    pararCronometroVisual();
+    const timerEl = document.getElementById('tm-timer');
+    cronometroInterval = setInterval(() => {
+      const agora = Date.now();
+      const diff = Math.round((agora - startTime) / 1000);
+      const min = Math.floor(diff / 60);
+      const seg = diff % 60;
+      timerEl.innerText = `⏱️ ${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
+    }, 1000);
+  }
+
+  function pararCronometroVisual() {
+    if (cronometroInterval) {
+      clearInterval(cronometroInterval);
+      cronometroInterval = null;
+    }
+  }
+
+  window.gerenciarJobModal = (acao) => {
+    if (!modalChaveAtual) return;
+    if (acao === 'pegar') {
+      liveData.tarefasStatus[modalChaveAtual] = { status: 'working', worker: currentWorker, startTime: Date.now() };
+      soundPegarTarefa();
+    } else if (acao === 'largar') {
+      liveData.tarefasStatus[modalChaveAtual] = { status: 'idle', worker: '', startTime: null };
+      pararCronometroVisual();
+    } else if (acao === 'feito') {
+      const st = liveData.tarefasStatus[modalChaveAtual] || {};
+      liveData.tarefasStatus[modalChaveAtual] = {
+        status: 'done',
+        worker: currentWorker,
+        startTime: st.startTime || null,
+        endTime: Date.now()
+      };
+      soundConcluirTarefa();
+      const partes = modalChaveAtual.split('_');
       const setorId = partes[0];
       const idx = parseInt(partes[1]);
       const setor = obterSetoresTotais().find(s => s.id === setorId);
-      if (!setor) return;
-      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-      const total = arr.length;
-      atualizarConteudoModal(setor, idx, arr);
-      document.getElementById('task-modal').classList.add('show');
-      destacarLinha(chave);
-      const card = document.querySelector('.task-modal-card');
-      card.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-      card.addEventListener('touchend', (e) => {
-        endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
-        if (Math.abs(diff) > 50) {
-          if (diff > 0) navegarTarefa(1);
-          else navegarTarefa(-1);
-        }
-      });
-    };
-
-    window.fecharModalTarefa = () => {
-      document.getElementById('task-modal').classList.remove('show');
-      modalChaveAtual = null;
+      if (setor) {
+        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+        const txt = arr[idx] || "";
+        dispararAnimacao(txt, currentWorker);
+      }
       pararCronometroVisual();
-      document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
-    };
-
-    function atualizarConteudoModal(setor, idx, arr) {
-      const txt = arr[idx];
-      const chave = setor.id + '_' + idx;
-      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
-      document.getElementById('tm-setor').innerText = setor.icon + ' ' + setor.title;
-      document.getElementById('tm-title').innerText = txt;
-      document.getElementById('tm-desc').innerHTML = `<strong>COMO FAZER:</strong>\n${getDescricaoTarefa(txt)}`;
-
-      let statusHTML = '';
-      if (st.status === 'done') {
-        statusHTML = `<span style="color:var(--italia-green);">✅ Concluída por ${st.worker.toUpperCase()}</span>`;
-        if (st.endTime && st.startTime) {
-          const duracao = Math.round((st.endTime - st.startTime) / 1000);
-          const minutos = Math.floor(duracao / 60);
-          const segundos = duracao % 60;
-          statusHTML += ` - Tempo: ${minutos}m ${segundos}s`;
-        }
-      } else if (st.status === 'working') {
-        statusHTML = `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
-      } else {
-        statusHTML = `<span style="color:var(--text-muted);">📋 Disponível</span>`;
-      }
-      document.getElementById('tm-status').innerHTML = statusHTML;
-
-      if (st.status === 'working' && st.startTime) {
-        iniciarCronometroVisual(st.startTime);
-      } else {
-        pararCronometroVisual();
-        document.getElementById('tm-timer').innerText = '';
-      }
-
-      let botoes = '';
-      if (st.status === 'idle') {
-        botoes += `<button class="tk-btn btn-take" onclick="gerenciarJobModal('pegar')">Pegar Tarefa</button>`;
-      } else if (st.status === 'working' && st.worker === currentWorker) {
-        botoes += `<button class="tk-btn btn-leave" onclick="gerenciarJobModal('largar')">Largar</button>`;
-        botoes += `<button class="tk-btn btn-done" onclick="gerenciarJobModal('feito')">Feito ✅</button>`;
-      }
-      document.getElementById('tm-actions').innerHTML = botoes;
-
-      const dotsContainer = document.getElementById('page-dots');
-      dotsContainer.innerHTML = '';
-      for (let i = 0; i < arr.length; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'page-dot' + (i === idx ? ' active' : '');
-        dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
-        dotsContainer.appendChild(dot);
-      }
-
-      window._modalSetor = setor;
-      window._modalArr = arr;
     }
-
-    window.navegarTarefa = (dir) => {
-      if (!window._modalSetor || !window._modalArr) return;
-      const setor = window._modalSetor;
-      const arr = window._modalArr;
-      const partes = modalChaveAtual.split('_');
-      let idx = parseInt(partes[1]);
-      idx += dir;
-      if (idx < 0) idx = arr.length - 1;
-      if (idx >= arr.length) idx = 0;
-      modalChaveAtual = setor.id + '_' + idx;
-      atualizarConteudoModal(setor, idx, arr);
-      destacarLinha(modalChaveAtual);
-    };
-
-    function iniciarCronometroVisual(startTime) {
-      pararCronometroVisual();
-      const timerEl = document.getElementById('tm-timer');
-      cronometroInterval = setInterval(() => {
-        const agora = Date.now();
-        const diff = Math.round((agora - startTime) / 1000);
-        const min = Math.floor(diff / 60);
-        const seg = diff % 60;
-        timerEl.innerText = `⏱️ ${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
-      }, 1000);
+    salvarFirestore();
+    montarPainelDOM();
+    if (modalChaveAtual) {
+      setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
     }
+  };
 
-    function pararCronometroVisual() {
-      if (cronometroInterval) {
-        clearInterval(cronometroInterval);
-        cronometroInterval = null;
-      }
-    }
-
-    window.gerenciarJobModal = (acao) => {
-      if (!modalChaveAtual) return;
-      if (acao === 'pegar') {
-        liveData.tarefasStatus[modalChaveAtual] = { status: 'working', worker: currentWorker, startTime: Date.now() };
-        soundPegarTarefa();
-      } else if (acao === 'largar') {
-        liveData.tarefasStatus[modalChaveAtual] = { status: 'idle', worker: '', startTime: null };
-        pararCronometroVisual();
-      } else if (acao === 'feito') {
-        const st = liveData.tarefasStatus[modalChaveAtual] || {};
-        liveData.tarefasStatus[modalChaveAtual] = {
-          status: 'done',
-          worker: currentWorker,
-          startTime: st.startTime || null,
-          endTime: Date.now()
-        };
-        soundConcluirTarefa();
-        const partes = modalChaveAtual.split('_');
-        const setorId = partes[0];
-        const idx = parseInt(partes[1]);
-        const setor = obterSetoresTotais().find(s => s.id === setorId);
-        if (setor) {
-          const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-          const txt = arr[idx] || "";
-          dispararAnimacao(txt, currentWorker);
-        }
-        pararCronometroVisual();
-      }
-      salvarFirestore();
-      montarPainelDOM();
-      if (modalChaveAtual) {
-        setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
-      }
-    };
-
-    // ==================== PAINEL FUNCIONÁRIO (COM SWIPE PARA SETORES) ====================
-    function montarPainelDOM() {
-      const storiesBar = document.getElementById('live-stories-bar');
-      const storiesRow = storiesBar.querySelector('.stories-row');
-      storiesRow.innerHTML = "";
-      Object.keys(liveData.usuariosSalvos).forEach(nome => {
-        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
-        if (!online && nome !== currentWorker) return;
-        const card = document.createElement('div');
-        card.className = "story-card" + (nome === currentWorker ? " me" : "");
-        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
-        storiesRow.appendChild(card);
-      });
-
-      const tabsContainer = document.getElementById('sector-tabs');
-      const zone = document.getElementById('render-sectors-zone');
-      if (!tabsContainer || !zone) return;
-      const setores = obterSetoresTotais();
-      tabsContainer.innerHTML = '';
-      setores.forEach((s, idx) => {
-        const tab = document.createElement('div');
-        tab.className = 'sector-tab';
-        tab.innerText = s.icon + ' ' + s.title;
-        tab.style.borderLeft = `3px solid ${s.color}`;
-        tab.onclick = () => { activeSectorTab = s.id; montarPainelDOM(); };
-        if (!activeSectorTab && idx === 0) activeSectorTab = s.id;
-        if (s.id === activeSectorTab) tab.classList.add('active');
-        tabsContainer.appendChild(tab);
-      });
-      if (!activeSectorTab) activeSectorTab = setores[0]?.id;
-      zone.innerHTML = '';
-      const setor = setores.find(s => s.id === activeSectorTab);
-      if (!setor) return;
-      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-      let feitas = 0;
-      arr.forEach((_, i) => { if (liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done') feitas++; });
+  function montarPainelDOM() {
+    const storiesBar = document.getElementById('live-stories-bar');
+    const storiesRow = storiesBar.querySelector('.stories-row');
+    storiesRow.innerHTML = "";
+    Object.keys(liveData.usuariosSalvos).forEach(nome => {
+      const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+      if (!online && nome !== currentWorker) return;
       const card = document.createElement('div');
-      card.className = 'card-sector active';
-      card.style.borderLeft = `4px solid ${setor.color}`;
-      card.innerHTML = `
-        <div class="sect-hdr" style="background:${setor.color}22;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <span style="font-size:20px">${setor.icon}</span>
-            <span style="font-weight:700; text-transform:uppercase">${setor.title}</span>
-          </div>
-          <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
+      card.className = "story-card" + (nome === currentWorker ? " me" : "");
+      card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
+      storiesRow.appendChild(card);
+    });
+
+    const tabsContainer = document.getElementById('sector-tabs');
+    const zone = document.getElementById('render-sectors-zone');
+    if (!tabsContainer || !zone) return;
+    const setores = obterSetoresTotais();
+    tabsContainer.innerHTML = '';
+    setores.forEach((s, idx) => {
+      const tab = document.createElement('div');
+      tab.className = 'sector-tab';
+      tab.innerText = s.icon + ' ' + s.title;
+      tab.style.borderLeft = `3px solid ${s.color}`;
+      tab.onclick = () => { activeSectorTab = s.id; montarPainelDOM(); };
+      if (!activeSectorTab && idx === 0) activeSectorTab = s.id;
+      if (s.id === activeSectorTab) tab.classList.add('active');
+      tabsContainer.appendChild(tab);
+    });
+    if (!activeSectorTab) activeSectorTab = setores[0]?.id;
+    zone.innerHTML = '';
+    const setor = setores.find(s => s.id === activeSectorTab);
+    if (!setor) return;
+    const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+    let feitas = 0;
+    arr.forEach((_, i) => { if (liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done') feitas++; });
+    const card = document.createElement('div');
+    card.className = 'card-sector active';
+    card.style.borderLeft = `4px solid ${setor.color}`;
+    card.innerHTML = `
+      <div class="sect-hdr" style="background:${setor.color}22;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px">${setor.icon}</span>
+          <span style="font-weight:700; text-transform:uppercase">${setor.title}</span>
         </div>
-        <div class="sect-cnt" id="cnt_${setor.id}"></div>`;
-      zone.appendChild(card);
-      const cnt = document.getElementById('cnt_' + setor.id);
-      if (arr.length === 0) {
-        cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>';
-        return;
-      }
-
-      arr.forEach((txt, idx) => {
-        const chave = setor.id + '_' + idx;
-        const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
-        const row = document.createElement('div');
-        row.className = 'row-task ' + st.status;
-        row.id = 'row_' + chave;
-
-        let miniHTML = '';
-        if (st.status === 'working' || st.status === 'done') {
-          miniHTML = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
-          if (st.status === 'working' && st.worker !== currentWorker) {
-            miniHTML += `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`;
-          } else if (st.status === 'done') {
-            miniHTML += `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
-          }
-        }
-        let timerBadge = '';
-        if (st.status === 'working' && st.startTime) {
-          timerBadge = `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>`;
-        }
-
-        row.innerHTML = `
-          <div class="row-task-header" onclick="abrirModalTarefa('${chave}')">
-            <div class="task-txt-side"><div class="dot-status"></div><div>${txt}</div></div>
-            <div class="task-actions">${miniHTML} ${timerBadge}</div>
-          </div>`;
-        cnt.appendChild(row);
-      });
-
-      arr.forEach((_, idx) => {
-        const chave = setor.id + '_' + idx;
-        const st = liveData.tarefasStatus[chave] || {};
-        if (st.status === 'working' && st.startTime) {
-          iniciarCronometroLista(chave, st.startTime);
-        }
-      });
-
-      if (modalChaveAtual) destacarLinha(modalChaveAtual);
-      atualizarProgresso();
-
-      // Swipe para trocar de setor
-      const setoresArray = setores;
-      let swipeStartX = 0;
-      zone.addEventListener('touchstart', (e) => { swipeStartX = e.touches[0].clientX; });
-      zone.addEventListener('touchend', (e) => {
-        const diff = swipeStartX - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 60) {
-          const currentIdx = setoresArray.findIndex(s => s.id === activeSectorTab);
-          let newIdx = currentIdx;
-          if (diff > 0) newIdx = Math.min(setoresArray.length - 1, currentIdx + 1);
-          else newIdx = Math.max(0, currentIdx - 1);
-          if (newIdx !== currentIdx) {
-            activeSectorTab = setoresArray[newIdx].id;
-            montarPainelDOM();
-          }
-        }
-      });
+        <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
+      </div>
+      <div class="sect-cnt" id="cnt_${setor.id}"></div>`;
+    zone.appendChild(card);
+    const cnt = document.getElementById('cnt_' + setor.id);
+    if (arr.length === 0) {
+      cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>';
+      return;
     }
 
-    // ... (demais funções: cronômetro, animações, gerente, chat, PWA, etc.)
-    // Todas estão mantidas na íntegra, sem alterações.
-  </script>
-</body>
-</html>
+    arr.forEach((txt, idx) => {
+      const chave = setor.id + '_' + idx;
+      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
+      const row = document.createElement('div');
+      row.className = 'row-task ' + st.status;
+      row.id = 'row_' + chave;
 
+      let miniHTML = '';
+      if (st.status === 'working' || st.status === 'done') {
+        miniHTML = `<img class="mini-pic" src="${liveData.usuariosSalvos[st.worker]?.foto || ''}">`;
+        if (st.status === 'working' && st.worker !== currentWorker) {
+          miniHTML += `<span style="font-size:10px; color:var(--process); font-weight:700;">COM ${st.worker.toUpperCase()}</span>`;
+        } else if (st.status === 'done') {
+          miniHTML += `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
+        }
+      }
+      let timerBadge = '';
+      if (st.status === 'working' && st.startTime) {
+        timerBadge = `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>`;
+      }
+
+      row.innerHTML = `
+        <div class="row-task-header" onclick="abrirModalTarefa('${chave}')">
+          <div class="task-txt-side"><div class="dot-status"></div><div>${txt}</div></div>
+          <div class="task-actions">${miniHTML} ${timerBadge}</div>
+        </div>`;
+      cnt.appendChild(row);
+    });
+
+    arr.forEach((_, idx) => {
+      const chave = setor.id + '_' + idx;
+      const st = liveData.tarefasStatus[chave] || {};
+      if (st.status === 'working' && st.startTime) {
+        iniciarCronometroLista(chave, st.startTime);
+      }
+    });
+
+    if (modalChaveAtual) destacarLinha(modalChaveAtual);
+    atualizarProgresso();
+
+    let swipeStartX = 0;
+    zone.addEventListener('touchstart', (e) => { swipeStartX = e.touches[0].clientX; });
+    zone.addEventListener('touchend', (e) => {
+      const diff = swipeStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) {
+        const currentIdx = setores.findIndex(s => s.id === activeSectorTab);
+        let newIdx = currentIdx;
+        if (diff > 0) newIdx = Math.min(setores.length - 1, currentIdx + 1);
+        else newIdx = Math.max(0, currentIdx - 1);
+        if (newIdx !== currentIdx) {
+          activeSectorTab = setores[newIdx].id;
+          montarPainelDOM();
+        }
+      }
+    });
+  }
+
+  function destacarLinha(chave) {
+    document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+    const row = document.getElementById('row_' + chave);
+    if (row) {
+      row.classList.add('highlighted');
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function iniciarCronometroLista(chave, startTime) {
+    const el = document.getElementById('cron_list_' + chave);
+    if (!el) return;
+    if (window._cronometrosLista[chave]) clearInterval(window._cronometrosLista[chave]);
+    const interval = setInterval(() => {
+      const agora = Date.now();
+      const diff = Math.round((agora - startTime) / 1000);
+      const min = Math.floor(diff / 60);
+      const seg = diff % 60;
+      el.innerText = `⏱️ ${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
+    }, 1000);
+    window._cronometrosLista[chave] = interval;
+  }
+
+  function dispararAnimacao(texto, worker) {
+    const anim = obterAnimacao(texto);
+    const overlay = document.getElementById('animacao-conclusao');
+    const icon = document.getElementById('anim-obj-icon');
+    icon.innerText = anim.emoji; icon.className = "anim-object " + anim.cssClass;
+    document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
+    document.getElementById('anim-title').innerText = anim.title;
+    document.getElementById('anim-desc').innerText = anim.desc;
+    overlay.style.display = 'flex'; setTimeout(() => overlay.classList.add('show'), 10);
+    setTimeout(() => { overlay.classList.remove('show'); setTimeout(() => overlay.style.display = 'none', 300); }, 3500);
+  }
+
+  function atualizarProgresso() {
+    let t = 0, f = 0;
+    obterSetoresTotais().forEach(s => {
+      liveData.tarefasCustomizadas.filter(c => c.cat === s.id).forEach((_, i) => {
+        t++; if (liveData.tarefasStatus[s.id + '_' + i]?.status === 'done') f++;
+      });
+    });
+    const p = t ? Math.round((f / t) * 100) : 0;
+    document.getElementById('prog-fill-bar').style.width = p + '%';
+    document.getElementById('prog-txt-pct').innerText = p + '%';
+  }
+
+  function playTone(freq, type, dur, vol = 0.1) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
+    osc.stop(audioCtx.currentTime + dur);
+  }
+
+  function soundPegarTarefa() { playTone(440, 'sine', 0.1); setTimeout(() => playTone(660, 'sine', 0.15), 100); }
+  function soundConcluirTarefa() {
+    playTone(523.25, 'triangle', 0.15);
+    setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
+    setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
+  }
+
+  const taskAnimations = [
+    { keys: ["varrer", "vassoura", "chão"], emoji: "🧹", cssClass: "act-varrer", title: "Varrendo com energia!", desc: "A vassoura não deixa nem poeira para trás." },
+    { keys: ["pano", "rodo", "úmido", "passar pano"], emoji: "🧽", cssClass: "act-esfregar", title: "Brilhando como espelho!", desc: "O rodo deixou tudo reluzente." },
+    { keys: ["vaso", "sanitário", "privada"], emoji: "🚽", cssClass: "act-brilhar", title: "Sanitário impecável!", desc: "Cheirinho de limpeza e flor." },
+    { keys: ["álcool", "mesas", "higienizar"], emoji: "🧴", cssClass: "act-esfregar", title: "Superfície esterilizada!", desc: "Álcool 70% fez a mágica." },
+    { keys: ["taças", "copos", "polir"], emoji: "✨", cssClass: "act-brilhar", title: "Cristais reluzentes!", desc: "Prontos para o brinde." },
+    { keys: ["lixo", "recolher"], emoji: "🗑️", cssClass: "act-brilhar", title: "Lixo fora!", desc: "Ambiente limpo e arejado." },
+    { keys: ["cadeiras", "cadeirões"], emoji: "🪑", cssClass: "act-brilhar", title: "Cadeiras impecáveis!", desc: "Todas alinhadas e limpas." },
+    { keys: ["guardanapos"], emoji: "🍽️", cssClass: "act-brilhar", title: "Guardanapos dobrados!", desc: "Mesa posta com elegância." }
+  ];
+
+  function obterAnimacao(texto) {
+    const lower = texto.toLowerCase();
+    for (const rule of taskAnimations) {
+      if (rule.keys.some(k => lower.includes(k))) return rule;
+    }
+    return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece." };
+  }
+
+  // ==================== GERENTE ====================
+  window.abrirSubPainelGerente = (id) => {
+    window.fecharSubPaineis();
+    document.getElementById('sub-pane-' + id).style.display = 'block';
+    if (id === 'busca_tarefas') renderizarBibliotecaTarefas();
+    if (id === 'ver_equipe') renderizarListaEquipeMestre();
+  };
+  window.fecharSubPaineis = () => document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display = 'none');
+  window.filtrarBiblioCategoria = (cat, btn) => {
+    currentCategoriaBiblio = cat;
+    document.querySelectorAll('.lib-cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderizarBibliotecaTarefas();
+  };
+
+  function renderizarBibliotecaTarefas() {
+    const query = document.getElementById('mgr-search-input').value.toLowerCase();
+    const box = document.getElementById('mgr-search-results-render'); box.innerHTML = '';
+    const filtradas = megaLibrary.filter(item => {
+      const matchCat = currentCategoriaBiblio === 'tudo' || item.cat === currentCategoriaBiblio;
+      const matchBusca = !query || item.txt.toLowerCase().includes(query);
+      return matchCat && matchBusca;
+    });
+    if (!filtradas.length) {
+      box.innerHTML = '<div style="padding:10px; color:var(--text-muted); text-align:center; font-size:12px;">Nenhuma tarefa encontrada.</div>';
+      return;
+    }
+    filtradas.forEach(item => {
+      const line = document.createElement('div');
+      line.className = "search-item-line";
+      line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto; padding:6px 12px;">➕ Injetar</button>`;
+      line.querySelector('button').onclick = () => {
+        const setores = obterSetoresTotais();
+        let msg = "Escolha o setor (número):\n";
+        setores.forEach((s, idx) => msg += `${idx} - ${s.title}\n`);
+        const escolha = prompt(msg);
+        if (escolha !== null && setores[escolha]) {
+          liveData.tarefasCustomizadas.push({ cat: setores[escolha].id, txt: item.txt });
+          salvarFirestore(); alert("✓ Tarefa injetada!");
+        }
+      };
+      box.appendChild(line);
+    });
+  }
+  window.renderizarBibliotecaTarefas = renderizarBibliotecaTarefas;
+
+  window.salvarSetorCustomizadoGerente = () => {
+    const nome = document.getElementById('new-sector-name').value.trim();
+    const icone = document.getElementById('new-sector-icon').value.trim() || "📋";
+    if (!nome) { alert("Digite o nome!"); return; }
+    liveData.setoresCustomizados.push({ id: "custom_" + Date.now(), title: nome, icon: icone, color: "#666" });
+    document.getElementById('new-sector-name').value = "";
+    document.getElementById('new-sector-icon').value = "";
+    salvarFirestore(); alert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
+  };
+
+  function renderizarListaEquipeMestre() {
+    const box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
+    Object.keys(liveData.usuariosSalvos).forEach(n => {
+      const online = liveData.loginAtividade[n] === true;
+      box.innerHTML += `<div class="search-item-line">
+        <div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div>
+        <span style="font-size:10px; font-weight:800; color:${online ? 'var(--italia-green)' : 'var(--text-muted)'}">${online ? 'ONLINE' : 'OFFLINE'}</span>
+      </div>`;
+    });
+  }
+  window.renderizarListaEquipeMestre = renderizarListaEquipeMestre;
+
+  window.toggleChatWindow = () => {
+    const c = document.getElementById('modal-chat');
+    c.style.display = c.style.display === 'flex' ? 'none' : 'flex';
+    if (c.style.display === 'flex') renderMessages();
+  };
+  function renderMessages() {
+    const w = document.getElementById('chat-wall'); w.innerHTML = '';
+    liveData.mensagensChat.forEach(m => {
+      w.innerHTML += `<div class="bubble ${m.user === currentWorker ? 'bb-out' : 'bb-in'}"><div style="font-size:10px; font-weight:800; color:var(--italia-green); margin-bottom:4px;">${m.user}</div>${m.text}</div>`;
+    });
+    w.scrollTop = w.scrollHeight;
+  }
+  window.enviarMensagemChat = () => {
+    const inp = document.getElementById('chat-input');
+    if (!inp.value.trim()) return;
+    liveData.mensagensChat.push({ user: currentWorker, text: inp.value.trim() });
+    inp.value = ''; salvarFirestore(); renderMessages();
+  };
+  window.gerarRelatorioTurnoWhatsApp = (e) => {
+    let msg = '🇮🇹 *FECHAMENTO DE TURNO*\n\n';
+    obterSetoresTotais().forEach(s => {
+      msg += `📌 *${s.title.toUpperCase()}*\n`;
+      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === s.id);
+      if (!arr.length) msg += '- (Nenhuma tarefa)\n';
+      arr.forEach((c, i) => {
+        const obj = liveData.tarefasStatus[s.id + '_' + i];
+        let status = '❌ Pendente';
+        if (obj?.status === 'working') status = '⏳ Com ' + obj.worker;
+        if (obj?.status === 'done') {
+          status = '✅ Feito por ' + obj.worker;
+          if (obj.endTime && obj.startTime) {
+            const dur = Math.round((obj.endTime - obj.startTime) / 1000);
+            const min = Math.floor(dur / 60);
+            const seg = dur % 60;
+            status += ` em ${min}m${seg}s`;
+          }
+        }
+        msg += `- ${c.txt} [${status}]\n`;
+      });
+      msg += '\n';
+    });
+    document.getElementById('whatsapp-link').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+  };
+  window.zerarTurnoCompletoNuvem = () => {
+    if (confirm('Zerar todas as tarefas e repor as 48 iniciais?')) {
+      liveData.tarefasStatus = {};
+      liveData.tarefasCustomizadas = [];
+      popularTarefasPadraoSeVazio();
+      salvarFirestore();
+      window.fecharSubPaineis();
+      montarPainelDOM();
+      alert("Turno zerado com sucesso!");
+    }
+  };
+
+  // ==================== PWA / INSTALAÇÃO ====================
+  function generateIcons() {
+    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M9 12l2 2l4-4"/><circle cx="12" cy="12" r="10"/><path d="M8 8h8M8 16h4"/></svg>`;
+    const canvas = document.createElement('canvas');
+    canvas.width = 512; canvas.height = 512;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#009246';
+    ctx.fillRect(0, 0, 512, 512);
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    img.onload = () => {
+      ctx.drawImage(img, 80, 80, 352, 352);
+      const pngData = canvas.toDataURL('image/png');
+      document.getElementById('icon-192').href = pngData;
+      document.getElementById('apple-icon-192').href = pngData;
+      const manifest = {
+        name: "Staff Check",
+        short_name: "StaffCheck",
+        start_url: window.location.href,
+        display: "standalone",
+        background_color: "#0b0c10",
+        theme_color: "#009246",
+        icons: [
+          { src: pngData, sizes: "192x192", type: "image/png" },
+          { src: pngData, sizes: "512x512", type: "image/png" }
+        ]
+      };
+      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      document.getElementById('manifest-link').href = manifestUrl;
+    };
+    img.src = url;
+  }
+  generateIcons();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register(
+      URL.createObjectURL(new Blob([`
+        self.addEventListener('install', e => self.skipWaiting());
+        self.addEventListener('activate', e => self.clients.claim());
+        self.addEventListener('fetch', e => {});
+      `], { type: 'application/javascript' }))
+    );
+  }
+
+  const installModal = document.getElementById('install-modal');
+  const installYes = document.getElementById('install-yes');
+  const installNo = document.getElementById('install-no');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!localStorage.getItem('staffcheck-install-prompt') && !window.matchMedia('(display-mode: standalone)').matches) {
+      installModal.style.display = 'flex';
+      localStorage.setItem('staffcheck-install-prompt', 'shown');
+    }
+  });
+
+  window.showInstallPrompt = () => {
+    if (deferredPrompt) {
+      installModal.style.display = 'flex';
+    } else {
+      alert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial.");
+    }
+  };
+
+  installYes.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installModal.style.display = 'none';
+    }
+  });
+
+  installNo.addEventListener('click', () => {
+    installModal.style.display = 'none';
+    localStorage.setItem('staffcheck-install-prompt', 'dismissed');
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installModal.style.display = 'none';
+  });
+
+  // ==================== INICIALIZAÇÃO ====================
+  popularTarefasPadraoSeVazio();
+  aplicarDadosRestaurante();
+  atualizarVisibilidadeLogin();
+</script>

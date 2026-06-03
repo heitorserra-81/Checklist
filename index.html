@@ -20,6 +20,11 @@
       --accent: #f0b90b;
       --color-salao: #7b2c3d; --color-bar: #1e3b5a; --color-buffet: #b85c1a; --color-banheiros: #2c6e7a;
       --color-done-mine: #009246; --color-done-other: #4a6b5a; --color-working-mine: #f0b90b; --color-working-other: #2f80ed;
+      --bg-idle: rgba(255,255,255,0.02);
+      --bg-working-mine: rgba(240,185,11,0.06);
+      --bg-working-other: rgba(47,128,237,0.06);
+      --bg-done-mine: rgba(0,146,70,0.08);
+      --bg-done-other: rgba(74,107,90,0.06);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
@@ -94,8 +99,16 @@
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(0,146,70,0.08); cursor: pointer; }
     .sect-cnt { padding: 6px 8px; }
 
-    /* LINHA DA TAREFA REDESENHADA */
-    .row-task { margin: 6px 8px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.06); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; position: relative; }
+    /* LINHA DA TAREFA COM CORES DE FUNDO SUTIS POR STATUS */
+    .row-task {
+      margin: 6px 8px; border-radius: 14px; background: var(--bg-idle);
+      border: 2px solid rgba(255,255,255,0.06); overflow: hidden;
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s; position: relative;
+    }
+    .row-task.working.my-task { background: var(--bg-working-mine); }
+    .row-task.working.other-task { background: var(--bg-working-other); }
+    .row-task.done.mine { background: var(--bg-done-mine); }
+    .row-task.done.other { background: var(--bg-done-other); }
     .row-task.highlighted { border-color: var(--italia-green); box-shadow: 0 0 12px rgba(0,146,70,0.3); }
 
     .row-task-header { display: flex; align-items: center; gap: 12px; padding: 14px 14px 6px 14px; cursor: pointer; }
@@ -110,9 +123,8 @@
 
     .task-resumo { padding: 4px 14px 8px 14px; font-size: 11px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.04); }
 
-    /* Área de status/ações dentro da linha */
-    .task-status-area { padding: 8px 14px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.15); }
-    .task-status-area .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
+    .task-status-area, .concluido-area { padding: 8px 14px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); }
+    .task-status-area .mini-pic, .concluido-area .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .task-status-info { flex: 1; font-size: 11px; color: var(--text-muted); }
     .task-status-info strong { color: #fff; }
     .task-actions-area { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
@@ -121,8 +133,6 @@
     .btn-done-mini { background: var(--italia-green); color: #fff; }
     .cronometro-badge { font-size: 10px; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 8px; color: var(--accent); white-space: nowrap; }
 
-    .concluido-area { padding: 8px 14px; display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.15); }
-    .concluido-area .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .concluido-info { flex: 1; font-size: 11px; color: var(--text-muted); }
     .concluido-selo { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
     .concluido-selo.mine { background: var(--color-done-mine); color: #fff; box-shadow: 0 0 8px rgba(0,146,70,0.5); }
@@ -130,18 +140,23 @@
     .concluido-selo.ontem { background: #5a7a6a; color: #ccc; }
     .task-foto-mini { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; }
 
-    /* Efeito de borda giratória */
-    .row-task.working.my-task { border: 2px solid transparent; z-index: 1; }
+    /* Borda giratória grossa apenas no contorno */
+    .row-task.working.my-task { border: 2px solid transparent; }
     .row-task.working.my-task::before {
       content: '';
       position: absolute;
-      top: -2px; left: -2px; right: -2px; bottom: -2px;
-      border-radius: 14px;
+      top: -4px; left: -4px; right: -4px; bottom: -4px;
+      border-radius: 18px;
+      padding: 4px;
       background: conic-gradient(from var(--angle, 0deg), var(--accent), var(--italia-green), #fff, var(--accent));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
       z-index: -1;
       animation: girar-borda 2s linear infinite;
-      opacity: 0.8;
+      opacity: 1;
     }
+
     @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
     @keyframes girar-borda { to { --angle: 360deg; } }
 
@@ -151,17 +166,21 @@
     .carrossel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 20px; width: 100%; max-width: 500px; scrollbar-width: none; }
     .carrossel-container::-webkit-scrollbar { display: none; }
     .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; min-width: 85%; scroll-snap-align: center; display: flex; flex-direction: column; position: relative; }
-    .task-modal-card-working { border: 2px solid transparent; position: relative; z-index: 1; }
+    .task-modal-card-working { border: 2px solid transparent; position: relative; }
     .task-modal-card-working::before {
       content: '';
       position: absolute;
-      top: -3px; left: -3px; right: -3px; bottom: -3px;
-      border-radius: 24px;
+      top: -5px; left: -5px; right: -5px; bottom: -5px;
+      border-radius: 29px;
+      padding: 5px;
       background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
       z-index: -1;
       animation: girar-borda 3s linear infinite;
-      opacity: 0.6;
-      box-shadow: 0 0 15px rgba(0,146,70,0.5);
+      opacity: 1;
+      box-shadow: 0 0 20px rgba(0,146,70,0.6);
     }
     @keyframes brilho-concluido { 0% { box-shadow: 0 0 10px var(--italia-green); } 50% { box-shadow: 0 0 30px var(--italia-green), 0 0 50px rgba(0,146,70,0.6); } 100% { box-shadow: 0 0 10px var(--italia-green); } }
     .task-modal-card-done { animation: brilho-concluido 2s infinite; border-color: var(--italia-green); }
@@ -510,7 +529,6 @@
     let isSaving = false;
     window._cronometrosLista = {};
 
-    // Variáveis para o recorte (canvas)
     let cropImageFile = null;
     let cropImageElement = null;
     let cropContextVar = "";
@@ -557,12 +575,64 @@
       });
     }
 
-    // ==================== SOM ====================
+    // ==================== SOM E VOZ ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     document.addEventListener('touchstart', function desbloquearAudio() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       document.removeEventListener('touchstart', desbloquearAudio);
     }, { once: true });
+    document.addEventListener('click', function desbloquearAudioClick() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      document.removeEventListener('click', desbloquearAudioClick);
+    }, { once: true });
+
+    // Carregar vozes para síntese de fala
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    }
+
+    function speak(texto, rate = 1.2, pitch = 1.3) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(texto);
+        utterance.lang = 'pt-BR';
+        utterance.rate = rate;
+        utterance.pitch = pitch;
+        utterance.volume = 1;
+        const voices = window.speechSynthesis.getVoices();
+        const ptVoice = voices.find(v => v.lang.startsWith('pt'));
+        if (ptVoice) utterance.voice = ptVoice;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    async function playTone(freq, type, dur, vol=0.1) {
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
+      osc.stop(audioCtx.currentTime + dur);
+    }
+
+    function soundPegarTarefa() {
+      playTone(440, 'sine', 0.1);
+      setTimeout(() => playTone(660, 'sine', 0.15), 100);
+      speak('Parabéns!', 1.1, 1.4);
+    }
+
+    function soundConcluirTarefa() {
+      playTone(523.25, 'triangle', 0.15);
+      setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
+      setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
+      speak('Uhul! Uhul!', 1.3, 1.8);
+    }
 
     function tocarSomMensagem() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -660,7 +730,6 @@
       setTimeout(() => { isSaving = false; }, 500);
     }
 
-    // NOVA: atualiza apenas UMA tarefa
     async function atualizarStatusTarefa(chave, status) {
       isSaving = true;
       liveData.tarefasStatus[chave] = status;
@@ -839,7 +908,7 @@
       return "📋";
     }
 
-    // ==================== DESCRIÇÕES ÚNICAS COMPLETAS ====================
+    // ==================== DESCRIÇÕES ÚNICAS ====================
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Passe pano úmido nos rodapés para remover pó fino.",
       "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
@@ -1330,7 +1399,6 @@
       document.getElementById('task-modal').classList.add('show');
       destacarLinha(chave);
 
-      // Listener para sincronizar dots ao scroll
       container.onscroll = () => {
         const cards = container.children;
         const containerCenter = container.scrollLeft + container.clientWidth / 2;
@@ -1364,9 +1432,7 @@
       const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
       const card = document.createElement('div');
       card.className = 'task-modal-card';
-      if (st.status === 'working') {
-        card.classList.add('task-modal-card-working');
-      }
+      if (st.status === 'working') card.classList.add('task-modal-card-working');
       if (st.status === 'done') card.classList.add('task-modal-card-done');
       card.innerHTML = `
         <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
@@ -1516,7 +1582,7 @@
       });
     };
 
-    // ==================== PAINEL FUNCIONÁRIO (NOVO LAYOUT) ====================
+    // ==================== PAINEL FUNCIONÁRIO ====================
     function montarPainelDOM() {
       const storiesBar = document.getElementById('live-stories-bar');
       const storiesRow = storiesBar.querySelector('.stories-row');
@@ -1574,7 +1640,6 @@
           row.classList.add(st.worker === currentWorker ? 'mine' : 'other');
         }
 
-        // Cabeçalho: ícone + nome
         const icon = getTaskIcon(txt);
         let headerHTML = `
           <div class="row-task-header" onclick="abrirModalTarefa('${chave}')">
@@ -1582,12 +1647,9 @@
             <span class="task-title-text">${txt}</span>
             <div class="dot-status"></div>
           </div>`;
-
-        // Resumo
         let resumeHTML = `<div class="task-resumo">${resume}</div>`;
-
-        // Status/área de ação
         let actionHTML = '';
+
         if (st.status === 'idle') {
           actionHTML = `
             <div class="task-status-area">
@@ -1642,7 +1704,6 @@
         cnt.appendChild(row);
       });
 
-      // Iniciar cronômetros das tarefas em andamento
       arr.forEach((_, idx) => {
         const chave = setor.id + '_' + idx;
         const st = liveData.tarefasStatus[chave] || {};
@@ -1652,7 +1713,6 @@
       if (modalChaveAtual) destacarLinha(modalChaveAtual);
       atualizarProgresso();
 
-      // Swipe entre setores
       let swipeStartX = 0, swipeStartY = 0;
       zone.removeEventListener('touchstart', zone._swipeStart);
       zone.removeEventListener('touchend', zone._swipeEnd);
@@ -1711,17 +1771,6 @@
       const p = t ? Math.round((f/t)*100) : 0;
       document.getElementById('prog-fill-bar').style.width = p+'%'; document.getElementById('prog-txt-pct').innerText = p+'%';
     }
-
-    function playTone(freq, type, dur, vol=0.1) {
-      if (audioCtx.state==='suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+dur); osc.stop(audioCtx.currentTime+dur);
-    }
-    function soundPegarTarefa() { playTone(440,'sine',0.1); setTimeout(()=>playTone(660,'sine',0.15),100); }
-    function soundConcluirTarefa() { playTone(523.25,'triangle',0.15); setTimeout(()=>playTone(659.25,'triangle',0.15),120); setTimeout(()=>playTone(783.99,'triangle',0.3),240); }
 
     const taskAnimations = [
       { keys:["varrer","vassoura","chão"], emoji:"🧹", cssClass:"act-varrer", title:"Varrendo com energia!", desc:"A vassoura não deixa nem poeira para trás." },

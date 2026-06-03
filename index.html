@@ -64,6 +64,16 @@
     .sidebar-user-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
     .sidebar-user-item img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
     .sidebar-user-item span { font-size: 12px; color: var(--text); }
+
+    /* Modal de diálogo personalizado */
+    .custom-dialog-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 14000; display: none; align-items: center; justify-content: center; }
+    .custom-dialog-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; max-width: 300px; width: 90%; }
+    .custom-dialog-card p { color: #fff; font-size: 14px; margin-bottom: 20px; }
+    .custom-dialog-btns { display: flex; gap: 10px; justify-content: center; }
+    .custom-dialog-btns button { padding: 10px 20px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; font-size: 14px; }
+    .dialog-btn-ok { background: var(--italia-green); color: #fff; }
+    .dialog-btn-cancel { background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: #fff; }
+
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 360px; margin: 8px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
     .cam-circle { width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); position: relative; }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -96,13 +106,20 @@
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
     .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.4; }
-    .task-status-line { font-size: 13px; color: var(--text-muted); padding: 8px 16px 16px; display: flex; align-items: center; gap: 10px; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); flex-wrap: wrap; }
+    .task-status-line { font-size: 13px; color: var(--text-muted); padding: 8px 16px 16px; display: flex; align-items: flex-start; gap: 10px; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); }
+    .task-status-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .task-status-center { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .task-status-center .concluido-selo { display: inline-block; background: var(--italia-green); color: #fff; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; width: fit-content; }
+    .task-status-right { margin-left: auto; flex-shrink: 0; }
     .mini-pic { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .task-foto-mini { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; }
     .cronometro-badge { font-size: 10px; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 8px; color: var(--accent); margin-left: auto; }
+    /* Modal carrossel */
     .task-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     .task-modal-overlay.show { display: flex; }
-    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; max-width: 420px; width: 92%; position: relative; display: flex; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s; }
+    .carrossel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 20px; width: 100%; max-width: 500px; scrollbar-width: none; }
+    .carrossel-container::-webkit-scrollbar { display: none; }
+    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; min-width: 85%; scroll-snap-align: center; display: flex; flex-direction: column; position: relative; transition: transform 0.3s ease, opacity 0.3s; }
     .task-modal-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .task-modal-setor-badge { display: block; text-align: center; background: var(--italia-green); color: #fff; padding: 6px 16px; border-radius: 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
     .task-modal-status { font-size: 12px; margin-bottom: 16px; }
@@ -110,7 +127,7 @@
     .task-modal-desc strong { color: var(--italia-green); }
     .task-modal-timer { font-size: 24px; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 16px; font-family: monospace; }
     .task-modal-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-    .task-modal-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+    .task-modal-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; z-index: 2; }
     .task-modal-foto { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border); }
     .nav-interno { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
     .nav-interno button { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 18px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
@@ -250,6 +267,13 @@
     </div>
   </div>
 
+  <div class="custom-dialog-overlay" id="custom-dialog">
+    <div class="custom-dialog-card">
+      <p id="custom-dialog-msg"></p>
+      <div class="custom-dialog-btns" id="custom-dialog-btns"></div>
+    </div>
+  </div>
+
   <div class="crop-overlay" id="crop-overlay">
     <div class="crop-container" id="crop-container">
       <canvas class="crop-canvas" id="crop-canvas" width="280" height="280"></canvas>
@@ -367,20 +391,11 @@
   </div>
 
   <div class="task-modal-overlay" id="task-modal" onclick="if(event.target===this) fecharModalTarefa()">
-    <div class="task-modal-card" id="task-modal-card">
-      <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
-      <div class="task-modal-setor-badge" id="tm-setor"></div>
-      <div class="task-modal-title" id="tm-title"></div>
-      <div class="task-modal-status" id="tm-status"></div>
-      <div class="task-modal-timer" id="tm-timer"></div>
-      <img class="task-modal-foto" id="tm-foto" src="" style="display:none;" />
-      <div class="task-modal-desc" id="tm-desc"></div>
-      <div class="task-modal-actions" id="tm-actions"></div>
-      <div class="nav-interno">
-        <button onclick="navegarTarefa(-1)" aria-label="Anterior">◀</button>
-        <div class="page-dots" id="page-dots"></div>
-        <button onclick="navegarTarefa(1)" aria-label="Próximo">▶</button>
-      </div>
+    <div class="carrossel-container" id="carrossel-container"></div>
+    <div class="nav-interno">
+      <button onclick="navegarTarefa(-1)" aria-label="Anterior">◀</button>
+      <div class="page-dots" id="page-dots"></div>
+      <button onclick="navegarTarefa(1)" aria-label="Próximo">▶</button>
     </div>
   </div>
 
@@ -461,12 +476,39 @@
     let cropNaturalWidth = 0;
     let cropNaturalHeight = 0;
 
-    // Variáveis para o carrossel no modal
-    let carrosselAnimacao = null;
-    let carrosselStartX = 0;
-    let carrosselStartTime = 0;
-    let carrosselLastX = 0;
-    let carrosselOffset = 0;
+    // ==================== CAIXAS DE DIÁLOGO PERSONALIZADAS ====================
+    function customAlert(msg) {
+      return new Promise(resolve => {
+        document.getElementById('custom-dialog-msg').innerText = msg;
+        const btns = document.getElementById('custom-dialog-btns');
+        btns.innerHTML = `<button class="dialog-btn-ok" id="custom-ok">OK</button>`;
+        document.getElementById('custom-dialog').style.display = 'flex';
+        document.getElementById('custom-ok').onclick = () => {
+          document.getElementById('custom-dialog').style.display = 'none';
+          resolve();
+        };
+      });
+    }
+
+    function customConfirm(msg) {
+      return new Promise(resolve => {
+        document.getElementById('custom-dialog-msg').innerText = msg;
+        const btns = document.getElementById('custom-dialog-btns');
+        btns.innerHTML = `
+          <button class="dialog-btn-cancel" id="custom-cancel">Cancelar</button>
+          <button class="dialog-btn-ok" id="custom-ok">Confirmar</button>
+        `;
+        document.getElementById('custom-dialog').style.display = 'flex';
+        document.getElementById('custom-ok').onclick = () => {
+          document.getElementById('custom-dialog').style.display = 'none';
+          resolve(true);
+        };
+        document.getElementById('custom-cancel').onclick = () => {
+          document.getElementById('custom-dialog').style.display = 'none';
+          resolve(false);
+        };
+      });
+    }
 
     // ==================== SINCRONIZAÇÃO EM TEMPO REAL ====================
     onSnapshot(docRef, (docSnap) => {
@@ -515,7 +557,7 @@
         await setDoc(docRef, { ...liveData }, { merge: true });
       } catch (e) {
         console.error(e);
-        alert("Erro ao salvar. Tente novamente.");
+        customAlert("Erro ao salvar. Tente novamente.");
       }
       if (!skipLock) setTimeout(() => { isSaving = false; }, 500);
     }
@@ -526,7 +568,7 @@
         await updateDoc(docRef, { [chave]: valor });
       } catch (e) {
         console.error(e);
-        alert("Erro ao salvar. Tente novamente.");
+        customAlert("Erro ao salvar. Tente novamente.");
       }
       setTimeout(() => { isSaving = false; }, 500);
     }
@@ -718,7 +760,6 @@
       return "📋";
     }
 
-    // ==================== DESCRIÇÕES (mantidas) ====================
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando a sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Confira se não ficaram resíduos sob as mesas.",
       "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
@@ -759,28 +800,7 @@
       "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue todos os botões.\n2. Verifique luzes apagadas.\n3. Anote anomalias.\n4. Confira portas de geladeiras.\n5. Desligue disjuntor.",
       "Fechar o caixa e imprimir relatórios Z": "1. Confira vendas.\n2. Feche o caixa.\n3. Imprima relatório Z.\n4. Guarde.\n5. Confira com o gerente.",
       "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada uma.\n2. Puxe a porta.\n3. Verifique o termostato.\n4. Anote problemas.\n5. Avise manutenção.",
-      "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação.\n5. Verifique luzes apagadas.",
-      "Higienizar as mesas com álcool 70%": "1. Retire objetos da mesa.\n2. Borrife álcool 70%.\n3. Esfregue com microfibra em círculos.\n4. Atenção às bordas.\n5. Deixe secar antes de repor.",
-      "Alinhar mesas e cadeiras perfeitamente": "1. Posicione conforme o mapa.\n2. Use fio para alinhar.\n3. Ajuste cadeiras paralelamente.\n4. Olhe de longe para conferir.\n5. Reposicione mesas tortas.",
-      "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras.\n2. Teste a estabilidade.\n3. Verifique os pés.\n4. Anote as danificadas.\n5. Leve para manutenção.",
-      "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador.\n2. Passe por toda a superfície.\n3. Use bocal de frestas nos cantos.\n4. Esvazie o reservatório.\n5. Guarde o aspirador.",
-      "Limpar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro e lave.\n3. Escove os furos do filtro.\n4. Purgue bicos de vapor.\n5. Lave reservatório e ligue.",
-      "Verificar validade dos xaropes": "1. Pegue cada frasco.\n2. Confira a data.\n3. Descarte vencidos.\n4. Limpe bordas.\n5. Organize por validade.",
-      "Repor azeitonas e snacks do balcão": "1. Retire embalagens vazias.\n2. Lave recipientes.\n3. Abasteça com produtos frescos.\n4. Verifique validade.\n5. Disponha no balcão.",
-      "Organizar a prateleira de destilados": "1. Retire garrafas.\n2. Limpe a prateleira.\n3. Organize por tipo.\n4. Coloque as mais usadas na frente.\n5. Descarte vazias.",
-      "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque gelo.\n3. Verifique moagem uniforme.\n4. Desligue e limpe.\n5. Anote barulho estranho.",
-      "Limpar as cubas de apoio do bar": "1. Retire utensílios.\n2. Lave com água e detergente.\n3. Esfregue os cantos.\n4. Enxágue e seque.\n5. Recoloque utensílios.",
-      "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor.\n2. Veja a luz de funcionamento.\n3. Sinta a temperatura.\n4. Anote se não aquecer.\n5. Desligue após teste.",
-      "Repor pães e torradas no setor de sopas": "1. Verifique estoque.\n2. Reponha cestos com pães frescos.\n3. Troque torradas murchas.\n4. Organize próximo à sopa.\n5. Anote necessidade de reposição.",
-      "Organizar as cubas de sobremesa": "1. Retire cubas vazias.\n2. Lave e seque.\n3. Distribua sobremesas.\n4. Coloque etiquetas.\n5. Verifique temperatura.",
-      "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível.\n4. Se abaixo de 20%, solicite reposição.\n5. Feche a tampa.",
-      "Conferir a limpeza do exaustor": "1. Desligue.\n2. Remova filtros.\n3. Lave com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e teste.",
-      "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Veja se a água escoa.\n3. Observe vazamentos.\n4. Anote problemas.\n5. Avise manutenção.",
-      "Limpar as portas e maçanetas": "1. Umedeça pano com álcool 70%.\n2. Passe em todas as maçanetas.\n3. Limpe ao redor.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
-      "Verificar a iluminação das pias": "1. Acenda as luzes.\n2. Substitua lâmpadas queimadas.\n3. Limpe luminárias.\n4. Verifique intensidade.\n5. Anote faltas.",
-      "Repor o estoque de produtos de limpeza": "1. Verifique o armário.\n2. Liste itens em falta.\n3. Pegue no almoxarifado.\n4. Organize por tipo e validade.\n5. Tranque o armário.",
-      "Secar o piso com rodo após a lavagem": "1. Passe rodo com pano seco.\n2. Comece do fundo para a saída.\n3. Retire excesso de água.\n4. Deixe arejar.\n5. Coloque placa de piso molhado.",
-      "Checar a validade dos produtos de higiene": "1. Pegue cada produto.\n2. Confira a data.\n3. Descarte vencidos.\n4. Anote próximos do vencimento.\n5. Organize por validade."
+      "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação.\n5. Verifique luzes apagadas."
     };
 
     function getDescricaoTarefa(txt) {
@@ -880,10 +900,21 @@
       else document.getElementById('gallery-input').click();
     };
 
-    // ==================== RECORTE COM CANVAS ====================
+    // ==================== RECORTE COM CANVAS (SÓ PARA PERFIL) ====================
     window.prepararRecorte = (event) => {
       const file = event.target.files[0];
       if (!file) return;
+      if (cameraContext === 'tarefa') {
+        // Salvar direto, sem recorte
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          compressImageCanvas(e.target.result, (compressed) => {
+            if (modalChaveAtual) window.concluirTarefaComFoto(compressed);
+          });
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
       cropImageFile = file;
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -960,14 +991,7 @@
         document.getElementById('cam-msg').style.color = "var(--italia-green)";
       } else if (cropContextVar === 'update' && currentWorker && liveData.usuariosSalvos[currentWorker]) {
         liveData.usuariosSalvos[currentWorker].foto = compressed;
-        salvarFirestore(); montarPainelDOM(); alert("Foto atualizada!");
-      } else if (cropContextVar === 'tarefa') {
-        if (modalChaveAtual) {
-          window.concluirTarefaComFoto(compressed);
-        } else {
-          const chave = modalChaveAtual;
-          if (chave) window.concluirTarefaComFoto(compressed);
-        }
+        salvarFirestore(); montarPainelDOM(); customAlert("Foto atualizada!");
       }
       cropImageFile = null;
       cropImageElement = null;
@@ -1020,7 +1044,7 @@
       window.toggleSidebarDropdown();
       if (!currentWorker || currentWorker === "Gerente") return;
       if (tipo === 'nome') {
-        const novo = prompt("Novo nome:").trim();
+        const novo = prompt("Novo nome:")?.trim();
         if (novo) {
           liveData.usuariosSalvos[novo] = liveData.usuariosSalvos[currentWorker];
           liveData.loginAtividade[novo] = liveData.loginAtividade[currentWorker];
@@ -1028,11 +1052,11 @@
           delete liveData.loginAtividade[currentWorker];
           currentWorker = novo;
           document.getElementById('system-context-subline').innerText = "Operador: " + novo.toUpperCase();
-          salvarFirestore(); montarPainelDOM(); alert("Nome alterado!");
+          salvarFirestore(); montarPainelDOM(); customAlert("Nome alterado!");
         }
       } else if (tipo === 'senha') {
-        const senha = prompt("Nova senha (4 dígitos):").trim();
-        if (senha) { liveData.usuariosSalvos[currentWorker].senha = senha; atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); alert("Senha alterada!"); }
+        const senha = prompt("Nova senha (4 dígitos):")?.trim();
+        if (senha) { liveData.usuariosSalvos[currentWorker].senha = senha; atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); customAlert("Senha alterada!"); }
       } else if (tipo === 'foto') {
         window.abrirPhotoPicker('update');
       }
@@ -1044,12 +1068,10 @@
       if (novoNome !== null) liveData.restaurante.nome = novoNome.trim() || "Marchesini Premium";
       const novaFonte = prompt("Fonte (ex: Arial, Georgia, Courier New):", liveData.restaurante.fonte || "Arial");
       if (novaFonte !== null) liveData.restaurante.fonte = novaFonte.trim() || "Arial";
-      const querLogo = confirm("Deseja atualizar a imagem do logo?");
-      if (querLogo) {
-        document.getElementById('logo-input').click();
-      } else {
-        salvarFirestore(); aplicarDadosRestaurante();
-      }
+      customConfirm("Deseja atualizar a imagem do logo?").then(querLogo => {
+        if (querLogo) document.getElementById('logo-input').click();
+        else { salvarFirestore(); aplicarDadosRestaurante(); }
+      });
     };
 
     window.logoAtualizada = (event) => {
@@ -1072,20 +1094,20 @@
         document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
         switchScreen('scr-dashboard-manager');
         window.fecharSubPaineis();
-      } else if (senha !== null) alert("Senha incorreta!");
+      } else if (senha !== null) customAlert("Senha incorreta!");
     };
 
-    window.alterarSenhaMestra = () => {
+    window.alterarSenhaMestra = async () => {
       if (currentWorker !== "Gerente") return;
       const atual = prompt("Digite a senha mestra atual:");
-      if (atual !== liveData.masterPass) { alert("Senha atual incorreta!"); return; }
+      if (atual !== liveData.masterPass) { customAlert("Senha atual incorreta!"); return; }
       const nova = prompt("Digite a nova senha mestra (4 a 8 dígitos):");
-      if (!nova || nova.length < 4) { alert("Senha muito curta. Use pelo menos 4 dígitos."); return; }
+      if (!nova || nova.length < 4) { customAlert("Senha muito curta. Use pelo menos 4 dígitos."); return; }
       const confirmacao = prompt("Confirme a nova senha:");
-      if (nova !== confirmacao) { alert("As senhas não conferem."); return; }
+      if (nova !== confirmacao) { customAlert("As senhas não conferem."); return; }
       liveData.masterPass = nova;
-      salvarFirestore();
-      alert("Senha mestra alterada com sucesso!");
+      await salvarFirestore();
+      customAlert("Senha mestra alterada com sucesso!");
     };
 
     function compressImageCanvas(imgSrc, callback) {
@@ -1129,14 +1151,14 @@
           document.getElementById('system-context-subline').innerText = "PAINEL DA GERÊNCIA";
           switchScreen('scr-dashboard-manager');
           window.fecharSubPaineis();
-        } else alert("Senha Mestra Incorreta!");
+        } else customAlert("Senha Mestra Incorreta!");
         return;
       }
       const nome = document.getElementById('field-user').value.trim();
-      if (!nome || !pass) { alert("Preencha todos os campos!"); return; }
+      if (!nome || !pass) { customAlert("Preencha todos os campos!"); return; }
       let primeiro = false;
       if (liveData.usuariosSalvos[nome]) {
-        if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
+        if (liveData.usuariosSalvos[nome].senha !== pass) { customAlert("Senha Incorreta!"); return; }
       } else {
         primeiro = true;
         liveData.usuariosSalvos[nome] = { senha: pass, foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80" };
@@ -1146,7 +1168,7 @@
       document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
       document.getElementById('opts-before-login').style.display = 'none';
       document.getElementById('opts-after-login').style.display = 'block';
-      if (primeiro) alert("🎉 Perfil criado! Bem-vindo à equipe.");
+      if (primeiro) customAlert("🎉 Perfil criado! Bem-vindo à equipe.");
       await salvarFirestore();
       switchScreen('scr-dashboard-worker');
       montarPainelDOM();
@@ -1182,62 +1204,69 @@
       window._modalSetor = setor;
       window._modalArr = arr;
       window._modalIdx = idx;
-      atualizarConteudoModal(setor, idx, arr);
+
+      const container = document.getElementById('carrossel-container');
+      container.innerHTML = '';
+      arr.forEach((txt, i) => {
+        const card = criarCardModal(setor, i, arr);
+        container.appendChild(card);
+      });
+
       document.getElementById('task-modal').classList.add('show');
       destacarLinha(chave);
 
-      const card = document.getElementById('task-modal-card');
-      card.style.transition = 'none';
-      card.style.transform = 'translateX(0)';
-      carrosselOffset = 0;
+      // Rolar para o card atual
+      setTimeout(() => {
+        const cards = container.children;
+        if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }, 100);
 
-      card.addEventListener('touchstart', onCarrosselStart, { passive: true });
-      card.addEventListener('touchmove', onCarrosselMove, { passive: true });
-      card.addEventListener('touchend', onCarrosselEnd);
+      atualizarDotsModal(idx, arr.length);
     };
 
-    function onCarrosselStart(e) {
-      if (e.touches.length !== 1) return;
-      cancelAnimationFrame(carrosselAnimacao);
-      const card = document.getElementById('task-modal-card');
-      card.style.transition = 'none';
-      carrosselStartX = e.touches[0].clientX;
-      carrosselStartTime = Date.now();
-      carrosselLastX = carrosselStartX;
-    }
-
-    function onCarrosselMove(e) {
-      if (e.touches.length !== 1) return;
-      const currentX = e.touches[0].clientX;
-      carrosselOffset += currentX - carrosselLastX;
-      carrosselLastX = currentX;
-      const card = document.getElementById('task-modal-card');
-      card.style.transform = `translateX(${carrosselOffset}px)`;
-    }
-
-    function onCarrosselEnd(e) {
-      const card = document.getElementById('task-modal-card');
-      const deltaX = carrosselLastX - carrosselStartX;
-      const velocity = Math.abs(deltaX / (Date.now() - carrosselStartTime));
-      const absOff = Math.abs(carrosselOffset);
-
-      if (velocity > 0.5 || absOff > 60) {
-        const direcao = carrosselOffset > 0 ? -1 : 1;
-        const novaIdx = window._modalIdx + direcao;
-        if (novaIdx >= 0 && novaIdx < window._modalArr.length) {
-          window._modalIdx = novaIdx;
-          modalChaveAtual = window._modalSetor.id + '_' + novaIdx;
-          atualizarConteudoModal(window._modalSetor, novaIdx, window._modalArr);
-          destacarLinha(modalChaveAtual);
-        }
+    function criarCardModal(setor, idx, arr) {
+      const txt = arr[idx];
+      const chave = setor.id + '_' + idx;
+      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
+      const card = document.createElement('div');
+      card.className = 'task-modal-card';
+      card.innerHTML = `
+        <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
+        <div class="task-modal-setor-badge">${setor.icon} ${setor.title}</div>
+        <div class="task-modal-title">${txt}</div>
+        <div class="task-modal-status">${obterStatusHTML(st)}</div>
+        <div class="task-modal-timer" id="tm-timer-${chave}"></div>
+        <img class="task-modal-foto" src="${st.foto || ''}" style="display:${st.foto ? 'block' : 'none'};" />
+        <div class="task-modal-desc"><strong>COMO FAZER:</strong>\n${getDescricaoTarefa(txt)}</div>
+        <div class="task-modal-actions">${obterBotoesModal(st, chave)}</div>
+      `;
+      if (st.status === 'working' && st.startTime) {
+        iniciarCronometroVisual(st.startTime, document.getElementById(`tm-timer-${chave}`));
       }
-      card.style.transition = 'transform 0.3s ease';
-      card.style.transform = 'translateX(0)';
-      carrosselOffset = 0;
+      return card;
+    }
 
-      card.removeEventListener('touchstart', onCarrosselStart);
-      card.removeEventListener('touchmove', onCarrosselMove);
-      card.removeEventListener('touchend', onCarrosselEnd);
+    function obterStatusHTML(st) {
+      if (st.status === 'done') {
+        let html = `<span style="color:var(--italia-green);">✅ Concluída por ${st.worker.toUpperCase()}</span>`;
+        if (st.endTime && st.startTime) {
+          const dur = Math.round((st.endTime - st.startTime) / 1000);
+          html += ` - ${Math.floor(dur/60)}m ${dur%60}s`;
+        }
+        return html;
+      } else if (st.status === 'working') {
+        return `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
+      }
+      return `<span style="color:var(--text-muted);">📋 Disponível</span>`;
+    }
+
+    function obterBotoesModal(st, chave) {
+      if (st.status === 'idle') return `<button class="tk-btn btn-take" onclick="gerenciarJobModal('pegar','${chave}')">Pegar Tarefa</button>`;
+      if (st.status === 'working' && st.worker === currentWorker) {
+        return `<button class="tk-btn btn-leave" onclick="gerenciarJobModal('largar','${chave}')">Largar</button>
+                <button class="tk-btn btn-done" onclick="gerenciarJobModal('feito','${chave}')">Feito ✅</button>`;
+      }
+      return '';
     }
 
     window.fecharModalTarefa = () => {
@@ -1245,90 +1274,62 @@
       modalChaveAtual = null;
       pararCronometroVisual();
       document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
-      const card = document.getElementById('task-modal-card');
-      card.removeEventListener('touchstart', onCarrosselStart);
-      card.removeEventListener('touchmove', onCarrosselMove);
-      card.removeEventListener('touchend', onCarrosselEnd);
     };
 
-    function atualizarConteudoModal(setor, idx, arr) {
-      const txt = arr[idx];
-      const chave = setor.id + '_' + idx;
-      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
-      document.getElementById('tm-setor').innerText = setor.icon + ' ' + setor.title;
-      document.getElementById('tm-title').innerText = txt;
-      document.getElementById('tm-desc').innerHTML = `<strong>COMO FAZER:</strong>\n${getDescricaoTarefa(txt)}`;
-
-      const fotoEl = document.getElementById('tm-foto');
-      if (st.foto) { fotoEl.src = st.foto; fotoEl.style.display = 'block'; }
-      else fotoEl.style.display = 'none';
-
-      let statusHTML = '';
-      if (st.status === 'done') {
-        statusHTML = `<span style="color:var(--italia-green);">✅ Concluída por ${st.worker.toUpperCase()}</span>`;
-        if (st.endTime && st.startTime) {
-          const dur = Math.round((st.endTime - st.startTime) / 1000);
-          const min = Math.floor(dur/60), seg = dur%60;
-          statusHTML += ` - ${min}m ${seg}s`;
-        }
-      } else if (st.status === 'working') {
-        statusHTML = `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
-      } else {
-        statusHTML = `<span style="color:var(--text-muted);">📋 Disponível</span>`;
-      }
-      document.getElementById('tm-status').innerHTML = statusHTML;
-
-      if (st.status === 'working' && st.startTime) iniciarCronometroVisual(st.startTime);
-      else { pararCronometroVisual(); document.getElementById('tm-timer').innerText = ''; }
-
-      let botoes = '';
-      if (st.status === 'idle') botoes += `<button class="tk-btn btn-take" onclick="gerenciarJobModal('pegar')">Pegar Tarefa</button>`;
-      else if (st.status === 'working' && st.worker === currentWorker) {
-        botoes += `<button class="tk-btn btn-leave" onclick="gerenciarJobModal('largar')">Largar</button>`;
-        botoes += `<button class="tk-btn btn-done" onclick="gerenciarJobModal('feito')">Feito ✅</button>`;
-      }
-      document.getElementById('tm-actions').innerHTML = botoes;
-
+    function atualizarDotsModal(idx, total) {
       const dotsContainer = document.getElementById('page-dots');
       dotsContainer.innerHTML = '';
-      for (let i = 0; i < arr.length; i++) {
-        const dot = document.createElement('div'); dot.className = 'page-dot' + (i === idx ? ' active' : '');
-        dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; window._modalIdx = i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'page-dot' + (i === idx ? ' active' : '');
+        dot.onclick = () => {
+          const container = document.getElementById('carrossel-container');
+          const cards = container.children;
+          if (cards[i]) cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          window._modalIdx = i;
+          modalChaveAtual = window._modalSetor.id + '_' + i;
+          atualizarDotsModal(i, total);
+          destacarLinha(modalChaveAtual);
+        };
         dotsContainer.appendChild(dot);
       }
     }
 
     window.navegarTarefa = (dir) => {
-      if (!window._modalSetor || !window._modalArr) return;
-      const setor = window._modalSetor; const arr = window._modalArr;
+      const container = document.getElementById('carrossel-container');
+      const cards = container.children;
       let idx = window._modalIdx + dir;
-      if (idx < 0) idx = arr.length-1; if (idx >= arr.length) idx = 0;
-      window._modalIdx = idx; modalChaveAtual = setor.id + '_' + idx;
-      atualizarConteudoModal(setor, idx, arr); destacarLinha(modalChaveAtual);
+      if (idx < 0) idx = cards.length - 1;
+      if (idx >= cards.length) idx = 0;
+      if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      window._modalIdx = idx;
+      modalChaveAtual = window._modalSetor.id + '_' + idx;
+      atualizarDotsModal(idx, cards.length);
+      destacarLinha(modalChaveAtual);
     };
 
-    function iniciarCronometroVisual(startTime) {
-      pararCronometroVisual();
-      const timerEl = document.getElementById('tm-timer');
+    function iniciarCronometroVisual(startTime, el) {
+      if (cronometroInterval) clearInterval(cronometroInterval);
       cronometroInterval = setInterval(() => {
-        const diff = Math.round((Date.now() - startTime)/1000);
-        timerEl.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
+        const diff = Math.round((Date.now() - startTime) / 1000);
+        el.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
       }, 1000);
     }
     function pararCronometroVisual() { if (cronometroInterval) { clearInterval(cronometroInterval); cronometroInterval = null; } }
 
-    window.gerenciarJobModal = (acao) => {
-      if (!modalChaveAtual) return;
+    window.gerenciarJobModal = (acao, chave) => {
+      modalChaveAtual = chave;
       if (acao === 'pegar') {
-        liveData.tarefasStatus[modalChaveAtual] = { status: 'working', worker: currentWorker, startTime: Date.now() };
+        liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker, startTime: Date.now() };
         soundPegarTarefa(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       } else if (acao === 'largar') {
-        liveData.tarefasStatus[modalChaveAtual] = { status: 'idle', worker: '', startTime: null };
+        liveData.tarefasStatus[chave] = { status: 'idle', worker: '', startTime: null };
         pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       } else if (acao === 'feito') {
-        const querFoto = confirm("Deseja anexar uma foto do trabalho concluído?");
-        if (querFoto) { cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
-        else concluirTarefaSemFoto(modalChaveAtual);
+        customConfirm("Deseja anexar uma foto do trabalho concluído?").then(querFoto => {
+          if (querFoto) { cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
+          else concluirTarefaSemFoto(chave);
+        });
       }
       montarPainelDOM();
       if (modalChaveAtual && acao !== 'feito') setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
@@ -1339,26 +1340,24 @@
       const st = liveData.tarefasStatus[modalChaveAtual] || {};
       liveData.tarefasStatus[modalChaveAtual] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now(), foto: fotoBase64 };
       soundConcluirTarefa();
-      const partes = modalChaveAtual.split('_'); const setor = obterSetoresTotais().find(s => s.id === partes[0]);
-      if (setor) { const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt); dispararAnimacao(arr[parseInt(partes[1])] || "", currentWorker); }
-      pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
-      montarPainelDOM(); if (modalChaveAtual) setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
+      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+      montarPainelDOM();
+      if (modalChaveAtual) setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
     };
 
     function concluirTarefaSemFoto(chave) {
       const st = liveData.tarefasStatus[chave] || {};
       liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now() };
       soundConcluirTarefa();
-      const partes = chave.split('_'); const setor = obterSetoresTotais().find(s => s.id === partes[0]);
-      if (setor) { const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt); dispararAnimacao(arr[parseInt(partes[1])] || "", currentWorker); }
-      pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       montarPainelDOM();
     }
 
     window.concluirTarefaLista = (chave) => {
-      const querFoto = confirm("Deseja anexar uma foto do trabalho concluído?");
-      if (querFoto) { modalChaveAtual = chave; cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
-      else { concluirTarefaSemFoto(chave); montarPainelDOM(); }
+      customConfirm("Deseja anexar uma foto do trabalho concluído?").then(querFoto => {
+        if (querFoto) { modalChaveAtual = chave; cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
+        else { concluirTarefaSemFoto(chave); montarPainelDOM(); }
+      });
     };
 
     // ==================== PAINEL FUNCIONÁRIO ====================
@@ -1414,9 +1413,11 @@
         if (st.status === 'working' || st.status === 'done') {
           const workerFoto = liveData.usuariosSalvos[st.worker]?.foto || '';
           if (st.status === 'working') {
-            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} pegou esta tarefa</span>`;
-            if (st.worker === currentWorker) statusLineHTML += `<button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto; margin-left:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button>`;
-            statusLineHTML += `</div>`;
+            statusLineHTML = `<div class="task-status-line">
+              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
+              <div class="task-status-center"><span>${st.worker} pegou esta tarefa</span></div>
+              ${st.worker === currentWorker ? `<div class="task-status-right"><button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button></div>` : ''}
+            </div>`;
           } else {
             let tempo = ''; let dataHora = '';
             if (st.endTime && st.startTime) {
@@ -1426,7 +1427,14 @@
               dataHora = ` ${end.toLocaleDateString()} ${end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
             }
             let fotoMini = st.foto ? `<img class="task-foto-mini" src="${st.foto}" onclick="verFoto('${st.foto}')" />` : '';
-            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} finalizou esta tarefa${tempo}${dataHora}</span>${fotoMini}</div>`;
+            statusLineHTML = `<div class="task-status-line">
+              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
+              <div class="task-status-center">
+                <span class="concluido-selo">CONCLUÍDA</span>
+                <span>${st.worker} finalizou esta tarefa${tempo}${dataHora}</span>
+              </div>
+              <div class="task-status-right">${fotoMini}</div>
+            </div>`;
           }
         }
 
@@ -1534,7 +1542,7 @@
         line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto;padding:6px 12px;">➕ Injetar</button>`;
         line.querySelector('button').onclick = () => {
           const setores = obterSetoresTotais(); let msg = "Escolha o setor (número):\n"; setores.forEach((s,idx) => msg+=`${idx} - ${s.title}\n`);
-          const escolha = prompt(msg); if(escolha!==null && setores[escolha]) { liveData.tarefasCustomizadas.push({cat: setores[escolha].id, txt: item.txt}); salvarFirestore(); alert("✓ Tarefa injetada!"); }
+          const escolha = prompt(msg); if(escolha!==null && setores[escolha]) { liveData.tarefasCustomizadas.push({cat: setores[escolha].id, txt: item.txt}); salvarFirestore(); customAlert("✓ Tarefa injetada!"); }
         };
         box.appendChild(line);
       });
@@ -1543,20 +1551,21 @@
 
     window.salvarSetorCustomizadoGerente = () => {
       const nome = document.getElementById('new-sector-name').value.trim(), icone = document.getElementById('new-sector-icon').value.trim()||"📋";
-      if(!nome) { alert("Digite o nome!"); return; }
+      if(!nome) { customAlert("Digite o nome!"); return; }
       liveData.setoresCustomizados.push({id:"custom_"+Date.now(), title:nome, icon:icone, color:"#666"});
       document.getElementById('new-sector-name').value=""; document.getElementById('new-sector-icon').value="";
-      salvarFirestore(); alert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
+      salvarFirestore(); customAlert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
     };
 
     window.excluirFuncionario = async (nome) => {
-      if(nome==="Gerente"||nome===currentWorker) { alert("Você não pode excluir o gerente ou a si mesmo."); return; }
-      if(confirm(`Tem certeza que deseja excluir o funcionário "${nome}"? Esta ação não pode ser desfeita.`)) {
+      if(nome==="Gerente"||nome===currentWorker) { customAlert("Você não pode excluir o gerente ou a si mesmo."); return; }
+      const confirmado = await customConfirm(`Tem certeza que deseja excluir o funcionário "${nome}"? Esta ação não pode ser desfeita.`);
+      if (confirmado) {
         delete liveData.usuariosSalvos[nome]; delete liveData.loginAtividade[nome];
         Object.keys(liveData.tarefasStatus).forEach(ch => { if(liveData.tarefasStatus[ch].worker===nome && liveData.tarefasStatus[ch].status==='working') liveData.tarefasStatus[ch]={status:'idle',worker:''}; });
         await atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); await atualizarCampo('loginAtividade', liveData.loginAtividade); await atualizarCampo('tarefasStatus', liveData.tarefasStatus);
         renderizarListaEquipeMestre(); if(document.getElementById('scr-dashboard-worker').classList.contains('active')) montarPainelDOM();
-        atualizarSidebarUsuarios(); atualizarBadgeOnline(); alert(`Funcionário "${nome}" excluído.`);
+        atualizarSidebarUsuarios(); atualizarBadgeOnline(); customAlert(`Funcionário "${nome}" excluído.`);
       }
     };
 
@@ -1573,7 +1582,7 @@
     function renderMessages() { const w = document.getElementById('chat-wall'); w.innerHTML=''; liveData.mensagensChat.forEach(m => { w.innerHTML += `<div class="bubble ${m.user===currentWorker?'bb-out':'bb-in'}"><div style="font-size:10px;font-weight:800;color:var(--italia-green);margin-bottom:4px;">${m.user}</div>${m.text}</div>`; }); w.scrollTop=w.scrollHeight; }
     window.enviarMensagemChat = () => { const inp = document.getElementById('chat-input'); if(!inp.value.trim()) return; liveData.mensagensChat.push({user:currentWorker, text:inp.value.trim()}); inp.value=''; atualizarCampo('mensagensChat', liveData.mensagensChat); renderMessages(); };
     window.gerarRelatorioTurnoWhatsApp = (e) => { /* unchanged */ };
-    window.zerarTurnoCompletoNuvem = () => { if(confirm('Zerar todas as tarefas e repor as 48 iniciais?')) { liveData.tarefasStatus={}; liveData.tarefasCustomizadas=[]; popularTarefasPadraoSeVazio(); salvarFirestore(); window.fecharSubPaineis(); montarPainelDOM(); alert("Turno zerado com sucesso!"); } };
+    window.zerarTurnoCompletoNuvem = () => { customConfirm('Zerar todas as tarefas e repor as 48 iniciais?').then(ok => { if(ok) { liveData.tarefasStatus={}; liveData.tarefasCustomizadas=[]; popularTarefasPadraoSeVazio(); salvarFirestore(); window.fecharSubPaineis(); montarPainelDOM(); customAlert("Turno zerado com sucesso!"); } }); };
 
     // ==================== PWA ====================
     function generateIcons() { /* unchanged */ }
@@ -1581,7 +1590,7 @@
     if('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`],{type:'application/javascript'}))); }
     const installModal = document.getElementById('install-modal'); const installYes = document.getElementById('install-yes'); const installNo = document.getElementById('install-no');
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if(!localStorage.getItem('staffcheck-install-prompt') && !window.matchMedia('(display-mode: standalone)').matches) { installModal.style.display='flex'; localStorage.setItem('staffcheck-install-prompt','shown'); } });
-    window.showInstallPrompt = () => { if(deferredPrompt) installModal.style.display='flex'; else alert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial."); };
+    window.showInstallPrompt = () => { if(deferredPrompt) installModal.style.display='flex'; else customAlert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial."); };
     installYes.addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installModal.style.display='none'; } });
     installNo.addEventListener('click', () => { installModal.style.display='none'; localStorage.setItem('staffcheck-install-prompt','dismissed'); });
     window.addEventListener('appinstalled', () => { installModal.style.display='none'; });

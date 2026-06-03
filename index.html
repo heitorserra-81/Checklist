@@ -121,10 +121,10 @@
     .carrossel-container::-webkit-scrollbar { display: none; }
     .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; min-width: 85%; scroll-snap-align: center; display: flex; flex-direction: column; position: relative; transition: transform 0.3s ease, opacity 0.3s; }
     .task-modal-card-working { border: 2px solid transparent; position: relative; z-index: 1; }
-    .task-modal-card-working::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 24px; background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green)); z-index: -1; animation: girar-borda 3s linear infinite; }
+    .task-modal-card-working::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 24px; background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green)); z-index: -1; animation: girar-borda 3s linear infinite; opacity: 0.7; }
     @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
     @keyframes girar-borda { to { --angle: 360deg; } }
-    @keyframes brilho-concluido { 0% { box-shadow: 0 0 8px var(--italia-green); } 50% { box-shadow: 0 0 25px var(--italia-green), 0 0 40px rgba(0,146,70,0.6); } 100% { box-shadow: 0 0 8px var(--italia-green); } }
+    @keyframes brilho-concluido { 0% { box-shadow: 0 0 10px var(--italia-green); } 50% { box-shadow: 0 0 30px var(--italia-green), 0 0 50px rgba(0,146,70,0.6); } 100% { box-shadow: 0 0 10px var(--italia-green); } }
     .task-modal-card-done { animation: brilho-concluido 2s infinite; border-color: var(--italia-green); }
     .task-modal-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .task-modal-setor-badge { display: block; text-align: center; background: var(--italia-green); color: #fff; padding: 6px 16px; border-radius: 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
@@ -472,6 +472,19 @@
     let isSaving = false;
     window._cronometrosLista = {};
 
+    // Variáveis para o recorte (canvas)
+    let cropImageFile = null;
+    let cropImageElement = null;
+    let cropContextVar = "";
+    let cropScale = 1;
+    let cropTranslateX = 0;
+    let cropTranslateY = 0;
+    let cropBaseScale = 1;
+    let cropBaseX = 0;
+    let cropBaseY = 0;
+    let cropNaturalWidth = 0;
+    let cropNaturalHeight = 0;
+
     // ==================== CAIXAS DE DIÁLOGO PERSONALIZADAS ====================
     function customAlert(msg) {
       return new Promise(resolve => {
@@ -775,7 +788,7 @@
       return "📋";
     }
 
-    // ==================== DESCRIÇÕES ÚNICAS (TODAS REVISADAS) ====================
+    // ==================== DESCRIÇÕES ÚNICAS (REVISADAS) ====================
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Passe pano úmido nos rodapés para remover pó fino.",
       "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",

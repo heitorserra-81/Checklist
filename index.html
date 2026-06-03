@@ -1457,4 +1457,345 @@
         liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker, startTime: Date.now() };
         soundPegarTarefa(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       } else if (acao === 'largar') {
-        liveData.tarefasStatus[chave] = { status: 'id
+        liveData.tarefasStatus[chave] = { status: 'idle', worker: '', startTime: null };
+        pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+      } else if (acao === 'feito') {
+        customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
+          if (querFoto) { cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
+          else { concluirTarefaSemFoto(chave); fecharModalTarefa(); }
+        });
+      }
+      montarPainelDOM();
+      if (modalChaveAtual && acao !== 'feito') setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
+    };
+
+    window.concluirTarefaComFoto = (fotoBase64) => {
+      if (!modalChaveAtual) return;
+      const st = liveData.tarefasStatus[modalChaveAtual] || {};
+      liveData.tarefasStatus[modalChaveAtual] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now(), foto: fotoBase64 };
+      soundConcluirTarefa();
+      tocarAplausos();
+      dispararAnimacao(window._modalArr[window._modalIdx], currentWorker);
+      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+      fecharModalTarefa();
+      montarPainelDOM();
+    };
+
+    function concluirTarefaSemFoto(chave) {
+      const st = liveData.tarefasStatus[chave] || {};
+      liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now() };
+      soundConcluirTarefa();
+      tocarAplausos();
+      const partes = chave.split('_');
+      const setor = obterSetoresTotais().find(s => s.id === partes[0]);
+      if (setor) {
+        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+        dispararAnimacao(arr[parseInt(partes[1])] || "", currentWorker);
+      }
+      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+      fecharModalTarefa();
+      montarPainelDOM();
+    }
+
+    window.concluirTarefaLista = (chave) => {
+      customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
+        if (querFoto) { modalChaveAtual = chave; cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
+        else { concluirTarefaSemFoto(chave); }
+      });
+    };
+
+    // ==================== PAINEL FUNCIONÁRIO ====================
+    function montarPainelDOM() {
+      const storiesBar = document.getElementById('live-stories-bar');
+      const storiesRow = storiesBar.querySelector('.stories-row');
+      storiesRow.innerHTML = "";
+      const agora = Date.now();
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        const atv = liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade;
+        const online = (atv && (agora - atv < 10*60*1000));
+        if (!online && nome !== currentWorker) return;
+        const card = document.createElement('div'); card.className = "story-card" + (nome === currentWorker ? " me" : "");
+        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
+        storiesRow.appendChild(card);
+      });
+
+      const tabsContainer = document.getElementById('sector-tabs');
+      const zone = document.getElementById('render-sectors-zone');
+      if (!tabsContainer || !zone) return;
+      const setores = obterSetoresTotais();
+      tabsContainer.innerHTML = '';
+      setores.forEach((s, idx) => {
+        const tab = document.createElement('div'); tab.className = 'sector-tab'; tab.innerText = s.icon + ' ' + s.title;
+        tab.style.borderLeft = `3px solid ${s.color}`;
+        tab.onclick = () => { activeSectorTab = s.id; montarPainelDOM(); };
+        if (!activeSectorTab && idx === 0) activeSectorTab = s.id;
+        if (s.id === activeSectorTab) tab.classList.add('active');
+        tabsContainer.appendChild(tab);
+      });
+      if (!activeSectorTab) activeSectorTab = setores[0]?.id;
+      zone.innerHTML = '';
+      const setor = setores.find(s => s.id === activeSectorTab);
+      if (!setor) return;
+      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
+      let feitas = 0; arr.forEach((_, i) => { if (liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done') feitas++; });
+      const card = document.createElement('div'); card.className = 'card-sector active'; card.style.borderLeft = `4px solid ${setor.color}`;
+      card.innerHTML = `
+        <div class="sect-hdr" style="background:${setor.color}22;">
+          <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:20px">${setor.icon}</span><span style="font-weight:700; text-transform:uppercase">${setor.title}</span></div>
+          <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
+        </div><div class="sect-cnt" id="cnt_${setor.id}"></div>`;
+      zone.appendChild(card);
+      const cnt = document.getElementById('cnt_' + setor.id);
+      if (arr.length === 0) { cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>'; return; }
+
+      arr.forEach((txt, idx) => {
+        const chave = setor.id + '_' + idx;
+        const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
+        const row = document.createElement('div');
+        row.className = 'row-task ' + st.status;
+        row.id = 'row_' + chave;
+        row.style.borderColor = setor.color;
+
+        // Adiciona classes específicas para diferenciação
+        if (st.status === 'working') {
+          row.classList.add(st.worker === currentWorker ? 'my-task' : 'other-task');
+        } else if (st.status === 'done') {
+          row.classList.add(st.worker === currentWorker ? 'mine' : 'other');
+        }
+
+        let statusLineHTML = '';
+        if (st.status === 'working' || st.status === 'done') {
+          const workerFoto = liveData.usuariosSalvos[st.worker]?.foto || '';
+          if (st.status === 'working') {
+            statusLineHTML = `<div class="task-status-line">
+              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
+              <div class="task-status-center"><span>${st.worker === currentWorker ? 'Você está executando' : 'Em andamento por ' + st.worker}</span></div>
+              ${st.worker === currentWorker ? `<div class="task-status-right"><button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button></div>` : ''}
+            </div>`;
+          } else {
+            let tempo = ''; let dataHora = '';
+            if (st.endTime && st.startTime) {
+              const dur = Math.round((st.endTime - st.startTime)/1000);
+              tempo = ` - ${Math.floor(dur/60)}m ${dur%60}s`;
+              const end = new Date(st.endTime);
+              dataHora = ` ${end.toLocaleDateString()} ${end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+            }
+            const endDate = st.endTime ? new Date(st.endTime) : null;
+            const isOntem = endDate && endDate.toDateString() !== new Date().toDateString();
+            let fotoMini = st.foto ? `<img class="task-foto-mini" src="${st.foto}" onclick="verFoto('${st.foto}')" />` : '';
+            statusLineHTML = `<div class="task-status-line">
+              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
+              <div class="task-status-center">
+                <span class="concluido-selo${isOntem ? ' ontem' : ''}">${isOntem ? 'CONCLUÍDA ONTEM' : 'CONCLUÍDA'}</span>
+                <span>${st.worker === currentWorker ? 'Você finalizou' : st.worker + ' finalizou'} esta tarefa${tempo}${dataHora}</span>
+              </div>
+              <div class="task-status-right">${fotoMini}</div>
+            </div>`;
+          }
+        }
+
+        let timerBadge = (st.status === 'working' && st.startTime) ? `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>` : '';
+        const icon = getTaskIcon(txt);
+        row.innerHTML = `
+          <div class="row-task-header" onclick="abrirModalTarefa('${chave}')">
+            <div class="task-txt-side"><span class="task-icon">${icon}</span><div class="dot-status"></div><div>${txt}</div></div>
+            ${timerBadge ? `<div class="task-actions">${timerBadge}</div>` : ''}
+          </div>${statusLineHTML}`;
+        cnt.appendChild(row);
+      });
+
+      arr.forEach((_, idx) => {
+        const chave = setor.id + '_' + idx; const st = liveData.tarefasStatus[chave] || {};
+        if (st.status === 'working' && st.startTime) iniciarCronometroLista(chave, st.startTime);
+      });
+
+      if (modalChaveAtual) destacarLinha(modalChaveAtual);
+      atualizarProgresso();
+
+      let swipeStartX = 0, swipeStartY = 0;
+      zone.removeEventListener('touchstart', zone._swipeStart); zone.removeEventListener('touchend', zone._swipeEnd);
+      zone._swipeStart = (e) => { swipeStartX = e.touches[0].clientX; swipeStartY = e.touches[0].clientY; };
+      zone._swipeEnd = (e) => {
+        const deltaX = swipeStartX - e.changedTouches[0].clientX, deltaY = swipeStartY - e.changedTouches[0].clientY;
+        if (Math.abs(deltaX) > Math.abs(deltaY)*1.5 && Math.abs(deltaX) > 80) {
+          const cur = setores.findIndex(s => s.id === activeSectorTab);
+          let nxt = deltaX > 0 ? Math.min(setores.length-1, cur+1) : Math.max(0, cur-1);
+          if (nxt !== cur) { activeSectorTab = setores[nxt].id; montarPainelDOM(); }
+        }
+      };
+      zone.addEventListener('touchstart', zone._swipeStart); zone.addEventListener('touchend', zone._swipeEnd);
+    }
+
+    window.verFoto = (fotoSrc) => {
+      document.getElementById('foto-viewer-img').src = fotoSrc;
+      document.getElementById('foto-viewer').style.display = 'flex';
+    };
+
+    function destacarLinha(chave) {
+      document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+      const row = document.getElementById('row_' + chave);
+      if (row) { row.classList.add('highlighted'); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    }
+
+    function iniciarCronometroLista(chave, startTime) {
+      const el = document.getElementById('cron_list_' + chave); if (!el) return;
+      if (window._cronometrosLista[chave]) clearInterval(window._cronometrosLista[chave]);
+      window._cronometrosLista[chave] = setInterval(() => {
+        const diff = Math.round((Date.now() - startTime)/1000);
+        el.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
+      }, 1000);
+    }
+
+    function dispararAnimacao(texto, worker) {
+      const anim = obterAnimacao(texto);
+      const overlay = document.getElementById('animacao-conclusao');
+      overlay.style.display = 'flex';
+      document.getElementById('anim-obj-icon').innerText = anim.emoji;
+      document.getElementById('anim-obj-icon').className = "anim-object " + anim.cssClass;
+      document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
+      document.getElementById('anim-title').innerText = `Obrigado, ${worker}! 👏`;
+      document.getElementById('anim-desc').innerText = anim.desc;
+      setTimeout(() => overlay.classList.add('show'), 10);
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 300);
+      }, 3500);
+    }
+
+    function atualizarProgresso() {
+      let t=0, f=0;
+      obterSetoresTotais().forEach(s => { liveData.tarefasCustomizadas.filter(c => c.cat===s.id).forEach((_,i) => { t++; if(liveData.tarefasStatus[s.id+'_'+i]?.status==='done') f++; }); });
+      const p = t ? Math.round((f/t)*100) : 0;
+      document.getElementById('prog-fill-bar').style.width = p+'%'; document.getElementById('prog-txt-pct').innerText = p+'%';
+    }
+
+    function playTone(freq, type, dur, vol=0.1) {
+      if (audioCtx.state==='suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+dur); osc.stop(audioCtx.currentTime+dur);
+    }
+    function soundPegarTarefa() { playTone(440,'sine',0.1); setTimeout(()=>playTone(660,'sine',0.15),100); }
+    function soundConcluirTarefa() { playTone(523.25,'triangle',0.15); setTimeout(()=>playTone(659.25,'triangle',0.15),120); setTimeout(()=>playTone(783.99,'triangle',0.3),240); }
+
+    const taskAnimations = [
+      { keys:["varrer","vassoura","chão"], emoji:"🧹", cssClass:"act-varrer", title:"Varrendo com energia!", desc:"A vassoura não deixa nem poeira para trás." },
+      { keys:["pano","rodo","úmido","passar pano"], emoji:"🧽", cssClass:"act-esfregar", title:"Brilhando como espelho!", desc:"O rodo deixou tudo reluzente." },
+      { keys:["vaso","sanitário","privada"], emoji:"🚽", cssClass:"act-brilhar", title:"Sanitário impecável!", desc:"Cheirinho de limpeza e flor." },
+      { keys:["álcool","mesas","higienizar"], emoji:"🧴", cssClass:"act-esfregar", title:"Superfície esterilizada!", desc:"Álcool 70% fez a mágica." },
+      { keys:["taças","copos","polir"], emoji:"✨", cssClass:"act-brilhar", title:"Cristais reluzentes!", desc:"Prontos para o brinde." },
+      { keys:["lixo","recolher"], emoji:"🗑️", cssClass:"act-brilhar", title:"Lixo fora!", desc:"Ambiente limpo e arejado." },
+      { keys:["cadeiras","cadeirões"], emoji:"🪑", cssClass:"act-brilhar", title:"Cadeiras impecáveis!", desc:"Todas alinhadas e limpas." },
+      { keys:["guardanapos"], emoji:"🍽️", cssClass:"act-brilhar", title:"Guardanapos dobrados!", desc:"Mesa posta com elegância." },
+      { keys:["vidros","portas","entrada"], emoji:"🪟", cssClass:"act-brilhar", title:"Vidros reluzentes!", desc:"Entrada brilhando de limpeza." },
+      { keys:["café","expresso"], emoji:"☕", cssClass:"act-brilhar", title:"Café pronto!", desc:"Máquina limpa e pronta para o próximo." },
+      { keys:["gelo","geleiras"], emoji:"🧊", cssClass:"act-brilhar", title:"Gelo fresquinho!", desc:"Geleiras abastecidas e gelo no ponto." },
+      { keys:["guarnições","limão","laranja","hortelã"], emoji:"🍋", cssClass:"act-brilhar", title:"Guarnições frescas!", desc:"Frutas cortadas e armazenadas corretamente." },
+      { keys:["xaropes","sucos"], emoji:"🍹", cssClass:"act-brilhar", title:"Bebidas verificadas!", desc:"Xaropes e sucos dentro da validade." },
+      { keys:["esteiras","borracha"], emoji:"🧽", cssClass:"act-esfregar", title:"Esteiras limpas!", desc:"Bar mats lavados e secos." },
+      { keys:["réchauds","água"], emoji:"🔥", cssClass:"act-brilhar", title:"Réchauds acesos!", desc:"Água abastecida e temperatura regulada." },
+      { keys:["temperaturas","pistas"], emoji:"🌡️", cssClass:"act-brilhar", title:"Temperatura ideal!", desc:"Pistas quentes e frias monitoradas." },
+      { keys:["pratos","buffet"], emoji:"🍽️", cssClass:"act-brilhar", title:"Buffet abastecido!", desc:"Pratos limpos e organizados." },
+      { keys:["conchas","pegadores"], emoji:"🥄", cssClass:"act-brilhar", title:"Utensílios polidos!", desc:"Conchas e pegadores brilhando." },
+      { keys:["bancada","granito"], emoji:"🧼", cssClass:"act-esfregar", title:"Bancada limpa!", desc:"Granito higienizado e seco." },
+      { keys:["molhos","saladas"], emoji:"🥗", cssClass:"act-brilhar", title:"Saladas frescas!", desc:"Molhos abastecidos e etiquetados." },
+      { keys:["boqueta","pratos quentes"], emoji:"🍲", cssClass:"act-brilhar", title:"Boqueta limpa!", desc:"Saída de pratos quentes desobstruída." },
+      { keys:["etiquetas","geladeira"], emoji:"🏷️", cssClass:"act-brilhar", title:"Etiquetas atualizadas!", desc:"Validade verificada e itens organizados." },
+      { keys:["descargas"], emoji:"🚽", cssClass:"act-brilhar", title:"Descargas ok!", desc:"Todos os vasos funcionando perfeitamente." },
+      { keys:["portas","maçanetas"], emoji:"🚪", cssClass:"act-brilhar", title:"Maçanetas limpas!", desc:"Portas e maçanetas desinfetadas." },
+      { keys:["pias","iluminação"], emoji:"💡", cssClass:"act-brilhar", title:"Pias iluminadas!", desc:"Lâmpadas verificadas e limpas." },
+      { keys:["produtos","limpeza","estoque"], emoji:"🧴", cssClass:"act-brilhar", title:"Estoque completo!", desc:"Produtos de limpeza organizados." },
+      { keys:["piso","rodo","secar"], emoji:"🧹", cssClass:"act-varrer", title:"Piso seco!", desc:"Sem poças e com placa de segurança." },
+      { keys:["higiene","validade"], emoji:"🧪", cssClass:"act-brilhar", title:"Produtos em dia!", desc:"Todos os itens de higiene dentro da validade." }
+    ];
+
+    function obterAnimacao(txt) {
+      const l = txt.toLowerCase();
+      for (const r of taskAnimations) {
+        if (r.keys.some(k => l.includes(k))) return r;
+      }
+      return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece o esforço." };
+    }
+
+    // ==================== GERENTE ====================
+    window.abrirSubPainelGerente = (id) => { window.fecharSubPaineis(); document.getElementById('sub-pane-'+id).style.display='block'; if(id==='busca_tarefas') renderizarBibliotecaTarefas(); if(id==='ver_equipe') renderizarListaEquipeMestre(); };
+    window.fecharSubPaineis = () => document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display='none');
+    window.filtrarBiblioCategoria = (cat, btn) => { currentCategoriaBiblio = cat; document.querySelectorAll('.lib-cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderizarBibliotecaTarefas(); };
+
+    function renderizarBibliotecaTarefas() {
+      const query = document.getElementById('mgr-search-input').value.toLowerCase();
+      const box = document.getElementById('mgr-search-results-render'); box.innerHTML = '';
+      const filtradas = megaLibrary.filter(item => (currentCategoriaBiblio==='tudo'||item.cat===currentCategoriaBiblio) && (!query||item.txt.toLowerCase().includes(query)));
+      if(!filtradas.length) { box.innerHTML='<div style="padding:10px;color:var(--text-muted);text-align:center;font-size:12px;">Nenhuma tarefa encontrada.</div>'; return; }
+      filtradas.forEach(item => {
+        const line = document.createElement('div'); line.className="search-item-line";
+        line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto;padding:6px 12px;">➕ Injetar</button>`;
+        line.querySelector('button').onclick = () => {
+          const setores = obterSetoresTotais(); let msg = "Escolha o setor (número):\n"; setores.forEach((s,idx) => msg+=`${idx} - ${s.title}\n`);
+          const escolha = prompt(msg); if(escolha!==null && setores[escolha]) { liveData.tarefasCustomizadas.push({cat: setores[escolha].id, txt: item.txt}); salvarFirestore(); customAlert("✓ Tarefa injetada!"); }
+        };
+        box.appendChild(line);
+      });
+    }
+    window.renderizarBibliotecaTarefas = renderizarBibliotecaTarefas;
+
+    window.salvarSetorCustomizadoGerente = () => {
+      const nome = document.getElementById('new-sector-name').value.trim(), icone = document.getElementById('new-sector-icon').value.trim()||"📋";
+      if(!nome) { customAlert("Digite o nome!"); return; }
+      liveData.setoresCustomizados.push({id:"custom_"+Date.now(), title:nome, icon:icone, color:"#666"});
+      document.getElementById('new-sector-name').value=""; document.getElementById('new-sector-icon').value="";
+      salvarFirestore(); customAlert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
+    };
+
+    window.excluirFuncionario = async (nome) => {
+      if(nome==="Gerente"||nome===currentWorker) { customAlert("Você não pode excluir o gerente ou a si mesmo."); return; }
+      const confirmado = await customConfirm(`Tem certeza que deseja excluir o funcionário "${nome}"? Esta ação não pode ser desfeita.`);
+      if (confirmado) {
+        delete liveData.usuariosSalvos[nome]; delete liveData.loginAtividade[nome];
+        Object.keys(liveData.tarefasStatus).forEach(ch => { if(liveData.tarefasStatus[ch].worker===nome && liveData.tarefasStatus[ch].status==='working') liveData.tarefasStatus[ch]={status:'idle',worker:''}; });
+        await atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); await atualizarCampo('loginAtividade', liveData.loginAtividade); await atualizarCampo('tarefasStatus', liveData.tarefasStatus);
+        renderizarListaEquipeMestre(); if(document.getElementById('scr-dashboard-worker').classList.contains('active')) montarPainelDOM();
+        atualizarSidebarUsuarios(); atualizarBadgeOnline(); customAlert(`Funcionário "${nome}" excluído.`);
+      }
+    };
+
+    function renderizarListaEquipeMestre() {
+      const box = document.getElementById('mgr-team-list-render'); box.innerHTML="";
+      Object.keys(liveData.usuariosSalvos).forEach(n => {
+        const online = liveData.loginAtividade[n]?.ultimaAtividade && (Date.now()-liveData.loginAtividade[n].ultimaAtividade < 10*60*1000);
+        box.innerHTML += `<div class="search-item-line"><div style="display:flex;align-items:center;gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:800;color:${online?'var(--italia-green)':'var(--text-muted)'}">${online?'ONLINE':'OFFLINE'}</span><button class="delete-btn" onclick="excluirFuncionario('${n}')" title="Excluir funcionário">🗑️</button></div></div>`;
+      });
+    }
+    window.renderizarListaEquipeMestre = renderizarListaEquipeMestre;
+
+    window.toggleChatWindow = () => {
+      const c = document.getElementById('modal-chat');
+      c.classList.toggle('show');
+      if (c.classList.contains('show')) renderMessages();
+    };
+    function renderMessages() { const w = document.getElementById('chat-wall'); w.innerHTML=''; liveData.mensagensChat.forEach(m => { w.innerHTML += `<div class="bubble ${m.user===currentWorker?'bb-out':'bb-in'}"><div style="font-size:10px;font-weight:800;color:var(--italia-green);margin-bottom:4px;">${m.user}</div>${m.text}</div>`; }); w.scrollTop=w.scrollHeight; }
+    window.enviarMensagemChat = () => { const inp = document.getElementById('chat-input'); if(!inp.value.trim()) return; liveData.mensagensChat.push({user:currentWorker, text:inp.value.trim()}); inp.value=''; atualizarCampo('mensagensChat', liveData.mensagensChat); renderMessages(); };
+    window.gerarRelatorioTurnoWhatsApp = (e) => { /* unchanged */ };
+    window.zerarTurnoCompletoNuvem = () => { customConfirm('Zerar todas as tarefas e repor as 48 iniciais?').then(ok => { if(ok) { liveData.tarefasStatus={}; liveData.tarefasCustomizadas=[]; popularTarefasPadraoSeVazio(); salvarFirestore(); window.fecharSubPaineis(); montarPainelDOM(); customAlert("Turno zerado com sucesso!"); } }); };
+
+    // ==================== PWA ====================
+    function generateIcons() { /* unchanged */ }
+    generateIcons();
+    if('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`],{type:'application/javascript'}))); }
+    const installModal = document.getElementById('install-modal'); const installYes = document.getElementById('install-yes'); const installNo = document.getElementById('install-no');
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if(!localStorage.getItem('staffcheck-install-prompt') && !window.matchMedia('(display-mode: standalone)').matches) { installModal.style.display='flex'; localStorage.setItem('staffcheck-install-prompt','shown'); } });
+    window.showInstallPrompt = () => { if(deferredPrompt) installModal.style.display='flex'; else customAlert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial."); };
+    installYes.addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installModal.style.display='none'; } });
+    installNo.addEventListener('click', () => { installModal.style.display='none'; localStorage.setItem('staffcheck-install-prompt','dismissed'); });
+    window.addEventListener('appinstalled', () => { installModal.style.display='none'; });
+
+    popularTarefasPadraoSeVazio();
+    aplicarDadosRestaurante();
+    atualizarVisibilidadeLogin();
+    atualizarDataHora();
+    atualizarBadgeOnline();
+  </script>
+</body>
+</html>

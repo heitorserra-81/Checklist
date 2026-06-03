@@ -407,7 +407,6 @@
     const db = getFirestore(app);
     const docRef = doc(db, 'app', 'liveData');
 
-    // ==================== ESTADO GLOBAL ====================
     let liveData = {
       tarefasStatus: {},
       usuariosSalvos: {},
@@ -429,7 +428,6 @@
     let cronometroInterval = null;
     window._cronometrosLista = {};
 
-    // Variáveis para o recorte (canvas)
     let cropImageFile = null;
     let cropImageElement = null;
     let cropContextVar = "";
@@ -441,6 +439,12 @@
     let cropBaseY = 0;
     let cropNaturalWidth = 0;
     let cropNaturalHeight = 0;
+
+    let carrosselAnimacao = null;
+    let carrosselStartX = 0;
+    let carrosselStartTime = 0;
+    let carrosselLastX = 0;
+    let carrosselOffset = 0;
 
     // ==================== SINCRONIZAÇÃO EM TEMPO REAL ====================
     onSnapshot(docRef, (docSnap) => {
@@ -484,14 +488,10 @@
       try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
     }
 
-    // ==================== SOM DO CHAT (COM DESBLOQUEIO) ====================
+    // ==================== SOM ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Desbloquear áudio no primeiro toque (política de autoplay)
     document.addEventListener('touchstart', function desbloquearAudio() {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       document.removeEventListener('touchstart', desbloquearAudio);
     }, { once: true });
 
@@ -509,14 +509,11 @@
       osc.stop(audioCtx.currentTime + 0.15);
     }
 
-    // ==================== ATUALIZAÇÃO DO RESTAURANTE ====================
     function aplicarDadosRestaurante() {
       document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
       document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
       const logoImg = document.getElementById('brand-logo-img');
-      if (liveData.restaurante.logo) {
-        logoImg.src = liveData.restaurante.logo;
-      }
+      if (liveData.restaurante.logo) logoImg.src = liveData.restaurante.logo;
       const loginLogo = document.getElementById('restaurant-logo-img');
       const loginName = document.getElementById('login-restaurant-name');
       if (liveData.restaurante.logo) {
@@ -535,7 +532,6 @@
       document.getElementById('brand-logo-img').style.display = loginActive ? 'none' : (liveData.restaurante.logo ? 'block' : 'none');
     }
 
-    // ==================== SIDEBAR DE USUÁRIOS ====================
     function atualizarSidebarUsuarios() {
       const container = document.getElementById('sidebar-users-list');
       if (!container) return;
@@ -543,13 +539,10 @@
       Object.keys(liveData.usuariosSalvos).forEach(nome => {
         const foto = liveData.usuariosSalvos[nome].foto || "";
         const online = (liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade && (Date.now() - liveData.loginAtividade[nome].ultimaAtividade < 10*60*1000));
-        container.innerHTML += `<div class="sidebar-user-item">
-          <img src="${foto}" /><span>${nome} ${online ? '🟢' : '⚫'}</span>
-        </div>`;
+        container.innerHTML += `<div class="sidebar-user-item"><img src="${foto}" /><span>${nome} ${online ? '🟢' : '⚫'}</span></div>`;
       });
     }
 
-    // ==================== BIBLIOTECA DE TAREFAS E ÍCONES ====================
     const megaLibrary = [
       { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
       { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
@@ -794,9 +787,7 @@
       cameraContext = contexto;
       document.getElementById('photo-picker').style.display = 'flex';
     };
-    window.fecharPhotoPicker = () => {
-      document.getElementById('photo-picker').style.display = 'none';
-    };
+    window.fecharPhotoPicker = () => { document.getElementById('photo-picker').style.display = 'none'; };
     window.escolherFoto = (tipo) => {
       fecharPhotoPicker();
       cropContextVar = cameraContext;
@@ -804,7 +795,7 @@
       else document.getElementById('gallery-input').click();
     };
 
-    // ==================== RECORTE COM CANVAS (CORRIGIDO) ====================
+    // ==================== RECORTE COM CANVAS ====================
     window.prepararRecorte = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -1008,20 +999,11 @@
     window.alterarSenhaMestra = () => {
       if (currentWorker !== "Gerente") return;
       const atual = prompt("Digite a senha mestra atual:");
-      if (atual !== liveData.masterPass) {
-        alert("Senha atual incorreta!");
-        return;
-      }
+      if (atual !== liveData.masterPass) { alert("Senha atual incorreta!"); return; }
       const nova = prompt("Digite a nova senha mestra (4 a 8 dígitos):");
-      if (!nova || nova.length < 4) {
-        alert("Senha muito curta. Use pelo menos 4 dígitos.");
-        return;
-      }
+      if (!nova || nova.length < 4) { alert("Senha muito curta. Use pelo menos 4 dígitos."); return; }
       const confirmacao = prompt("Confirme a nova senha:");
-      if (nova !== confirmacao) {
-        alert("As senhas não conferem.");
-        return;
-      }
+      if (nova !== confirmacao) { alert("As senhas não conferem."); return; }
       liveData.masterPass = nova;
       salvarFirestore();
       alert("Senha mestra alterada com sucesso!");
@@ -1078,10 +1060,7 @@
         if (liveData.usuariosSalvos[nome].senha !== pass) { alert("Senha Incorreta!"); return; }
       } else {
         primeiro = true;
-        liveData.usuariosSalvos[nome] = {
-          senha: pass,
-          foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80"
-        };
+        liveData.usuariosSalvos[nome] = { senha: pass, foto: base64CamGlobal || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80" };
       }
       currentWorker = nome;
       liveData.loginAtividade[nome] = { ultimaAtividade: Date.now() };
@@ -1092,7 +1071,6 @@
       await salvarFirestore();
       switchScreen('scr-dashboard-worker');
       montarPainelDOM();
-      // Atualiza atividade periodicamente
       setInterval(() => {
         if (currentWorker && currentWorker !== "Gerente" && liveData.loginAtividade[currentWorker]) {
           liveData.loginAtividade[currentWorker].ultimaAtividade = Date.now();
@@ -1113,7 +1091,7 @@
       window.mudarContextoLoginGeral('worker');
     };
 
-    // ==================== MODAL DE TAREFA ====================
+    // ==================== MODAL DE TAREFA COM CARROSSEL ====================
     window.abrirModalTarefa = (chave) => {
       modalChaveAtual = chave;
       const partes = chave.split('_');
@@ -1122,35 +1100,88 @@
       const setor = obterSetoresTotais().find(s => s.id === setorId);
       if (!setor) return;
       const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-      const total = arr.length;
+      window._modalSetor = setor;
+      window._modalArr = arr;
+      window._modalIdx = idx;
       atualizarConteudoModal(setor, idx, arr);
       document.getElementById('task-modal').classList.add('show');
       destacarLinha(chave);
 
       const card = document.getElementById('task-modal-card');
-      let startX = 0;
-      const onTouchStart = (e) => { startX = e.touches[0].clientX; };
-      const onTouchEnd = (e) => {
-        const endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
-        if (Math.abs(diff) > 50) {
-          if (diff > 0) navegarTarefa(1);
-          else navegarTarefa(-1);
-        }
-      };
-      card.removeEventListener('touchstart', card._ts);
-      card.removeEventListener('touchend', card._te);
-      card._ts = onTouchStart;
-      card._te = onTouchEnd;
-      card.addEventListener('touchstart', onTouchStart);
-      card.addEventListener('touchend', onTouchEnd);
+      card.style.transition = 'none';
+      card.style.transform = 'translateX(0)';
+      carrosselOffset = 0;
+
+      card.addEventListener('touchstart', onCarrosselStart, { passive: true });
+      card.addEventListener('touchmove', onCarrosselMove, { passive: true });
+      card.addEventListener('touchend', onCarrosselEnd);
     };
+
+    function onCarrosselStart(e) {
+      if (e.touches.length !== 1) return;
+      cancelAnimationFrame(carrosselAnimacao);
+      const card = document.getElementById('task-modal-card');
+      card.style.transition = 'none';
+      carrosselStartX = e.touches[0].clientX;
+      carrosselStartTime = Date.now();
+      carrosselLastX = carrosselStartX;
+    }
+
+    function onCarrosselMove(e) {
+      if (e.touches.length !== 1) return;
+      const currentX = e.touches[0].clientX;
+      const deltaX = currentX - carrosselLastX;
+      carrosselOffset += deltaX;
+      carrosselLastX = currentX;
+      const card = document.getElementById('task-modal-card');
+      card.style.transform = `translateX(${carrosselOffset}px)`;
+    }
+
+    function onCarrosselEnd(e) {
+      const card = document.getElementById('task-modal-card');
+      const endX = carrosselLastX;
+      const deltaX = endX - carrosselStartX;
+      const deltaTime = Date.now() - carrosselStartTime;
+      const velocity = deltaX / deltaTime;
+      const absVel = Math.abs(velocity);
+      const absOff = Math.abs(carrosselOffset);
+
+      if (absVel > 0.5 || absOff > 60) {
+        const direcao = carrosselOffset > 0 ? -1 : 1;
+        const novaIdx = window._modalIdx + direcao;
+        if (novaIdx >= 0 && novaIdx < window._modalArr.length) {
+          window._modalIdx = novaIdx;
+          modalChaveAtual = window._modalSetor.id + '_' + novaIdx;
+          atualizarConteudoModal(window._modalSetor, novaIdx, window._modalArr);
+          destacarLinha(modalChaveAtual);
+          card.style.transition = 'transform 0.3s ease';
+          card.style.transform = 'translateX(0)';
+          carrosselOffset = 0;
+        } else {
+          card.style.transition = 'transform 0.3s ease';
+          card.style.transform = 'translateX(0)';
+          carrosselOffset = 0;
+        }
+      } else {
+        card.style.transition = 'transform 0.3s ease';
+        card.style.transform = 'translateX(0)';
+        carrosselOffset = 0;
+      }
+
+      card.removeEventListener('touchstart', onCarrosselStart);
+      card.removeEventListener('touchmove', onCarrosselMove);
+      card.removeEventListener('touchend', onCarrosselEnd);
+    }
 
     window.fecharModalTarefa = () => {
       document.getElementById('task-modal').classList.remove('show');
       modalChaveAtual = null;
       pararCronometroVisual();
       document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+      const card = document.getElementById('task-modal-card');
+      card.removeEventListener('touchstart', onCarrosselStart);
+      card.removeEventListener('touchmove', onCarrosselMove);
+      card.removeEventListener('touchend', onCarrosselEnd);
     };
 
     function atualizarConteudoModal(setor, idx, arr) {
@@ -1198,23 +1229,19 @@
       for (let i = 0; i < arr.length; i++) {
         const dot = document.createElement('div');
         dot.className = 'page-dot' + (i === idx ? ' active' : '');
-        dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
+        dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; window._modalIdx = i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
         dotsContainer.appendChild(dot);
       }
-
-      window._modalSetor = setor;
-      window._modalArr = arr;
     }
 
     window.navegarTarefa = (dir) => {
       if (!window._modalSetor || !window._modalArr) return;
       const setor = window._modalSetor;
       const arr = window._modalArr;
-      const partes = modalChaveAtual.split('_');
-      let idx = parseInt(partes[1]);
-      idx += dir;
+      let idx = window._modalIdx + dir;
       if (idx < 0) idx = arr.length - 1;
       if (idx >= arr.length) idx = 0;
+      window._modalIdx = idx;
       modalChaveAtual = setor.id + '_' + idx;
       atualizarConteudoModal(setor, idx, arr);
       destacarLinha(modalChaveAtual);
@@ -1233,10 +1260,7 @@
     }
 
     function pararCronometroVisual() {
-      if (cronometroInterval) {
-        clearInterval(cronometroInterval);
-        cronometroInterval = null;
-      }
+      if (cronometroInterval) { clearInterval(cronometroInterval); cronometroInterval = null; }
     }
 
     window.gerenciarJobModal = (acao) => {
@@ -1249,12 +1273,7 @@
         pararCronometroVisual();
       } else if (acao === 'feito') {
         const st = liveData.tarefasStatus[modalChaveAtual] || {};
-        liveData.tarefasStatus[modalChaveAtual] = {
-          status: 'done',
-          worker: currentWorker,
-          startTime: st.startTime || null,
-          endTime: Date.now()
-        };
+        liveData.tarefasStatus[modalChaveAtual] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now() };
         soundConcluirTarefa();
         const partes = modalChaveAtual.split('_');
         const setorId = partes[0];
@@ -1269,9 +1288,7 @@
       }
       salvarFirestore();
       montarPainelDOM();
-      if (modalChaveAtual) {
-        setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
-      }
+      if (modalChaveAtual) { setTimeout(() => abrirModalTarefa(modalChaveAtual), 200); }
     };
 
     // ==================== PAINEL FUNCIONÁRIO ====================
@@ -1345,7 +1362,6 @@
           if (st.status === 'working') {
             statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} pegou esta tarefa</span>`;
             if (st.worker === currentWorker) {
-              // Botão "Feito ✅" na lista (substitui largar)
               statusLineHTML += `<button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto; margin-left:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button>`;
             }
             statusLineHTML += `</div>`;
@@ -1387,6 +1403,7 @@
       if (modalChaveAtual) destacarLinha(modalChaveAtual);
       atualizarProgresso();
 
+      // Swipe mais rígido para setores
       let swipeStartX = 0, swipeStartY = 0;
       zone.removeEventListener('touchstart', zone._swipeStart);
       zone.removeEventListener('touchend', zone._swipeEnd);
@@ -1394,7 +1411,7 @@
       zone._swipeEnd = (e) => {
         const deltaX = swipeStartX - e.changedTouches[0].clientX;
         const deltaY = swipeStartY - e.changedTouches[0].clientY;
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
+        if (Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && Math.abs(deltaX) > 80) {
           const currentIdx = setores.findIndex(s => s.id === activeSectorTab);
           let newIdx = currentIdx;
           if (deltaX > 0) newIdx = Math.min(setores.length - 1, currentIdx + 1);
@@ -1411,26 +1428,16 @@
 
     window.concluirTarefaLista = (chave) => {
       const st = liveData.tarefasStatus[chave] || {};
-      liveData.tarefasStatus[chave] = {
-        status: 'done',
-        worker: currentWorker,
-        startTime: st.startTime || null,
-        endTime: Date.now()
-      };
+      liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now() };
       salvarFirestore();
       montarPainelDOM();
-      if (modalChaveAtual === chave) {
-        fecharModalTarefa();
-      }
+      if (modalChaveAtual === chave) { fecharModalTarefa(); }
     };
 
     function destacarLinha(chave) {
       document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
       const row = document.getElementById('row_' + chave);
-      if (row) {
-        row.classList.add('highlighted');
-        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (row) { row.classList.add('highlighted'); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     }
 
     function iniciarCronometroLista(chave, startTime) {
@@ -1502,9 +1509,7 @@
 
     function obterAnimacao(texto) {
       const lower = texto.toLowerCase();
-      for (const rule of taskAnimations) {
-        if (rule.keys.some(k => lower.includes(k))) return rule;
-      }
+      for (const rule of taskAnimations) { if (rule.keys.some(k => lower.includes(k))) return rule; }
       return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece." };
     }
 
@@ -1565,10 +1570,7 @@
     };
 
     window.excluirFuncionario = (nome) => {
-      if (nome === "Gerente" || nome === currentWorker) {
-        alert("Você não pode excluir o gerente ou a si mesmo.");
-        return;
-      }
+      if (nome === "Gerente" || nome === currentWorker) { alert("Você não pode excluir o gerente ou a si mesmo."); return; }
       if (confirm(`Tem certeza que deseja excluir o funcionário "${nome}"? Esta ação não pode ser desfeita.`)) {
         delete liveData.usuariosSalvos[nome];
         delete liveData.loginAtividade[nome];
@@ -1579,9 +1581,7 @@
         });
         salvarFirestore();
         renderizarListaEquipeMestre();
-        if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
-          montarPainelDOM();
-        }
+        if (document.getElementById('scr-dashboard-worker').classList.contains('active')) { montarPainelDOM(); }
         atualizarSidebarUsuarios();
         alert(`Funcionário "${nome}" excluído.`);
       }
@@ -1680,14 +1680,10 @@
           display: "standalone",
           background_color: "#0b0c10",
           theme_color: "#009246",
-          icons: [
-            { src: pngData, sizes: "192x192", type: "image/png" },
-            { src: pngData, sizes: "512x512", type: "image/png" }
-          ]
+          icons: [{ src: pngData, sizes: "192x192", type: "image/png" }, { src: pngData, sizes: "512x512", type: "image/png" }]
         };
         const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestUrl = URL.createObjectURL(manifestBlob);
-        document.getElementById('manifest-link').href = manifestUrl;
+        document.getElementById('manifest-link').href = URL.createObjectURL(manifestBlob);
       };
       img.src = url;
     }
@@ -1717,30 +1713,16 @@
     });
 
     window.showInstallPrompt = () => {
-      if (deferredPrompt) {
-        installModal.style.display = 'flex';
-      } else {
-        alert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial.");
-      }
+      if (deferredPrompt) { installModal.style.display = 'flex'; }
+      else { alert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial."); }
     };
 
     installYes.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installModal.style.display = 'none';
-      }
+      if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; installModal.style.display = 'none'; }
     });
 
-    installNo.addEventListener('click', () => {
-      installModal.style.display = 'none';
-      localStorage.setItem('staffcheck-install-prompt', 'dismissed');
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installModal.style.display = 'none';
-    });
+    installNo.addEventListener('click', () => { installModal.style.display = 'none'; localStorage.setItem('staffcheck-install-prompt', 'dismissed'); });
+    window.addEventListener('appinstalled', () => { installModal.style.display = 'none'; });
 
     popularTarefasPadraoSeVazio();
     aplicarDadosRestaurante();

@@ -53,15 +53,16 @@
     .brand-text p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    .stories-container { display: flex; gap: 12px; overflow-x: auto; padding: 6px 4px 10px 4px; margin-bottom: 12px; scrollbar-width: none; border-bottom: 1px solid var(--border); }
-    .stories-container::-webkit-scrollbar { display: none; }
+    .stories-container { display: flex; flex-direction: column; gap: 6px; padding: 6px 4px 10px 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .stories-title { font-size: 10px; color: var(--italia-green); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    .stories-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+    .stories-row::-webkit-scrollbar { display: none; }
     .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 55px; flex-shrink: 0; }
     .story-img-frame { width: 48px; height: 48px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--italia-green), var(--italia-white), var(--italia-red)); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
     .story-card.me .story-img-frame { background: var(--process); }
     .story-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); background: #000; }
     .story-name { font-size: 9px; color: var(--text); font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-    /* Sidebar e overlay */
     .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; display: none; }
     .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; overflow-y: auto; }
     .nav-sidebar.open { right: 0; }
@@ -87,16 +88,18 @@
     .sector-tab { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; cursor: pointer; transition: background 0.2s; }
     .sector-tab.active { background: var(--italia-green); border-color: var(--italia-green); }
 
-    /* Card do setor com cor */
     .card-sector { background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; margin-bottom: 10px; overflow: hidden; display: none; }
     .card-sector.active { display: block; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(0,146,70,0.08); cursor: pointer; }
-    .sect-cnt { background: rgba(0,0,0,0.2); padding: 10px 0; transition: opacity 0.3s; }
+    .sect-cnt { background: rgba(0,0,0,0.2); padding: 10px 0; }
 
     .row-task { display: flex; flex-direction: column; border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s; }
+    .row-task.highlighted { background: rgba(0,146,70,0.15); border: 1px solid var(--italia-green); }
+    @keyframes pulse-border { 0% { box-shadow: 0 0 5px var(--italia-green); } 50% { box-shadow: 0 0 20px var(--italia-green), 0 0 30px var(--italia-green); } 100% { box-shadow: 0 0 5px var(--italia-green); } }
+    .row-task.working .row-task-header { animation: pulse-border 1.5s infinite; border-radius: 12px; margin: 2px; }
     .row-task-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; cursor: pointer; }
     .row-task-header:active { background: rgba(255,255,255,0.02); }
-    .task-txt-side { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e5e5ea; flex: 1; }
+    .task-txt-side { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #e5e5ea; flex: 1; }
     .dot-status { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
@@ -105,31 +108,33 @@
     .mini-pic { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .cronometro-badge { font-size: 10px; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 8px; color: var(--accent); }
 
-    /* MODAL DE TAREFA (animação de subir) */
     .task-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: none; align-items: center; justify-content: center; }
     .task-modal-overlay.show { display: flex; }
-    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; max-width: 420px; width: 92%; transform: translateY(50px); opacity: 0; transition: transform 0.35s ease, opacity 0.25s; }
-    .task-modal-overlay.show .task-modal-card { transform: translateY(0); opacity: 1; }
+    .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; max-width: 420px; width: 92%; position: relative; transition: transform 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28), opacity 0.25s; }
     .task-modal-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .task-modal-setor-badge { display: inline-block; background: var(--italia-green); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
     .task-modal-status { font-size: 12px; margin-bottom: 16px; }
     .task-modal-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; white-space: pre-line; }
     .task-modal-desc strong { color: var(--italia-green); }
     .task-modal-timer { font-size: 24px; font-weight: 800; color: var(--accent); text-align: center; margin-bottom: 16px; font-family: monospace; }
     .task-modal-actions { display: flex; flex-direction: column; gap: 10px; }
     .task-modal-close { position: absolute; top: 10px; right: 15px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+    .nav-arrows { display: flex; justify-content: space-between; margin-bottom: 12px; }
+    .nav-arrows button { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 18px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
+    .swipe-hint { text-align: center; font-size: 10px; color: var(--text-muted); margin-bottom: 8px; }
+    .page-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .page-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: background 0.2s; }
+    .page-dot.active { background: var(--italia-green); }
 
-    /* Botões grandes no modal */
     .tk-btn { padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: 100%; text-align: center; }
     .btn-take { background: rgba(255,255,255,0.06); border: 2px solid var(--italia-green); color: var(--italia-green); }
     .btn-done { background: var(--italia-green); color: #fff; box-shadow: 0 4px 15px rgba(0,146,70,0.4); }
     .btn-leave { background: rgba(255,255,255,0.04); border: 2px solid var(--italia-red); color: var(--italia-red); }
 
-    /* Mini-modal de foto */
     .photo-picker-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 11000; display: none; align-items: center; justify-content: center; }
     .photo-picker-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center; width: 250px; }
     .photo-picker-card button { display: block; width: 100%; margin: 8px 0; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; cursor: pointer; }
 
-    /* Gerente */
     .mgr-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
     .mgr-card-button { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px 14px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
     .mgr-card-icon { font-size: 28px; }
@@ -171,10 +176,7 @@
   </style>
 </head>
 <body>
-  <!-- Overlay do menu lateral (fecha ao clicar) -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebarDropdown()"></div>
-
-  <!-- Modal de Instalação PWA -->
   <div id="install-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center;">
     <div style="background:var(--card); border-radius:24px; padding:30px 24px; max-width:320px; text-align:center; border:2px solid var(--italia-green);">
       <div style="font-size:48px; margin-bottom:16px;">📲</div>
@@ -184,8 +186,6 @@
       <button id="install-no" style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:10px 24px; border-radius:12px; font-weight:600; font-size:13px; width:100%; cursor:pointer;">Agora não</button>
     </div>
   </div>
-
-  <!-- Overlay de conclusão -->
   <div class="super-anim-overlay" id="animacao-conclusao">
     <div class="anim-scene">
       <div class="anim-object" id="anim-obj-icon">✨</div>
@@ -200,12 +200,10 @@
     </div>
   </div>
 
-  <!-- Inputs -->
   <input type="file" accept="image/*" capture="user" style="display:none;" id="camera-input" onchange="fotoCapturadaUniversal(event)">
   <input type="file" accept="image/*" style="display:none;" id="gallery-input" onchange="fotoCapturadaUniversal(event)">
   <input type="file" accept="image/*" style="display:none;" id="logo-input" onchange="logoAtualizada(event)">
 
-  <!-- Logo do Staff Check + crédito -->
   <div class="app-logo-container">
     <div class="app-logo-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8">
@@ -218,7 +216,6 @@
     <span class="app-credits">Desenvolvido por Heitor Serra Neto</span>
   </div>
 
-  <!-- Header -->
   <div class="top-navbar">
     <div class="brand-box">
       <img class="brand-logo" id="brand-logo-img" src="" alt="Logo" style="display:none;">
@@ -230,7 +227,6 @@
     <button class="menu-btn" onclick="toggleSidebarDropdown()">☰</button>
   </div>
 
-  <!-- Sidebar -->
   <div class="nav-sidebar" id="sidebar-dropdown">
     <div class="side-hdr">
       <h3 style="font-size:11px; color:var(--italia-green)">Menu do Sistema</h3>
@@ -250,7 +246,6 @@
     </div>
   </div>
 
-  <!-- Mini‑modal de foto -->
   <div class="photo-picker-overlay" id="photo-picker">
     <div class="photo-picker-card">
       <h3 style="margin-bottom:12px; color:var(--text);">Selecionar foto</h3>
@@ -260,7 +255,6 @@
     </div>
   </div>
 
-  <!-- Tela de Login (com logo do restaurante centralizado) -->
   <div class="app-screen active" id="scr-login-gate">
     <div style="text-align:center; margin-bottom:20px;">
       <img id="restaurant-logo-img" src="" style="max-width:200px; max-height:90px; object-fit:contain; display:none; margin:0 auto;">
@@ -282,9 +276,11 @@
     </div>
   </div>
 
-  <!-- Dashboard do funcionário -->
   <div class="app-screen" id="scr-dashboard-worker">
-    <div class="stories-container" id="live-stories-bar"></div>
+    <div class="stories-container" id="live-stories-bar">
+      <div class="stories-title">Funcionários online</div>
+      <div class="stories-row"></div>
+    </div>
     <div class="progress-container">
       <div class="prog-labels"><span>Progresso do Restaurante</span><span id="prog-txt-pct" style="color:var(--italia-green)">0%</span></div>
       <div class="prog-bg"><div class="prog-bar" id="prog-fill-bar"></div></div>
@@ -296,7 +292,6 @@
     </div>
   </div>
 
-  <!-- Painel do Gerente (mantido completo) -->
   <div class="app-screen" id="scr-dashboard-manager">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; background:rgba(206,43,55,0.08); padding:12px; border-radius:12px; border:1px solid rgba(206,43,55,0.2);">
       <div>
@@ -351,10 +346,17 @@
     </div>
   </div>
 
-  <!-- Modal de Tarefa (saltando) -->
   <div class="task-modal-overlay" id="task-modal" onclick="if(event.target===this) fecharModalTarefa()">
     <div class="task-modal-card">
       <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
+      <div class="nav-arrows">
+        <button onclick="navegarTarefa(-1)" aria-label="Anterior">◀</button>
+        <span style="color:var(--text-muted); font-size:12px;" id="nav-counter">1/5</span>
+        <button onclick="navegarTarefa(1)" aria-label="Próximo">▶</button>
+      </div>
+      <div class="swipe-hint">← deslize para os lados →</div>
+      <div class="page-dots" id="page-dots"></div>
+      <div class="task-modal-setor-badge" id="tm-setor"></div>
       <div class="task-modal-title" id="tm-title"></div>
       <div class="task-modal-status" id="tm-status"></div>
       <div class="task-modal-timer" id="tm-timer"></div>
@@ -363,7 +365,6 @@
     </div>
   </div>
 
-  <!-- Chat e FABs -->
   <div class="chat-container" id="modal-chat">
     <div class="chat-box">
       <div style="display:flex; justify-content:space-between; align-items:center; padding:16px; border-bottom:1px solid var(--border);">
@@ -378,7 +379,7 @@
     </div>
   </div>
 
-  <div class="fab-group">
+  <div class="fab-group" id="fab-group" style="display:flex;">
     <button class="btn-fab fab-chat" onclick="toggleChatWindow()">
       <span style="font-size:20px">💬</span> Chat Interno
     </button>
@@ -387,8 +388,8 @@
     </a>
   </div>
 
-  <!-- SCRIPT COMPLETO -->
-  <script type="module">
+<script type="module">
+    // ==================== CONFIGURAÇÃO FIREBASE ====================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
@@ -407,6 +408,7 @@
     const docRef = doc(db, 'app', 'liveData');
     const MASTER_PASS = "1911";
 
+    // ==================== ESTADO GLOBAL ====================
     let liveData = {
       tarefasStatus: {},
       usuariosSalvos: {},
@@ -425,12 +427,15 @@
     let deferredPrompt;
     let modalChaveAtual = null;
     let cronometroInterval = null;
+    let startX = 0;
+    let endX = 0;
     window._cronometrosLista = {};
 
-    // Sincronização Firestore em tempo real
+    // ==================== SINCRONIZAÇÃO EM TEMPO REAL ====================
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
+        const oldMensagens = liveData.mensagensChat || [];
         liveData.tarefasStatus = data.tarefasStatus || {};
         liveData.usuariosSalvos = data.usuariosSalvos || {};
         liveData.mensagensChat = data.mensagensChat || [];
@@ -438,6 +443,10 @@
         liveData.setoresCustomizados = data.setoresCustomizados || [];
         liveData.loginAtividade = data.loginAtividade || {};
         liveData.restaurante = data.restaurante || { nome: "Marchesini Premium", logo: "", fonte: "Arial" };
+        // Tocar som quando nova mensagem chega (apenas se não for a primeira carga)
+        if (liveData.mensagensChat.length > oldMensagens.length && oldMensagens.length > 0) {
+          tocarSomMensagem();
+        }
       } else {
         popularTarefasPadraoSeVazio();
         salvarFirestore();
@@ -455,13 +464,30 @@
       try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
     }
 
+    // ==================== SOM DO CHAT ====================
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function tocarSomMensagem() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, audioCtx.currentTime);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
+      osc.stop(audioCtx.currentTime + 0.15);
+    }
+
+    // ==================== ATUALIZAÇÃO DA INTERFACE DO RESTAURANTE ====================
     function aplicarDadosRestaurante() {
       document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
       document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
       const logoImg = document.getElementById('brand-logo-img');
       if (liveData.restaurante.logo) {
-        logoImg.src = liveData.restaurante.logo; logoImg.style.display = 'block';
-      } else { logoImg.style.display = 'none'; }
+        logoImg.src = liveData.restaurante.logo;
+      }
       const loginLogo = document.getElementById('restaurant-logo-img');
       const loginName = document.getElementById('login-restaurant-name');
       if (liveData.restaurante.logo) {
@@ -469,9 +495,16 @@
       } else { loginLogo.style.display = 'none'; }
       loginName.innerText = liveData.restaurante.nome || "Marchesini Premium";
       loginName.style.fontFamily = liveData.restaurante.fonte || "Arial";
+      atualizarVisibilidadeLogo();
     }
 
-    // ==================== BIBLIOTECA DE TAREFAS E DESCRIÇÕES ÚNICAS ====================
+    function atualizarVisibilidadeLogo() {
+      const loginActive = document.getElementById('scr-login-gate').classList.contains('active');
+      document.getElementById('brand-logo-img').style.display = loginActive ? 'none' : (liveData.restaurante.logo ? 'block' : 'none');
+      document.getElementById('fab-group').style.display = loginActive ? 'none' : 'flex';
+    }
+
+    // ==================== BIBLIOTECA DE TAREFAS (completa) ====================
     const megaLibrary = [
       { cat: "limpeza", txt: "Varrer todo o chão do salão e rodapés" },
       { cat: "limpeza", txt: "Passar pano úmido com rodo e desinfetante no salão" },
@@ -515,70 +548,68 @@
       { cat: "fechamento", txt: "Trancar portas, janelas e ativar o alarme" }
     ];
 
-    // DESCRIÇÕES INDIVIDUAIS PARA CADA TAREFA (todas diferentes)
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando a sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Confira se não ficaram resíduos sob as mesas.",
-      "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido (não encharcado).\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem por todo o salão.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
-      "Limpar e polir os vidros e portas de entrada": "1. Aplique limpa-vidros ou solução de vinagre e água.\n2. Use pano de microfibra limpo.\n3. Esfregue em círculos e depois finalize com movimentos verticais.\n4. Seque os cantos com papel toalha.\n5. Verifique contra a luz se há marcas ou dedadas.",
-      "Higienizar as cadeiras de bebê (cadeirões)": "1. Desmonte as partes removíveis (bandeja, assento).\n2. Lave com água morna e sabão neutro.\n3. Desinfete com álcool 70% ou spray antibacteriano.\n4. Seque completamente antes de remontar.\n5. Verifique se as travas de segurança estão funcionando.",
-      "Recolher o lixo de todos os setores e levar para fora": "1. Amarre os sacos antes de remover.\n2. Recolha também o lixo dos banheiros e copa.\n3. Leve à área externa de coleta.\n4. Higienize as mãos.\n5. Coloque sacos novos em todas as lixeiras.",
-      "Lavar as lixeiras de todos os setores": "1. Retire os sacos de lixo.\n2. Lave internamente com água e detergente.\n3. Use uma escova para remover resíduos grudados.\n4. Enxágue e seque ao sol, se possível.\n5. Recoloque os sacos limpos.",
-      "Varrer e passar pano no deck/área externa": "1. Varra folhas e poeira com vassoura de jardim.\n2. Se for lavável, jogue água com mangueira.\n3. Esfregue com vassoura de cerdas duras e detergente neutro.\n4. Enxágue bem.\n5. Deixe escorrer e seque com rodo se necessário.",
-      "Montar as mesas (pratos, sousplats e talheres alinhados)": "1. Posicione o sousplat a 2 dedos da borda da mesa.\n2. Coloque o prato principal centralizado sobre o sousplat.\n3. Garfo à esquerda, faca à direita (corte para dentro), colher à direita da faca.\n4. Alinhe todas as peças com régua ou fio.\n5. Verifique se os talheres estão limpos e sem manchas.",
-      "Repor galheteiros (azeite, vinagre, sal e pimenta)": "1. Verifique o nível de cada item.\n2. Limpe os bicos dos galheteiros com pano úmido.\n3. Complete com produtos frescos.\n4. Recoloque na mesa na posição correta.\n5. Confira se as tampas estão bem fechadas.",
-      "Revisar alinhamento de mesas e cadeiras pelo mapa": "1. Consulte o mapa de mesas do salão.\n2. Verifique se cada mesa está na posição exata.\n3. Ajuste as cadeiras paralelamente.\n4. Confira o espaçamento entre mesas (mínimo 1m).\n5. Faça ajustes finos olhando de longe.",
-      "Dobrar e organizar guardanapos de tecido": "1. Passe os guardanapos se necessário.\n2. Dobre em formato de leque ou envelope.\n3. Disponha sobre os pratos ou ao lado.\n4. Armazene os extras em local limpo.\n5. Verifique se não há manchas ou fios puxados.",
-      "Checar iluminação, ar-condicionado e som ambiente": "1. Ligue todas as luzes e substitua lâmpadas queimadas.\n2. Ajuste o termostato para 22-24°C.\n3. Selecione playlist suave e regule o volume.\n4. Caminhe pelo salão para sentir a temperatura e o som.\n5. Anote qualquer irregularidade.",
-      "Organizar a praça de garçons e gavetas dos aparadores": "1. Limpe o aparador com álcool.\n2. Reponha talheres, guardanapos e paliteiros.\n3. Verifique se os porta-copos estão alinhados.\n4. Deixe as gavetas com os utensílios necessários.\n5. Confira a limpeza das gavetas.",
-      "Repor paliteiros e porta-copos": "1. Lave os porta-copos se estiverem sujos.\n2. Encha os paliteiros com palitos novos.\n3. Distribua uniformemente pelas mesas.\n4. Verifique se não há paliteiros vazios.\n5. Guarde o excedente em local seco.",
-      "Limpar os menus e cartas de vinho com álcool": "1. Use pano de microfibra umedecido com álcool 70%.\n2. Passe suavemente sobre capas e páginas.\n3. Deixe secar antes de guardar.\n4. Verifique se há páginas soltas ou rasgadas.\n5. Organize por ordem alfabética.",
-      "Polir todas as taças de vinho e copos de cristal": "1. Lave com água morna e detergente neutro.\n2. Segure pelo cabo e esfregue o bojo com pano macio.\n3. Enxágue em água corrente.\n4. Seque com pano de microfibra até ficarem brilhantes.\n5. Segure contra a luz para verificar manchas.",
-      "Abastecer as geleiras com gelo novo": "1. Esvazie o gelo velho.\n2. Lave o recipiente com água e sabão.\n3. Encha com gelo fresco.\n4. Mantenha a colher de gelo sempre limpa.\n5. Verifique o nível durante o serviço.",
-      "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique as datas de validade.\n2. Retire os produtos vencidos.\n3. Organize por tipo e marca, rótulos para frente.\n4. Anote o que precisa ser reposto.\n5. Limpe as prateleiras se necessário.",
-      "Limpar e purgar a máquina de café expresso": "1. Desligue a máquina.\n2. Remova o porta-filtro e limpe com escova.\n3. Purgue os bicos de vapor com água quente.\n4. Lave o reservatório de água.\n5. Recoloque tudo e ligue novamente.",
-      "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem as frutas e folhas.\n2. Corte o limão e a laranja em rodelas ou gomos.\n3. Separe as folhas de hortelã.\n4. Armazene em recipientes refrigerados.\n5. Reponha durante o serviço conforme necessário.",
-      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes se necessário.\n2. Encha com açúcar, adoçante e mexa.\n3. Feche bem e disponha no balcão do bar.\n4. Verifique a validade dos produtos.\n5. Mantenha os mexedores organizados.",
-      "Checar validade dos xaropes e sucos abertos": "1. Verifique as datas nos frascos.\n2. Descarte os vencidos.\n3. Limpe as bordas dos frascos em uso.\n4. Organize por ordem de validade.\n5. Anote os que precisam ser repostos.",
-      "Lavar as esteiras de borracha (bar mats)": "1. Retire as esteiras do balcão.\n2. Lave com água quente e detergente.\n3. Use escova para esfregar as ranhuras.\n4. Enxágue e deixe secar de cabeça para baixo.\n5. Recoloque quando estiverem secas.",
-      "Ligar os réchauds e abastecer com água": "1. Verifique se o nível de água está correto.\n2. Ligue o réchaud e ajuste a temperatura.\n3. Coloque as cubas sobre eles.\n4. Monitore durante o serviço.\n5. Desligue ao final do expediente.",
-      "Checar as temperaturas das pistas quentes e frias": "1. Use termômetro culinário.\n2. Pista quente deve estar a 65°C.\n3. Pista fria a 5°C.\n4. Ajuste os controles conforme necessário.\n5. Registre as temperaturas em planilha.",
-      "Repor a pilha de pratos limpos no início do buffet": "1. Lave e seque os pratos.\n2. Empilhe sobre o buffet, ao lado das cubas.\n3. Certifique-se de que estão ao alcance dos clientes.\n4. Mantenha uma pilha reserva.\n5. Verifique se há pratos lascados.",
-      "Organizar e polir os pegadores e conchas": "1. Lave com água e sabão.\n2. Seque com pano.\n3. Polir com pano seco para dar brilho.\n4. Disponha em frente a cada cuba.\n5. Verifique se estão em bom estado.",
-      "Higienizar a bancada de granito do buffet": "1. Remova todos os objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.\n5. Recoloque os itens organizados.",
-      "Abastecer os molhos e temperos da ilha de saladas": "1. Verifique as cubas de molho.\n2. Complete com molho fresco.\n3. Reponha colheres de servir.\n4. Confira a etiqueta de identificação.\n5. Verifique a temperatura dos molhos frios.",
-      "Limpar a boqueta de saída de pratos quentes": "1. Desligue o equipamento.\n2. Use escova fina para remover resíduos.\n3. Passe pano úmido.\n4. Ligue novamente.\n5. Verifique o funcionamento.",
-      "Checar validade das etiquetas nas cubas da geladeira": "1. Abra cada cuba.\n2. Verifique data de preparo e validade.\n3. Remova itens vencidos.\n4. Atualize etiquetas se necessário.\n5. Anote irregularidades.",
-      "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel ou água sanitária.\n2. Use escova para esfregar o interior.\n3. Deixe agir por 5 minutos.\n4. Dê descarga.\n5. Limpe a parte externa com pano desinfetante.",
-      "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Limpe em movimentos circulares.\n4. Verifique se não há manchas.\n5. Seque as bordas com papel toalha.",
-      "Repor papel toalha e papel higiênico": "1. Abra os dispensers.\n2. Coloque novos rolos.\n3. Certifique-se de que o papel está saindo corretamente.\n4. Feche o dispenser.\n5. Deixe rolos reserva no armário.",
-      "Repor sabonete líquido nos dispensers": "1. Desenrosque o dispenser.\n2. Encha com sabonete líquido.\n3. Recoloque e bombeie até sair.\n4. Limpe respingos.\n5. Verifique o nível durante o dia.",
-      "Borrifar odorizador de ambiente nos banheiros": "1. Agite o frasco.\n2. Borrife em direção ao centro do ambiente.\n3. Evite contato com superfícies.\n4. Deixe o ambiente fechado por 5 minutos.\n5. Reponha o frasco se estiver vazio.",
-      "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue todos os botões.\n2. Verifique se as luzes de funcionamento estão apagadas.\n3. Anote qualquer anomalia.\n4. Confira se as portas das geladeiras estão fechadas.\n5. Desligue o disjuntor geral se necessário.",
-      "Fechar o caixa e imprimir relatórios Z": "1. Confira as vendas do dia.\n2. Feche o caixa no sistema.\n3. Imprima o relatório Z.\n4. Guarde em local seguro.\n5. Confira o fechamento com o gerente.",
-      "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada geladeira.\n2. Puxe a porta para confirmar o trancamento.\n3. Verifique o termostato.\n4. Anote se há alguma porta com problema.\n5. Avise a manutenção se necessário.",
-      "Trancar portas, janelas e ativar o alarme": "1. Feche todas as janelas.\n2. Tranque as portas com chave.\n3. Digite o código do alarme.\n4. Confirme a ativação.\n5. Verifique se todas as luzes estão apagadas.",
-      // Tarefas adicionais (padrão e customizadas)
-      "Higienizar as mesas com álcool 70%": "1. Retire todos os objetos da mesa.\n2. Borrife álcool 70% diretamente sobre a superfície.\n3. Com um pano de microfibra limpo, esfregue em movimentos circulares.\n4. Dê atenção especial às bordas e cantos.\n5. Deixe secar por 30 segundos antes de recolocar os itens.",
-      "Alinhar mesas e cadeiras perfeitamente": "1. Posicione cada mesa conforme o mapa do salão.\n2. Use uma régua ou fio para alinhar todas as mesas da fileira.\n3. Ajuste as cadeiras paralelamente e com o mesmo espaçamento.\n4. Olhe de longe para conferir a simetria.\n5. Reposicione mesas que estejam tortas.",
-      "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras do salão.\n2. Teste a estabilidade balançando cada uma.\n3. Verifique os pés (se há borrachas faltando).\n4. Anote as cadeiras com defeito.\n5. Leve as cadeiras danificadas para a área de manutenção.",
-      "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador na tomada.\n2. Passe por toda a superfície do tapete, sobrepondo as passadas.\n3. Use o bocal de frestas para os cantos.\n4. Esvazie o reservatório quando estiver cheio.\n5. Enrole o cabo e guarde o aspirador.",
-      "Limpar a máquina de café expresso": "1. Desligue a máquina.\n2. Remova o porta-filtro e lave com água quente.\n3. Use uma escova para limpar os furos do filtro.\n4. Purgue os bicos de vapor.\n5. Lave o reservatório de água.\n6. Recoloque tudo e ligue novamente.",
-      "Verificar validade dos xaropes": "1. Pegue cada frasco de xarope.\n2. Confira a data de validade no rótulo.\n3. Descarte os vencidos.\n4. Limpe as bordas dos frascos em uso.\n5. Organize os frascos por data de validade.",
-      "Repor azeitonas e snacks do balcão": "1. Retire as embalagens vazias.\n2. Lave os recipientes.\n3. Abasteça com azeitonas, amendoins e snacks frescos.\n4. Verifique a validade dos produtos.\n5. Disponha os recipientes no balcão.",
-      "Organizar a prateleira de destilados": "1. Retire todas as garrafas.\n2. Limpe a prateleira com pano úmido.\n3. Organize as garrafas por tipo (vodka, whisky, rum, etc.).\n4. Coloque as garrafas mais usadas na frente.\n5. Verifique se há garrafas vazias para descarte.",
-      "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque alguns cubos de gelo.\n3. Verifique se o gelo está sendo moído uniformemente.\n4. Desligue e limpe o compartimento.\n5. Anote se houver barulho estranho.",
-      "Limpar as cubas de apoio do bar": "1. Retire todos os utensílios das cubas.\n2. Lave as cubas com água e detergente.\n3. Use uma escova para os cantos.\n4. Enxágue e seque com pano.\n5. Recoloque os utensílios.",
-      "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor individualmente.\n2. Verifique se a luz de funcionamento acende.\n3. Sinta a temperatura após 2 minutos.\n4. Anote se algum não estiver aquecendo.\n5. Desligue após o teste.",
-      "Repor pães e torradas no setor de sopas": "1. Verifique o estoque de pães e torradas.\n2. Reponha os cestos com pães frescos.\n3. Torradas devem estar crocantes, troque as murchas.\n4. Organize os itens próximos à sopa.\n5. Anote a necessidade de reposição.",
-      "Organizar as cubas de sobremesa": "1. Retire as cubas vazias.\n2. Lave e seque as cubas.\n3. Distribua as sobremesas conforme o cardápio.\n4. Coloque etiquetas de identificação.\n5. Verifique a temperatura das cubas frias.",
-      "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível atual.\n4. Se estiver abaixo de 20%, solicite reposição.\n5. Feche a tampa de proteção.",
-      "Conferir a limpeza do exaustor": "1. Desligue o exaustor.\n2. Remova os filtros.\n3. Lave os filtros com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e verifique o funcionamento.",
-      "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Verifique se a água escoa completamente.\n3. Observe se há vazamentos.\n4. Anote os vasos com problema.\n5. Avise a manutenção.",
-      "Limpar as portas e maçanetas": "1. Umedeça um pano com álcool 70%.\n2. Passe em todas as maçanetas, dos dois lados.\n3. Limpe também a superfície ao redor da maçaneta.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
-      "Verificar a iluminação das pias": "1. Acenda as luzes sobre as pias.\n2. Substitua lâmpadas queimadas.\n3. Limpe as luminárias com pano seco.\n4. Verifique se a intensidade está adequada.\n5. Anote lâmpadas faltantes.",
-      "Repor o estoque de produtos de limpeza": "1. Verifique o armário de produtos.\n2. Liste os itens em falta (cloro, detergente, etc.).\n3. Pegue os produtos no almoxarifado.\n4. Organize por tipo e validade.\n5. Tranque o armário.",
-      "Secar o piso com rodo após a lavagem": "1. Após lavar o piso, passe o rodo com pano seco.\n2. Comece do fundo para a saída.\n3. Retire o excesso de água.\n4. Deixe o ambiente arejar.\n5. Coloque placa de 'piso molhado' se necessário.",
-      "Checar a validade dos produtos de higiene": "1. Pegue cada produto (sabonete, papel, etc.).\n2. Confira a data de validade.\n3. Descarte os vencidos.\n4. Anote os que estão próximos do vencimento.\n5. Organize por ordem de validade."
+      "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
+      "Limpar e polir os vidros e portas de entrada": "1. Aplique limpa-vidros.\n2. Use pano de microfibra.\n3. Esfregue em círculos.\n4. Seque os cantos.\n5. Verifique contra a luz.",
+      "Higienizar as cadeiras de bebê (cadeirões)": "1. Desmonte as partes removíveis.\n2. Lave com água e sabão.\n3. Desinfete com álcool 70%.\n4. Seque e remonte.\n5. Teste as travas.",
+      "Recolher o lixo de todos os setores e levar para fora": "1. Amarre os sacos.\n2. Recolha de todos os setores.\n3. Leve à área externa.\n4. Higienize as mãos.\n5. Coloque sacos novos.",
+      "Lavar as lixeiras de todos os setores": "1. Retire os sacos.\n2. Lave com água e detergente.\n3. Esfregue com escova.\n4. Enxágue e seque.\n5. Recoloque sacos limpos.",
+      "Varrer e passar pano no deck/área externa": "1. Varra folhas e poeira.\n2. Jogue água com mangueira.\n3. Esfregue com vassoura e detergente.\n4. Enxágue.\n5. Deixe escorrer.",
+      "Montar as mesas (pratos, sousplats e talheres alinhados)": "1. Posicione o sousplat.\n2. Coloque o prato principal.\n3. Garfo à esquerda, faca à direita.\n4. Alinhe todas as peças.\n5. Verifique limpeza.",
+      "Repor galheteiros (azeite, vinagre, sal e pimenta)": "1. Verifique níveis.\n2. Limpe os bicos.\n3. Complete com produtos frescos.\n4. Recoloque na mesa.\n5. Confira as tampas.",
+      "Revisar alinhamento de mesas e cadeiras pelo mapa": "1. Consulte o mapa.\n2. Verifique a posição exata.\n3. Ajuste as cadeiras.\n4. Confira o espaçamento.\n5. Ajuste fino.",
+      "Dobrar e organizar guardanapos de tecido": "1. Passe se necessário.\n2. Dobre no formato desejado.\n3. Disponha sobre os pratos.\n4. Armazene extras.\n5. Verifique manchas.",
+      "Checar iluminação, ar-condicionado e som ambiente": "1. Ligue as luzes.\n2. Ajuste o termostato.\n3. Selecione playlist.\n4. Caminhe pelo salão.\n5. Anote irregularidades.",
+      "Organizar a praça de garçons e gavetas dos aparadores": "1. Limpe com álcool.\n2. Reponha talheres e guardanapos.\n3. Verifique porta-copos.\n4. Deixe gavetas organizadas.\n5. Confira limpeza.",
+      "Repor paliteiros e porta-copos": "1. Lave se necessário.\n2. Encha com palitos.\n3. Distribua uniformemente.\n4. Verifique vazios.\n5. Guarde excedente.",
+      "Limpar os menus e cartas de vinho com álcool": "1. Umedeça pano com álcool 70%.\n2. Passe nas capas e páginas.\n3. Deixe secar.\n4. Verifique páginas soltas.\n5. Organize.",
+      "Polir todas as taças de vinho e copos de cristal": "1. Lave com água morna e detergente.\n2. Esfregue o bojo.\n3. Enxágue.\n4. Seque com microfibra.\n5. Verifique manchas.",
+      "Abastecer as geleiras com gelo novo": "1. Esvazie gelo velho.\n2. Lave o recipiente.\n3. Encha com gelo fresco.\n4. Mantenha colher limpa.\n5. Verifique o nível.",
+      "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique validade.\n2. Retire vencidos.\n3. Organize por tipo.\n4. Anote reposições.\n5. Limpe prateleiras.",
+      "Limpar e purgar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro.\n3. Purgue bicos.\n4. Lave reservatório.\n5. Recoloque e ligue.",
+      "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem.\n2. Corte em rodelas.\n3. Separe folhas.\n4. Armazene em geladeira.\n5. Reponha conforme necessário.",
+      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes.\n2. Encha com os itens.\n3. Feche bem.\n4. Disponha no balcão.\n5. Verifique validade.",
+      "Checar validade dos xaropes e sucos abertos": "1. Verifique datas.\n2. Descarte vencidos.\n3. Limpe bordas.\n4. Organize por validade.\n5. Anote reposições.",
+      "Lavar as esteiras de borracha (bar mats)": "1. Retire do balcão.\n2. Lave com água quente e detergente.\n3. Esfregue ranhuras.\n4. Enxágue.\n5. Seque virado.",
+      "Ligar os réchauds e abastecer com água": "1. Verifique o nível de água.\n2. Ligue e ajuste.\n3. Coloque as cubas.\n4. Monitore.\n5. Desligue ao final.",
+      "Checar as temperaturas das pistas quentes e frias": "1. Use termômetro.\n2. Pista quente: 65°C.\n3. Pista fria: 5°C.\n4. Ajuste controles.\n5. Registre.",
+      "Repor a pilha de pratos limpos no início do buffet": "1. Lave e seque.\n2. Empilhe ao lado das cubas.\n3. Certifique-se do alcance.\n4. Mantenha reserva.\n5. Verifique lascados.",
+      "Organizar e polir os pegadores e conchas": "1. Lave com água e sabão.\n2. Seque.\n3. Polir com pano seco.\n4. Disponha em frente às cubas.\n5. Verifique estado.",
+      "Higienizar a bancada de granito do buffet": "1. Remova objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.\n5. Recoloque itens.",
+      "Abastecer os molhos e temperos da ilha de saladas": "1. Verifique cubas.\n2. Complete com molho fresco.\n3. Reponha colheres.\n4. Confira etiquetas.\n5. Verifique temperatura.",
+      "Limpar a boqueta de saída de pratos quentes": "1. Desligue.\n2. Use escova fina.\n3. Passe pano úmido.\n4. Ligue novamente.\n5. Teste.",
+      "Checar validade das etiquetas nas cubas da geladeira": "1. Abra cada cuba.\n2. Verifique data de preparo.\n3. Remova vencidos.\n4. Atualize etiquetas.\n5. Anote irregularidades.",
+      "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel.\n2. Esfregue com escova.\n3. Deixe agir 5 min.\n4. Dê descarga.\n5. Limpe a parte externa.",
+      "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Movimentos circulares.\n4. Verifique manchas.\n5. Seque bordas.",
+      "Repor papel toalha e papel higiênico": "1. Abra dispensers.\n2. Coloque novos rolos.\n3. Confira saída do papel.\n4. Feche.\n5. Deixe reservas.",
+      "Repor sabonete líquido nos dispensers": "1. Desenrosque.\n2. Encha com sabonete.\n3. Recoloque e bombeie.\n4. Limpe respingos.\n5. Verifique o nível.",
+      "Borrifar odorizador de ambiente nos banheiros": "1. Agite o frasco.\n2. Borrife no centro.\n3. Evite superfícies.\n4. Deixe agir 5 min.\n5. Reponha frasco vazio.",
+      "Desligar todos os equipamentos térmicos e ar-condicionado": "1. Desligue todos os botões.\n2. Verifique luzes apagadas.\n3. Anote anomalias.\n4. Confira portas de geladeiras.\n5. Desligue disjuntor.",
+      "Fechar o caixa e imprimir relatórios Z": "1. Confira vendas.\n2. Feche o caixa.\n3. Imprima relatório Z.\n4. Guarde.\n5. Confira com o gerente.",
+      "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada uma.\n2. Puxe a porta.\n3. Verifique o termostato.\n4. Anote problemas.\n5. Avise manutenção.",
+      "Trancar portas, janelas e ativar o alarme": "1. Feche janelas.\n2. Tranque portas com chave.\n3. Digite código do alarme.\n4. Confirme ativação.\n5. Verifique luzes apagadas.",
+      "Higienizar as mesas com álcool 70%": "1. Retire objetos da mesa.\n2. Borrife álcool 70%.\n3. Esfregue com microfibra em círculos.\n4. Atenção às bordas.\n5. Deixe secar antes de repor.",
+      "Alinhar mesas e cadeiras perfeitamente": "1. Posicione conforme o mapa.\n2. Use fio para alinhar.\n3. Ajuste cadeiras paralelamente.\n4. Olhe de longe para conferir.\n5. Reposicione mesas tortas.",
+      "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras.\n2. Teste a estabilidade.\n3. Verifique os pés.\n4. Anote as danificadas.\n5. Leve para manutenção.",
+      "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador.\n2. Passe por toda a superfície.\n3. Use bocal de frestas nos cantos.\n4. Esvazie o reservatório.\n5. Guarde o aspirador.",
+      "Limpar a máquina de café expresso": "1. Desligue.\n2. Remova porta-filtro e lave.\n3. Escove os furos do filtro.\n4. Purgue bicos de vapor.\n5. Lave reservatório e ligue.",
+      "Verificar validade dos xaropes": "1. Pegue cada frasco.\n2. Confira a data.\n3. Descarte vencidos.\n4. Limpe bordas.\n5. Organize por validade.",
+      "Repor azeitonas e snacks do balcão": "1. Retire embalagens vazias.\n2. Lave recipientes.\n3. Abasteça com produtos frescos.\n4. Verifique validade.\n5. Disponha no balcão.",
+      "Organizar a prateleira de destilados": "1. Retire garrafas.\n2. Limpe a prateleira.\n3. Organize por tipo.\n4. Coloque as mais usadas na frente.\n5. Descarte vazias.",
+      "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque gelo.\n3. Verifique moagem uniforme.\n4. Desligue e limpe.\n5. Anote barulho estranho.",
+      "Limpar as cubas de apoio do bar": "1. Retire utensílios.\n2. Lave com água e detergente.\n3. Esfregue os cantos.\n4. Enxágue e seque.\n5. Recoloque utensílios.",
+      "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor.\n2. Veja a luz de funcionamento.\n3. Sinta a temperatura.\n4. Anote se não aquecer.\n5. Desligue após teste.",
+      "Repor pães e torradas no setor de sopas": "1. Verifique estoque.\n2. Reponha cestos com pães frescos.\n3. Troque torradas murchas.\n4. Organize próximo à sopa.\n5. Anote necessidade de reposição.",
+      "Organizar as cubas de sobremesa": "1. Retire cubas vazias.\n2. Lave e seque.\n3. Distribua sobremesas.\n4. Coloque etiquetas.\n5. Verifique temperatura.",
+      "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível.\n4. Se abaixo de 20%, solicite reposição.\n5. Feche a tampa.",
+      "Conferir a limpeza do exaustor": "1. Desligue.\n2. Remova filtros.\n3. Lave com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e teste.",
+      "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Veja se a água escoa.\n3. Observe vazamentos.\n4. Anote problemas.\n5. Avise manutenção.",
+      "Limpar as portas e maçanetas": "1. Umedeça pano com álcool 70%.\n2. Passe em todas as maçanetas.\n3. Limpe ao redor.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
+      "Verificar a iluminação das pias": "1. Acenda as luzes.\n2. Substitua lâmpadas queimadas.\n3. Limpe luminárias.\n4. Verifique intensidade.\n5. Anote faltas.",
+      "Repor o estoque de produtos de limpeza": "1. Verifique o armário.\n2. Liste itens em falta.\n3. Pegue no almoxarifado.\n4. Organize por tipo e validade.\n5. Tranque o armário.",
+      "Secar o piso com rodo após a lavagem": "1. Passe rodo com pano seco.\n2. Comece do fundo para a saída.\n3. Retire excesso de água.\n4. Deixe arejar.\n5. Coloque placa de piso molhado.",
+      "Checar a validade dos produtos de higiene": "1. Pegue cada produto.\n2. Confira a data.\n3. Descarte vencidos.\n4. Anote próximos do vencimento.\n5. Organize por validade."
     };
 
     function getDescricaoTarefa(txt) {
@@ -590,7 +621,6 @@
       return "Realize a tarefa conforme o procedimento padrão.\nAo final, verifique se o ambiente está limpo e organizado.";
     }
 
-    // ==================== SETORES COM CORES E ÍCONES ====================
     const defaultSectors = [
       { id: "salao", title: "Salão Principal", icon: "🍽️", color: "var(--color-salao)" },
       { id: "bar", title: "Bar & Drinks", icon: "🍸", color: "var(--color-bar)" },
@@ -653,52 +683,14 @@
       }
     }
 
-    // ==================== SONS E ANIMAÇÕES ====================
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioContext();
-    function playTone(freq, type, dur, vol = 0.1) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
-      osc.stop(audioCtx.currentTime + dur);
-    }
-    function soundPegarTarefa() { playTone(440, 'sine', 0.1); setTimeout(() => playTone(660, 'sine', 0.15), 100); }
-    function soundConcluirTarefa() {
-      playTone(523.25, 'triangle', 0.15);
-      setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
-      setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
-    }
-
-    const taskAnimations = [
-      { keys: ["varrer", "vassoura", "chão"], emoji: "🧹", cssClass: "act-varrer", title: "Varrendo com energia!", desc: "A vassoura não deixa nem poeira para trás." },
-      { keys: ["pano", "rodo", "úmido", "passar pano"], emoji: "🧽", cssClass: "act-esfregar", title: "Brilhando como espelho!", desc: "O rodo deixou tudo reluzente." },
-      { keys: ["vaso", "sanitário", "privada"], emoji: "🚽", cssClass: "act-brilhar", title: "Sanitário impecável!", desc: "Cheirinho de limpeza e flor." },
-      { keys: ["álcool", "mesas", "higienizar"], emoji: "🧴", cssClass: "act-esfregar", title: "Superfície esterilizada!", desc: "Álcool 70% fez a mágica." },
-      { keys: ["taças", "copos", "polir"], emoji: "✨", cssClass: "act-brilhar", title: "Cristais reluzentes!", desc: "Prontos para o brinde." },
-      { keys: ["lixo", "recolher"], emoji: "🗑️", cssClass: "act-brilhar", title: "Lixo fora!", desc: "Ambiente limpo e arejado." },
-      { keys: ["cadeiras", "cadeirões"], emoji: "🪑", cssClass: "act-brilhar", title: "Cadeiras impecáveis!", desc: "Todas alinhadas e limpas." },
-      { keys: ["guardanapos"], emoji: "🍽️", cssClass: "act-brilhar", title: "Guardanapos dobrados!", desc: "Mesa posta com elegância." }
-    ];
-
-    function obterAnimacao(texto) {
-      const lower = texto.toLowerCase();
-      for (const rule of taskAnimations) {
-        if (rule.keys.some(k => lower.includes(k))) return rule;
-      }
-      return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece." };
-    }
-
+    // ==================== FUNÇÕES DE INTERFACE ====================
     function obterSetoresTotais() { return [...defaultSectors, ...liveData.setoresCustomizados]; }
     function switchScreen(id) {
       document.querySelectorAll('.app-screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      atualizarVisibilidadeLogo();
     }
 
-    // ==================== FUNÇÕES GLOBAIS ====================
     window.toggleSidebarDropdown = () => {
       const sidebar = document.getElementById('sidebar-dropdown');
       const overlay = document.getElementById('sidebar-overlay');
@@ -898,21 +890,45 @@
       window.mudarContextoLoginGeral('worker');
     };
 
-    // ==================== MODAL DE TAREFA ====================
+    // ==================== MODAL DE TAREFA COM NAVEGAÇÃO ====================
     window.abrirModalTarefa = (chave) => {
       modalChaveAtual = chave;
-      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
       const partes = chave.split('_');
       const setorId = partes[0];
       const idx = parseInt(partes[1]);
       const setor = obterSetoresTotais().find(s => s.id === setorId);
       if (!setor) return;
       const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-      const txt = arr[idx] || "Tarefa";
-      const desc = getDescricaoTarefa(txt);
+      const total = arr.length;
+      atualizarConteudoModal(setor, idx, arr);
+      document.getElementById('task-modal').classList.add('show');
+      destacarLinha(chave);
+      const card = document.querySelector('.task-modal-card');
+      card.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+      card.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) navegarTarefa(1);
+          else navegarTarefa(-1);
+        }
+      });
+    };
 
+    window.fecharModalTarefa = () => {
+      document.getElementById('task-modal').classList.remove('show');
+      modalChaveAtual = null;
+      pararCronometroVisual();
+      document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+    };
+
+    function atualizarConteudoModal(setor, idx, arr) {
+      const txt = arr[idx];
+      const chave = setor.id + '_' + idx;
+      const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
+      document.getElementById('tm-setor').innerText = setor.icon + ' ' + setor.title;
       document.getElementById('tm-title').innerText = txt;
-      document.getElementById('tm-desc').innerHTML = `<strong>COMO FAZER:</strong>\n${desc}`;
+      document.getElementById('tm-desc').innerHTML = `<strong>COMO FAZER:</strong>\n${getDescricaoTarefa(txt)}`;
 
       let statusHTML = '';
       if (st.status === 'done') {
@@ -946,13 +962,32 @@
       }
       document.getElementById('tm-actions').innerHTML = botoes;
 
-      document.getElementById('task-modal').classList.add('show');
-    };
+      document.getElementById('nav-counter').innerText = `${idx+1}/${arr.length}`;
+      const dotsContainer = document.getElementById('page-dots');
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < arr.length; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'page-dot' + (i === idx ? ' active' : '');
+        dot.onclick = () => { modalChaveAtual = setor.id + '_' + i; atualizarConteudoModal(setor, i, arr); destacarLinha(modalChaveAtual); };
+        dotsContainer.appendChild(dot);
+      }
 
-    window.fecharModalTarefa = () => {
-      document.getElementById('task-modal').classList.remove('show');
-      modalChaveAtual = null;
-      pararCronometroVisual();
+      window._modalSetor = setor;
+      window._modalArr = arr;
+    }
+
+    window.navegarTarefa = (dir) => {
+      if (!window._modalSetor || !window._modalArr) return;
+      const setor = window._modalSetor;
+      const arr = window._modalArr;
+      const partes = modalChaveAtual.split('_');
+      let idx = parseInt(partes[1]);
+      idx += dir;
+      if (idx < 0) idx = arr.length - 1;
+      if (idx >= arr.length) idx = 0;
+      modalChaveAtual = setor.id + '_' + idx;
+      atualizarConteudoModal(setor, idx, arr);
+      destacarLinha(modalChaveAtual);
     };
 
     function iniciarCronometroVisual(startTime) {
@@ -1011,7 +1046,18 @@
 
     // ==================== PAINEL FUNCIONÁRIO ====================
     function montarPainelDOM() {
-      renderizarCarrosselStories();
+      const storiesBar = document.getElementById('live-stories-bar');
+      const storiesRow = storiesBar.querySelector('.stories-row');
+      storiesRow.innerHTML = "";
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+        if (!online && nome !== currentWorker) return;
+        const card = document.createElement('div');
+        card.className = "story-card" + (nome === currentWorker ? " me" : "");
+        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
+        storiesRow.appendChild(card);
+      });
+
       const tabsContainer = document.getElementById('sector-tabs');
       const zone = document.getElementById('render-sectors-zone');
       if (!tabsContainer || !zone) return;
@@ -1069,7 +1115,6 @@
             miniHTML += `<span style="font-size:11px; color:var(--italia-green); font-weight:800;">✓ ${st.worker.toUpperCase()}</span>`;
           }
         }
-
         let timerBadge = '';
         if (st.status === 'working' && st.startTime) {
           timerBadge = `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>`;
@@ -1091,7 +1136,19 @@
         }
       });
 
+      if (modalChaveAtual) {
+        destacarLinha(modalChaveAtual);
+      }
       atualizarProgresso();
+    }
+
+    function destacarLinha(chave) {
+      document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
+      const row = document.getElementById('row_' + chave);
+      if (row) {
+        row.classList.add('highlighted');
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     }
 
     function iniciarCronometroLista(chave, startTime) {
@@ -1120,19 +1177,6 @@
       setTimeout(() => { overlay.classList.remove('show'); setTimeout(() => overlay.style.display = 'none', 300); }, 3500);
     }
 
-    function renderizarCarrosselStories() {
-      const bar = document.getElementById('live-stories-bar'); if (!bar) return;
-      bar.innerHTML = "";
-      Object.keys(liveData.usuariosSalvos).forEach(nome => {
-        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
-        if (!online && nome !== currentWorker) return;
-        const card = document.createElement('div');
-        card.className = "story-card" + (nome === currentWorker ? " me" : "");
-        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
-        bar.appendChild(card);
-      });
-    }
-
     function atualizarProgresso() {
       let t = 0, f = 0;
       obterSetoresTotais().forEach(s => {
@@ -1143,6 +1187,33 @@
       const p = t ? Math.round((f / t) * 100) : 0;
       document.getElementById('prog-fill-bar').style.width = p + '%';
       document.getElementById('prog-txt-pct').innerText = p + '%';
+    }
+
+    // ==================== SONS E ANIMAÇÕES ====================
+    function soundPegarTarefa() { playTone(440, 'sine', 0.1); setTimeout(() => playTone(660, 'sine', 0.15), 100); }
+    function soundConcluirTarefa() {
+      playTone(523.25, 'triangle', 0.15);
+      setTimeout(() => playTone(659.25, 'triangle', 0.15), 120);
+      setTimeout(() => playTone(783.99, 'triangle', 0.3), 240);
+    }
+
+    const taskAnimations = [
+      { keys: ["varrer", "vassoura", "chão"], emoji: "🧹", cssClass: "act-varrer", title: "Varrendo com energia!", desc: "A vassoura não deixa nem poeira para trás." },
+      { keys: ["pano", "rodo", "úmido", "passar pano"], emoji: "🧽", cssClass: "act-esfregar", title: "Brilhando como espelho!", desc: "O rodo deixou tudo reluzente." },
+      { keys: ["vaso", "sanitário", "privada"], emoji: "🚽", cssClass: "act-brilhar", title: "Sanitário impecável!", desc: "Cheirinho de limpeza e flor." },
+      { keys: ["álcool", "mesas", "higienizar"], emoji: "🧴", cssClass: "act-esfregar", title: "Superfície esterilizada!", desc: "Álcool 70% fez a mágica." },
+      { keys: ["taças", "copos", "polir"], emoji: "✨", cssClass: "act-brilhar", title: "Cristais reluzentes!", desc: "Prontos para o brinde." },
+      { keys: ["lixo", "recolher"], emoji: "🗑️", cssClass: "act-brilhar", title: "Lixo fora!", desc: "Ambiente limpo e arejado." },
+      { keys: ["cadeiras", "cadeirões"], emoji: "🪑", cssClass: "act-brilhar", title: "Cadeiras impecáveis!", desc: "Todas alinhadas e limpas." },
+      { keys: ["guardanapos"], emoji: "🍽️", cssClass: "act-brilhar", title: "Guardanapos dobrados!", desc: "Mesa posta com elegância." }
+    ];
+
+    function obterAnimacao(texto) {
+      const lower = texto.toLowerCase();
+      for (const rule of taskAnimations) {
+        if (rule.keys.some(k => lower.includes(k))) return rule;
+      }
+      return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece." };
     }
 
     // ==================== GERENTE ====================
@@ -1353,9 +1424,10 @@
       installModal.style.display = 'none';
     });
 
-    // Inicialização
+    // ==================== INICIALIZAÇÃO ====================
     popularTarefasPadraoSeVazio();
     aplicarDadosRestaurante();
+    atualizarVisibilidadeLogo();
   </script>
 </body>
 </html>

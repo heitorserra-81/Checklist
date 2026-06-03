@@ -484,8 +484,17 @@
       try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
     }
 
-    // ==================== SOM DO CHAT ====================
+    // ==================== SOM DO CHAT (COM DESBLOQUEIO) ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Desbloquear áudio no primeiro toque (política de autoplay)
+    document.addEventListener('touchstart', function desbloquearAudio() {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      document.removeEventListener('touchstart', desbloquearAudio);
+    }, { once: true });
+
     function tocarSomMensagem() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();

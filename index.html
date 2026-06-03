@@ -442,23 +442,30 @@
     let cropNaturalWidth = 0;
     let cropNaturalHeight = 0;
 
-    // ==================== SINCRONIZAÇÃO EM TEMPO REAL ====================
+    // ==================== SINCRONIZAÇÃO COM PROTEÇÃO ====================
     onSnapshot(docRef, (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const oldMensagens = liveData.mensagensChat || [];
+        // PROTEÇÃO: só atualiza usuários se o banco realmente tiver algum
+        if (data.usuariosSalvos && Object.keys(data.usuariosSalvos).length > 0) {
+          liveData.usuariosSalvos = data.usuariosSalvos;
+        }
+        if (data.loginAtividade) {
+          liveData.loginAtividade = data.loginAtividade;
+        }
         liveData.tarefasStatus = data.tarefasStatus || {};
-        liveData.usuariosSalvos = data.usuariosSalvos || {};
         liveData.mensagensChat = data.mensagensChat || [];
         liveData.tarefasCustomizadas = data.tarefasCustomizadas || [];
         liveData.setoresCustomizados = data.setoresCustomizados || [];
-        liveData.loginAtividade = data.loginAtividade || {};
         liveData.restaurante = data.restaurante || { nome: "Marchesini Premium", logo: "", fonte: "Arial" };
         liveData.masterPass = data.masterPass || "1911";
         if (liveData.mensagensChat.length > oldMensagens.length && oldMensagens.length > 0) {
           tocarSomMensagem();
         }
       } else {
+        // Banco vazio: cria tarefas padrão, mas não mexe em usuários (inexistentes)
+        liveData.tarefasCustomizadas = [];
         popularTarefasPadraoSeVazio();
         salvarFirestore();
       }
@@ -486,8 +493,6 @@
 
     // ==================== SOM DO CHAT (COM DESBLOQUEIO) ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    // Desbloquear áudio no primeiro toque (política de autoplay)
     document.addEventListener('touchstart', function desbloquearAudio() {
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();

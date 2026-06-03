@@ -94,15 +94,11 @@
     .card-sector.active { display: block; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(0,146,70,0.08); cursor: pointer; }
     .sect-cnt { padding: 6px 8px; }
-    .row-task { margin: 6px 8px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.06); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; position: relative; }
+    .row-task { margin: 6px 8px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.06); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
     .row-task.highlighted { border-color: var(--italia-green); box-shadow: 0 0 12px rgba(0,146,70,0.3); }
-    /* Borda giratória multicolorida */
-    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-    @keyframes girar-borda { to { --angle: 360deg; } }
-    @keyframes pulse-border { 0% { box-shadow: 0 0 5px var(--italia-green); } 50% { box-shadow: 0 0 20px var(--italia-green), 0 0 30px var(--italia-green); } 100% { box-shadow: 0 0 5px var(--italia-green); } }
-    .row-task.working { animation: pulse-border 1.5s infinite; background: padding-box, border-box; background-origin: padding-box, border-box; background-clip: padding-box, border-box; border: 2px solid transparent; position: relative; z-index: 1; }
-    .row-task.working::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 14px; background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green)); z-index: -1; animation: girar-borda 3s linear infinite; }
-    .row-task-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px; cursor: pointer; position: relative; z-index: 1; }
+    @keyframes pulse-border { 0% { box-shadow: 0 0 3px var(--italia-green); } 50% { box-shadow: 0 0 8px var(--italia-green); } 100% { box-shadow: 0 0 3px var(--italia-green); } }
+    .row-task.working { animation: pulse-border 2s infinite; }
+    .row-task-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px; cursor: pointer; }
     .row-task-header:active { background: rgba(255,255,255,0.02); }
     .task-txt-side { display: flex; align-items: center; gap: 12px; font-size: 16px; color: #e5e5ea; flex: 1; }
     .task-icon { font-size: 22px; flex-shrink: 0; }
@@ -124,6 +120,12 @@
     .carrossel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 20px; width: 100%; max-width: 500px; scrollbar-width: none; }
     .carrossel-container::-webkit-scrollbar { display: none; }
     .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; min-width: 85%; scroll-snap-align: center; display: flex; flex-direction: column; position: relative; transition: transform 0.3s ease, opacity 0.3s; }
+    .task-modal-card-working { border: 2px solid transparent; position: relative; z-index: 1; }
+    .task-modal-card-working::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 24px; background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green)); z-index: -1; animation: girar-borda 3s linear infinite; }
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+    @keyframes girar-borda { to { --angle: 360deg; } }
+    @keyframes brilho-concluido { 0% { box-shadow: 0 0 8px var(--italia-green); } 50% { box-shadow: 0 0 25px var(--italia-green), 0 0 40px rgba(0,146,70,0.6); } 100% { box-shadow: 0 0 8px var(--italia-green); } }
+    .task-modal-card-done { animation: brilho-concluido 2s infinite; border-color: var(--italia-green); }
     .task-modal-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
     .task-modal-setor-badge { display: block; text-align: center; background: var(--italia-green); color: #fff; padding: 6px 16px; border-radius: 16px; font-size: 16px; font-weight: 700; margin-bottom: 12px; }
     .task-modal-status { font-size: 12px; margin-bottom: 16px; }
@@ -484,13 +486,13 @@
       });
     }
 
-    function customConfirm(msg) {
+    function customConfirm(msg, btnOk = 'Sim', btnCancel = 'Não') {
       return new Promise(resolve => {
         document.getElementById('custom-dialog-msg').innerText = msg;
         const btns = document.getElementById('custom-dialog-btns');
         btns.innerHTML = `
-          <button class="dialog-btn-cancel" id="custom-cancel">Cancelar</button>
-          <button class="dialog-btn-ok" id="custom-ok">Confirmar</button>
+          <button class="dialog-btn-cancel" id="custom-cancel">${btnCancel}</button>
+          <button class="dialog-btn-ok" id="custom-ok">${btnOk}</button>
         `;
         document.getElementById('custom-dialog').style.display = 'flex';
         document.getElementById('custom-ok').onclick = () => {
@@ -773,7 +775,7 @@
       return "📋";
     }
 
-    // ==================== DESCRIÇÕES ÚNICAS (PESQUISADAS) ====================
+    // ==================== DESCRIÇÕES ÚNICAS (TODAS REVISADAS) ====================
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Passe pano úmido nos rodapés para remover pó fino.",
       "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
@@ -1263,6 +1265,8 @@
       const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
       const card = document.createElement('div');
       card.className = 'task-modal-card';
+      if (st.status === 'working') card.classList.add('task-modal-card-working');
+      if (st.status === 'done') card.classList.add('task-modal-card-done');
       card.innerHTML = `
         <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
         <div class="task-modal-setor-badge">${setor.icon} ${setor.title}</div>
@@ -1359,7 +1363,7 @@
         liveData.tarefasStatus[chave] = { status: 'idle', worker: '', startTime: null };
         pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       } else if (acao === 'feito') {
-        customConfirm("Deseja anexar uma foto do trabalho concluído?").then(querFoto => {
+        customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
           if (querFoto) { cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
           else { concluirTarefaSemFoto(chave); fecharModalTarefa(); }
         });
@@ -1397,7 +1401,7 @@
     }
 
     window.concluirTarefaLista = (chave) => {
-      customConfirm("Deseja anexar uma foto do trabalho concluído?").then(querFoto => {
+      customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
         if (querFoto) { modalChaveAtual = chave; cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
         else { concluirTarefaSemFoto(chave); }
       });
@@ -1458,7 +1462,7 @@
           if (st.status === 'working') {
             statusLineHTML = `<div class="task-status-line">
               <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
-              <div class="task-status-center"><span>${st.worker} pegou esta tarefa</span></div>
+              <div class="task-status-center"><span>Em andamento por ${st.worker}</span></div>
               ${st.worker === currentWorker ? `<div class="task-status-right"><button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button></div>` : ''}
             </div>`;
           } else {

@@ -55,6 +55,11 @@
     .nav-sidebar.open { right: 0; }
     .side-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .menu-opt { display: flex; align-items: center; gap: 10px; padding: 12px; color: #fff; font-size: 13px; font-weight: 600; border-radius: 10px; margin-bottom: 8px; cursor: pointer; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); }
+    .sidebar-divider { border-top: 1px solid var(--border); margin: 16px 0 12px; padding-top: 8px; }
+    .sidebar-subtitle { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .sidebar-user-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+    .sidebar-user-item img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    .sidebar-user-item span { font-size: 12px; color: var(--text); }
     .login-wrapper { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; border-radius: 20px; text-align: center; max-width: 360px; margin: 8px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; }
     .cam-circle { width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--italia-green); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto; cursor: pointer; overflow: hidden; background: rgba(0,0,0,0.3); position: relative; }
     .cam-circle img { width: 100%; height: 100%; object-fit: cover; display: none; }
@@ -112,7 +117,7 @@
     .btn-leave { background: rgba(255,255,255,0.04); border: 2px solid var(--italia-red); color: var(--italia-red); }
     .crop-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 12000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     .crop-container { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; border: 3px solid var(--italia-green); }
-    .crop-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .crop-canvas { width: 280px; height: 280px; display: block; }
     .crop-actions { margin-top: 20px; display: flex; gap: 12px; }
     .crop-actions button { padding: 10px 20px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; }
     .photo-picker-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 11000; display: none; align-items: center; justify-content: center; }
@@ -227,12 +232,15 @@
       <div class="menu-opt" onclick="alterarDadosRestaurante()">🏷️ Personalizar Restaurante</div>
       <div class="menu-opt" onclick="alterarSenhaMestra()" id="menu-change-pass" style="display:none;">🔐 Alterar Senha Mestra</div>
       <div class="menu-opt" onclick="showInstallPrompt()">📲 Instalar App</div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-subtitle">Usuários do aplicativo</div>
+      <div id="sidebar-users-list"></div>
     </div>
   </div>
 
   <div class="crop-overlay" id="crop-overlay">
     <div class="crop-container" id="crop-container">
-      <canvas class="crop-canvas" id="crop-canvas"></canvas>
+      <canvas class="crop-canvas" id="crop-canvas" width="280" height="280"></canvas>
     </div>
     <p style="color:#fff; margin:8px 0;">Arraste e faça zoom para enquadrar</p>
     <div class="crop-actions">
@@ -423,7 +431,7 @@
 
     // Variáveis para o recorte (canvas)
     let cropImageFile = null;
-    let cropImageElement = null; // elemento Image carregado
+    let cropImageElement = null;
     let cropContextVar = "";
     let cropScale = 1;
     let cropTranslateX = 0;
@@ -469,12 +477,14 @@
       if (menuChangePass) {
         menuChangePass.style.display = (currentWorker === "Gerente") ? 'block' : 'none';
       }
+      atualizarSidebarUsuarios();
     });
 
     async function salvarFirestore() {
       try { await setDoc(docRef, { ...liveData }, { merge: true }); } catch (e) { console.error(e); }
     }
 
+    // ==================== SOM DO CHAT ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function tocarSomMensagem() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -490,6 +500,7 @@
       osc.stop(audioCtx.currentTime + 0.15);
     }
 
+    // ==================== ATUALIZAÇÃO DO RESTAURANTE ====================
     function aplicarDadosRestaurante() {
       document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
       document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
@@ -513,6 +524,20 @@
       document.getElementById('login-menu-btn').style.display = loginActive ? 'block' : 'none';
       document.getElementById('fab-group').style.display = loginActive ? 'none' : 'flex';
       document.getElementById('brand-logo-img').style.display = loginActive ? 'none' : (liveData.restaurante.logo ? 'block' : 'none');
+    }
+
+    // ==================== SIDEBAR DE USUÁRIOS ====================
+    function atualizarSidebarUsuarios() {
+      const container = document.getElementById('sidebar-users-list');
+      if (!container) return;
+      container.innerHTML = "";
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        const foto = liveData.usuariosSalvos[nome].foto || "";
+        const online = (liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade && (Date.now() - liveData.loginAtividade[nome].ultimaAtividade < 10*60*1000));
+        container.innerHTML += `<div class="sidebar-user-item">
+          <img src="${foto}" /><span>${nome} ${online ? '🟢' : '⚫'}</span>
+        </div>`;
+      });
     }
 
     // ==================== BIBLIOTECA DE TAREFAS E ÍCONES ====================
@@ -783,8 +808,8 @@
           cropNaturalWidth = img.naturalWidth;
           cropNaturalHeight = img.naturalHeight;
           const container = document.getElementById('crop-container');
-          const containerW = container.clientWidth;
-          const containerH = container.clientHeight;
+          const containerW = container.clientWidth || 280;
+          const containerH = container.clientHeight || 280;
           const scaleW = containerW / cropNaturalWidth;
           const scaleH = containerH / cropNaturalHeight;
           cropBaseScale = Math.max(scaleW, scaleH);
@@ -805,10 +830,8 @@
       if (!cropImageElement) return;
       const canvas = document.getElementById('crop-canvas');
       const ctx = canvas.getContext('2d');
-      const w = canvas.clientWidth;
-      const h = canvas.clientHeight;
-      canvas.width = w;
-      canvas.height = h;
+      const w = canvas.width;
+      const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
       const scale = cropBaseScale * cropScale;
       const tx = cropBaseX + cropTranslateX;
@@ -829,18 +852,17 @@
 
     window.confirmarRecorte = () => {
       if (!cropImageElement) return;
-      const canvas = document.getElementById('crop-canvas');
+      const canvasOrigem = document.getElementById('crop-canvas');
       const tamanho = 150;
       const canvasSaida = document.createElement('canvas');
       canvasSaida.width = tamanho;
       canvasSaida.height = tamanho;
       const ctx = canvasSaida.getContext('2d');
-      // Desenha exatamente o que está no canvas de recorte
       ctx.save();
       ctx.beginPath();
       ctx.arc(tamanho/2, tamanho/2, tamanho/2, 0, Math.PI*2);
       ctx.clip();
-      ctx.drawImage(canvas, 0, 0, canvas.clientWidth, canvas.clientHeight, 0, 0, tamanho, tamanho);
+      ctx.drawImage(canvasOrigem, 0, 0, canvasOrigem.width, canvasOrigem.height, 0, 0, tamanho, tamanho);
       ctx.restore();
       const compressed = canvasSaida.toDataURL('image/jpeg', 0.7);
       document.getElementById('crop-overlay').style.display = 'none';
@@ -1053,7 +1075,7 @@
         };
       }
       currentWorker = nome;
-      liveData.loginAtividade[nome] = true;
+      liveData.loginAtividade[nome] = { ultimaAtividade: Date.now() };
       document.getElementById('system-context-subline').innerText = "Operador: " + nome.toUpperCase();
       document.getElementById('opts-before-login').style.display = 'none';
       document.getElementById('opts-after-login').style.display = 'block';
@@ -1061,11 +1083,18 @@
       await salvarFirestore();
       switchScreen('scr-dashboard-worker');
       montarPainelDOM();
+      // Atualiza atividade periodicamente
+      setInterval(() => {
+        if (currentWorker && currentWorker !== "Gerente" && liveData.loginAtividade[currentWorker]) {
+          liveData.loginAtividade[currentWorker].ultimaAtividade = Date.now();
+          salvarFirestore();
+        }
+      }, 30000);
     };
 
     window.efetuarLogoffCompleto = async () => {
       if (currentWorker && currentWorker !== "Gerente") {
-        liveData.loginAtividade[currentWorker] = false;
+        liveData.loginAtividade[currentWorker] = { ultimaAtividade: 0 };
         await salvarFirestore();
       }
       currentWorker = ""; base64CamGlobal = "";
@@ -1241,8 +1270,10 @@
       const storiesBar = document.getElementById('live-stories-bar');
       const storiesRow = storiesBar.querySelector('.stories-row');
       storiesRow.innerHTML = "";
+      const agora = Date.now();
       Object.keys(liveData.usuariosSalvos).forEach(nome => {
-        const online = liveData.loginAtividade && liveData.loginAtividade[nome] === true;
+        const atv = liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade;
+        const online = (atv && (agora - atv < 10*60*1000));
         if (!online && nome !== currentWorker) return;
         const card = document.createElement('div');
         card.className = "story-card" + (nome === currentWorker ? " me" : "");
@@ -1297,17 +1328,27 @@
         const row = document.createElement('div');
         row.className = 'row-task ' + st.status;
         row.id = 'row_' + chave;
-        row.style.borderColor = setor.color; // borda da cor do setor
+        row.style.borderColor = setor.color;
 
         let statusLineHTML = '';
         if (st.status === 'working' || st.status === 'done') {
           const workerFoto = liveData.usuariosSalvos[st.worker]?.foto || '';
           if (st.status === 'working') {
             statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} pegou esta tarefa</span>`;
-            if (st.worker === currentWorker) statusLineHTML += `<button class="tk-btn btn-leave" style="padding:4px 10px; font-size:11px; width:auto; margin-left:auto;" onclick="gerenciarJobModal('largar','${chave}')">Largar</button>`;
+            if (st.worker === currentWorker) {
+              // Botão "Feito ✅" na lista (substitui largar)
+              statusLineHTML += `<button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto; margin-left:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button>`;
+            }
             statusLineHTML += `</div>`;
           } else {
-            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} finalizou esta tarefa</span></div>`;
+            let tempo = '';
+            if (st.endTime && st.startTime) {
+              const duracao = Math.round((st.endTime - st.startTime) / 1000);
+              const minutos = Math.floor(duracao / 60);
+              const segundos = duracao % 60;
+              tempo = ` - ${minutos}m ${segundos}s`;
+            }
+            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} finalizou esta tarefa${tempo}</span></div>`;
           }
         }
 
@@ -1358,6 +1399,21 @@
       zone.addEventListener('touchstart', zone._swipeStart);
       zone.addEventListener('touchend', zone._swipeEnd);
     }
+
+    window.concluirTarefaLista = (chave) => {
+      const st = liveData.tarefasStatus[chave] || {};
+      liveData.tarefasStatus[chave] = {
+        status: 'done',
+        worker: currentWorker,
+        startTime: st.startTime || null,
+        endTime: Date.now()
+      };
+      salvarFirestore();
+      montarPainelDOM();
+      if (modalChaveAtual === chave) {
+        fecharModalTarefa();
+      }
+    };
 
     function destacarLinha(chave) {
       document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
@@ -1517,6 +1573,7 @@
         if (document.getElementById('scr-dashboard-worker').classList.contains('active')) {
           montarPainelDOM();
         }
+        atualizarSidebarUsuarios();
         alert(`Funcionário "${nome}" excluído.`);
       }
     };
@@ -1524,7 +1581,7 @@
     function renderizarListaEquipeMestre() {
       const box = document.getElementById('mgr-team-list-render'); box.innerHTML = "";
       Object.keys(liveData.usuariosSalvos).forEach(n => {
-        const online = liveData.loginAtividade[n] === true;
+        const online = liveData.loginAtividade[n]?.ultimaAtividade && (Date.now() - liveData.loginAtividade[n].ultimaAtividade < 10*60*1000);
         box.innerHTML += `<div class="search-item-line">
           <div style="display:flex; align-items:center; gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div>
           <div style="display:flex; align-items:center; gap:10px;">

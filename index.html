@@ -40,16 +40,24 @@
     .brand-logo { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: #fff; display: none; }
     .brand-text h1 { font-size: 14px; font-weight: 700; color: #fff; }
     .brand-text p { font-size: 9px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .brand-date { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .stories-container { display: flex; flex-direction: column; gap: 6px; padding: 6px 4px 10px 4px; margin-bottom: 12px; border-bottom: 1px solid var(--border); }
-    .stories-title { font-size: 10px; color: var(--italia-green); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-    .stories-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; }
+
+    /* Barra de funcionários online renovada */
+    .stories-container {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: 18px; padding: 10px 8px 6px; margin-bottom: 14px;
+    }
+    .stories-title { font-size: 10px; color: var(--italia-green); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+    .stories-row { display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; padding: 4px 2px; }
     .stories-row::-webkit-scrollbar { display: none; }
-    .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 55px; flex-shrink: 0; }
-    .story-img-frame { width: 48px; height: 48px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--italia-green), var(--italia-white), var(--italia-red)); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
+    .story-card { display: flex; flex-direction: column; align-items: center; text-align: center; width: 60px; flex-shrink: 0; }
+    .story-img-frame { position: relative; width: 50px; height: 50px; border-radius: 50%; padding: 2px; background: linear-gradient(45deg, var(--italia-green), var(--italia-white), var(--italia-red)); display: flex; align-items: center; justify-content: center; margin-bottom: 4px; }
     .story-card.me .story-img-frame { background: var(--process); }
     .story-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); background: #000; }
+    .story-online-dot { position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; border-radius: 50%; background: #4caf50; border: 2px solid var(--bg); }
     .story-name { font-size: 9px; color: var(--text); font-weight: 600; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
     .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; display: none; }
     .nav-sidebar { position: fixed; top: 0; right: -280px; width: 280px; height: 100%; background: #0e1017; border-left: 2px solid var(--italia-red); z-index: 9999; padding: 24px 16px; transition: right 0.3s ease; overflow-y: auto; }
     .nav-sidebar.open { right: 0; }
@@ -157,7 +165,8 @@
     .chat-ftr { display: flex; padding: 12px; background: #0b0c10; gap: 8px; }
     .fab-group { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 12px; z-index: 900; }
     .btn-fab { height: 50px; border-radius: 25px; border: none; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.5); padding: 0 20px; gap: 8px; }
-    .fab-chat { background: #171923; color: var(--italia-green); border: 1px solid var(--border); }
+    .fab-chat { background: #171923; color: var(--italia-green); border: 1px solid var(--border); position: relative; }
+    .fab-chat .online-count { position: absolute; top: -6px; right: -6px; background: var(--italia-green); color: #fff; font-size: 10px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #0b0c10; }
     .fab-wpp { background: #25d366; color: #fff; text-decoration: none; }
   </style>
 </head>
@@ -208,6 +217,7 @@
       <div class="brand-text">
         <h1 id="restaurant-name">Marchesini Premium</h1>
         <p id="system-context-subline">Controle de Turno Ativo</p>
+        <div class="brand-date" id="brand-date"></div>
       </div>
     </div>
     <button class="menu-btn" onclick="toggleSidebarDropdown()">☰</button>
@@ -383,6 +393,7 @@
   <div class="fab-group" id="fab-group" style="display:flex;">
     <button class="btn-fab fab-chat" onclick="toggleChatWindow()">
       <span style="font-size:20px">💬</span> Chat Interno
+      <span class="online-count" id="chat-online-count" style="display:none;">0</span>
     </button>
     <a class="btn-fab fab-wpp" id="whatsapp-link" href="#" onclick="gerarRelatorioTurnoWhatsApp(event)" style="display:none;">
       <span style="font-size:20px">✅</span> Relatório Wpp
@@ -485,6 +496,7 @@
         menuChangePass.style.display = (currentWorker === "Gerente") ? 'block' : 'none';
       }
       atualizarSidebarUsuarios();
+      atualizarContadorChat();
     });
 
     async function salvarFirestore() {
@@ -494,9 +506,7 @@
     // ==================== SOM DO CHAT (COM DESBLOQUEIO) ====================
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     document.addEventListener('touchstart', function desbloquearAudio() {
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       document.removeEventListener('touchstart', desbloquearAudio);
     }, { once: true });
 
@@ -514,14 +524,12 @@
       osc.stop(audioCtx.currentTime + 0.15);
     }
 
-    // ==================== ATUALIZAÇÃO DO RESTAURANTE ====================
+    // ==================== ATUALIZAÇÃO DO RESTAURANTE E DATA/HORA ====================
     function aplicarDadosRestaurante() {
       document.getElementById('restaurant-name').innerText = liveData.restaurante.nome || "Marchesini Premium";
       document.getElementById('restaurant-name').style.fontFamily = liveData.restaurante.fonte || "Arial";
       const logoImg = document.getElementById('brand-logo-img');
-      if (liveData.restaurante.logo) {
-        logoImg.src = liveData.restaurante.logo;
-      }
+      if (liveData.restaurante.logo) logoImg.src = liveData.restaurante.logo;
       const loginLogo = document.getElementById('restaurant-logo-img');
       const loginName = document.getElementById('login-restaurant-name');
       if (liveData.restaurante.logo) {
@@ -530,6 +538,16 @@
       loginName.innerText = liveData.restaurante.nome || "Marchesini Premium";
       loginName.style.fontFamily = liveData.restaurante.fonte || "Arial";
       atualizarVisibilidadeLogin();
+      atualizarDataHora();
+    }
+
+    function atualizarDataHora() {
+      const agora = new Date();
+      const opcoes = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+      const dataFormatada = agora.toLocaleDateString('pt-BR', opcoes);
+      const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const el = document.getElementById('brand-date');
+      if (el) el.innerText = `${dataFormatada} • ${horaFormatada}`;
     }
 
     function atualizarVisibilidadeLogin() {
@@ -552,6 +570,24 @@
           <img src="${foto}" /><span>${nome} ${online ? '🟢' : '⚫'}</span>
         </div>`;
       });
+    }
+
+    function atualizarContadorChat() {
+      const agora = Date.now();
+      let onlineCount = 0;
+      Object.keys(liveData.usuariosSalvos).forEach(nome => {
+        const atv = liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade;
+        if (atv && (agora - atv < 10*60*1000)) onlineCount++;
+      });
+      const el = document.getElementById('chat-online-count');
+      if (el) {
+        if (onlineCount > 0) {
+          el.style.display = 'flex';
+          el.innerText = onlineCount;
+        } else {
+          el.style.display = 'none';
+        }
+      }
     }
 
     // ==================== BIBLIOTECA DE TAREFAS E ÍCONES ====================
@@ -1104,6 +1140,8 @@
           salvarFirestore();
         }
       }, 30000);
+      // Atualiza data/hora a cada minuto
+      setInterval(atualizarDataHora, 60000);
     };
 
     window.efetuarLogoffCompleto = async () => {
@@ -1173,7 +1211,8 @@
           const duracao = Math.round((st.endTime - st.startTime) / 1000);
           const minutos = Math.floor(duracao / 60);
           const segundos = duracao % 60;
-          statusHTML += ` - Tempo: ${minutos}m ${segundos}s`;
+          const horaConclusao = new Date(st.endTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          statusHTML += ` - Tempo: ${minutos}m ${segundos}s (às ${horaConclusao})`;
         }
       } else if (st.status === 'working') {
         statusHTML = `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
@@ -1291,7 +1330,7 @@
         if (!online && nome !== currentWorker) return;
         const card = document.createElement('div');
         card.className = "story-card" + (nome === currentWorker ? " me" : "");
-        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
+        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"><div class="story-online-dot"></div></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
         storiesRow.appendChild(card);
       });
 
@@ -1356,13 +1395,15 @@
             statusLineHTML += `</div>`;
           } else {
             let tempo = '';
+            let horaConclusao = '';
             if (st.endTime && st.startTime) {
               const duracao = Math.round((st.endTime - st.startTime) / 1000);
               const minutos = Math.floor(duracao / 60);
               const segundos = duracao % 60;
               tempo = ` - ${minutos}m ${segundos}s`;
+              horaConclusao = ` (às ${new Date(st.endTime).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })})`;
             }
-            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} finalizou esta tarefa${tempo}</span></div>`;
+            statusLineHTML = `<div class="task-status-line"><img class="mini-pic" src="${workerFoto}"><span>${st.worker} finalizou esta tarefa${tempo}${horaConclusao}</span></div>`;
           }
         }
 
@@ -1588,6 +1629,7 @@
           montarPainelDOM();
         }
         atualizarSidebarUsuarios();
+        atualizarContadorChat();
         alert(`Funcionário "${nome}" excluído.`);
       }
     };

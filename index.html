@@ -19,6 +19,7 @@
       --text: #f3f4f6; --text-muted: #8e8e93; --process: #2f80ed;
       --accent: #f0b90b;
       --color-salao: #7b2c3d; --color-bar: #1e3b5a; --color-buffet: #b85c1a; --color-banheiros: #2c6e7a;
+      --color-done-mine: #009246; --color-done-other: #4a6b5a; --color-working-mine: #f0b90b; --color-working-other: #2f80ed;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
     html, body { width: 100%; overflow-x: hidden; margin: 0; padding: 0; }
@@ -43,7 +44,6 @@
     .brand-text p { font-size: 8px; color: var(--italia-green); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .menu-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: #fff; font-size: 16px; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-    /* Barra de funcionários online */
     .stories-container { background: rgba(255,255,255,0.03); border: 2px solid var(--border); border-radius: 16px; padding: 10px 8px; margin-bottom: 12px; position: relative; margin-top: 12px; }
     .stories-title { font-size: 10px; color: var(--italia-green); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; text-align: center; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--bg); padding: 0 12px; }
     .stories-row { display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; padding-top: 4px; }
@@ -65,7 +65,6 @@
     .sidebar-user-item img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
     .sidebar-user-item span { font-size: 12px; color: var(--text); }
 
-    /* Modal de diálogo personalizado */
     .custom-dialog-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 14000; display: none; align-items: center; justify-content: center; }
     .custom-dialog-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 24px; text-align: center; max-width: 300px; width: 90%; }
     .custom-dialog-card p { color: #fff; font-size: 14px; margin-bottom: 20px; }
@@ -94,34 +93,60 @@
     .card-sector.active { display: block; }
     .sect-hdr { display: flex; justify-content: space-between; align-items: center; padding: 14px; background: rgba(0,146,70,0.08); cursor: pointer; }
     .sect-cnt { padding: 6px 8px; }
-    .row-task { margin: 6px 8px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.06); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+
+    .row-task { margin: 6px 8px; border-radius: 14px; background: rgba(255,255,255,0.02); border: 2px solid rgba(255,255,255,0.06); overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; position: relative; }
     .row-task.highlighted { border-color: var(--italia-green); box-shadow: 0 0 12px rgba(0,146,70,0.3); }
-    @keyframes pulse-border { 0% { box-shadow: 0 0 3px var(--italia-green); } 50% { box-shadow: 0 0 8px var(--italia-green); } 100% { box-shadow: 0 0 3px var(--italia-green); } }
-    .row-task.working { animation: pulse-border 2s infinite; }
-    .row-task-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 16px; cursor: pointer; }
-    .row-task-header:active { background: rgba(255,255,255,0.02); }
-    .task-txt-side { display: flex; align-items: center; gap: 12px; font-size: 16px; color: #e5e5ea; flex: 1; }
-    .task-icon { font-size: 22px; flex-shrink: 0; }
-    .dot-status { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+
+    /* Efeito de borda giratória para tarefa em andamento por mim */
+    .row-task.working.my-task { border: 2px solid transparent; z-index: 1; }
+    .row-task.working.my-task::before {
+      content: '';
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border-radius: 14px;
+      background: conic-gradient(from var(--angle, 0deg), var(--accent), var(--italia-green), #fff, var(--accent));
+      z-index: -1;
+      animation: girar-borda 2s linear infinite;
+      opacity: 0.8;
+    }
+    .row-task.working.other-task .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
     .row-task.working .dot-status { background: var(--process); box-shadow: 0 0 8px var(--process); }
-    .row-task.done .dot-status { background: var(--italia-green); box-shadow: 0 0 8px var(--italia-green); }
-    .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.4; }
+
+    .row-task.done.mine .dot-status { background: var(--color-done-mine); box-shadow: 0 0 12px var(--color-done-mine); }
+    .row-task.done.other .dot-status { background: var(--color-done-other); box-shadow: 0 0 6px var(--color-done-other); }
+    .row-task.done .task-txt-side { text-decoration: line-through; opacity: 0.5; }
+
     .task-status-line { font-size: 13px; color: var(--text-muted); padding: 8px 16px 16px; display: flex; align-items: flex-start; gap: 10px; border-top: 1px solid rgba(255,255,255,0.04); background: rgba(0,0,0,0.15); }
     .task-status-left { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
     .task-status-center { flex: 1; display: flex; flex-direction: column; gap: 2px; }
     .task-status-center .concluido-selo { display: inline-block; background: var(--italia-green); color: #fff; padding: 2px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; width: fit-content; }
+    .concluido-selo.ontem { background: #5a7a6a; color: #ddd; }
     .task-status-right { margin-left: auto; flex-shrink: 0; }
     .mini-pic { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #fff; }
     .task-foto-mini { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; }
     .cronometro-badge { font-size: 10px; background: rgba(0,0,0,0.4); padding: 2px 6px; border-radius: 8px; color: var(--accent); margin-left: auto; }
+
     /* Modal carrossel */
     .task-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     .task-modal-overlay.show { display: flex; }
     .carrossel-container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding: 0 20px; width: 100%; max-width: 500px; scrollbar-width: none; }
     .carrossel-container::-webkit-scrollbar { display: none; }
     .task-modal-card { background: var(--card); border: 2px solid var(--italia-green); border-radius: 24px; padding: 24px; min-width: 85%; scroll-snap-align: center; display: flex; flex-direction: column; position: relative; transition: transform 0.3s ease, opacity 0.3s; }
+
+    /* Card em andamento - borda giratória */
     .task-modal-card-working { border: 2px solid transparent; position: relative; z-index: 1; }
-    .task-modal-card-working::before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 24px; background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green)); z-index: -1; animation: girar-borda 3s linear infinite; opacity: 0.7; }
+    .task-modal-card-working::before {
+      content: '';
+      position: absolute;
+      top: -3px; left: -3px; right: -3px; bottom: -3px;
+      border-radius: 24px;
+      background: conic-gradient(from var(--angle, 0deg), var(--italia-green), var(--accent), var(--italia-red), #fff, var(--italia-green));
+      z-index: -1;
+      animation: girar-borda 3s linear infinite;
+      opacity: 0.6;
+      box-shadow: 0 0 15px rgba(0,146,70,0.5);
+    }
+
     @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
     @keyframes girar-borda { to { --angle: 360deg; } }
     @keyframes brilho-concluido { 0% { box-shadow: 0 0 10px var(--italia-green); } 50% { box-shadow: 0 0 30px var(--italia-green), 0 0 50px rgba(0,146,70,0.6); } 100% { box-shadow: 0 0 10px var(--italia-green); } }
@@ -138,7 +163,7 @@
     .nav-interno { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
     .nav-interno button { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 18px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
     .page-dots { display: flex; gap: 6px; }
-    .page-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: background 0.2s; }
+    .page-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: background 0.2s; cursor: pointer; }
     .page-dot.active { background: var(--italia-green); }
     .tk-btn { padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; text-transform: uppercase; width: 100%; text-align: center; }
     .btn-take { background: rgba(255,255,255,0.06); border: 2px solid var(--italia-green); color: var(--italia-green); }
@@ -163,7 +188,7 @@
     .search-item-line { padding: 12px 10px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .delete-btn { background: none; border: none; color: var(--italia-red); font-size: 18px; cursor: pointer; padding: 4px 8px; }
     .foto-viewer-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 13000; display: none; align-items: center; justify-content: center; }
-    .foto-viewer-overlay img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+    .foto-viewer-overlay img { max-width: 95%; max-height: 95%; border-radius: 12px; object-fit: contain; }
     .foto-viewer-close { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: #fff; font-size: 24px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
     .chat-badge { background: var(--italia-green); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 4px; }
     .super-anim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11,12,16,0.95); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
@@ -769,7 +794,7 @@
       granito: "🧼",
       molhos: "🥣", saladas: "🥗",
       boqueta: "🍲",
-      etiquetas: "🏷️", geladeira: "❄️",
+      etiquetas: "🏷️",
       vaso: "🚽", sanitário: "🚽", cloro: "🧪",
       espelhos: "🪞",
       papel: "🧻", toalha: "🧻", higiênico: "🚻",
@@ -788,7 +813,7 @@
       return "📋";
     }
 
-    // ==================== DESCRIÇÕES ÚNICAS (REVISADAS) ====================
+    // ==================== DESCRIÇÕES ÚNICAS COMPLETAS ====================
     const taskDescriptions = {
       "Varrer todo o chão do salão e rodapés": "1. Afaste cadeiras e banquetas.\n2. Use vassoura de cerdas macias.\n3. Comece pelos cantos e rodapés, acumulando sujeira no centro.\n4. Recolha com pá e descarte no lixo.\n5. Passe pano úmido nos rodapés para remover pó fino.",
       "Passar pano úmido com rodo e desinfetante no salão": "1. Encha o balde com água morna e desinfetante diluído.\n2. Molhe o pano de chão e torça até ficar úmido.\n3. Encaixe o pano no rodo.\n4. Passe o rodo em movimentos de vai e vem.\n5. Troque a água quando estiver suja.\n6. Deixe o piso secar naturalmente.",
@@ -810,7 +835,7 @@
       "Repor geladeiras com refrigerantes, águas e cervejas": "1. Verifique as datas de validade.\n2. Retire os produtos vencidos.\n3. Organize por tipo e marca, rótulos para frente.\n4. Anote o que precisa ser reposto.\n5. Limpe as prateleiras se necessário.",
       "Limpar e purgar a máquina de café expresso": "1. Desligue a máquina.\n2. Remova o porta-filtro e limpe com escova.\n3. Purgue os bicos de vapor com água quente.\n4. Lave o reservatório de água.\n5. Recoloque tudo e ligue novamente.",
       "Cortar guarnições (limão, laranja, hortelã)": "1. Lave bem as frutas e folhas.\n2. Corte o limão e a laranja em rodelas ou gomos.\n3. Separe as folhas de hortelã.\n4. Armazene em recipientes refrigerados.\n5. Reponha durante o serviço conforme necessário.",
-      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes se necessário.\n2. Encha com açúcar, adoçante e mexa.\n3. Feche bem e disponha no balcão do bar.\n4. Verifique a validade dos produtos.\n5. Mantenha os mexedores organizados.",
+      "Repor potes de açúcar, adoçante e mexedores": "1. Lave os potes se necessário.\n2. Encha com açúcar, adoçante e mexedores.\n3. Feche bem e disponha no balcão do bar.\n4. Verifique a validade dos produtos.\n5. Mantenha os mexedores organizados.",
       "Checar validade dos xaropes e sucos abertos": "1. Verifique as datas nos frascos.\n2. Descarte os vencidos.\n3. Limpe as bordas dos frascos em uso.\n4. Organize por ordem de validade.\n5. Anote os que precisam ser repostos.",
       "Lavar as esteiras de borracha (bar mats)": "1. Retire as esteiras do balcão.\n2. Lave com água quente e detergente.\n3. Use uma escova para esfregar as ranhuras.\n4. Enxágue e deixe secar de cabeça para baixo.\n5. Recoloque quando estiverem secas.",
       "Ligar os réchauds e abastecer com água": "1. Verifique se o nível de água está correto.\n2. Ligue o réchaud e ajuste a temperatura.\n3. Coloque as cubas sobre eles.\n4. Monitore durante o serviço.\n5. Desligue ao final do expediente.",
@@ -830,21 +855,47 @@
       "Fechar o caixa e imprimir relatórios Z": "1. Confira as vendas do dia.\n2. Feche o caixa no sistema.\n3. Imprima o relatório Z.\n4. Guarde em local seguro.\n5. Confira o fechamento com o gerente.",
       "Verificar se as geladeiras ficaram trancadas/fechadas": "1. Passe em cada geladeira.\n2. Puxe a porta para confirmar o trancamento.\n3. Verifique o termostato.\n4. Anote se há alguma porta com problema.\n5. Avise a manutenção se necessário.",
       "Trancar portas, janelas e ativar o alarme": "1. Feche todas as janelas.\n2. Tranque as portas com chave.\n3. Digite o código do alarme.\n4. Confirme a ativação.\n5. Verifique se todas as luzes estão apagadas.",
+      // Descrições adicionais para as tarefas da lista padrão inicial que podem diferir
+      "Montar as mesas (pratos, sousplats e talheres)": "1. Posicione o sousplat a 2 dedos da borda da mesa.\n2. Coloque o prato principal centralizado.\n3. Garfo à esquerda, faca à direita (corte para dentro).\n4. Alinhe todas as peças com régua ou fio.\n5. Verifique se os talheres estão limpos e sem manchas.",
       "Higienizar as mesas com álcool 70%": "1. Retire todos os objetos da mesa.\n2. Borrife álcool 70% diretamente sobre a superfície.\n3. Esfregue com pano de microfibra em movimentos circulares.\n4. Dê atenção especial às bordas e cantos.\n5. Deixe secar por 30 segundos antes de recolocar os itens.",
       "Alinhar mesas e cadeiras perfeitamente": "1. Posicione cada mesa conforme o mapa do salão.\n2. Use uma régua ou fio para alinhar todas as mesas da fileira.\n3. Ajuste as cadeiras paralelamente e com o mesmo espaçamento.\n4. Olhe de longe para conferir a simetria.\n5. Reposicione mesas que estejam tortas.",
+      "Repor galheteiros (azeite, vinagre, sal)": "1. Verifique o nível de azeite, vinagre e sal.\n2. Limpe os bicos com pano úmido.\n3. Complete com produtos frescos.\n4. Recoloque na mesa na posição correta.\n5. Confira se as tampas estão bem fechadas.",
+      "Dobrar e organizar os guardanapos": "1. Passe os guardanapos se necessário.\n2. Dobre em formato de leque ou envelope.\n3. Disponha sobre os pratos ou ao lado.\n4. Armazene os extras em local limpo.\n5. Verifique se não há manchas ou fios puxados.",
+      "Limpar os menus e checar organização do aparador": "1. Use pano de microfibra umedecido com álcool 70%.\n2. Passe suavemente sobre capas e páginas.\n3. Deixe secar antes de guardar.\n4. Verifique se há páginas soltas ou rasgadas.\n5. Organize o aparador com talheres, guardanapos e paliteiros.",
+      "Revisar iluminação e som ambiente": "1. Ligue todas as luzes e substitua lâmpadas queimadas.\n2. Selecione playlist suave e regule o volume.\n3. Caminhe pelo salão para sentir a temperatura e o som.\n4. Anote qualquer irregularidade.\n5. Ajuste o ar-condicionado para 22-24°C.",
+      "Checar ar-condicionado e ventiladores": "1. Ligue todos os aparelhos.\n2. Verifique se o fluxo de ar está normal.\n3. Limpe as grelhas com pano seco.\n4. Ajuste o termostato para 22-24°C.\n5. Anote aparelhos com mau funcionamento.",
       "Verificar se há cadeiras quebradas": "1. Passe por todas as cadeiras do salão.\n2. Teste a estabilidade balançando cada uma.\n3. Verifique os pés (se há borrachas faltando).\n4. Anote as cadeiras com defeito.\n5. Leve as danificadas para a área de manutenção.",
       "Passar aspirador nos tapetes do salão": "1. Ligue o aspirador na tomada.\n2. Passe por toda a superfície do tapete, sobrepondo as passadas.\n3. Use o bocal de frestas para os cantos.\n4. Esvazie o reservatório quando estiver cheio.\n5. Enrole o cabo e guarde o aspirador.",
-      "Limpar a máquina de café expresso": "1. Desligue a máquina.\n2. Remova o porta-filtro e lave com água quente.\n3. Use uma escova para limpar os furos do filtro.\n4. Purgue os bicos de vapor.\n5. Lave o reservatório de água e ligue novamente.",
+      "Abastecer as geleiras com gelo novo": "1. Esvazie o gelo velho.\n2. Lave o recipiente com água e sabão.\n3. Encha com gelo fresco.\n4. Mantenha a colher de gelo sempre limpa.\n5. Verifique o nível durante o serviço.",
+      "Polir todas as taças de vinho e copos": "1. Lave com água morna e detergente neutro.\n2. Segure pelo cabo e esfregue o bojo com pano macio.\n3. Enxágue em água corrente.\n4. Seque com pano de microfibra até brilharem.\n5. Segure contra a luz para verificar manchas.",
+      "Cortar as guarnições (limão, laranja, hortelã)": "1. Lave bem as frutas e folhas.\n2. Corte o limão e a laranja em rodelas ou gomos.\n3. Separe as folhas de hortelã.\n4. Armazene em recipientes refrigerados.\n5. Reponha durante o serviço conforme necessário.",
+      "Repor geladeiras com cervejas e refris": "1. Verifique as datas de validade.\n2. Retire os produtos vencidos.\n3. Organize por tipo e marca, rótulos para frente.\n4. Anote o que precisa ser reposto.\n5. Limpe as prateleiras se necessário.",
+      "Lavar e secar as esteiras de borracha": "1. Retire as esteiras do balcão.\n2. Lave com água quente e detergente.\n3. Use uma escova para esfregar as ranhuras.\n4. Enxágue e deixe secar de cabeça para baixo.\n5. Recoloque quando estiverem secas.",
+      "Checar potes de açúcar, adoçante e mexedores": "1. Lave os potes se necessário.\n2. Encha com açúcar, adoçante e mexedores.\n3. Feche bem e disponha no balcão do bar.\n4. Verifique a validade dos produtos.\n5. Mantenha os mexedores organizados.",
+      "Limpar a máquina de café expresso": "1. Desligue a máquina.\n2. Remova o porta-filtro e limpe com escova.\n3. Purgue os bicos de vapor com água quente.\n4. Lave o reservatório de água.\n5. Recoloque tudo e ligue novamente.",
       "Verificar validade dos xaropes": "1. Pegue cada frasco de xarope.\n2. Confira a data de validade no rótulo.\n3. Descarte os vencidos.\n4. Limpe as bordas dos frascos em uso.\n5. Organize os frascos por data de validade.",
       "Repor azeitonas e snacks do balcão": "1. Retire as embalagens vazias.\n2. Lave os recipientes.\n3. Abasteça com azeitonas, amendoins e snacks frescos.\n4. Verifique a validade dos produtos.\n5. Disponha os recipientes no balcão.",
       "Organizar a prateleira de destilados": "1. Retire todas as garrafas.\n2. Limpe a prateleira com pano úmido.\n3. Organize as garrafas por tipo (vodka, whisky, rum, etc.).\n4. Coloque as garrafas mais usadas na frente.\n5. Verifique se há garrafas vazias para descarte.",
       "Checar o funcionamento do moedor de gelo": "1. Ligue o moedor.\n2. Coloque alguns cubos de gelo.\n3. Verifique se o gelo está sendo moído uniformemente.\n4. Desligue e limpe o compartimento.\n5. Anote se houver barulho estranho.",
       "Limpar as cubas de apoio do bar": "1. Retire todos os utensílios das cubas.\n2. Lave as cubas com água e detergente.\n3. Use uma escova para os cantos.\n4. Enxágue e seque com pano.\n5. Recoloque os utensílios.",
+      "Ligar os réchauds e abastecer com água": "1. Verifique se o nível de água está correto.\n2. Ligue o réchaud e ajuste a temperatura.\n3. Coloque as cubas sobre eles.\n4. Monitore durante o serviço.\n5. Desligue ao final do expediente.",
+      "Organizar e polir conchas e pegadores": "1. Lave com água e sabão.\n2. Seque com pano.\n3. Polir com pano seco para dar brilho.\n4. Disponha em frente a cada cuba.\n5. Verifique se estão em bom estado.",
+      "Repor pilha de pratos limpos do início": "1. Lave e seque os pratos.\n2. Empilhe sobre o buffet, ao lado das cubas.\n3. Certifique-se de que estão ao alcance dos clientes.\n4. Mantenha uma pilha reserva.\n5. Verifique se há pratos lascados.",
+      "Abastecer os molhos da ilha de saladas": "1. Verifique as cubas de molho.\n2. Complete com molho fresco.\n3. Reponha colheres de servir.\n4. Confira a etiqueta de identificação.\n5. Verifique a temperatura dos molhos frios.",
+      "Higienizar a bancada de granito": "1. Remova todos os objetos.\n2. Aplique limpador neutro.\n3. Esfregue com pano macio.\n4. Seque completamente.\n5. Recoloque os itens organizados.",
+      "Checar etiquetas e temperatura da pista fria": "1. Abra cada cuba.\n2. Verifique data de preparo e validade.\n3. Remova itens vencidos.\n4. Atualize etiquetas se necessário.\n5. Use termômetro culinário na pista fria (deve estar a 5°C).",
       "Verificar o funcionamento dos aquecedores": "1. Ligue cada aquecedor individualmente.\n2. Verifique se a luz de funcionamento acende.\n3. Sinta a temperatura após 2 minutos.\n4. Anote se algum não estiver aquecendo.\n5. Desligue após o teste.",
       "Repor pães e torradas no setor de sopas": "1. Verifique o estoque de pães e torradas.\n2. Reponha os cestos com pães frescos.\n3. Torradas devem estar crocantes, troque as murchas.\n4. Organize os itens próximos à sopa.\n5. Anote a necessidade de reposição.",
+      "Limpar a boqueta de saída de pratos quentes": "1. Desligue o equipamento.\n2. Use escova fina para remover resíduos.\n3. Passe pano úmido.\n4. Ligue novamente.\n5. Verifique o funcionamento.",
       "Organizar as cubas de sobremesa": "1. Retire as cubas vazias.\n2. Lave e seque as cubas.\n3. Distribua as sobremesas conforme o cardápio.\n4. Coloque etiquetas de identificação.\n5. Verifique a temperatura das cubas frias.",
       "Checar nível do gás da cozinha": "1. Vá até a central de gás.\n2. Verifique o manômetro.\n3. Anote o nível atual.\n4. Se estiver abaixo de 20%, solicite reposição.\n5. Feche a tampa de proteção.",
       "Conferir a limpeza do exaustor": "1. Desligue o exaustor.\n2. Remova os filtros.\n3. Lave os filtros com água quente e detergente.\n4. Seque e recoloque.\n5. Ligue e verifique o funcionamento.",
+      "Lavar e esfregar o vaso sanitário com cloro": "1. Aplique cloro gel ou água sanitária.\n2. Use escova para esfregar o interior.\n3. Deixe agir por 5 minutos.\n4. Dê descarga.\n5. Limpe a parte externa com pano desinfetante.",
+      "Limpar e polir os espelhos dos banheiros": "1. Borrife limpa-vidros.\n2. Use pano de microfibra.\n3. Limpe em movimentos circulares.\n4. Verifique se não há manchas.\n5. Seque as bordas com papel toalha.",
+      "Esvaziar lixeiras e trocar os sacos": "1. Amarre os sacos antes de remover.\n2. Retire os sacos de todas as lixeiras.\n3. Coloque sacos novos.\n4. Leve os sacos cheios para a área externa.\n5. Higienize as mãos após o manuseio.",
+      "Repor papel toalha e higiênico": "1. Abra os dispensers.\n2. Coloque novos rolos.\n3. Certifique-se de que o papel está saindo corretamente.\n4. Feche o dispenser.\n5. Deixe rolos reserva no armário.",
+      "Repor sabonete líquido nos dispensers": "1. Desenrosque o dispenser.\n2. Encha com sabonete líquido.\n3. Recoloque e bombeie até sair.\n4. Limpe respingos.\n5. Verifique o nível durante o dia.",
+      "Borrifar odorizador de ambiente": "1. Agite o frasco.\n2. Borrife em direção ao centro do ambiente.\n3. Evite contato com superfícies.\n4. Deixe o ambiente fechado por 5 minutos.\n5. Reponha o frasco se estiver vazio.",
       "Checar o funcionamento das descargas": "1. Aperte a descarga de cada vaso.\n2. Verifique se a água escoa completamente.\n3. Observe se há vazamentos.\n4. Anote os vasos com problema.\n5. Avise a manutenção.",
       "Limpar as portas e maçanetas": "1. Umedeça um pano com álcool 70%.\n2. Passe em todas as maçanetas, dos dois lados.\n3. Limpe também a superfície ao redor da maçaneta.\n4. Seque com pano seco.\n5. Repita em todas as portas.",
       "Verificar a iluminação das pias": "1. Acenda as luzes sobre as pias.\n2. Substitua lâmpadas queimadas.\n3. Limpe as luminárias com pano seco.\n4. Verifique se a intensidade está adequada.\n5. Anote lâmpadas faltantes.",
@@ -1164,13 +1215,13 @@
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let { width, height } = img;
-        const max = 150;
+        const max = 800; // Aumentado para melhor resolução
         if (width > height) { if (width > max) { height *= max / width; width = max; } }
         else { if (height > max) { width *= max / height; height = max; } }
         canvas.width = width; canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        callback(canvas.toDataURL('image/jpeg', 0.6));
+        callback(canvas.toDataURL('image/jpeg', 0.85)); // Qualidade melhor
       };
       img.src = imgSrc;
     }
@@ -1264,6 +1315,26 @@
       document.getElementById('task-modal').classList.add('show');
       destacarLinha(chave);
 
+      // Sincronizar dots com scroll
+      container.onscroll = () => {
+        const cards = container.children;
+        const containerCenter = container.scrollLeft + container.clientWidth / 2;
+        let closest = 0;
+        let minDist = Infinity;
+        for (let i = 0; i < cards.length; i++) {
+          const card = cards[i];
+          const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+          const dist = Math.abs(containerCenter - cardCenter);
+          if (dist < minDist) { minDist = dist; closest = i; }
+        }
+        if (closest !== window._modalIdx) {
+          window._modalIdx = closest;
+          modalChaveAtual = window._modalSetor.id + '_' + closest;
+          atualizarDotsModal(closest, cards.length);
+          destacarLinha(modalChaveAtual);
+        }
+      };
+
       setTimeout(() => {
         const cards = container.children;
         if (cards[idx]) cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -1278,7 +1349,10 @@
       const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '', startTime: null };
       const card = document.createElement('div');
       card.className = 'task-modal-card';
-      if (st.status === 'working') card.classList.add('task-modal-card-working');
+      if (st.status === 'working') {
+        card.classList.add('task-modal-card-working');
+        if (st.worker === currentWorker) card.style.setProperty('--worker', 'mine');
+      }
       if (st.status === 'done') card.classList.add('task-modal-card-done');
       card.innerHTML = `
         <button class="task-modal-close" onclick="fecharModalTarefa()">✕</button>
@@ -1302,10 +1376,16 @@
         if (st.endTime && st.startTime) {
           const dur = Math.round((st.endTime - st.startTime) / 1000);
           html += ` - ${Math.floor(dur/60)}m ${dur%60}s`;
+          const endDate = new Date(st.endTime);
+          const today = new Date();
+          if (endDate.toDateString() !== today.toDateString()) {
+            html += ` (${endDate.toLocaleDateString()})`;
+          }
         }
         return html;
       } else if (st.status === 'working') {
-        return `<span style="color:var(--process);">⏳ Em andamento por ${st.worker.toUpperCase()}</span>`;
+        const isMe = st.worker === currentWorker;
+        return `<span style="color:${isMe ? 'var(--accent)' : 'var(--process)'};">⏳ ${isMe ? 'VOCÊ' : st.worker.toUpperCase()} está executando</span>`;
       }
       return `<span style="color:var(--text-muted);">📋 Disponível</span>`;
     }
@@ -1320,6 +1400,10 @@
     }
 
     window.fecharModalTarefa = () => {
+      // Força atualização do dashboard antes de fechar
+      if (currentWorker !== "Gerente" && document.getElementById('scr-dashboard-worker').classList.contains('active')) {
+        montarPainelDOM();
+      }
       document.getElementById('task-modal').classList.remove('show');
       modalChaveAtual = null;
       pararCronometroVisual();
@@ -1362,7 +1446,7 @@
       if (cronometroInterval) clearInterval(cronometroInterval);
       cronometroInterval = setInterval(() => {
         const diff = Math.round((Date.now() - startTime) / 1000);
-        el.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
+        if (el) el.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
       }, 1000);
     }
     function pararCronometroVisual() { if (cronometroInterval) { clearInterval(cronometroInterval); cronometroInterval = null; } }
@@ -1373,328 +1457,4 @@
         liveData.tarefasStatus[chave] = { status: 'working', worker: currentWorker, startTime: Date.now() };
         soundPegarTarefa(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
       } else if (acao === 'largar') {
-        liveData.tarefasStatus[chave] = { status: 'idle', worker: '', startTime: null };
-        pararCronometroVisual(); atualizarCampo('tarefasStatus', liveData.tarefasStatus);
-      } else if (acao === 'feito') {
-        customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
-          if (querFoto) { cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
-          else { concluirTarefaSemFoto(chave); fecharModalTarefa(); }
-        });
-      }
-      montarPainelDOM();
-      if (modalChaveAtual && acao !== 'feito') setTimeout(() => abrirModalTarefa(modalChaveAtual), 200);
-    };
-
-    window.concluirTarefaComFoto = (fotoBase64) => {
-      if (!modalChaveAtual) return;
-      const st = liveData.tarefasStatus[modalChaveAtual] || {};
-      liveData.tarefasStatus[modalChaveAtual] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now(), foto: fotoBase64 };
-      soundConcluirTarefa();
-      tocarAplausos();
-      dispararAnimacao(window._modalArr[window._modalIdx], currentWorker);
-      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
-      fecharModalTarefa();
-      montarPainelDOM();
-    };
-
-    function concluirTarefaSemFoto(chave) {
-      const st = liveData.tarefasStatus[chave] || {};
-      liveData.tarefasStatus[chave] = { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now() };
-      soundConcluirTarefa();
-      tocarAplausos();
-      const partes = chave.split('_');
-      const setor = obterSetoresTotais().find(s => s.id === partes[0]);
-      if (setor) {
-        const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-        dispararAnimacao(arr[parseInt(partes[1])] || "", currentWorker);
-      }
-      atualizarCampo('tarefasStatus', liveData.tarefasStatus);
-      fecharModalTarefa();
-      montarPainelDOM();
-    }
-
-    window.concluirTarefaLista = (chave) => {
-      customConfirm("Deseja anexar uma foto do trabalho concluído?", "Sim", "Não").then(querFoto => {
-        if (querFoto) { modalChaveAtual = chave; cameraContext = 'tarefa'; cropContextVar = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
-        else { concluirTarefaSemFoto(chave); }
-      });
-    };
-
-    // ==================== PAINEL FUNCIONÁRIO ====================
-    function montarPainelDOM() {
-      const storiesBar = document.getElementById('live-stories-bar');
-      const storiesRow = storiesBar.querySelector('.stories-row');
-      storiesRow.innerHTML = "";
-      const agora = Date.now();
-      Object.keys(liveData.usuariosSalvos).forEach(nome => {
-        const atv = liveData.loginAtividade && liveData.loginAtividade[nome]?.ultimaAtividade;
-        const online = (atv && (agora - atv < 10*60*1000));
-        if (!online && nome !== currentWorker) return;
-        const card = document.createElement('div'); card.className = "story-card" + (nome === currentWorker ? " me" : "");
-        card.innerHTML = `<div class="story-img-frame"><img class="story-pic" src="${liveData.usuariosSalvos[nome].foto}"></div><div class="story-name">${nome === currentWorker ? "Eu" : nome}</div>`;
-        storiesRow.appendChild(card);
-      });
-
-      const tabsContainer = document.getElementById('sector-tabs');
-      const zone = document.getElementById('render-sectors-zone');
-      if (!tabsContainer || !zone) return;
-      const setores = obterSetoresTotais();
-      tabsContainer.innerHTML = '';
-      setores.forEach((s, idx) => {
-        const tab = document.createElement('div'); tab.className = 'sector-tab'; tab.innerText = s.icon + ' ' + s.title;
-        tab.style.borderLeft = `3px solid ${s.color}`;
-        tab.onclick = () => { activeSectorTab = s.id; montarPainelDOM(); };
-        if (!activeSectorTab && idx === 0) activeSectorTab = s.id;
-        if (s.id === activeSectorTab) tab.classList.add('active');
-        tabsContainer.appendChild(tab);
-      });
-      if (!activeSectorTab) activeSectorTab = setores[0]?.id;
-      zone.innerHTML = '';
-      const setor = setores.find(s => s.id === activeSectorTab);
-      if (!setor) return;
-      const arr = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).map(c => c.txt);
-      let feitas = 0; arr.forEach((_, i) => { if (liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done') feitas++; });
-      const card = document.createElement('div'); card.className = 'card-sector active'; card.style.borderLeft = `4px solid ${setor.color}`;
-      card.innerHTML = `
-        <div class="sect-hdr" style="background:${setor.color}22;">
-          <div style="display:flex; align-items:center; gap:10px;"><span style="font-size:20px">${setor.icon}</span><span style="font-weight:700; text-transform:uppercase">${setor.title}</span></div>
-          <span style="font-size:11px; font-weight:800; color:var(--italia-green)">${feitas}/${arr.length} FEITO</span>
-        </div><div class="sect-cnt" id="cnt_${setor.id}"></div>`;
-      zone.appendChild(card);
-      const cnt = document.getElementById('cnt_' + setor.id);
-      if (arr.length === 0) { cnt.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">Nenhuma tarefa neste setor ainda.</div>'; return; }
-
-      arr.forEach((txt, idx) => {
-        const chave = setor.id + '_' + idx;
-        const st = liveData.tarefasStatus[chave] || { status: 'idle', worker: '' };
-        const row = document.createElement('div'); row.className = 'row-task ' + st.status; row.id = 'row_' + chave; row.style.borderColor = setor.color;
-
-        let statusLineHTML = '';
-        if (st.status === 'working' || st.status === 'done') {
-          const workerFoto = liveData.usuariosSalvos[st.worker]?.foto || '';
-          if (st.status === 'working') {
-            statusLineHTML = `<div class="task-status-line">
-              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
-              <div class="task-status-center"><span>Em andamento por ${st.worker}</span></div>
-              ${st.worker === currentWorker ? `<div class="task-status-right"><button class="tk-btn btn-done" style="padding:4px 10px; font-size:11px; width:auto;" onclick="concluirTarefaLista('${chave}')">Feito ✅</button></div>` : ''}
-            </div>`;
-          } else {
-            let tempo = ''; let dataHora = '';
-            if (st.endTime && st.startTime) {
-              const dur = Math.round((st.endTime - st.startTime)/1000);
-              tempo = ` - ${Math.floor(dur/60)}m ${dur%60}s`;
-              const end = new Date(st.endTime);
-              dataHora = ` ${end.toLocaleDateString()} ${end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
-            }
-            let fotoMini = st.foto ? `<img class="task-foto-mini" src="${st.foto}" onclick="verFoto('${st.foto}')" />` : '';
-            statusLineHTML = `<div class="task-status-line">
-              <div class="task-status-left"><img class="mini-pic" src="${workerFoto}"></div>
-              <div class="task-status-center">
-                <span class="concluido-selo">CONCLUÍDA</span>
-                <span>${st.worker} finalizou esta tarefa${tempo}${dataHora}</span>
-              </div>
-              <div class="task-status-right">${fotoMini}</div>
-            </div>`;
-          }
-        }
-
-        let timerBadge = (st.status === 'working' && st.startTime) ? `<span class="cronometro-badge" id="cron_list_${chave}">⏱️ ...</span>` : '';
-        const icon = getTaskIcon(txt);
-        row.innerHTML = `
-          <div class="row-task-header" onclick="abrirModalTarefa('${chave}')">
-            <div class="task-txt-side"><span class="task-icon">${icon}</span><div class="dot-status"></div><div>${txt}</div></div>
-            ${timerBadge ? `<div class="task-actions">${timerBadge}</div>` : ''}
-          </div>${statusLineHTML}`;
-        cnt.appendChild(row);
-      });
-
-      arr.forEach((_, idx) => {
-        const chave = setor.id + '_' + idx; const st = liveData.tarefasStatus[chave] || {};
-        if (st.status === 'working' && st.startTime) iniciarCronometroLista(chave, st.startTime);
-      });
-
-      if (modalChaveAtual) destacarLinha(modalChaveAtual);
-      atualizarProgresso();
-
-      let swipeStartX = 0, swipeStartY = 0;
-      zone.removeEventListener('touchstart', zone._swipeStart); zone.removeEventListener('touchend', zone._swipeEnd);
-      zone._swipeStart = (e) => { swipeStartX = e.touches[0].clientX; swipeStartY = e.touches[0].clientY; };
-      zone._swipeEnd = (e) => {
-        const deltaX = swipeStartX - e.changedTouches[0].clientX, deltaY = swipeStartY - e.changedTouches[0].clientY;
-        if (Math.abs(deltaX) > Math.abs(deltaY)*1.5 && Math.abs(deltaX) > 80) {
-          const cur = setores.findIndex(s => s.id === activeSectorTab);
-          let nxt = deltaX > 0 ? Math.min(setores.length-1, cur+1) : Math.max(0, cur-1);
-          if (nxt !== cur) { activeSectorTab = setores[nxt].id; montarPainelDOM(); }
-        }
-      };
-      zone.addEventListener('touchstart', zone._swipeStart); zone.addEventListener('touchend', zone._swipeEnd);
-    }
-
-    window.verFoto = (fotoSrc) => { document.getElementById('foto-viewer-img').src = fotoSrc; document.getElementById('foto-viewer').style.display = 'flex'; };
-
-    function destacarLinha(chave) {
-      document.querySelectorAll('.row-task').forEach(r => r.classList.remove('highlighted'));
-      const row = document.getElementById('row_' + chave);
-      if (row) { row.classList.add('highlighted'); row.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-    }
-
-    function iniciarCronometroLista(chave, startTime) {
-      const el = document.getElementById('cron_list_' + chave); if (!el) return;
-      if (window._cronometrosLista[chave]) clearInterval(window._cronometrosLista[chave]);
-      window._cronometrosLista[chave] = setInterval(() => {
-        const diff = Math.round((Date.now() - startTime)/1000);
-        el.innerText = `⏱️ ${String(Math.floor(diff/60)).padStart(2,'0')}:${String(diff%60).padStart(2,'0')}`;
-      }, 1000);
-    }
-
-    function dispararAnimacao(texto, worker) {
-      const anim = obterAnimacao(texto);
-      const overlay = document.getElementById('animacao-conclusao');
-      overlay.style.display = 'flex';
-      document.getElementById('anim-obj-icon').innerText = anim.emoji;
-      document.getElementById('anim-obj-icon').className = "anim-object " + anim.cssClass;
-      document.getElementById('anim-worker-pic').src = liveData.usuariosSalvos[worker]?.foto || "";
-      document.getElementById('anim-title').innerText = `Obrigado, ${worker}! 👏`;
-      document.getElementById('anim-desc').innerText = anim.desc;
-      setTimeout(() => overlay.classList.add('show'), 10);
-      setTimeout(() => {
-        overlay.classList.remove('show');
-        setTimeout(() => overlay.style.display = 'none', 300);
-      }, 3500);
-    }
-
-    function atualizarProgresso() {
-      let t=0, f=0;
-      obterSetoresTotais().forEach(s => { liveData.tarefasCustomizadas.filter(c => c.cat===s.id).forEach((_,i) => { t++; if(liveData.tarefasStatus[s.id+'_'+i]?.status==='done') f++; }); });
-      const p = t ? Math.round((f/t)*100) : 0;
-      document.getElementById('prog-fill-bar').style.width = p+'%'; document.getElementById('prog-txt-pct').innerText = p+'%';
-    }
-
-    function playTone(freq, type, dur, vol=0.1) {
-      if (audioCtx.state==='suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-      osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.start(); gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime+dur); osc.stop(audioCtx.currentTime+dur);
-    }
-    function soundPegarTarefa() { playTone(440,'sine',0.1); setTimeout(()=>playTone(660,'sine',0.15),100); }
-    function soundConcluirTarefa() { playTone(523.25,'triangle',0.15); setTimeout(()=>playTone(659.25,'triangle',0.15),120); setTimeout(()=>playTone(783.99,'triangle',0.3),240); }
-
-    const taskAnimations = [
-      { keys:["varrer","vassoura","chão"], emoji:"🧹", cssClass:"act-varrer", title:"Varrendo com energia!", desc:"A vassoura não deixa nem poeira para trás." },
-      { keys:["pano","rodo","úmido","passar pano"], emoji:"🧽", cssClass:"act-esfregar", title:"Brilhando como espelho!", desc:"O rodo deixou tudo reluzente." },
-      { keys:["vaso","sanitário","privada"], emoji:"🚽", cssClass:"act-brilhar", title:"Sanitário impecável!", desc:"Cheirinho de limpeza e flor." },
-      { keys:["álcool","mesas","higienizar"], emoji:"🧴", cssClass:"act-esfregar", title:"Superfície esterilizada!", desc:"Álcool 70% fez a mágica." },
-      { keys:["taças","copos","polir"], emoji:"✨", cssClass:"act-brilhar", title:"Cristais reluzentes!", desc:"Prontos para o brinde." },
-      { keys:["lixo","recolher"], emoji:"🗑️", cssClass:"act-brilhar", title:"Lixo fora!", desc:"Ambiente limpo e arejado." },
-      { keys:["cadeiras","cadeirões"], emoji:"🪑", cssClass:"act-brilhar", title:"Cadeiras impecáveis!", desc:"Todas alinhadas e limpas." },
-      { keys:["guardanapos"], emoji:"🍽️", cssClass:"act-brilhar", title:"Guardanapos dobrados!", desc:"Mesa posta com elegância." },
-      { keys:["vidros","portas","entrada"], emoji:"🪟", cssClass:"act-brilhar", title:"Vidros reluzentes!", desc:"Entrada brilhando de limpeza." },
-      { keys:["café","expresso"], emoji:"☕", cssClass:"act-brilhar", title:"Café pronto!", desc:"Máquina limpa e pronta para o próximo." },
-      { keys:["gelo","geleiras"], emoji:"🧊", cssClass:"act-brilhar", title:"Gelo fresquinho!", desc:"Geleiras abastecidas e gelo no ponto." },
-      { keys:["guarnições","limão","laranja","hortelã"], emoji:"🍋", cssClass:"act-brilhar", title:"Guarnições frescas!", desc:"Frutas cortadas e armazenadas corretamente." },
-      { keys:["xaropes","sucos"], emoji:"🍹", cssClass:"act-brilhar", title:"Bebidas verificadas!", desc:"Xaropes e sucos dentro da validade." },
-      { keys:["esteiras","borracha"], emoji:"🧽", cssClass:"act-esfregar", title:"Esteiras limpas!", desc:"Bar mats lavados e secos." },
-      { keys:["réchauds","água"], emoji:"🔥", cssClass:"act-brilhar", title:"Réchauds acesos!", desc:"Água abastecida e temperatura regulada." },
-      { keys:["temperaturas","pistas"], emoji:"🌡️", cssClass:"act-brilhar", title:"Temperatura ideal!", desc:"Pistas quentes e frias monitoradas." },
-      { keys:["pratos","buffet"], emoji:"🍽️", cssClass:"act-brilhar", title:"Buffet abastecido!", desc:"Pratos limpos e organizados." },
-      { keys:["conchas","pegadores"], emoji:"🥄", cssClass:"act-brilhar", title:"Utensílios polidos!", desc:"Conchas e pegadores brilhando." },
-      { keys:["bancada","granito"], emoji:"🧼", cssClass:"act-esfregar", title:"Bancada limpa!", desc:"Granito higienizado e seco." },
-      { keys:["molhos","saladas"], emoji:"🥗", cssClass:"act-brilhar", title:"Saladas frescas!", desc:"Molhos abastecidos e etiquetados." },
-      { keys:["boqueta","pratos quentes"], emoji:"🍲", cssClass:"act-brilhar", title:"Boqueta limpa!", desc:"Saída de pratos quentes desobstruída." },
-      { keys:["etiquetas","geladeira"], emoji:"🏷️", cssClass:"act-brilhar", title:"Etiquetas atualizadas!", desc:"Validade verificada e itens organizados." },
-      { keys:["descargas"], emoji:"🚽", cssClass:"act-brilhar", title:"Descargas ok!", desc:"Todos os vasos funcionando perfeitamente." },
-      { keys:["portas","maçanetas"], emoji:"🚪", cssClass:"act-brilhar", title:"Maçanetas limpas!", desc:"Portas e maçanetas desinfetadas." },
-      { keys:["pias","iluminação"], emoji:"💡", cssClass:"act-brilhar", title:"Pias iluminadas!", desc:"Lâmpadas verificadas e limpas." },
-      { keys:["produtos","limpeza","estoque"], emoji:"🧴", cssClass:"act-brilhar", title:"Estoque completo!", desc:"Produtos de limpeza organizados." },
-      { keys:["piso","rodo","secar"], emoji:"🧹", cssClass:"act-varrer", title:"Piso seco!", desc:"Sem poças e com placa de segurança." },
-      { keys:["higiene","validade"], emoji:"🧪", cssClass:"act-brilhar", title:"Produtos em dia!", desc:"Todos os itens de higiene dentro da validade." }
-    ];
-
-    function obterAnimacao(txt) {
-      const l = txt.toLowerCase();
-      for (const r of taskAnimations) {
-        if (r.keys.some(k => l.includes(k))) return r;
-      }
-      return { emoji: "🏆", cssClass: "act-brilhar", title: "Trabalho excelente!", desc: "A gerência agradece o esforço." };
-    }
-
-    // ==================== GERENTE ====================
-    window.abrirSubPainelGerente = (id) => { window.fecharSubPaineis(); document.getElementById('sub-pane-'+id).style.display='block'; if(id==='busca_tarefas') renderizarBibliotecaTarefas(); if(id==='ver_equipe') renderizarListaEquipeMestre(); };
-    window.fecharSubPaineis = () => document.querySelectorAll('.sub-pane-window').forEach(w => w.style.display='none');
-    window.filtrarBiblioCategoria = (cat, btn) => { currentCategoriaBiblio = cat; document.querySelectorAll('.lib-cat-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); renderizarBibliotecaTarefas(); };
-
-    function renderizarBibliotecaTarefas() {
-      const query = document.getElementById('mgr-search-input').value.toLowerCase();
-      const box = document.getElementById('mgr-search-results-render'); box.innerHTML = '';
-      const filtradas = megaLibrary.filter(item => (currentCategoriaBiblio==='tudo'||item.cat===currentCategoriaBiblio) && (!query||item.txt.toLowerCase().includes(query)));
-      if(!filtradas.length) { box.innerHTML='<div style="padding:10px;color:var(--text-muted);text-align:center;font-size:12px;">Nenhuma tarefa encontrada.</div>'; return; }
-      filtradas.forEach(item => {
-        const line = document.createElement('div'); line.className="search-item-line";
-        line.innerHTML = `<div style="flex:1;">${item.txt}</div><button class="tk-btn btn-take" style="width:auto;padding:6px 12px;">➕ Injetar</button>`;
-        line.querySelector('button').onclick = () => {
-          const setores = obterSetoresTotais(); let msg = "Escolha o setor (número):\n"; setores.forEach((s,idx) => msg+=`${idx} - ${s.title}\n`);
-          const escolha = prompt(msg); if(escolha!==null && setores[escolha]) { liveData.tarefasCustomizadas.push({cat: setores[escolha].id, txt: item.txt}); salvarFirestore(); customAlert("✓ Tarefa injetada!"); }
-        };
-        box.appendChild(line);
-      });
-    }
-    window.renderizarBibliotecaTarefas = renderizarBibliotecaTarefas;
-
-    window.salvarSetorCustomizadoGerente = () => {
-      const nome = document.getElementById('new-sector-name').value.trim(), icone = document.getElementById('new-sector-icon').value.trim()||"📋";
-      if(!nome) { customAlert("Digite o nome!"); return; }
-      liveData.setoresCustomizados.push({id:"custom_"+Date.now(), title:nome, icon:icone, color:"#666"});
-      document.getElementById('new-sector-name').value=""; document.getElementById('new-sector-icon').value="";
-      salvarFirestore(); customAlert(`Setor "${nome}" criado!`); window.fecharSubPaineis();
-    };
-
-    window.excluirFuncionario = async (nome) => {
-      if(nome==="Gerente"||nome===currentWorker) { customAlert("Você não pode excluir o gerente ou a si mesmo."); return; }
-      const confirmado = await customConfirm(`Tem certeza que deseja excluir o funcionário "${nome}"? Esta ação não pode ser desfeita.`);
-      if (confirmado) {
-        delete liveData.usuariosSalvos[nome]; delete liveData.loginAtividade[nome];
-        Object.keys(liveData.tarefasStatus).forEach(ch => { if(liveData.tarefasStatus[ch].worker===nome && liveData.tarefasStatus[ch].status==='working') liveData.tarefasStatus[ch]={status:'idle',worker:''}; });
-        await atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); await atualizarCampo('loginAtividade', liveData.loginAtividade); await atualizarCampo('tarefasStatus', liveData.tarefasStatus);
-        renderizarListaEquipeMestre(); if(document.getElementById('scr-dashboard-worker').classList.contains('active')) montarPainelDOM();
-        atualizarSidebarUsuarios(); atualizarBadgeOnline(); customAlert(`Funcionário "${nome}" excluído.`);
-      }
-    };
-
-    function renderizarListaEquipeMestre() {
-      const box = document.getElementById('mgr-team-list-render'); box.innerHTML="";
-      Object.keys(liveData.usuariosSalvos).forEach(n => {
-        const online = liveData.loginAtividade[n]?.ultimaAtividade && (Date.now()-liveData.loginAtividade[n].ultimaAtividade < 10*60*1000);
-        box.innerHTML += `<div class="search-item-line"><div style="display:flex;align-items:center;gap:10px;"><img src="${liveData.usuariosSalvos[n].foto}" class="mini-pic"><span>${n}</span></div><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:10px;font-weight:800;color:${online?'var(--italia-green)':'var(--text-muted)'}">${online?'ONLINE':'OFFLINE'}</span><button class="delete-btn" onclick="excluirFuncionario('${n}')" title="Excluir funcionário">🗑️</button></div></div>`;
-      });
-    }
-    window.renderizarListaEquipeMestre = renderizarListaEquipeMestre;
-
-    window.toggleChatWindow = () => {
-      const c = document.getElementById('modal-chat');
-      c.classList.toggle('show');
-      if (c.classList.contains('show')) renderMessages();
-    };
-    function renderMessages() { const w = document.getElementById('chat-wall'); w.innerHTML=''; liveData.mensagensChat.forEach(m => { w.innerHTML += `<div class="bubble ${m.user===currentWorker?'bb-out':'bb-in'}"><div style="font-size:10px;font-weight:800;color:var(--italia-green);margin-bottom:4px;">${m.user}</div>${m.text}</div>`; }); w.scrollTop=w.scrollHeight; }
-    window.enviarMensagemChat = () => { const inp = document.getElementById('chat-input'); if(!inp.value.trim()) return; liveData.mensagensChat.push({user:currentWorker, text:inp.value.trim()}); inp.value=''; atualizarCampo('mensagensChat', liveData.mensagensChat); renderMessages(); };
-    window.gerarRelatorioTurnoWhatsApp = (e) => { /* unchanged */ };
-    window.zerarTurnoCompletoNuvem = () => { customConfirm('Zerar todas as tarefas e repor as 48 iniciais?').then(ok => { if(ok) { liveData.tarefasStatus={}; liveData.tarefasCustomizadas=[]; popularTarefasPadraoSeVazio(); salvarFirestore(); window.fecharSubPaineis(); montarPainelDOM(); customAlert("Turno zerado com sucesso!"); } }); };
-
-    // ==================== PWA ====================
-    function generateIcons() { /* unchanged */ }
-    generateIcons();
-    if('serviceWorker' in navigator) { navigator.serviceWorker.register(URL.createObjectURL(new Blob([`self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{});`],{type:'application/javascript'}))); }
-    const installModal = document.getElementById('install-modal'); const installYes = document.getElementById('install-yes'); const installNo = document.getElementById('install-no');
-    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; if(!localStorage.getItem('staffcheck-install-prompt') && !window.matchMedia('(display-mode: standalone)').matches) { installModal.style.display='flex'; localStorage.setItem('staffcheck-install-prompt','shown'); } });
-    window.showInstallPrompt = () => { if(deferredPrompt) installModal.style.display='flex'; else customAlert("Para instalar:\n• iPhone/iPad: toque em Compartilhar e depois em Adicionar à Tela de Início.\n• Android: toque em ⋮ > Adicionar à tela inicial."); };
-    installYes.addEventListener('click', async () => { if(deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installModal.style.display='none'; } });
-    installNo.addEventListener('click', () => { installModal.style.display='none'; localStorage.setItem('staffcheck-install-prompt','dismissed'); });
-    window.addEventListener('appinstalled', () => { installModal.style.display='none'; });
-
-    popularTarefasPadraoSeVazio();
-    aplicarDadosRestaurante();
-    atualizarVisibilidadeLogin();
-    atualizarDataHora();
-    atualizarBadgeOnline();
-  </script>
+        liveData.tarefasStatus[chave] = { status: 'id

@@ -292,7 +292,7 @@
       padding: 4px 10px; border-radius: 20px;
     }
 
-    /* ===================== TASK ROW — REDESENHADO ===================== */
+    /* ===================== TASK ROW ===================== */
     .task-row {
       margin: 6px 10px; border-radius: var(--radius-md);
       border: 1.5px solid var(--border); overflow: hidden;
@@ -335,7 +335,6 @@
       -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
     }
 
-    /* ---- ACTION BAR REDESENHADA: foto maior + nome ---- */
     .task-action-bar {
       display: flex; align-items: center; gap: 10px;
       padding: 10px 12px; background: rgba(0,0,0,0.06);
@@ -343,7 +342,6 @@
     }
     [data-theme="light"] .task-action-bar { background: rgba(0,0,0,0.03); }
 
-    /* Worker avatar com nome — novo componente */
     .worker-avatar-block {
       display: flex; flex-direction: column; align-items: center;
       gap: 3px; flex-shrink: 0; cursor: pointer;
@@ -473,7 +471,7 @@
     .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); cursor: pointer; transition: all var(--transition); }
     .dot.active { background: var(--green); width: 18px; border-radius: 4px; }
 
-    /* ===================== MODAL PERFIL FUNCIONÁRIO — NOVO ===================== */
+    /* ===================== MODAL PERFIL FUNCIONÁRIO ===================== */
     .worker-profile-overlay {
       position: fixed; inset: 0; background: var(--overlay);
       z-index: 11000; display: none; flex-direction: column;
@@ -528,7 +526,6 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Stats rápidos */
     .wp-stats {
       display: flex; gap: 8px; padding: 12px 16px;
       border-bottom: 1px solid var(--border); flex-shrink: 0;
@@ -544,7 +541,6 @@
     .wp-stat-val.blue { color: var(--blue); }
     .wp-stat-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 700; margin-top: 2px; }
 
-    /* Tabs */
     .wp-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
     .wp-tab {
       flex: 1; padding: 11px 8px; text-align: center;
@@ -554,7 +550,6 @@
     }
     .wp-tab.active { color: var(--green); border-bottom-color: var(--green); }
 
-    /* Lista de tarefas do perfil */
     .wp-task-list { flex: 1; overflow-y: auto; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
     .wp-task-item {
       display: flex; align-items: center; gap: 10px;
@@ -889,7 +884,7 @@
     </div>
   </div>
 
-  <!-- MODAL PERFIL FUNCIONÁRIO — NOVO -->
+  <!-- MODAL PERFIL FUNCIONÁRIO -->
   <div class="worker-profile-overlay" id="worker-profile-overlay" onclick="if(event.target===this)fecharPerfilFuncionario()">
     <div class="worker-profile-sheet">
       <div class="wp-handle"></div>
@@ -1030,7 +1025,6 @@
           <button class="btn-ponto entrada" id="btn-ponto" onclick="registrarPonto()">Entrada</button>
         </div>
       </div>
-      <!-- Stories — agora clicáveis para ver perfil -->
       <div class="stories-wrap" id="stories-wrap">
         <div class="stories-label">EQUIPE ONLINE — TOQUE PARA VER TAREFAS</div>
         <div class="stories-row" id="stories-row"></div>
@@ -1235,12 +1229,10 @@
   let mainCronInterval = null;
   let deferredPrompt = null;
 
-  // Perfil funcionário
   let wpWorker = null;
   let wpAbaAtiva = "working";
   let wpCronos = {};
 
-  // CROP
   let cropImg = null, cropScale = 1, cropTX = 0, cropTY = 0;
   let cropBaseScale = 1, cropBaseX = 0, cropBaseY = 0;
 
@@ -1345,7 +1337,6 @@
     if (modalChave && document.getElementById('task-modal').classList.contains('show')) abrirModal(modalChave);
     if (document.getElementById('chat-overlay').classList.contains('show')) renderChat();
     if (document.getElementById('scr-manager').classList.contains('active')) renderHistorico();
-    // Atualizar perfil se aberto
     if (wpWorker && document.getElementById('worker-profile-overlay').classList.contains('show')) {
       renderPerfilFuncionario(wpWorker);
     }
@@ -1590,6 +1581,21 @@
       if(liveData.usuariosSalvos[nome].senha!==pass){customAlert('Senha incorreta!');return;}
     } else {
       primeiro=true;
+      if(!base64Cam) {
+        const querFoto = await customConfirm('Deseja adicionar uma foto de perfil?','Sim','Depois');
+        if(querFoto) {
+          await new Promise(resolve => {
+            cameraContext = 'login';
+            cropCtx = 'login';
+            document.querySelector('.photo-picker-overlay').style.display='flex';
+            const originalConfirmar = window.confirmarRecorte;
+            window.confirmarRecorte = function() {
+              originalConfirmar();
+              resolve();
+            };
+          });
+        }
+      }
       liveData.usuariosSalvos[nome]={senha:pass,foto:base64Cam||''};
     }
     currentWorker=nome;
@@ -1908,13 +1914,12 @@
     {cat:'fechamento',txt:'Trancar portas, janelas e ativar o alarme'}
   ];
 
-  /* ==================== PERFIL FUNCIONÁRIO — NOVO ==================== */
+  /* ==================== PERFIL FUNCIONÁRIO ==================== */
   window.abrirPerfilFuncionario = function(nome) {
     wpWorker = nome;
     wpAbaAtiva = "working";
     renderPerfilFuncionario(nome);
     document.getElementById('worker-profile-overlay').classList.add('show');
-    // Resetar tabs
     document.querySelectorAll('.wp-tab').forEach(t=>{
       t.classList.toggle('active', t.dataset.tab==='working');
     });
@@ -1922,7 +1927,6 @@
 
   window.fecharPerfilFuncionario = function() {
     document.getElementById('worker-profile-overlay').classList.remove('show');
-    // Limpar cronômetros do perfil
     Object.values(wpCronos).forEach(clearInterval);
     wpCronos = {};
     wpWorker = null;
@@ -1940,7 +1944,6 @@
     const working = temTarefaEmAndamento(nome);
     const foto = liveData.usuariosSalvos[nome]?.foto || '';
 
-    // Hero
     const photoEl = document.getElementById('wp-photo');
     photoEl.src = foto;
     photoEl.className = 'wp-hero-photo' + (working?' working':online?'':' offline');
@@ -1955,14 +1958,12 @@
     const badgeEl = document.getElementById('wp-online-badge');
     badgeEl.className = 'wp-online-badge ' + (working?'working':online?'on':'off');
 
-    // Ponto
     const hoje = new Date().toDateString();
     const reg = liveData.pontosRegistro?.[nome]?.[hoje];
     document.getElementById('wp-ponto').textContent = reg
       ? (reg.entrada ? `🕐 Entrada: ${reg.entrada}${reg.saida?' | Saída: '+reg.saida:''}` : '')
       : '🕐 Sem registro de ponto hoje';
 
-    // Stats
     const todasTarefas = coletarTarefasFuncionario(nome);
     const feitas = todasTarefas.filter(t=>t.st.status==='done').length;
     const emAndamento = todasTarefas.filter(t=>t.st.status==='working').length;
@@ -2005,7 +2006,6 @@
     } else if (wpAbaAtiva === 'done') {
       tarefas = tarefas.filter(t => t.st.status === 'done');
     }
-    // 'all' mostra tudo
 
     if (!tarefas.length) {
       const emptyMsg = wpAbaAtiva === 'working'
@@ -2044,7 +2044,6 @@
       `;
       lista.appendChild(item);
 
-      // Cronômetro ao vivo para tarefas em andamento
       if (isWorking && st.startTime) {
         const id = chave;
         wpCronos[id] = setInterval(() => {
@@ -2143,7 +2142,6 @@
       const prioClass = tarefa.prioridade==='alta'?'priority-alta':tarefa.prioridade==='baixa'?'priority-baixa':'priority-normal';
       const prioLabel = tarefa.prioridade==='alta'?'🔴 Urgente':tarefa.prioridade==='baixa'?'🔵 Baixa':'⚪ Normal';
 
-      // ---- ACTION BAR REDESENHADA com avatar maior ----
       let actionHTML='';
       if(st.status==='idle') {
         actionHTML=`<div class="task-action-bar">
@@ -2219,7 +2217,6 @@
       if(st.status==='working'&&st.startTime) iniciarCronLista(chave,st.startTime);
     });
 
-    // Swipe
     let swX=0, swY=0;
     content.removeEventListener('touchstart',content._swS);
     content.removeEventListener('touchend',content._swE);
@@ -2241,14 +2238,12 @@
 
   function renderStories() {
     const row = document.getElementById('stories-row'); row.innerHTML='';
-    const agora=Date.now();
     Object.keys(liveData.usuariosSalvos).forEach(n=>{
       const online=isOnline(n);
       const working=temTarefaEmAndamento(n);
-      // Contar tarefas do funcionário hoje
-      const tarefasFuncionario = coletarTarefasFuncionario ? Object.values(liveData.tarefasStatus).filter(st=>st.worker===n) : [];
-      const feitasHoje = tarefasFuncionario.filter(st=>st.status==='done').length;
-      const emAndamento = tarefasFuncionario.filter(st=>st.status==='working').length;
+      const tarefasFuncionario = coletarTarefasFuncionario(n);
+      const feitasHoje = tarefasFuncionario.filter(t=>t.st.status==='done').length;
+      const emAndamento = tarefasFuncionario.filter(t=>t.st.status==='working').length;
 
       const card=document.createElement('div');
       card.className='story-card';
@@ -2275,7 +2270,6 @@
         <div class="story-name">${n===currentWorker?'Você':n.split(' ')[0]}</div>
         ${countHTML}
       `;
-      // Clicar na story abre perfil
       card.addEventListener('click', () => abrirPerfilFuncionario(n));
       row.appendChild(card);
     });
@@ -2828,7 +2822,6 @@
   aplicarRestaurante();
   atualizarDatetime();
   localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset')||new Date().toDateString());
-
 </script>
 </body>
 </html>

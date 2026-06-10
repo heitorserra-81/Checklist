@@ -4520,6 +4520,7 @@
         window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
 
         popularTarefasPadrao();
+        salvar(true);
         atualizarDatetime();
         localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset') || new Date().toDateString());
 

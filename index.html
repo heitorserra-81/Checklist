@@ -68,8 +68,7 @@
             user-select: none;
             -webkit-user-select: none;
         }
-        html,
-        body {
+        html, body {
             width: 100%;
             overflow-x: hidden;
         }
@@ -81,8 +80,7 @@
             min-height: 100vh;
             transition: background var(--transition), color var(--transition);
         }
-        input,
-        textarea {
+        input, textarea {
             user-select: text;
             -webkit-user-select: text;
         }
@@ -181,6 +179,35 @@
         }
         .icon-btn:active {
             transform: scale(0.93);
+        }
+        .theme-fab-login {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .chat-online-avatar-img.offline {
+            border-color: var(--text3) !important;
+            opacity: 0.7;
+        }
+        .chat-online-avatar-img.working {
+            border-color: var(--gold) !important;
+            box-shadow: 0 0 6px var(--gold);
+        }
+        .chat-online-avatar-img.online {
+            border-color: var(--green) !important;
         }
         .login-screen {
             min-height: 100vh;
@@ -618,8 +645,7 @@
             z-index: 2;
         }
         @keyframes pulse-gold {
-            0%,
-            100% {
+            0%, 100% {
                 box-shadow: 0 0 4px var(--gold);
             }
             50% {
@@ -2584,8 +2610,7 @@
             transform: scale(1);
         }
         @keyframes varrer {
-            0%,
-            100% {
+            0%, 100% {
                 transform: rotate(0) translateX(0);
             }
             50% {
@@ -2593,8 +2618,7 @@
             }
         }
         @keyframes esfregar {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateX(-18px) translateY(8px);
             }
             50% {
@@ -2602,8 +2626,7 @@
             }
         }
         @keyframes pular {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0) scale(1);
             }
             50% {
@@ -2624,8 +2647,7 @@
             animation: blink 1s infinite;
         }
         @keyframes blink {
-            0%,
-            100% {
+            0%, 100% {
                 opacity: 1;
             }
             50% {
@@ -3126,6 +3148,7 @@
     </style>
 </head>
 <body>
+    <div id="theme-fab-login" class="theme-fab-login" onclick="toggleTheme()" style="display: none;">🌓 Alternar Tema</div>
     <input type="file" accept="image/*" capture="user" style="display:none;" id="camera-input" onchange="prepararRecorte(event)">
     <input type="file" accept="image/*" style="display:none;" id="gallery-input" onchange="prepararRecorte(event)">
     <input type="file" accept="image/*" style="display:none;" id="logo-input" onchange="logoAtualizada(event)">
@@ -3177,7 +3200,7 @@
 
     <div class="gerente-full-modal" id="gerente-full-modal"><div class="gerente-full-header"><button class="modal-close" onclick="fecharGerenteModal()" style="margin-left:0;">← Voltar</button><h3 id="gerente-modal-title">—</h3></div><div class="gerente-full-body" id="gerente-modal-body"></div></div>
     <div class="modal-overlay" id="task-modal" onclick="if(event.target===this)fecharModal()"><div class="modal-sheet"><div class="modal-handle"></div><div class="modal-header" id="modal-header"><span id="modal-header-setor" style="font-size:13px;font-weight:700;color:var(--green);"></span><button class="modal-close" onclick="fecharModal()">✕</button></div><div class="modal-carousel-wrap" id="modal-carousel"></div><div class="modal-nav"><button class="modal-nav-btn" onclick="navModal(-1)">◀</button><div class="dots-row" id="modal-dots"></div><button class="modal-nav-btn" onclick="navModal(1)">▶</button></div></div></div>
-    <div class="chat-overlay" id="chat-overlay" onclick="if(event.target===this)toggleChat()"><div class="chat-box"><div class="chat-header"><h3>💬 Chat da Equipe <span id="chat-badge" class="badge-pill" style="display:none;"></span></h3><button class="modal-close" onclick="toggleChat()">✕</button></div><div class="chat-online-section"><div class="chat-online-section-title">Funcionários Online</div><div class="chat-online-bar" id="chat-online-bar"></div></div><div class="chat-wall" id="chat-wall"></div><div class="chat-footer"><input type="text" class="field" id="chat-input" placeholder="Escreva aqui..." style="margin-bottom:0;flex:1;" onkeydown="if(event.key==='Enter')enviarChat()"><button class="btn-primary" style="width:auto;padding:0 18px;" onclick="enviarChat()">↑</button></div></div></div>
+    <div class="chat-overlay" id="chat-overlay" onclick="if(event.target===this)toggleChat()"><div class="chat-box"><div class="chat-header"><h3>💬 Chat da Equipe <span id="chat-badge" class="badge-pill" style="display:none;"></span></h3><button class="modal-close" onclick="toggleChat()">✕</button></div><div class="chat-online-section"><div class="chat-online-section-title">Funcionários</div><div class="chat-online-bar" id="chat-online-bar"></div></div><div class="chat-wall" id="chat-wall"></div><div class="chat-footer"><input type="text" class="field" id="chat-input" placeholder="Escreva aqui..." style="margin-bottom:0;flex:1;" onkeydown="if(event.key==='Enter')enviarChat()"><button class="btn-primary" style="width:auto;padding:0 18px;" onclick="enviarChat()">↑</button></div></div></div>
     <div class="dm-overlay" id="dm-overlay" onclick="if(event.target===this)fecharDM()"><div class="dm-box"><div class="dm-header"><h3 id="dm-title">💬 Chat Privado</h3><button class="modal-close" onclick="fecharDM()">✕</button></div><div class="dm-wall" id="dm-wall"></div><div class="dm-footer"><input type="text" class="field" id="dm-input" placeholder="Mensagem privada..." style="margin-bottom:0;flex:1;" onkeydown="if(event.key==='Enter')enviarDM()"><button class="btn-primary" style="width:auto;padding:0 18px;" onclick="enviarDM()">↑</button></div></div></div>
     <div class="fab-group" id="fab-group" style="display:none;"><button class="fab fab-chat" onclick="toggleChat()"><span>💬</span> Chat <span id="fab-badge" class="badge-pill" style="display:none;"></span></button><a class="fab fab-wpp" id="fab-wpp" href="#" onclick="exportarWhatsApp(event)" style="display:none;"><span>✅</span> Relatório</a></div>
     <div class="photo-picker-overlay" id="photo-picker-overlay" onclick="if(event.target===this)fecharPhotoPicker()"><div class="photo-picker-card"><h3>📸 Escolha a foto</h3><button onclick="escolherFotoPicker('camera')">📷 Câmera</button><button onclick="escolherFotoPicker('gallery')">🖼️ Galeria</button><button onclick="fecharPhotoPicker()" style="background:transparent;color:var(--text3);">Cancelar</button></div></div>
@@ -3539,7 +3562,7 @@
         window.fecharSidebar = function() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').style.display = 'none'; };
         function renderSidebarUsers() { const box = document.getElementById('sidebar-users'); if (!box) return; box.innerHTML = ''; Object.keys(liveData.usuariosSalvos).forEach(n => { const online = isOnline(n); const foto = liveData.usuariosSalvos[n].foto || ''; const avatarHTML = foto ? `<img class="sidebar-user-pic" src="${foto}">` : `<div class="sidebar-user-pic">${liveData.usuariosSalvos[n].avatar||'👤'}</div>`; box.innerHTML += `<div class="sidebar-user-row">${avatarHTML}<span class="sidebar-user-name">${n}</span><div class="online-dot ${online?'on':'off'}"></div></div>`; }); }
 
-        function trocarTela(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); const isLogin = id === 'scr-login'; document.getElementById('fab-group').style.display = isLogin ? 'none' : 'flex'; document.getElementById('topbar-login').style.display = isLogin ? 'none' : 'flex'; }
+        function trocarTela(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); const isLogin = id === 'scr-login'; document.getElementById('fab-group').style.display = isLogin ? 'none' : 'flex'; document.getElementById('topbar-login').style.display = isLogin ? 'none' : 'flex'; const themeFab = document.getElementById('theme-fab-login'); if (themeFab) themeFab.style.display = isLogin ? 'flex' : 'none'; }
 
         window.mudarContexto = function(tipo) {
             loginViewCtx = tipo; const isManager = tipo === 'manager';
@@ -3638,6 +3661,7 @@
             if (!liveData.loginAtividade) liveData.loginAtividade = {};
             liveData.loginAtividade[nome] = { ultimaAtividade: Date.now() };
             localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset') || new Date().toDateString());
+            localStorage.setItem('sc-last-user', nome);
             document.getElementById('sidebar-after-login').style.display = 'block';
             document.getElementById('sidebar-before-login').style.display = 'none';
             await salvar();
@@ -3647,6 +3671,7 @@
             document.getElementById('criar-conta-expand').classList.remove('show');
             document.getElementById('btn-login').style.display = 'block';
             document.getElementById('btn-criar-conta-toggle').textContent = '✨ Criar Conta';
+            pedirPermissaoNotificacao();
         };
 
         window.loginComBiometria = async function() {
@@ -3660,11 +3685,13 @@
                     if (!liveData.loginAtividade) liveData.loginAtividade = {};
                     liveData.loginAtividade[nome] = { ultimaAtividade: Date.now() };
                     localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset') || new Date().toDateString());
+                    localStorage.setItem('sc-last-user', nome);
                     document.getElementById('sidebar-after-login').style.display = 'block';
                     document.getElementById('sidebar-before-login').style.display = 'none';
                     await salvar();
                     trocarTela('scr-worker');
                     renderWorker(); atualizarPontoWidget(); iniciarHeartbeat();
+                    pedirPermissaoNotificacao();
                 }
             } catch (e) { customAlert('Falha na biometria. Use a senha.'); }
         };
@@ -3689,19 +3716,27 @@
                 if (!liveData.loginAtividade) liveData.loginAtividade = {};
                 liveData.loginAtividade[nome] = { ultimaAtividade: Date.now() };
                 localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset') || new Date().toDateString());
+                localStorage.setItem('sc-last-user', nome);
                 document.getElementById('sidebar-after-login').style.display = 'block';
                 document.getElementById('sidebar-before-login').style.display = 'none';
                 await salvar();
                 trocarTela('scr-worker'); renderWorker(); atualizarPontoWidget(); iniciarHeartbeat();
+                pedirPermissaoNotificacao();
             } else {
                 customAlert('Nome não encontrado. Use "✨ Criar Conta".');
             }
         };
 
+        function pedirPermissaoNotificacao() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
         function iniciarHeartbeat() { setInterval(() => { if (!currentWorker || currentWorker === 'Gerente') return; liveData.loginAtividade[currentWorker] = { ultimaAtividade: Date.now() }; atualizarCampo('loginAtividade', liveData.loginAtividade); }, 30000); }
 
-        window.logout = async function() { if (currentWorker && currentWorker !== 'Gerente') { if (liveData.loginAtividade) liveData.loginAtividade[currentWorker] = { ultimaAtividade: 0 }; await salvar(); } currentWorker = ''; base64Cam = ''; selectedAvatar = ''; loginFotoBase64 = ''; loginAvatarEscolhido = ''; document.getElementById('sidebar-after-login').style.display = 'none'; document.getElementById('sidebar-before-login').style.display = 'block'; mudarContexto('worker'); };
-        window.perfilAlterar = async function(tipo) { if (!currentWorker || currentWorker === 'Gerente') return; if (tipo === 'nome') { const novo = await customPrompt('Novo nome:'); if (novo && novo.trim()) { const n = novo.trim(); liveData.usuariosSalvos[n] = liveData.usuariosSalvos[currentWorker]; if (liveData.loginAtividade?.[currentWorker]) liveData.loginAtividade[n] = liveData.loginAtividade[currentWorker]; delete liveData.usuariosSalvos[currentWorker]; delete liveData.loginAtividade?.[currentWorker]; currentWorker = n; await salvar(); renderWorker(); customAlert('Nome alterado!'); } } else if (tipo === 'senha') { const s = await customPrompt('Nova senha (4 dígitos):'); if (s) { liveData.usuariosSalvos[currentWorker].senha = s; atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); customAlert('Senha alterada!'); } } else if (tipo === 'foto') { cropCtx = 'update'; window.abrirPhotoPicker('update'); } };
+        window.logout = async function() { if (currentWorker && currentWorker !== 'Gerente') { if (liveData.loginAtividade) liveData.loginAtividade[currentWorker] = { ultimaAtividade: 0 }; await salvar(); } currentWorker = ''; localStorage.removeItem('sc-last-user'); document.getElementById('sidebar-after-login').style.display = 'none'; document.getElementById('sidebar-before-login').style.display = 'block'; mudarContexto('worker'); };
+        window.perfilAlterar = async function(tipo) { if (!currentWorker || currentWorker === 'Gerente') return; if (tipo === 'nome') { const novo = await customPrompt('Novo nome:'); if (novo && novo.trim()) { const n = novo.trim(); liveData.usuariosSalvos[n] = liveData.usuariosSalvos[currentWorker]; if (liveData.loginAtividade?.[currentWorker]) liveData.loginAtividade[n] = liveData.loginAtividade[currentWorker]; delete liveData.usuariosSalvos[currentWorker]; delete liveData.loginAtividade?.[currentWorker]; currentWorker = n; localStorage.setItem('sc-last-user', n); await salvar(); renderWorker(); customAlert('Nome alterado!'); } } else if (tipo === 'senha') { const s = await customPrompt('Nova senha (4 dígitos):'); if (s) { liveData.usuariosSalvos[currentWorker].senha = s; atualizarCampo('usuariosSalvos', liveData.usuariosSalvos); customAlert('Senha alterada!'); } } else if (tipo === 'foto') { cropCtx = 'update'; window.abrirPhotoPicker('update'); } };
         window.acessarGerente = function() { customPrompt('Senha da gerência:').then(s => { if (s === liveData.masterPass) { trocarTela('scr-manager'); renderHistorico(); atualizarNotifEscala(); } else if (s !== null) customAlert('Senha incorreta!'); }); };
         window.alterarRestaurante = async function() { fecharSidebar(); const nome = await customPrompt('Nome do restaurante:', liveData.restaurante?.nome || ''); if (nome !== null) { liveData.restaurante = liveData.restaurante || {}; liveData.restaurante.nome = nome.trim(); await salvar(); } };
         window.logoAtualizada = function(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = e => compressImg(e.target.result, c => { if (!liveData.restaurante) liveData.restaurante = {}; liveData.restaurante.logo = c; salvar(); }); reader.readAsDataURL(file); };
@@ -4437,7 +4472,7 @@
         window.responderPedido = async function(idx, resp) { if (!liveData.pedidosFolga || !liveData.pedidosFolga[idx]) return; liveData.pedidosFolga[idx].status = resp; await atualizarCampo('pedidosFolga', liveData.pedidosFolga); renderCalendarioEscala(); atualizarNotifEscala(); customAlert(resp === 'aprovado' ? '✅ Aprovado!' : '❌ Negado.'); };
 
         window.toggleChat = function() { const ov = document.getElementById('chat-overlay'); ov.classList.toggle('show'); if (ov.classList.contains('show')) { renderChat(); renderChatOnlineBar(); } };
-        function renderChatOnlineBar() { const bar = document.getElementById('chat-online-bar'); if (!bar) return; bar.innerHTML = ''; Object.keys(liveData.usuariosSalvos).forEach(n => { if (!isOnline(n) || n === currentWorker) return; const u = liveData.usuariosSalvos[n] || {}; const av = document.createElement('div'); av.className = 'chat-online-avatar'; av.innerHTML = (u.foto ? `<img class="chat-online-avatar-img" src="${u.foto}">` : `<div class="chat-online-avatar-img">${u.avatar||'👤'}</div>`) + `<div class="chat-online-avatar-name">${n.split(' ')[0]}</div>`; av.onclick = (e) => { e.stopPropagation(); abrirDM(n); }; bar.appendChild(av); }); }
+        function renderChatOnlineBar() { const bar = document.getElementById('chat-online-bar'); if (!bar) return; bar.innerHTML = ''; Object.keys(liveData.usuariosSalvos).forEach(n => { if (n === currentWorker) return; const u = liveData.usuariosSalvos[n] || {}; const online = isOnline(n); const working = temTarefaEmAndamento(n); let statusClass = 'offline'; if (working) statusClass = 'working'; else if (online) statusClass = 'online'; const av = document.createElement('div'); av.className = 'chat-online-avatar'; const imgClass = `chat-online-avatar-img ${statusClass}`; if (u.foto) { av.innerHTML = `<img class="${imgClass}" src="${u.foto}"><div class="chat-online-avatar-name">${n.split(' ')[0]}</div>`; } else { av.innerHTML = `<div class="${imgClass}">${u.avatar||'👤'}</div><div class="chat-online-avatar-name">${n.split(' ')[0]}</div>`; } av.onclick = (e) => { e.stopPropagation(); abrirDM(n); }; bar.appendChild(av); }); }
         function renderChat() {
             const wall = document.getElementById('chat-wall'); wall.innerHTML = '';
             liveData.mensagensChat.forEach((m, idx) => {
@@ -4536,6 +4571,22 @@
         localStorage.setItem('sc-last-reset', localStorage.getItem('sc-last-reset') || new Date().toDateString());
 
         window.renderHistorico = function() { const list = document.getElementById('historico-list'); if (!list) return; list.innerHTML = ''; (liveData.historicoTurnos || []).slice(0, 10).forEach(h => { list.innerHTML += `<div class="histo-item"><span class="histo-date">${h.data}</span><div class="histo-bar"><div class="histo-fill" style="width:${h.pct}%;"></div></div><span class="histo-pct">${h.pct}%</span></div>`; }); };
+        
+        // Restauração de login após snapshot
+        setTimeout(() => {
+            const lastUser = localStorage.getItem('sc-last-user');
+            if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser] && !currentWorker) {
+                currentWorker = lastUser;
+                if (!liveData.loginAtividade) liveData.loginAtividade = {};
+                liveData.loginAtividade[lastUser] = { ultimaAtividade: Date.now() };
+                document.getElementById('sidebar-after-login').style.display = 'block';
+                document.getElementById('sidebar-before-login').style.display = 'none';
+                trocarTela('scr-worker');
+                renderWorker();
+                iniciarHeartbeat();
+                if (Notification.permission === 'default') Notification.requestPermission();
+            }
+        }, 2000);
     </script>
 </body>
 </html>

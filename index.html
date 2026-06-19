@@ -829,6 +829,7 @@
                 <div class="login-avatar-circle" id="login-avatar-circle"><span class="avatar-placeholder">👤</span></div>
                 <input type="text" class="field" id="field-user" placeholder="Seu Nome (Ex: Heitor)" oninput="detectarFuncionario()" autocomplete="name">
                 <input type="password" class="field" id="field-pass" placeholder="Senha de 4 dígitos" maxlength="4" pattern="\d*" inputmode="numeric" autocomplete="current-password">
+                <input type="tel" class="field" id="field-tel" placeholder="WhatsApp (Ex: (19) 99999-9999)" maxlength="16" inputmode="tel" autocomplete="tel" oninput="mascaraTelefone(this)" style="display:none;">
                 <button class="btn-primary" id="btn-login" onclick="processarLogin()">Entrar no Turno</button>
                 <button class="btn-biometria" id="btn-biometria" onclick="loginComBiometria()">🔐 Entrar com Face ID / Touch ID</button>
                 <button class="btn-ghost" id="btn-criar-conta-toggle" onclick="toggleCriarConta()">✨ Criar Conta</button>
@@ -906,6 +907,11 @@
                     <div class="mgr-btn-icon-wrap" style="background:rgba(13,148,136,0.12);">⭐</div>
                     <div class="mgr-btn-label">Avaliação de Qualidade</div>
                     <div class="mgr-btn-sub">Feedback por tarefa</div>
+                </div>
+                <div class="mgr-btn report" onclick="abrirGerenteModal('delegacao')" style="--btn-glow:rgba(124,58,237,0.6);">
+                    <div class="mgr-btn-icon-wrap" style="background:rgba(124,58,237,0.12);">🎯</div>
+                    <div class="mgr-btn-label">Delegar Tarefas</div>
+                    <div class="mgr-btn-sub">Atribuir por funcionário</div>
                 </div>
                 <div class="mgr-btn schedule" id="mgr-btn-escala" onclick="abrirEscala()">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(249,115,22,0.12);">📅</div>
@@ -1587,7 +1593,9 @@ const TAREFAS_RESTAURANTE = {
             feedbacksQualidade: [],
             templateAtivo: 'restaurante',
             setoresAtivos: {},
-            tarefasAtivas: {}
+            tarefasAtivas: {},
+            delegacoes: {},
+            delegacaoAtiva: false
         };
 
         let currentWorker = "";
@@ -1906,7 +1914,9 @@ const TAREFAS_RESTAURANTE = {
                     feedbacksQualidade: d.feedbacksQualidade || [],
                     templateAtivo: d.templateAtivo || 'restaurante',
                     setoresAtivos: d.setoresAtivos || {},
-                    tarefasAtivas: d.tarefasAtivas || {}
+                    tarefasAtivas: d.tarefasAtivas || {},
+                    delegacoes: d.delegacoes || {},
+                    delegacaoAtiva: d.delegacaoAtiva !== undefined ? d.delegacaoAtiva : false
                 });
                 if (Object.keys(liveData.usuariosSalvos).length === 0) {
                     if (restaurarBackupLocal()) {
@@ -2354,6 +2364,42 @@ const TAREFAS_RESTAURANTE = {
             return arr[idx] || null;
         }
 
+        // ========== DELEGAÇÃO DE TAREFAS ==========
+        // Estrutura de uma delegação salva em liveData.delegacoes[chave]:
+        // { worker: 'Nome', dias: [0..6] ou 'todos', criadoEm: ts }
+        // dias = 'todos' (fixo todo dia) OU array de números do dia da semana (0=Dom .. 6=Sáb)
+        function delegacaoModoAtivo() { return liveData.delegacaoAtiva === true; }
+        function getDelegacao(chave) { return (liveData.delegacoes && liveData.delegacoes[chave]) ? liveData.delegacoes[chave] : null; }
+        function delegacaoValeHoje(deleg) {
+            if (!deleg) return false;
+            if (deleg.dias === 'todos' || !Array.isArray(deleg.dias)) return true;
+            if (!deleg.dias.length) return true;
+            return deleg.dias.includes(new Date().getDay());
+        }
+        // Retorna o nome do dono da tarefa SE houver delegação ativa e válida hoje; senão null
+        function donoDelegado(chave) {
+            if (!delegacaoModoAtivo()) return null;
+            const d = getDelegacao(chave);
+            if (!d || !d.worker) return null;
+            if (!liveData.usuariosSalvos[d.worker]) return null; // funcionário removido
+            if (!delegacaoValeHoje(d)) return null;
+            return d.worker;
+        }
+        // currentWorker pode pegar esta tarefa? (regra de delegação)
+        function podePegarTarefa(chave) {
+            const dono = donoDelegado(chave);
+            if (!dono) return true;                 // livre pra todos
+            if (currentWorker === 'Gerente') return true; // gerente sempre pode
+            return dono === currentWorker;          // só o dono pega
+        }
+        const DIAS_SEMANA_CURTO = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+        const DIAS_SEMANA_LONGO = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+        function descreverDiasDelegacao(deleg) {
+            if (!deleg) return '';
+            if (deleg.dias === 'todos' || !Array.isArray(deleg.dias) || !deleg.dias.length) return 'Todos os dias';
+            return deleg.dias.slice().sort((a,b)=>a-b).map(d=>DIAS_SEMANA_CURTO[d]).join(', ');
+        }
+
         // ========== ORDEM PESSOAL ==========
         function getKeyOrdemUsuario() { return SC_ORDEM + (currentWorker || 'anon'); }
         function salvarOrdemPessoalChaves(keys) { localStorage.setItem(getKeyOrdemUsuario(), JSON.stringify(keys||[])); }
@@ -2596,6 +2642,7 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('btn-biometria').style.display='none';
             document.getElementById('field-user').style.display=isManager?'none':'block';
             document.getElementById('field-pass').value='';
+            var ftel=document.getElementById('field-tel'); if(ftel){ ftel.value=''; ftel.style.display='none'; }
             document.getElementById('criar-conta-expand').classList.remove('show');
             loginCriarContaModo=false;
             trocarTela('scr-login');
@@ -2630,9 +2677,35 @@ const TAREFAS_RESTAURANTE = {
             loginCriarContaModo=!loginCriarContaModo;
             const expand=document.getElementById('criar-conta-expand');
             expand.classList.toggle('show',loginCriarContaModo);
-            if(loginCriarContaModo){ document.getElementById('btn-login').style.display='none'; document.getElementById('btn-criar-conta-toggle').textContent='🔙 Voltar'; }
-            else{ document.getElementById('btn-login').style.display='block'; document.getElementById('btn-criar-conta-toggle').textContent='✨ Criar Conta'; }
+            const ftel=document.getElementById('field-tel');
+            if(loginCriarContaModo){ document.getElementById('btn-login').style.display='none'; document.getElementById('btn-criar-conta-toggle').textContent='🔙 Voltar'; if(ftel) ftel.style.display='block'; }
+            else{ document.getElementById('btn-login').style.display='block'; document.getElementById('btn-criar-conta-toggle').textContent='✨ Criar Conta'; if(ftel){ ftel.style.display='none'; ftel.value=''; } }
         };
+
+        // ===== MÁSCARA DE TELEFONE (19) 99999-9999 =====
+        window.mascaraTelefone = function(input) {
+            let v = input.value.replace(/\D/g, '');
+            if (v.length > 11) v = v.slice(0, 11);
+            let out = '';
+            if (v.length > 0) out = '(' + v.slice(0, 2);
+            if (v.length >= 2) out += ') ';
+            if (v.length >= 2) out += v.slice(2, 7);
+            if (v.length > 7) out += '-' + v.slice(7, 11);
+            input.value = out;
+        };
+        function telefoneSomenteNumeros(str) { return String(str || '').replace(/\D/g, ''); }
+        function telefoneFormatado(str) {
+            const v = telefoneSomenteNumeros(str);
+            if (v.length < 10) return str || '';
+            if (v.length === 11) return '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7);
+            return '(' + v.slice(0,2) + ') ' + v.slice(2,6) + '-' + v.slice(6);
+        }
+        function telefoneParaWhatsApp(str) {
+            let v = telefoneSomenteNumeros(str);
+            if (!v) return '';
+            if (!v.startsWith('55')) v = '55' + v;
+            return v;
+        }
 
         window.abrirModalAvatarLogin = function() {
             const gridHTML='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;">'+ALL_AVATARS.map(av=>`<div data-av="${av}" style="aspect-ratio:1;border-radius:12px;background:var(--card3);border:2px solid var(--border2);cursor:pointer;font-size:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;"><span style="font-size:24px;">${av}</span><span style="font-size:7px;color:var(--text3);font-weight:600;">${getAvatarName(av)}</span></div>`).join('')+'</div>';
@@ -2657,9 +2730,12 @@ const TAREFAS_RESTAURANTE = {
             if(!loginFotoBase64&&!loginAvatarEscolhido){ customAlert('⚠️ Escolha uma foto ou avatar!'); return; }
             const nome=document.getElementById('field-user').value.trim();
             const pass=document.getElementById('field-pass').value.trim();
+            const telRaw=document.getElementById('field-tel')?document.getElementById('field-tel').value.trim():'';
+            const telNum=telefoneSomenteNumeros(telRaw);
             if(!nome||!pass){ customAlert('Preencha nome e senha!'); return; }
+            if(!telNum||telNum.length<10){ customAlert('📱 Informe um número de WhatsApp válido com DDD!'); return; }
             if(liveData.usuariosSalvos[nome]){ customAlert('Nome já cadastrado!'); return; }
-            liveData.usuariosSalvos[nome]={senha:pass,foto:loginFotoBase64||'',avatar:loginAvatarEscolhido||''};
+            liveData.usuariosSalvos[nome]={senha:pass,foto:loginFotoBase64||'',avatar:loginAvatarEscolhido||'',telefone:telNum};
             currentWorker=nome;
             if(!liveData.loginAtividade) liveData.loginAtividade={};
             liveData.loginAtividade[nome]={ultimaAtividade:Date.now()};
@@ -2673,6 +2749,7 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('criar-conta-expand').classList.remove('show');
             document.getElementById('btn-login').style.display='block';
             document.getElementById('btn-criar-conta-toggle').textContent='✨ Criar Conta';
+            var ftel0=document.getElementById('field-tel'); if(ftel0){ ftel0.style.display='none'; ftel0.value=''; }
             pedirPermissaoNotificacao();
         };
 
@@ -2710,6 +2787,8 @@ const TAREFAS_RESTAURANTE = {
             if(!nome||!pass){ customAlert('Preencha todos os campos!'); return; }
             if(liveData.usuariosSalvos[nome]){
                 if(liveData.usuariosSalvos[nome].senha!==pass){ customAlert('Senha incorreta!'); return; }
+                const okTel = await garantirTelefoneUsuario(nome);
+                if(!okTel) return;
                 currentWorker=nome;
                 if(!liveData.loginAtividade) liveData.loginAtividade={};
                 liveData.loginAtividade[nome]={ultimaAtividade:Date.now()};
@@ -2723,6 +2802,27 @@ const TAREFAS_RESTAURANTE = {
                 customAlert('Nome não encontrado. Use "✨ Criar Conta".');
             }
         };
+
+        // ===== REGRA NOVA: pedir telefone a quem ainda não cadastrou =====
+        async function garantirTelefoneUsuario(nome) {
+            const u = liveData.usuariosSalvos[nome];
+            if (!u) return true;
+            if (u.telefone && telefoneSomenteNumeros(u.telefone).length >= 10) return true;
+            let tentativas = 0;
+            while (tentativas < 5) {
+                const entrada = await customPromptTelefone('📱 Nova regra! Para continuar, cadastre seu número de WhatsApp (com DDD):');
+                if (entrada === null) { customAlert('É necessário cadastrar o WhatsApp para entrar.'); return false; }
+                const num = telefoneSomenteNumeros(entrada);
+                if (num.length >= 10) {
+                    liveData.usuariosSalvos[nome].telefone = num;
+                    await atualizarCampo('usuariosSalvos', liveData.usuariosSalvos);
+                    return true;
+                }
+                customAlert('Número inválido. Use DDD + número, ex: (19) 99999-9999');
+                tentativas++;
+            }
+            return false;
+        }
 
         function pedirPermissaoNotificacao() { if('Notification' in window&&Notification.permission==='default') Notification.requestPermission(); }
 
@@ -3008,7 +3108,20 @@ const TAREFAS_RESTAURANTE = {
                 const pl = tarefa.prioridade === 'alta' ? '🔴 Urgente' : tarefa.prioridade === 'baixa' ? '🔵 Baixa' : '⚪ Normal';
                 let actHTML = '';
                 if (st.status === 'idle') {
-                    actHTML = `<div class="task-action-bar"><div class="task-action-info">📋 Disponível</div><div class="task-action-btns"><span class="priority-tag ${pc}">${pl}</span><button class="btn-take-sm" onclick="event.stopPropagation();pegarTarefa('${chave}')">Pegar</button></div></div>`;
+                    const donoD = donoDelegado(chave);
+                    if (donoD) {
+                        const ehDono = (donoD === currentWorker) || (currentWorker === 'Gerente');
+                        const avC = (donoD === currentWorker) ? 'status-working' : 'status-other';
+                        const nomeC = (donoD === currentWorker) ? 'status-working' : 'status-other';
+                        let dir = '';
+                        if (donoD === currentWorker) dir = `<span style="color:var(--gold);font-weight:700;">🔒 Sua tarefa</span>`;
+                        else dir = `<span style="color:var(--blue);font-weight:600;">🔒 Delegada</span>`;
+                        let btns = `<span class="priority-tag ${pc}">${pl}</span>`;
+                        if (ehDono) btns += `<button class="btn-take-sm" onclick="event.stopPropagation();pegarTarefa('${chave}')">Pegar</button>`;
+                        actHTML = `<div class="task-action-bar"><div class="worker-avatar-block" onclick="event.stopPropagation();abrirPerfilFuncionario('${donoD}')">${renderAvatarEl(donoD,42,'worker-avatar-img '+avC)}<div class="worker-avatar-name ${nomeC}">${donoD.split(' ')[0]}</div></div><div class="task-action-info">${dir}</div><div class="task-action-btns">${btns}</div></div>`;
+                    } else {
+                        actHTML = `<div class="task-action-bar"><div class="task-action-info">📋 Disponível</div><div class="task-action-btns"><span class="priority-tag ${pc}">${pl}</span><button class="btn-take-sm" onclick="event.stopPropagation();pegarTarefa('${chave}')">Pegar</button></div></div>`;
+                    }
                 } else if (isWM) {
                     actHTML = `<div class="task-action-bar"><div class="worker-avatar-block" onclick="event.stopPropagation();abrirPerfilFuncionario('${currentWorker}')">${renderAvatarEl(currentWorker,42,'worker-avatar-img status-working')}<div class="worker-avatar-name status-working">${currentWorker.split(' ')[0]}</div></div><div class="task-action-info"><span style="color:var(--gold);">Você executa</span></div><div class="task-action-btns"><span class="cron-badge" id="cron_${chave}">⏱️ ...</span><button class="btn-done-sm" onclick="event.stopPropagation();concluirTarefaLista('${chave}')">Feito ✅</button></div></div>`;
                 } else if (isWO) {
@@ -3023,7 +3136,9 @@ const TAREFAS_RESTAURANTE = {
                 if (currentWorker === 'Gerente') {
                     actHTML += `<div style="padding:4px 12px;"><button class="btn-edit-sm" onclick="event.stopPropagation();editarTarefaModal('${chave}')">✏️ Editar</button></div>`;
                 }
-                row.innerHTML = `<div class="task-row-head" onclick="abrirModal('${chave}')"><span class="task-emoji">${iconeT}</span><div style="flex:1;min-width:0;"><div class="task-title">${tarefa.txt}</div></div><div class="task-dot"></div></div><div class="task-resume">${resume}</div>${actHTML}`;
+                const donoSelo = donoDelegado(chave);
+                const seloDeleg = donoSelo ? `<span style="display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(124,58,237,0.15);color:var(--purple);margin-left:4px;vertical-align:middle;">🔒 ${donoSelo.split(' ')[0]}</span>` : '';
+                row.innerHTML = `<div class="task-row-head" onclick="abrirModal('${chave}')"><span class="task-emoji">${iconeT}</span><div style="flex:1;min-width:0;"><div class="task-title">${tarefa.txt}${seloDeleg}</div></div><div class="task-dot"></div></div><div class="task-resume">${resume}</div>${actHTML}`;
                 tasksListEl.appendChild(row);
                 if (st.status === 'working' && st.startTime) iniciarCronLista(chave, st.startTime);
             });
@@ -3141,6 +3256,11 @@ const TAREFAS_RESTAURANTE = {
         }
 
         window.pegarTarefa = async function(chave) {
+            const dono = donoDelegado(chave);
+            if (dono && currentWorker !== 'Gerente' && dono !== currentWorker) {
+                customAlert('🔒 Esta tarefa foi delegada para ' + dono + '. Apenas essa pessoa pode executá-la.');
+                return;
+            }
             await atualizarStatusTarefa(chave, { status: 'working', worker: currentWorker, startTime: Date.now() });
             soundPegar(); renderWorker();
         };
@@ -3266,10 +3386,23 @@ const TAREFAS_RESTAURANTE = {
                 const isMe = st.worker === currentWorker;
                 statusHTML = `<div class="modal-status-bar"><div class="worker-avatar-block" onclick="fecharModal();abrirPerfilFuncionario('${st.worker}')">${renderAvatarEl(st.worker,42,'worker-avatar-img status-working')}<div class="worker-avatar-name status-working">${st.worker.split(' ')[0]}</div></div><span style="color:${isMe?'var(--gold)':'var(--blue)'};font-weight:700;">⏳ ${isMe?'Você executa':'Em andamento'}</span><div class="modal-timer" id="mt-timer-${chave}" style="margin-left:auto;font-size:16px;"></div></div>`;
             } else {
-                statusHTML = `<div class="modal-status-bar"><span style="color:var(--text3);">📋 Disponível</span></div>`;
+                const donoMD = donoDelegado(chave);
+                if (donoMD) {
+                    const meu = donoMD === currentWorker;
+                    statusHTML = `<div class="modal-status-bar"><div class="worker-avatar-block" onclick="fecharModal();abrirPerfilFuncionario('${donoMD}')">${renderAvatarEl(donoMD,42,'worker-avatar-img '+(meu?'status-working':'status-other'))}<div class="worker-avatar-name ${meu?'status-working':'status-other'}">${donoMD.split(' ')[0]}</div></div><span style="color:${meu?'var(--gold)':'var(--blue)'};font-weight:700;">🔒 ${meu?'Delegada para você':'Delegada para '+donoMD.split(' ')[0]}</span></div>`;
+                } else {
+                    statusHTML = `<div class="modal-status-bar"><span style="color:var(--text3);">📋 Disponível</span></div>`;
+                }
             }
             let actionsHTML = '';
-            if (st.status === 'idle') actionsHTML = `<button class="btn-modal-take" onclick="pegarTarefa('${chave}');fecharModal()">Pegar Tarefa</button>`;
+            if (st.status === 'idle') {
+                const donoAct = donoDelegado(chave);
+                if (!donoAct || donoAct === currentWorker || currentWorker === 'Gerente') {
+                    actionsHTML = `<button class="btn-modal-take" onclick="pegarTarefa('${chave}');fecharModal()">Pegar Tarefa</button>`;
+                } else {
+                    actionsHTML = `<div style="padding:12px;text-align:center;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:var(--radius-md);font-size:13px;color:var(--purple);font-weight:700;">🔒 Tarefa exclusiva de ${donoAct}</div>`;
+                }
+            }
             else if (st.status === 'working' && st.worker === currentWorker) actionsHTML = `<button class="btn-modal-done" onclick="gerenciarModal('feito','${chave}')">Marcar como Feito ✅</button><button class="btn-modal-leave" onclick="gerenciarModal('largar','${chave}')">Largar Tarefa</button>`;
             if (currentWorker === 'Gerente') actionsHTML += `<button class="btn-edit-sm" onclick="editarTarefaModal('${chave}')">✏️ Editar Tarefa</button>`;
             actionsHTML += `<button class="btn-comment" onclick="abrirComentarios('${chave}')">💬 Ver / Adicionar Comentário</button>`;
@@ -3333,6 +3466,7 @@ const TAREFAS_RESTAURANTE = {
             else if (tipo === 'equipe') { title.textContent = '👥 Equipe & Pontos'; renderEquipe(body); }
             else if (tipo === 'relatorio') { title.textContent = '📋 Relatório do Turno'; renderRelatorio(body); }
             else if (tipo === 'qualidade') { title.textContent = '⭐ Avaliação de Qualidade'; renderQualidade(body); }
+            else if (tipo === 'delegacao') { title.textContent = '🎯 Delegar Tarefas'; renderDelegacao(body); }
         };
 
         window.fecharGerenteModal = function() { document.getElementById('gerente-full-modal').classList.remove('open'); edicaoTaskIdx = null; };
@@ -3676,6 +3810,8 @@ const TAREFAS_RESTAURANTE = {
                 const ps = ponto ? (ponto.entrada ? `Entrada: ${ponto.entrada}${ponto.saida?' | Saída: '+ponto.saida:''}` : '-') : '-';
                 const tarefasFunc = coletarTarefasFuncionario(n);
                 const feitas = tarefasFunc.filter(t => t.st.status === 'done').length;
+                const uEq = liveData.usuariosSalvos[n] || {};
+                const telEq = uEq.telefone ? telefoneFormatado(uEq.telefone) : 'sem número';
                 const bar = document.createElement('div'); bar.className = 'equipe-bar';
                 bar.innerHTML = `
                 <div class="equipe-bar-main" onclick="this.parentElement.querySelector('.equipe-bar-expand').classList.toggle('show')">
@@ -3684,6 +3820,7 @@ const TAREFAS_RESTAURANTE = {
                     <span class="equipe-bar-status ${online?'online':'offline'}">${online?'ONLINE':'OFFLINE'}</span>
                 </div>
                 <div class="equipe-bar-expand">
+                    <div style="font-size:11px;color:${uEq.telefone?'var(--text2)':'var(--red)'};display:flex;align-items:center;gap:8px;">📱 WhatsApp: ${telEq} <button onclick="event.stopPropagation();editarTelefoneFunc('${n}','equipe')" style="background:transparent;border:1px solid var(--accent);color:var(--accent);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font-body);">${uEq.telefone?'editar':'cadastrar'}</button></div>
                     <div style="font-size:11px;color:var(--text2);">📋 Tarefas concluídas: ${feitas}</div>
                     <div style="font-size:11px;color:var(--text2);">💬 Comentários: ${Object.values(liveData.comentariosTarefa||{}).flat().filter(c=>c.user===n).length}</div>
                     <div style="font-size:11px;color:var(--text2);">📅 Pedidos de folga: ${(liveData.pedidosFolga||[]).filter(p=>p.worker===n).length}</div>
@@ -3733,6 +3870,383 @@ const TAREFAS_RESTAURANTE = {
             });
             if (!count) body.innerHTML += '<div class="empty-state">Nenhuma tarefa concluída para avaliar.</div>';
         }
+
+        // ========================================================
+        // ============ MÓDULO DE DELEGAÇÃO DE TAREFAS ============
+        // ========================================================
+        let delegFuncSel = null;        // funcionário selecionado na tela de delegação
+        let delegSelecaoWpp = {};       // chaves selecionadas para envio no WhatsApp
+
+        function funcionariosLista() { return Object.keys(liveData.usuariosSalvos).filter(n => n !== 'Gerente'); }
+
+        function renderDelegacao(body) {
+            const ativo = delegacaoModoAtivo();
+            const funcs = funcionariosLista();
+            let html = '';
+            // Interruptor geral
+            html += `<div class="config-row" style="margin-bottom:14px;">
+                <div class="config-row-icon">🎯</div>
+                <div class="config-row-info"><div class="config-row-label">Modo Delegação</div><div class="config-row-sub">${ativo ? 'Ativo — tarefas delegadas são exclusivas' : 'Desligado — todos pegam qualquer tarefa'}</div></div>
+                <label class="toggle-switch"><input type="checkbox" ${ativo?'checked':''} onchange="toggleModoDelegacao(this.checked)"><span class="toggle-slider"></span></label>
+            </div>`;
+            if (!ativo) {
+                html += `<div style="padding:18px;text-align:center;background:var(--card2);border:1px dashed var(--border2);border-radius:var(--radius-md);font-size:12px;color:var(--text3);line-height:1.6;">Ative o <strong>Modo Delegação</strong> acima para atribuir tarefas específicas a cada funcionário.<br>Com ele desligado, todas as tarefas continuam livres para qualquer pessoa pegar.</div>`;
+                body.innerHTML = html;
+                return;
+            }
+            if (!funcs.length) {
+                html += '<div class="empty-state"><div class="empty-icon">👥</div>Nenhum funcionário cadastrado ainda.</div>';
+                body.innerHTML = html;
+                return;
+            }
+            // Seletor de funcionário (chips com foto)
+            html += '<div class="config-section-title">Escolha o funcionário</div>';
+            html += '<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;scrollbar-width:none;">';
+            funcs.forEach(n => {
+                const sel = n === delegFuncSel;
+                const qtd = contarDelegacoesFunc(n);
+                html += `<div onclick="selecionarFuncDelegacao('${n}')" style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;border-radius:16px;cursor:pointer;border:2px solid ${sel?'var(--purple)':'var(--border)'};background:${sel?'rgba(124,58,237,0.1)':'var(--card2)'};min-width:72px;position:relative;">
+                    ${renderAvatarEl(n,46)}
+                    <span style="font-size:10px;font-weight:700;color:var(--text);max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n.split(' ')[0]}</span>
+                    ${qtd>0?`<span style="position:absolute;top:2px;right:2px;background:var(--purple);color:#fff;font-size:9px;font-weight:800;padding:1px 6px;border-radius:8px;">${qtd}</span>`:''}
+                </div>`;
+            });
+            html += '</div>';
+            body.innerHTML = html;
+            if (!delegFuncSel || !liveData.usuariosSalvos[delegFuncSel]) delegFuncSel = funcs[0];
+            renderDelegacaoFunc(body);
+        }
+
+        function contarDelegacoesFunc(nome) {
+            let c = 0;
+            Object.values(liveData.delegacoes || {}).forEach(d => { if (d && d.worker === nome) c++; });
+            return c;
+        }
+
+        window.toggleModoDelegacao = async function(on) {
+            liveData.delegacaoAtiva = on;
+            await atualizarCampo('delegacaoAtiva', on);
+            renderDelegacao(document.getElementById('gerente-modal-body'));
+            renderWorker();
+        };
+
+        window.selecionarFuncDelegacao = function(nome) {
+            delegFuncSel = nome;
+            delegSelecaoWpp = {};
+            renderDelegacao(document.getElementById('gerente-modal-body'));
+        };
+
+        function renderDelegacaoFunc(body) {
+            const nome = delegFuncSel;
+            if (!nome) return;
+            const u = liveData.usuariosSalvos[nome] || {};
+            const tel = u.telefone ? telefoneFormatado(u.telefone) : '—';
+            const cont = document.createElement('div');
+            cont.style.marginTop = '4px';
+            // Cabeçalho do funcionário + botão WhatsApp
+            let h = `<div style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;margin-bottom:12px;">
+                ${renderAvatarEl(nome,44)}
+                <div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:800;color:var(--text);">${nome}</div><div style="font-size:11px;color:${u.telefone?'var(--text3)':'var(--red)'};">📱 ${tel}</div></div>
+                <button onclick="editarTelefoneFunc('${nome}','delegacao')" style="background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body);flex-shrink:0;">${u.telefone?'✏️ Editar nº':'📱 Add nº'}</button>
+            </div>`;
+            // Tarefas já delegadas a ele
+            const delegadas = [];
+            Object.entries(liveData.delegacoes || {}).forEach(([chave, d]) => {
+                if (d && d.worker === nome) { const t = getTarefaByChave(chave); if (t) delegadas.push({ chave, t, d, setorId: parseChave(chave).setorId }); }
+            });
+            h += `<div class="config-section-title">Tarefas delegadas a ${nome.split(' ')[0]} (${delegadas.length})</div>`;
+            if (!delegadas.length) {
+                h += `<div style="padding:14px;text-align:center;background:var(--card2);border-radius:var(--radius-md);font-size:12px;color:var(--text3);margin-bottom:12px;">Nenhuma tarefa delegada ainda. Use o botão abaixo para adicionar.</div>`;
+            } else {
+                // Botões WhatsApp (envia selecionadas ou todas)
+                h += `<div style="display:flex;gap:8px;margin-bottom:10px;">
+                    <button class="btn-primary" style="margin:0;flex:1;background:#25d366;box-shadow:none;" onclick="enviarDelegacoesWhatsApp('${nome}','todas')">📲 Enviar TODAS no WhatsApp</button>
+                </div>
+                <div style="display:flex;gap:8px;margin-bottom:10px;">
+                    <button class="btn-ghost" style="margin:0;flex:1;font-size:12px;" onclick="enviarDelegacoesWhatsApp('${nome}','selecionadas')">📲 Enviar selecionadas</button>
+                </div>`;
+                h += '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px;">';
+                delegadas.forEach(({ chave, t, d, setorId }) => {
+                    const setor = todosSetores().find(s => s.id === setorId);
+                    const checked = delegSelecaoWpp[chave] ? 'checked' : '';
+                    h += `<div style="display:flex;align-items:center;gap:8px;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;">
+                        <input type="checkbox" ${checked} onchange="toggleSelecaoWpp('${chave}',this.checked)" style="width:18px;height:18px;flex-shrink:0;accent-color:var(--purple);">
+                        <span style="font-size:18px;flex-shrink:0;">${t.icone||'📋'}</span>
+                        <div style="flex:1;min-width:0;">
+                            <div style="font-size:12px;font-weight:700;color:var(--text);line-height:1.3;">${t.txt}</div>
+                            <div style="font-size:10px;color:var(--text3);margin-top:2px;">${setor?setor.icon+' '+setor.title:''} · 📅 ${descreverDiasDelegacao(d)}</div>
+                        </div>
+                        <button onclick="editarDiasDelegacao('${chave}')" style="background:transparent;border:1.5px solid var(--blue);color:var(--blue);border-radius:8px;padding:5px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body);flex-shrink:0;">📅</button>
+                        <button onclick="removerDelegacao('${chave}')" style="background:rgba(206,43,55,0.1);border:1px solid rgba(206,43,55,0.3);color:var(--red);border-radius:8px;padding:5px 8px;font-size:11px;cursor:pointer;font-family:var(--font-body);flex-shrink:0;">🗑️</button>
+                    </div>`;
+                });
+                h += '</div>';
+            }
+            // Botão adicionar nova delegação
+            h += `<button class="btn-primary" style="margin:0;" onclick="abrirSelecaoTarefaDelegacao('${nome}')">➕ Delegar Nova Tarefa</button>`;
+            cont.innerHTML = h;
+            body.appendChild(cont);
+        }
+
+        window.toggleSelecaoWpp = function(chave, on) { if (on) delegSelecaoWpp[chave] = true; else delete delegSelecaoWpp[chave]; };
+
+        // ----- Selecionar qual tarefa delegar (navega por setores) -----
+        let delegLote = {};        // { chave: true } tarefas marcadas na leva atual
+        let delegLoteNome = null;  // funcionário alvo da leva
+        let delegPendente = null;  // { chave, nome, dias } ou { chaves, nome, dias, lote:true }
+
+        window.abrirSelecaoTarefaDelegacao = function(nome) {
+            delegLote = {};
+            delegLoteNome = nome;
+            const body = document.getElementById('gerente-modal-body');
+            const setores = todosSetores().filter(s => liveData.setoresAtivos?.[s.id] !== false);
+            let h = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <button class="modal-close" onclick="abrirGerenteModal('delegacao')" style="margin-left:0;width:auto;padding:0 12px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;">← Voltar</button>
+                <span style="font-size:14px;font-weight:800;color:var(--text);">Delegar para ${nome.split(' ')[0]}</span>
+            </div>`;
+            h += `<p style="font-size:11px;color:var(--text3);margin-bottom:10px;">Marque quantas tarefas quiser e toque em <strong>Confirmar</strong> no final. Os dias você escolhe uma vez só, para todas.</p>`;
+            h += '<input type="text" class="task-search-input" id="deleg-search" placeholder="🔍 Buscar tarefa..." oninput="filtrarTarefasDelegacao(this.value)" style="margin-bottom:12px;padding-left:14px;">';
+            h += '<div id="deleg-setores-list" style="padding-bottom:80px;">';
+            setores.forEach(s => {
+                const tarefas = liveData.tarefasCustomizadas.filter(t => t.cat === s.id);
+                if (!tarefas.length) return;
+                h += `<div class="deleg-setor-bloco" data-setor="${s.id}" style="margin-bottom:12px;">
+                    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:${s.color}18;border-radius:var(--radius-sm);border-left:3px solid ${s.color};margin-bottom:6px;">
+                        <span style="font-size:18px;">${s.icon}</span><span style="font-size:12px;font-weight:800;color:var(--text);">${s.title}</span>
+                    </div>`;
+                tarefas.forEach(t => {
+                    const idxSetor = tarefas.indexOf(t);
+                    const chave = s.id + '_' + idxSetor;
+                    const delegAtual = getDelegacao(chave);
+                    const jaDeleg = delegAtual && delegAtual.worker;
+                    const meu = jaDeleg === nome;
+                    let badge = '';
+                    if (jaDeleg && !meu) badge = `<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(124,58,237,0.15);color:var(--purple);flex-shrink:0;">🔒 ${jaDeleg.split(' ')[0]}</span>`;
+                    else if (meu) badge = `<span style="font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(0,146,70,0.15);color:var(--accent);flex-shrink:0;">✓ já é desta pessoa</span>`;
+                    h += `<div class="deleg-task-item" data-txt="${t.txt.toLowerCase()}" data-chave="${chave}" onclick="toggleTarefaLote('${chave}',this)" style="display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius-sm);margin-bottom:4px;cursor:pointer;">
+                        <div class="lote-check" style="width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;"></div>
+                        <span style="font-size:16px;flex-shrink:0;">${t.icone||'📋'}</span>
+                        <span style="flex:1;font-size:12px;font-weight:600;color:var(--text);">${t.txt}</span>
+                        ${badge}
+                    </div>`;
+                });
+                h += '</div>';
+            });
+            h += '</div>';
+            // Barra fixa de confirmar
+            h += `<div style="position:sticky;bottom:0;left:0;right:0;padding:12px 0 4px;background:linear-gradient(to top,var(--bg) 70%,transparent);">
+                <button class="btn-primary" id="btn-confirmar-lote" style="margin:0;background:var(--purple);box-shadow:none;" onclick="abrirDiasLote()">✅ Confirmar delegação (<span id="lote-count">0</span>)</button>
+            </div>`;
+            body.innerHTML = h;
+        };
+
+        window.toggleTarefaLote = function(chave, el) {
+            if (delegLote[chave]) { delete delegLote[chave]; } else { delegLote[chave] = true; }
+            const check = el.querySelector('.lote-check');
+            const on = !!delegLote[chave];
+            if (check) { check.style.background = on ? 'var(--purple)' : 'transparent'; check.style.borderColor = on ? 'var(--purple)' : 'var(--border2)'; check.textContent = on ? '✓' : ''; }
+            el.style.borderColor = on ? 'var(--purple)' : 'var(--border)';
+            el.style.background = on ? 'rgba(124,58,237,0.08)' : 'var(--card2)';
+            const cnt = document.getElementById('lote-count');
+            if (cnt) cnt.textContent = Object.keys(delegLote).length;
+        };
+
+        window.filtrarTarefasDelegacao = function(q) {
+            q = (q||'').toLowerCase().trim();
+            document.querySelectorAll('#deleg-setores-list .deleg-task-item').forEach(item => {
+                const txt = item.dataset.txt || '';
+                item.style.display = (!q || txt.includes(q)) ? 'flex' : 'none';
+            });
+            document.querySelectorAll('#deleg-setores-list .deleg-setor-bloco').forEach(bloco => {
+                const visiveis = [...bloco.querySelectorAll('.deleg-task-item')].some(i => i.style.display !== 'none');
+                bloco.style.display = visiveis ? 'block' : 'none';
+            });
+        };
+
+        // Abre a escolha de dias UMA vez para todas as tarefas marcadas
+        window.abrirDiasLote = function() {
+            const chaves = Object.keys(delegLote);
+            if (!chaves.length) { customAlert('Marque ao menos uma tarefa.'); return; }
+            delegPendente = { chaves, nome: delegLoteNome, dias: 'todos', lote: true };
+            abrirEditorDiasLote();
+        };
+
+        function abrirEditorDiasLote() {
+            const nome = delegPendente.nome;
+            const qtd = delegPendente.chaves.length;
+            const dias = delegPendente.dias;
+            const isTodos = dias === 'todos' || !Array.isArray(dias);
+            const arrDias = isTodos ? [] : dias;
+            let h = `<p style="font-size:13px;color:var(--text);margin-bottom:6px;font-weight:700;">${qtd} tarefa(s) para <strong style="color:var(--purple);">${nome}</strong></p>
+                <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">Escolha quando esta delegação vale (igual para todas as marcadas):</p>`;
+            h += '<div style="margin-bottom:12px;">';
+            h += `<div onclick="setDelegTodosDias()" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--radius-md);border:2px solid ${isTodos?'var(--purple)':'var(--border)'};background:${isTodos?'rgba(124,58,237,0.08)':'var(--card2)'};cursor:pointer;margin-bottom:10px;">
+                <span style="font-size:20px;">📌</span><div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text);">Fixo — todos os dias</div><div style="font-size:10px;color:var(--text3);">A tarefa é sempre desta pessoa</div></div>${isTodos?'<span style="color:var(--purple);font-weight:800;">✓</span>':''}
+            </div>`;
+            h += `<div style="font-size:11px;color:var(--text3);text-align:center;margin:8px 0;">— ou escolha dias específicos —</div>`;
+            h += '<div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;">';
+            for (let i = 0; i < 7; i++) {
+                const on = !isTodos && arrDias.includes(i);
+                h += `<div onclick="toggleDiaDelegacao(${i})" style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;border:2px solid ${on?'var(--purple)':'var(--border)'};background:${on?'var(--purple)':'var(--card2)'};color:${on?'#fff':'var(--text2)'};">${DIAS_SEMANA_CURTO[i]}</div>`;
+            }
+            h += '</div></div>';
+            const btns = `<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;background:var(--purple);box-shadow:none;">Confirmar</button>`;
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '🎯 Quando vale esta delegação?';
+            document.getElementById('dialog-extra').innerHTML = h;
+            document.getElementById('dialog-btns').innerHTML = btns;
+            ov.classList.add('show');
+            document.getElementById('dlg-ok').onclick = () => { ov.classList.remove('show'); salvarDelegacaoLote(); };
+            document.getElementById('dlg-c').onclick = () => { ov.classList.remove('show'); delegPendente = null; };
+        }
+
+        async function salvarDelegacaoLote() {
+            if (!delegPendente || !delegPendente.lote) return;
+            const { chaves, nome, dias } = delegPendente;
+            if (!liveData.delegacoes) liveData.delegacoes = {};
+            chaves.forEach(chave => { liveData.delegacoes[chave] = { worker: nome, dias: dias, criadoEm: Date.now() }; });
+            delegPendente = null; delegLote = {};
+            liveData.delegacaoAtiva = true;
+            await atualizarCampo('delegacoes', liveData.delegacoes);
+            await atualizarCampo('delegacaoAtiva', true);
+            customAlert('✅ ' + chaves.length + ' tarefa(s) delegada(s) para ' + nome + '!');
+            abrirGerenteModal('delegacao');
+            renderWorker();
+        }
+
+        // ----- Confirmar a delegação de UMA tarefa (usado ao editar dias de uma já existente) -----
+        window.confirmarDelegarTarefa = function(chave, nome) {
+            const jaExiste = getDelegacao(chave);
+            delegPendente = { chave, nome, dias: (jaExiste && jaExiste.worker === nome && Array.isArray(jaExiste.dias)) ? jaExiste.dias.slice() : 'todos' };
+            abrirEditorDiasDelegacao(chave, nome);
+        };
+
+        function abrirEditorDiasDelegacao(chave, nome) {
+            const t = getTarefaByChave(chave);
+            const setor = todosSetores().find(s => s.id === parseChave(chave).setorId);
+            const dias = delegPendente.dias;
+            const isTodos = dias === 'todos' || !Array.isArray(dias);
+            const arrDias = isTodos ? [] : dias;
+            let h = `<p style="font-size:14px;color:var(--text);margin-bottom:6px;font-weight:700;">${t?t.icone+' '+t.txt:''}</p>
+                <p style="font-size:11px;color:var(--text3);margin-bottom:14px;">${setor?setor.icon+' '+setor.title:''} → Delegar para <strong style="color:var(--purple);">${nome}</strong></p>`;
+            h += '<div style="margin-bottom:12px;">';
+            h += `<div onclick="setDelegTodosDias()" style="display:flex;align-items:center;gap:10px;padding:12px;border-radius:var(--radius-md);border:2px solid ${isTodos?'var(--purple)':'var(--border)'};background:${isTodos?'rgba(124,58,237,0.08)':'var(--card2)'};cursor:pointer;margin-bottom:10px;">
+                <span style="font-size:20px;">📌</span><div style="flex:1;"><div style="font-size:13px;font-weight:700;color:var(--text);">Fixo — todos os dias</div><div style="font-size:10px;color:var(--text3);">A tarefa é sempre desta pessoa</div></div>${isTodos?'<span style="color:var(--purple);font-weight:800;">✓</span>':''}
+            </div>`;
+            h += `<div style="font-size:11px;color:var(--text3);text-align:center;margin:8px 0;">— ou escolha dias específicos —</div>`;
+            h += '<div style="display:flex;gap:5px;justify-content:center;flex-wrap:wrap;">';
+            for (let i = 0; i < 7; i++) {
+                const on = !isTodos && arrDias.includes(i);
+                h += `<div onclick="toggleDiaDelegacao(${i})" style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;border:2px solid ${on?'var(--purple)':'var(--border)'};background:${on?'var(--purple)':'var(--card2)'};color:${on?'#fff':'var(--text2)'};">${DIAS_SEMANA_CURTO[i]}</div>`;
+            }
+            h += '</div></div>';
+            const btns = `<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;background:var(--purple);box-shadow:none;">Confirmar</button>`;
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '🎯 Quando esta delegação vale?';
+            document.getElementById('dialog-extra').innerHTML = h;
+            document.getElementById('dialog-btns').innerHTML = btns;
+            ov.classList.add('show');
+            document.getElementById('dlg-ok').onclick = () => { ov.classList.remove('show'); salvarDelegacaoPendente(); };
+            document.getElementById('dlg-c').onclick = () => { ov.classList.remove('show'); delegPendente = null; };
+        }
+
+        window.setDelegTodosDias = function() { if (delegPendente) { delegPendente.dias = 'todos'; reabrirEditorDias(); } };
+        window.toggleDiaDelegacao = function(d) {
+            if (!delegPendente) return;
+            if (delegPendente.dias === 'todos' || !Array.isArray(delegPendente.dias)) delegPendente.dias = [];
+            const i = delegPendente.dias.indexOf(d);
+            if (i >= 0) delegPendente.dias.splice(i, 1); else delegPendente.dias.push(d);
+            if (!delegPendente.dias.length) delegPendente.dias = 'todos';
+            reabrirEditorDias();
+        };
+        function reabrirEditorDias() { if (!delegPendente) return; if (delegPendente.lote) abrirEditorDiasLote(); else abrirEditorDiasDelegacao(delegPendente.chave, delegPendente.nome); }
+
+        async function salvarDelegacaoPendente() {
+            if (!delegPendente) return;
+            const { chave, nome, dias } = delegPendente;
+            if (!liveData.delegacoes) liveData.delegacoes = {};
+            liveData.delegacoes[chave] = { worker: nome, dias: dias, criadoEm: Date.now() };
+            delegPendente = null;
+            await atualizarCampo('delegacoes', liveData.delegacoes);
+            await atualizarCampo('delegacaoAtiva', true);
+            liveData.delegacaoAtiva = true;
+            customAlert('✅ Tarefa delegada para ' + nome + '!');
+            abrirGerenteModal('delegacao');
+            renderWorker();
+        }
+
+        window.editarDiasDelegacao = function(chave) {
+            const d = getDelegacao(chave);
+            if (!d) return;
+            confirmarDelegarTarefa(chave, d.worker);
+        };
+
+        window.removerDelegacao = async function(chave) {
+            const d = getDelegacao(chave);
+            const t = getTarefaByChave(chave);
+            const ok = await customConfirm('Remover a delegação de "' + (t?t.txt:'tarefa') + '"?\nEla voltará a ficar livre para todos.');
+            if (!ok) return;
+            if (liveData.delegacoes) delete liveData.delegacoes[chave];
+            delete delegSelecaoWpp[chave];
+            await atualizarCampo('delegacoes', liveData.delegacoes || {});
+            abrirGerenteModal('delegacao');
+            renderWorker();
+        };
+
+        // ----- WhatsApp -----
+        window.enviarDelegacoesWhatsApp = function(nome, modo) {
+            const u = liveData.usuariosSalvos[nome];
+            if (!u || !u.telefone || telefoneSomenteNumeros(u.telefone).length < 10) {
+                customAlert('📱 ' + nome + ' ainda não tem um número de WhatsApp válido cadastrado.');
+                return;
+            }
+            // Coletar chaves
+            let chaves = [];
+            Object.entries(liveData.delegacoes || {}).forEach(([chave, d]) => { if (d && d.worker === nome) chaves.push(chave); });
+            if (modo === 'selecionadas') {
+                chaves = chaves.filter(c => delegSelecaoWpp[c]);
+                if (!chaves.length) { customAlert('Selecione ao menos uma tarefa (caixinha) para enviar.'); return; }
+            }
+            if (!chaves.length) { customAlert('Não há tarefas delegadas para enviar.'); return; }
+            // Agrupar por setor
+            const porSetor = {};
+            chaves.forEach(chave => {
+                const t = getTarefaByChave(chave); if (!t) return;
+                const setor = todosSetores().find(s => s.id === parseChave(chave).setorId);
+                const d = getDelegacao(chave);
+                const sNome = setor ? (setor.icon + ' ' + setor.title) : 'Geral';
+                if (!porSetor[sNome]) porSetor[sNome] = [];
+                porSetor[sNome].push({ txt: t.txt, icone: t.icone || '•', dias: descreverDiasDelegacao(d) });
+            });
+            const rest = liveData.restaurante?.nome || 'Staff Check';
+            let msg = `*${rest}* — Delegação de Tarefas\n\n`;
+            msg += `Olá, ${nome}! 👋\nForam delegadas para você as seguintes tarefas:\n\n`;
+            Object.entries(porSetor).forEach(([setorNome, lista]) => {
+                msg += `*${setorNome}*\n`;
+                lista.forEach(item => { msg += `${item.icone} ${item.txt}  _(${item.dias})_\n`; });
+                msg += '\n';
+            });
+            msg += `Qualquer dúvida, é só falar. Bom trabalho! 💪`;
+            const numero = telefoneParaWhatsApp(u.telefone);
+            const url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(msg);
+            window.open(url, '_blank');
+        };
+
+        // ----- Editar telefone do funcionário (gerente) -----
+        window.editarTelefoneFunc = async function(nome, origem) {
+            const u = liveData.usuariosSalvos[nome];
+            if (!u) return;
+            const atual = u.telefone ? telefoneFormatado(u.telefone) : '';
+            const entrada = await customPromptTelefone('📱 WhatsApp de ' + nome + ' (com DDD):' + (atual ? '\nAtual: ' + atual : ''));
+            if (entrada === null) return;
+            const num = telefoneSomenteNumeros(entrada);
+            if (num.length < 10) { customAlert('Número inválido. Use DDD + número.'); return; }
+            liveData.usuariosSalvos[nome].telefone = num;
+            await atualizarCampo('usuariosSalvos', liveData.usuariosSalvos);
+            customAlert('✅ WhatsApp de ' + nome + ' salvo!');
+            if (origem === 'delegacao') abrirGerenteModal('delegacao');
+            else if (origem === 'equipe') abrirGerenteModal('equipe');
+        };
 
         window.avaliarTarefa = async function(chave, r) { if (!liveData.avaliacoes) liveData.avaliacoes={}; liveData.avaliacoes[chave]=r; await atualizarCampo('avaliacoes',liveData.avaliacoes); abrirGerenteModal('qualidade'); renderWorker(); };
         window.darFeedback = async function(chave) { const texto=await customPrompt('Feedback para esta tarefa:'); if (!texto||!texto.trim()) return; if (!liveData.feedbacksQualidade) liveData.feedbacksQualidade=[]; const agora=new Date().toLocaleDateString('pt-BR'); liveData.feedbacksQualidade.push({chave,texto:texto.trim(),data:agora}); await atualizarCampo('feedbacksQualidade',liveData.feedbacksQualidade); customAlert('✅ Feedback enviado!'); abrirGerenteModal('qualidade'); };
@@ -3785,6 +4299,7 @@ const TAREFAS_RESTAURANTE = {
         function customConfirm(msg,ok='Confirmar',cancel='Cancelar'){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=''; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">${cancel}</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;">${ok}</button>`; ov.classList.add('show'); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(true); }; document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(false); }; }); }
         function customPrompt(msg,ph=''){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=`<input class="field" id="dlg-input" placeholder="${ph}" style="margin:8px 0 0;">`; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;">OK</button>`; ov.classList.add('show'); const inp=document.getElementById('dlg-input'); setTimeout(()=>inp.focus(),100); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(inp.value.trim()); }; document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(null); }; }); }
         function customSelect(msg,options){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; const ex=document.getElementById('dialog-extra'); let html='<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:50vh;overflow-y:auto;">'; options.forEach(o=>{ html+=`<button class="btn-ghost cs-opt" data-id="${o.id}" style="margin:0;text-align:left;">${o.label}</button>`; }); html+='</div>'; ex.innerHTML=html; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;">Cancelar</button>`; ov.classList.add('show'); ex.querySelectorAll('.cs-opt').forEach(btn=>{ btn.onclick=()=>{ ov.classList.remove('show'); res(btn.dataset.id); }; }); document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(null); }; }); }
+        function customPromptTelefone(msg){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=`<input class="field" id="dlg-tel" type="tel" inputmode="tel" maxlength="16" placeholder="(19) 99999-9999" oninput="mascaraTelefone(this)" style="margin:8px 0 0;">`; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;">Salvar</button>`; ov.classList.add('show'); const inp=document.getElementById('dlg-tel'); setTimeout(()=>inp.focus(),100); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(inp.value.trim()); }; document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(null); }; }); }
         window.customAlert=customAlert; window.customConfirm=customConfirm; window.customPrompt=customPrompt; window.customSelect=customSelect;
 
         window.verFoto = function(src){ const ov=document.getElementById('foto-viewer'); const img=document.getElementById('foto-viewer-img'); if(img) img.src=src; if(ov) ov.classList.add('show'); };

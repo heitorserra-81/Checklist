@@ -242,20 +242,22 @@
         .btn-manager-hero:active { transform:scale(0.95); }
 
         /* GRID DE BOTÕES DO GERENTE */
-        .mgr-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:14px;padding:16px;margin-bottom:4px; }
-        .mgr-btn { position:relative;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px 14px 18px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:10px;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);overflow:hidden;transform-style:preserve-3d; }
-        .mgr-btn::before { content:'';position:absolute;inset:0;border-radius:20px;background:conic-gradient(from var(--angle,0deg),transparent 70%,var(--btn-glow,rgba(0,146,70,0.6)) 80%,transparent 90%);animation:rotateBorder 3s linear infinite;opacity:0; }
-        .mgr-btn:hover::before,.mgr-btn:focus::before { opacity:1; }
+        .mgr-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding:18px;margin-bottom:4px; }
+        .mgr-btn { position:relative;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:30px 16px 26px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;justify-content:center;min-height:158px;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);overflow:hidden;transform-style:preserve-3d;box-shadow:var(--shadow-card),0 6px 22px -12px rgba(0,0,0,0.5); }
+        .mgr-btn::before { content:'';position:absolute;inset:0;border-radius:24px;background:conic-gradient(from var(--angle,0deg),transparent 62%,var(--btn-glow,rgba(0,146,70,0.6)) 78%,var(--accent-light) 84%,transparent 92%);animation:rotateBorder 3.5s linear infinite;opacity:0.9;filter:saturate(1.3) brightness(1.15); }
         @property --angle { syntax:'<angle>';initial-value:0deg;inherits:false; }
         @keyframes rotateBorder { to{--angle:360deg;} }
-        .mgr-btn::after { content:'';position:absolute;inset:1px;border-radius:19px;background:var(--card);z-index:0; }
+        .mgr-btn::after { content:'';position:absolute;inset:1.5px;border-radius:22px;background:var(--card);z-index:0; }
         .mgr-btn>* { position:relative;z-index:1; }
-        .mgr-btn:active { transform:scale(0.94) translateY(2px);box-shadow:0 2px 8px rgba(0,0,0,0.3); }
+        .mgr-btn:active { transform:scale(0.95) translateY(2px) rotateX(4deg);box-shadow:0 2px 10px rgba(0,0,0,0.35); }
         .mgr-btn.active-glow { box-shadow:0 0 0 2px var(--btn-glow,var(--accent)),0 8px 32px rgba(0,0,0,0.25); }
-        .mgr-btn-icon-wrap { width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;transition:transform 0.3s; }
-        .mgr-btn:active .mgr-btn-icon-wrap { transform:scale(0.9) rotateY(15deg); }
-        .mgr-btn-label { font-size:12px;font-weight:800;color:var(--text);line-height:1.3;text-align:center; }
-        .mgr-btn-sub { font-size:10px;color:var(--text3);font-weight:500; }
+        .mgr-btn-icon-wrap { width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;transition:transform 0.35s;box-shadow:0 4px 16px -4px var(--btn-glow,var(--accent-glow)); }
+        .mgr-btn:active .mgr-btn-icon-wrap { transform:scale(0.9) rotateY(18deg); }
+        .mgr-btn-label { font-size:13.5px;font-weight:800;color:var(--text);line-height:1.3;text-align:center;letter-spacing:0.2px; }
+        .mgr-btn-sub { font-size:10.5px;color:var(--text3);font-weight:500; }
+        .mgr-btn.waste { --btn-glow:rgba(225,90,40,0.6); }
+        .mgr-btn.waste .mgr-btn-icon-wrap { background:rgba(225,90,40,0.12); }
+        @media (prefers-reduced-motion: reduce) { .mgr-btn::before { animation:none;opacity:0.5; } }
         .mgr-btn-notif { font-size:10px;font-weight:800;color:#fff;background:var(--red);padding:2px 7px;border-radius:10px;position:absolute;top:10px;right:10px;z-index:2; }
         .mgr-btn.danger { --btn-glow:rgba(206,43,55,0.6); }
         .mgr-btn.danger .mgr-btn-icon-wrap { background:rgba(206,43,55,0.12); }
@@ -293,10 +295,10 @@
         .config-header { padding:14px 16px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0; }
         .config-header h3 { flex:1;font-size:15px;font-weight:800;color:var(--text); }
         .config-body { flex:1;overflow-y:auto; }
-        .config-tabs { display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none; }
+        .config-tabs { display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none; }
         .config-tabs::-webkit-scrollbar { display:none; }
-        .config-tab { flex-shrink:0;padding:12px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--transition);white-space:nowrap;font-family:var(--font-body); }
-        .config-tab.active { color:var(--accent);border-bottom-color:var(--accent); }
+        .config-tab { flex-shrink:0;padding:9px 15px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;border:1.5px solid var(--border);border-radius:20px;background:var(--card2);transition:all var(--transition);white-space:nowrap;font-family:var(--font-body); }
+        .config-tab.active { color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent-light));border-color:var(--accent);box-shadow:0 2px 12px var(--accent-glow); }
         .config-section { padding:16px; }
         .config-section-title { font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:10px; }
         .config-row { display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border-radius:var(--radius-md);border:1px solid var(--border);margin-bottom:8px; }
@@ -912,6 +914,11 @@
                     <div class="mgr-btn-icon-wrap" style="background:rgba(124,58,237,0.12);">🎯</div>
                     <div class="mgr-btn-label">Delegar Tarefas</div>
                     <div class="mgr-btn-sub">Atribuir por funcionário</div>
+                </div>
+                <div class="mgr-btn waste" onclick="abrirGerenteModal('desperdicio')">
+                    <div class="mgr-btn-icon-wrap" style="background:rgba(225,90,40,0.12);">🗑️</div>
+                    <div class="mgr-btn-label">Controle de Desperdício</div>
+                    <div class="mgr-btn-sub">Insumos e perdas registradas</div>
                 </div>
                 <div class="mgr-btn schedule" id="mgr-btn-escala" onclick="abrirEscala()">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(249,115,22,0.12);">📅</div>
@@ -1595,7 +1602,8 @@ const TAREFAS_RESTAURANTE = {
             setoresAtivos: {},
             tarefasAtivas: {},
             delegacoes: {},
-            delegacaoAtiva: false
+            delegacaoAtiva: false,
+            registrosDesperdicio: []
         };
 
         let currentWorker = "";
@@ -1824,6 +1832,29 @@ const TAREFAS_RESTAURANTE = {
                     liveData.tarefasCustomizadas.push({ ...t, cat: s.id });
                 });
             });
+            plantarRegistrosInsumoExemplo(templateId);
+        }
+
+        // Planta alguns registros de insumo prontos nos setores certos, para já abrir e testar
+        function plantarRegistrosInsumoExemplo(templateId) {
+            try {
+                if (typeof REGISTROS_INSUMO_LIB === 'undefined') return;
+                const setoresDoTpl = (TEMPLATES[templateId]?.setores || []).map(s => s.id);
+                const porSetor = {}; // limita a 2 por setor, p/ distribuir (cozinha, bar, etc)
+                let plantados = 0;
+                REGISTROS_INSUMO_LIB.forEach(reg => {
+                    if (plantados >= 8) return;
+                    const alvo = (reg.setoresSugeridos || []).find(id => setoresDoTpl.includes(id));
+                    if (!alvo) return;
+                    if ((porSetor[alvo] || 0) >= 2) return;
+                    const nova = { cat: alvo, txt: reg.txt, prioridade: reg.prioridade || 'normal', icone: reg.icone || '🗑️', passos: [], tipo: 'insumo' };
+                    if (reg.unidadePadrao) nova.unidadePadrao = reg.unidadePadrao;
+                    if (reg.categoria) nova.categoria = reg.categoria;
+                    liveData.tarefasCustomizadas.push(nova);
+                    porSetor[alvo] = (porSetor[alvo] || 0) + 1;
+                    plantados++;
+                });
+            } catch (e) { console.warn('plantarRegistrosInsumoExemplo', e); }
         }
 
         function popularTarefasPadrao() {
@@ -1916,7 +1947,8 @@ const TAREFAS_RESTAURANTE = {
                     setoresAtivos: d.setoresAtivos || {},
                     tarefasAtivas: d.tarefasAtivas || {},
                     delegacoes: d.delegacoes || {},
-                    delegacaoAtiva: d.delegacaoAtiva !== undefined ? d.delegacaoAtiva : false
+                    delegacaoAtiva: d.delegacaoAtiva !== undefined ? d.delegacaoAtiva : false,
+                    registrosDesperdicio: d.registrosDesperdicio || []
                 });
                 if (Object.keys(liveData.usuariosSalvos).length === 0) {
                     if (restaurarBackupLocal()) {
@@ -2926,7 +2958,7 @@ const TAREFAS_RESTAURANTE = {
 
         window.prepararRecorte = function(event) {
             const file=event.target.files[0]; if(!file) return;
-            if(cameraContext==='tarefa'){ const reader=new FileReader(); reader.onload=e=>compressImg(e.target.result,c=>{ if(modalChave) concluirComFoto(c); }); reader.readAsDataURL(file); return; }
+            if(cameraContext==='tarefa'){ const reader=new FileReader(); reader.onload=e=>compressImg(e.target.result,c=>{ if(window._despPendente){ concluirDesperdicioComFoto(c); } else if(modalChave) concluirComFoto(c); }); reader.readAsDataURL(file); return; }
             const reader=new FileReader();
             reader.onload=e=>{ const img=new Image(); img.onload=()=>{ cropImg=img; const cont=document.getElementById('crop-container'); const cw=cont.clientWidth||280,ch=cont.clientHeight||280; const sw=cw/img.naturalWidth,sh=ch/img.naturalHeight; cropBaseScale=Math.max(sw,sh); cropBaseX=(cw-img.naturalWidth*cropBaseScale)/2; cropBaseY=(ch-img.naturalHeight*cropBaseScale)/2; cropScale=1; cropTX=0; cropTY=0; desenharCrop(); document.getElementById('crop-overlay').style.display='flex'; }; img.src=e.target.result; };
             reader.readAsDataURL(file);
@@ -3138,7 +3170,8 @@ const TAREFAS_RESTAURANTE = {
                 }
                 const donoSelo = donoDelegado(chave);
                 const seloDeleg = donoSelo ? `<span style="display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(124,58,237,0.15);color:var(--purple);margin-left:4px;vertical-align:middle;">🔒 ${donoSelo.split(' ')[0]}</span>` : '';
-                row.innerHTML = `<div class="task-row-head" onclick="abrirModal('${chave}')"><span class="task-emoji">${iconeT}</span><div style="flex:1;min-width:0;"><div class="task-title">${tarefa.txt}${seloDeleg}</div></div><div class="task-dot"></div></div><div class="task-resume">${resume}</div>${actHTML}`;
+                const seloInsumo = tarefaEhInsumo(tarefa) ? `<span style="display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(225,90,40,0.15);color:#e15a28;margin-left:4px;vertical-align:middle;">🗑️ Desperdício</span>` : '';
+                row.innerHTML = `<div class="task-row-head" onclick="abrirModal('${chave}')"><span class="task-emoji">${iconeT}</span><div style="flex:1;min-width:0;"><div class="task-title">${tarefa.txt}${seloDeleg}${seloInsumo}</div></div><div class="task-dot"></div></div><div class="task-resume">${resume}</div>${actHTML}`;
                 tasksListEl.appendChild(row);
                 if (st.status === 'working' && st.startTime) iniciarCronLista(chave, st.startTime);
             });
@@ -3267,6 +3300,8 @@ const TAREFAS_RESTAURANTE = {
 
         window.concluirTarefaLista = function(chave) {
             modalChave = chave;
+            const tarefa = getTarefaByChave(chave);
+            if (tarefaEhInsumo(tarefa)) { abrirFormDesperdicio(chave); return; }
             customConfirm('Deseja anexar foto?', 'Sim', 'Não').then(q => {
                 if (q) { cameraContext = 'tarefa'; cropCtx = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
                 else concluirSemFoto(chave);
@@ -3433,7 +3468,7 @@ const TAREFAS_RESTAURANTE = {
 
         window.gerenciarModal = function(acao, chave) {
             if (acao === 'largar') { atualizarStatusTarefa(chave, { status: 'idle', worker: '', startTime: null }); if (mainCronInterval) { clearInterval(mainCronInterval); mainCronInterval = null; } fecharModal(); renderWorker(); }
-            else if (acao === 'feito') { modalChave = chave; customConfirm('Deseja anexar foto?', 'Sim', 'Não').then(q => { if (q) { cameraContext = 'tarefa'; cropCtx = 'tarefa'; window.abrirPhotoPicker('tarefa'); } else concluirSemFoto(chave); }); }
+            else if (acao === 'feito') { modalChave = chave; const tf = getTarefaByChave(chave); if (tarefaEhInsumo(tf)) { abrirFormDesperdicio(chave); return; } customConfirm('Deseja anexar foto?', 'Sim', 'Não').then(q => { if (q) { cameraContext = 'tarefa'; cropCtx = 'tarefa'; window.abrirPhotoPicker('tarefa'); } else concluirSemFoto(chave); }); }
         };
 
         window.fecharModal = function() { document.getElementById('task-modal').classList.remove('show'); modalChave = null; if (mainCronInterval) { clearInterval(mainCronInterval); mainCronInterval = null; } document.querySelectorAll('.task-row').forEach(r => r.classList.remove('highlighted')); };
@@ -3467,6 +3502,7 @@ const TAREFAS_RESTAURANTE = {
             else if (tipo === 'relatorio') { title.textContent = '📋 Relatório do Turno'; renderRelatorio(body); }
             else if (tipo === 'qualidade') { title.textContent = '⭐ Avaliação de Qualidade'; renderQualidade(body); }
             else if (tipo === 'delegacao') { title.textContent = '🎯 Delegar Tarefas'; renderDelegacao(body); }
+            else if (tipo === 'desperdicio') { title.textContent = '🗑️ Controle de Desperdício'; renderDesperdicio(body); }
         };
 
         window.fecharGerenteModal = function() { document.getElementById('gerente-full-modal').classList.remove('open'); edicaoTaskIdx = null; };
@@ -3474,8 +3510,9 @@ const TAREFAS_RESTAURANTE = {
         function renderGerenteBiblioteca(body) {
             const setores = todosSetores();
             body.innerHTML = `
-            <div style="margin-bottom:14px;">
-                <button class="btn-primary" onclick="abrirCriarTarefa()">➕ Criar Nova Tarefa</button>
+            <div style="margin-bottom:14px;display:flex;gap:8px;">
+                <button class="btn-primary" onclick="abrirCriarTarefa()" style="margin-bottom:0;flex:1;">➕ Criar Nova Tarefa</button>
+                <button class="btn-ghost" onclick="abrirBibliotecaDesperdicio()" style="margin-bottom:0;flex:1;border-color:rgba(225,90,40,0.6);color:#e15a28;">🗑️ Add Desperdício</button>
             </div>
             <div style="margin-bottom:12px;">
                 <div class="task-search-wrap">
@@ -3558,15 +3595,39 @@ const TAREFAS_RESTAURANTE = {
             if (!tarefasSetor.length) { listEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div>Nenhuma tarefa neste setor.</div>'; return; }
             tarefasSetor.forEach((t, i) => {
                 const idxGlobal = liveData.tarefasCustomizadas.indexOf(t);
+                const chave = setor.id + '_' + i;
                 const row = document.createElement('div');
-                row.className = 'gerente-task-row task-row';
+                row.className = 'task-row idle';
                 row.dataset.key = setor.id + '_' + idxGlobal;
-                const st = liveData.tarefasStatus[setor.id + '_' + i];
-                let statusDot = '';
-                if (st?.status === 'done') statusDot = '<span style="color:var(--accent);font-size:14px;">✅</span>';
-                else if (st?.status === 'working') statusDot = '<span style="color:var(--gold);font-size:14px;">⏳</span>';
-                row.innerHTML = `<span style="font-size:18px;">${t.icone||'📋'}</span><span style="flex:1;font-size:13px;font-weight:600;color:var(--text);">${t.txt}</span>${statusDot}<span class="priority-tag ${t.prioridade==='alta'?'priority-alta':t.prioridade==='baixa'?'priority-baixa':'priority-normal'}">${t.prioridade==='alta'?'🔴':t.prioridade==='baixa'?'🔵':'⚪'}</span><button class="btn-move-task" onclick="event.stopPropagation();moverTarefaSetor(${idxGlobal})" title="Mover para outro setor">⇄</button>`;
-                row.addEventListener('click', () => abrirEdicaoTarefa(idxGlobal));
+                const st = liveData.tarefasStatus[chave] || {};
+                const iconeT = t.icone || '📋';
+                const desc = getDesc(t.txt, t);
+                const resume = desc.split('\n').slice(0, 2).join(' ') + '…';
+                const pc = t.prioridade === 'alta' ? 'priority-alta' : t.prioridade === 'baixa' ? 'priority-baixa' : 'priority-normal';
+                const pl = t.prioridade === 'alta' ? '🔴 Urgente' : t.prioridade === 'baixa' ? '🔵 Baixa' : '⚪ Normal';
+                let statusSel = '';
+                if (st.status === 'done') statusSel = '<span class="done-seal mine">✅ Concluída</span>';
+                else if (st.status === 'working') statusSel = `<span class="cron-badge">⏳ ${st.worker||''}</span>`;
+                // dono delegado (mostra foto, como você pediu)
+                const dono = (typeof getDelegacao === 'function' && getDelegacao(chave)) ? getDelegacao(chave).worker : null;
+                let donoBloco = '';
+                if (dono && liveData.usuariosSalvos[dono]) {
+                    donoBloco = `<div class="worker-avatar-block">${renderAvatarEl(dono,42,'worker-avatar-img status-other')}<div class="worker-avatar-name status-other">${dono.split(' ')[0]}</div></div>`;
+                }
+                const seloInsumo = tarefaEhInsumo(t) ? `<span style="display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:rgba(225,90,40,0.15);color:#e15a28;margin-left:4px;vertical-align:middle;">🗑️ ${DESP_CATEGORIAS[t.categoria]?.nome || 'Desperdício'}</span>` : '';
+                row.innerHTML = `
+                    <div class="task-row-head">
+                        <span class="task-emoji">${iconeT}</span>
+                        <div style="flex:1;min-width:0;"><div class="task-title">${t.txt}${seloInsumo}</div></div>
+                        <button class="btn-move-task" onclick="event.stopPropagation();moverTarefaSetor(${idxGlobal})" title="Mover para outro setor">⇄</button>
+                    </div>
+                    <div class="task-resume">${resume}</div>
+                    <div class="task-action-bar">
+                        ${donoBloco}
+                        <div class="task-action-info"><span class="priority-tag ${pc}">${pl}</span></div>
+                        <div class="task-action-btns">${statusSel}<button class="btn-edit-sm" onclick="event.stopPropagation();abrirEdicaoTarefa(${idxGlobal})">✏️ Editar</button></div>
+                    </div>`;
+                row.querySelector('.task-row-head').addEventListener('click', () => abrirEdicaoTarefa(idxGlobal));
                 listEl.appendChild(row);
             });
             habilitarDragNaLista(listEl, setor.id, (chaves) => {
@@ -3678,6 +3739,15 @@ const TAREFAS_RESTAURANTE = {
                 <option value="alta" ${tarefa.prioridade==='alta'?'selected':''}>🔴 Urgente</option>
                 <option value="baixa" ${tarefa.prioridade==='baixa'?'selected':''}>🔵 Baixa</option>
             </select>
+            <label style="font-size:11px;color:var(--text3);margin-bottom:6px;display:block;">Tipo de tarefa:</label>
+            <select class="field" id="edit-task-tipo" onchange="document.getElementById('edit-task-unidade-wrap').style.display=this.value==='insumo'?'block':'none'">
+                <option value="normal" ${!tarefaEhInsumo(tarefa)?'selected':''}>📋 Tarefa normal</option>
+                <option value="insumo" ${tarefaEhInsumo(tarefa)?'selected':''}>🗑️ Registro de Insumo / Desperdício</option>
+            </select>
+            <div id="edit-task-unidade-wrap" style="display:${tarefaEhInsumo(tarefa)?'block':'none'};">
+                <label style="font-size:11px;color:var(--text3);margin-bottom:6px;display:block;">Unidade do registro (deixe "Automática" para o app decidir):</label>
+                <select class="field" id="edit-task-unidade"><option value="" ${!tarefa.unidadePadrao?'selected':''}>Automática</option>${DESP_UNIDADES.map(u=>`<option value="${u}" ${tarefa.unidadePadrao===u?'selected':''}>${u}</option>`).join('')}</select>
+            </div>
             <div class="passos-editor">
                 <h4 style="font-size:12px;color:var(--text);margin-bottom:8px;">📝 Passo a passo</h4>
                 <div id="passos-list-edit"></div>
@@ -3716,7 +3786,12 @@ const TAREFAS_RESTAURANTE = {
             const prioridade = document.getElementById('edit-task-prioridade').value;
             const icone = window._edicaoIcon || '📋';
             const passos = (window._edicaoPassos || []).filter(p => p.trim());
-            liveData.tarefasCustomizadas[edicaoTaskIdx] = { ...liveData.tarefasCustomizadas[edicaoTaskIdx], txt: nome, cat: setorId, prioridade, icone, passos };
+            const tipo = document.getElementById('edit-task-tipo')?.value || 'normal';
+            const unidadePadrao = (tipo === 'insumo') ? (document.getElementById('edit-task-unidade')?.value || null) : null;
+            const base = { ...liveData.tarefasCustomizadas[edicaoTaskIdx], txt: nome, cat: setorId, prioridade, icone, passos };
+            if (tipo === 'insumo') { base.tipo = 'insumo'; if (unidadePadrao) base.unidadePadrao = unidadePadrao; else delete base.unidadePadrao; }
+            else { delete base.tipo; delete base.unidadePadrao; }
+            liveData.tarefasCustomizadas[edicaoTaskIdx] = base;
             await salvar(); customAlert('✅ Tarefa atualizada!'); voltarGerenteBiblio(); renderWorker();
         };
 
@@ -3744,6 +3819,15 @@ const TAREFAS_RESTAURANTE = {
             <div class="icon-picker-grid" id="icon-picker-task"></div>
             <select class="field" id="new-task-setor">${opts}</select>
             <select class="field" id="new-task-prioridade"><option value="normal">⚪ Normal</option><option value="alta">🔴 Urgente</option><option value="baixa">🔵 Baixa</option></select>
+            <label style="font-size:11px;color:var(--text3);margin-bottom:6px;display:block;">Tipo de tarefa:</label>
+            <select class="field" id="new-task-tipo" onchange="document.getElementById('new-task-unidade-wrap').style.display=this.value==='insumo'?'block':'none'">
+                <option value="normal">📋 Tarefa normal</option>
+                <option value="insumo">🗑️ Registro de Insumo / Desperdício</option>
+            </select>
+            <div id="new-task-unidade-wrap" style="display:none;">
+                <label style="font-size:11px;color:var(--text3);margin-bottom:6px;display:block;">Unidade do registro (deixe "Automática" para o app decidir):</label>
+                <select class="field" id="new-task-unidade"><option value="">Automática</option>${DESP_UNIDADES.map(u=>`<option value="${u}">${u}</option>`).join('')}</select>
+            </div>
             <div class="passos-editor" id="passos-editor">
                 <h4 style="font-size:12px;color:var(--text);margin-bottom:8px;">📝 Passo a passo</h4>
                 <div id="passos-list"></div>
@@ -3774,7 +3858,11 @@ const TAREFAS_RESTAURANTE = {
             const prioridade = document.getElementById('new-task-prioridade').value;
             const icone = window._selectedTaskIcon || '📋';
             const passos = (window._passosTemp || []).filter(p => p.trim());
-            liveData.tarefasCustomizadas.push({ cat: setorId, txt: nome, prioridade, icone, passos });
+            const tipo = document.getElementById('new-task-tipo')?.value || 'normal';
+            const unidadePadrao = (tipo === 'insumo') ? (document.getElementById('new-task-unidade')?.value || null) : null;
+            const nova = { cat: setorId, txt: nome, prioridade, icone, passos };
+            if (tipo === 'insumo') { nova.tipo = 'insumo'; if (unidadePadrao) nova.unidadePadrao = unidadePadrao; }
+            liveData.tarefasCustomizadas.push(nova);
             await salvar(); customAlert('✅ Tarefa criada!'); voltarGerenteBiblio();
         };
 
@@ -3838,6 +3926,253 @@ const TAREFAS_RESTAURANTE = {
             if (liveData.pontosRegistro) delete liveData.pontosRegistro[n];
             Object.keys(liveData.tarefasStatus).forEach(chave => { if (liveData.tarefasStatus[chave]?.worker === n) liveData.tarefasStatus[chave] = { status: 'idle', worker: '' }; });
             await salvar(); abrirGerenteModal('equipe'); customAlert(`${n} foi removido.`);
+        };
+
+        // ========================================================
+        // ============ MÓDULO: CONTROLE DE DESPERDÍCIO ===========
+        // ========================================================
+        const DESP_UNIDADES = ['kg','g','L','ml','unidade','porção'];
+        const DESP_MOTIVOS = ['Sobra de turno','Quebra/queda','Vencido','Erro de preparo','Outro'];
+        // Biblioteca de registros padrão (categoria: desperdicio | contagem | recebimento)
+        const REGISTROS_INSUMO_LIB = [
+            // COZINHA
+            { txt:'Registrar sobra de proteínas pós-turno', icone:'🥩', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['cozinha','ch_cozinha','hb_cozinha'] },
+            { txt:'Registrar sobra de massas e molhos', icone:'🍝', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['cozinha','pz_cozinha'] },
+            { txt:'Registrar insumos vencidos da câmara fria', icone:'📅', prioridade:'alta', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['cozinha','estoque'] },
+            { txt:'Registrar perda por erro de preparo', icone:'🔥', prioridade:'normal', unidadePadrao:'porção', categoria:'desperdicio', setoresSugeridos:['cozinha'] },
+            { txt:'Registrar sobra de guarnições e acompanhamentos', icone:'🥗', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['cozinha','buffet'] },
+            { txt:'Registrar aparas e descartes de pré-preparo', icone:'🔪', prioridade:'baixa', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['cozinha'] },
+            { txt:'Contagem de proteínas no estoque', icone:'⚖️', prioridade:'alta', unidadePadrao:'kg', categoria:'contagem', setoresSugeridos:['cozinha','estoque'] },
+            { txt:'Contagem de óleo de fritura', icone:'🛢️', prioridade:'normal', unidadePadrao:'L', categoria:'contagem', setoresSugeridos:['cozinha'] },
+            { txt:'Contagem de itens congelados', icone:'❄️', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['cozinha','estoque'] },
+            { txt:'Recebimento de carnes e frios (conferir nota)', icone:'📥', prioridade:'alta', unidadePadrao:'kg', categoria:'recebimento', setoresSugeridos:['cozinha','estoque'] },
+            { txt:'Recebimento de hortifruti', icone:'🥦', prioridade:'normal', unidadePadrao:'kg', categoria:'recebimento', setoresSugeridos:['cozinha','estoque'] },
+            // BAR
+            { txt:'Registrar quebra de taças e copos', icone:'🍷', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['bar','br_balcao','ch_bar'] },
+            { txt:'Registrar perda de chopp (espuma / troca de barril)', icone:'🍻', prioridade:'normal', unidadePadrao:'L', categoria:'desperdicio', setoresSugeridos:['bar','br_chopp'] },
+            { txt:'Registrar frutas e guarnições descartadas', icone:'🍋', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['bar','br_balcao'] },
+            { txt:'Registrar bebidas vencidas ou avariadas', icone:'📅', prioridade:'alta', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['bar','br_estoque'] },
+            { txt:'Registrar gelo descartado / derretido', icone:'🧊', prioridade:'baixa', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['bar','br_balcao'] },
+            { txt:'Contagem de destilados (garrafas)', icone:'🥃', prioridade:'alta', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['bar','br_estoque'] },
+            { txt:'Contagem de cervejas e refrigerantes', icone:'🍺', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['bar','br_estoque'] },
+            { txt:'Contagem de barris de chopp', icone:'🛢️', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['bar','br_chopp'] },
+            { txt:'Recebimento de bebidas (conferir nota)', icone:'📥', prioridade:'alta', unidadePadrao:'unidade', categoria:'recebimento', setoresSugeridos:['bar','br_estoque'] },
+            // SALÃO
+            { txt:'Registrar quebra de louças e pratos', icone:'🍽️', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['salao','pz_salao','ch_salao'] },
+            { txt:'Registrar talheres perdidos / descartados', icone:'🍴', prioridade:'baixa', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['salao'] },
+            { txt:'Contagem de enxoval (guardanapos de pano)', icone:'🧺', prioridade:'baixa', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['salao'] },
+            // BUFFET
+            { txt:'Registrar sobra de buffet pós-serviço', icone:'🍲', prioridade:'alta', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['buffet','ch_buffet'] },
+            { txt:'Registrar descarte de itens da estufa', icone:'🔥', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['buffet'] },
+            { txt:'Registrar sobra de sobremesas', icone:'🍰', prioridade:'normal', unidadePadrao:'porção', categoria:'desperdicio', setoresSugeridos:['buffet','cf_vitrine'] },
+            // PIZZARIA
+            { txt:'Registrar massas de pizza perdidas', icone:'🍕', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['pz_forno','pz_cozinha'] },
+            { txt:'Registrar sobra de coberturas e recheios', icone:'🧀', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['pz_cozinha'] },
+            { txt:'Contagem de embalagens de delivery', icone:'📦', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['pz_delivery','hb_delivery'] },
+            // CHURRASCARIA
+            { txt:'Registrar sobra de carnes do rodízio', icone:'🥩', prioridade:'alta', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['ch_churrasqueira'] },
+            { txt:'Contagem de carvão / lenha', icone:'🪵', prioridade:'normal', unidadePadrao:'kg', categoria:'contagem', setoresSugeridos:['ch_churrasqueira','ch_estoque'] },
+            // HAMBURGUERIA
+            { txt:'Registrar hambúrgueres queimados / perdidos', icone:'🍔', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['hb_chapa','hb_cozinha'] },
+            { txt:'Registrar sobra de batatas e fritos', icone:'🍟', prioridade:'normal', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['hb_cozinha'] },
+            // CAFÉ / PADARIA
+            { txt:'Registrar pães e doces não vendidos', icone:'🥐', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['cf_producao','cf_vitrine'] },
+            { txt:'Registrar perda de leite / café', icone:'☕', prioridade:'normal', unidadePadrao:'L', categoria:'desperdicio', setoresSugeridos:['cf_atendimento'] },
+            { txt:'Contagem de grãos de café', icone:'⚖️', prioridade:'normal', unidadePadrao:'kg', categoria:'contagem', setoresSugeridos:['cf_atendimento','cf_estoque'] },
+            // MERCADO
+            { txt:'Registrar perdas de hortifruti', icone:'🥦', prioridade:'alta', unidadePadrao:'kg', categoria:'desperdicio', setoresSugeridos:['mk_hortifruti'] },
+            { txt:'Registrar produtos vencidos retirados', icone:'📅', prioridade:'alta', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['mk_pereciveis','mk_estoque'] },
+            { txt:'Contagem de gôndola (inventário rápido)', icone:'🔢', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['mk_reposicao','mk_estoque'] },
+            { txt:'Recebimento de mercadorias (conferir nota)', icone:'📥', prioridade:'alta', unidadePadrao:'unidade', categoria:'recebimento', setoresSugeridos:['mk_estoque'] },
+            // HOTEL
+            { txt:'Registrar enxoval danificado / descartado', icone:'🛏️', prioridade:'normal', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['ht_uhs','ht_estoque'] },
+            { txt:'Contagem de amenidades (kits)', icone:'🧴', prioridade:'normal', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['ht_uhs','ht_estoque'] },
+            // FARMÁCIA
+            { txt:'Registrar medicamentos vencidos (descarte)', icone:'💊', prioridade:'alta', unidadePadrao:'unidade', categoria:'desperdicio', setoresSugeridos:['fr_dispensacao','fr_estoque'] },
+            { txt:'Contagem de controlados (conferência SNGPC)', icone:'🔒', prioridade:'alta', unidadePadrao:'unidade', categoria:'contagem', setoresSugeridos:['fr_estoque','fr_dispensacao'] },
+            { txt:'Recebimento de medicamentos (conferir nota)', icone:'📥', prioridade:'alta', unidadePadrao:'unidade', categoria:'recebimento', setoresSugeridos:['fr_estoque'] },
+            // GENÉRICOS
+            { txt:'Registrar desperdício diverso', icone:'🗑️', prioridade:'normal', unidadePadrao:'', categoria:'desperdicio', setoresSugeridos:[] },
+            { txt:'Contagem de estoque geral', icone:'🔢', prioridade:'normal', unidadePadrao:'', categoria:'contagem', setoresSugeridos:[] },
+            { txt:'Recebimento de mercadoria geral', icone:'📥', prioridade:'normal', unidadePadrao:'', categoria:'recebimento', setoresSugeridos:[] }
+        ];
+        const DESP_CATEGORIAS = { desperdicio:{nome:'Desperdício / Perda',icone:'🗑️'}, contagem:{nome:'Contagem de Estoque',icone:'🔢'}, recebimento:{nome:'Recebimento',icone:'📥'} };
+        // Tarefa é registro de insumo?
+        function tarefaEhInsumo(tarefa) { return tarefa && tarefa.tipo === 'insumo'; }
+        // Define a unidade padrão a partir do texto/campo da tarefa (trava onde dá pra acertar)
+        function unidadeDaTarefa(tarefa) {
+            if (!tarefa) return null;
+            if (tarefa.unidadePadrao && DESP_UNIDADES.includes(tarefa.unidadePadrao)) return tarefa.unidadePadrao;
+            const t = (tarefa.txt || '').toLowerCase();
+            if (t.includes('taça') || t.includes('copo') || t.includes('garrafa') || t.includes('unidade')) return 'unidade';
+            if (t.includes('chopp') || t.includes('litro') || t.includes('bebida')) return 'L';
+            if (t.includes('proteína') || t.includes('carne') || t.includes('massa') || t.includes('molho') || t.includes('kg')) return 'kg';
+            if (t.includes('pão') || t.includes('pizza') || t.includes('fruta')) return 'unidade';
+            return null; // genérica/Outro: deixa escolher
+        }
+        // Remove registros com mais de 30 dias
+        function limparRegistrosDesperdicioAntigos() {
+            const limite = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            const antes = (liveData.registrosDesperdicio || []).length;
+            liveData.registrosDesperdicio = (liveData.registrosDesperdicio || []).filter(r => r && r.ts && r.ts >= limite);
+            return antes !== liveData.registrosDesperdicio.length;
+        }
+        // Abre o formulário de desperdício ao concluir uma tarefa tipo insumo
+        function abrirFormDesperdicio(chave) {
+            const tarefa = getTarefaByChave(chave);
+            const uniFixa = unidadeDaTarefa(tarefa);
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '🗑️ Registrar desperdício';
+            let unidadeHTML;
+            if (uniFixa) {
+                unidadeHTML = `<div style="display:flex;align-items:center;gap:8px;padding:11px 14px;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--radius-md);margin-bottom:10px;"><span style="font-size:11px;color:var(--text3);font-weight:700;">Unidade:</span><span style="font-size:14px;font-weight:800;color:var(--accent);">${uniFixa}</span><input type="hidden" id="desp-unidade" value="${uniFixa}"></div>`;
+            } else {
+                unidadeHTML = `<select class="field" id="desp-unidade" style="margin-bottom:10px;">${DESP_UNIDADES.map(u=>`<option value="${u}">${u}</option>`).join('')}</select>`;
+            }
+            document.getElementById('dialog-extra').innerHTML = `
+                <div style="text-align:left;margin-top:8px;">
+                    <label style="font-size:11px;color:var(--text3);font-weight:700;display:block;margin-bottom:4px;">Quantidade</label>
+                    <input class="field" id="desp-qtd" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Ex: 2.5" style="margin-bottom:10px;">
+                    ${unidadeHTML}
+                    <label style="font-size:11px;color:var(--text3);font-weight:700;display:block;margin-bottom:4px;">Motivo</label>
+                    <select class="field" id="desp-motivo" style="margin-bottom:0;">${DESP_MOTIVOS.map(m=>`<option value="${m}">${m}</option>`).join('')}</select>
+                </div>`;
+            document.getElementById('dialog-btns').innerHTML = `<button class="btn-ghost" id="desp-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="desp-ok" style="margin:0;flex:1;">Continuar</button>`;
+            ov.classList.add('show');
+            document.getElementById('desp-ok').onclick = () => {
+                const qtd = parseFloat(document.getElementById('desp-qtd').value);
+                if (isNaN(qtd) || qtd <= 0) { customAlert('Informe uma quantidade válida.'); return; }
+                window._despPendente = {
+                    chave,
+                    quantidade: qtd,
+                    unidade: document.getElementById('desp-unidade').value,
+                    motivo: document.getElementById('desp-motivo').value
+                };
+                ov.classList.remove('show');
+                // Pergunta de foto, igual ao fluxo normal
+                customConfirm('Deseja anexar foto?', 'Sim', 'Não').then(q => {
+                    if (q) { cameraContext = 'tarefa'; cropCtx = 'tarefa'; window.abrirPhotoPicker('tarefa'); }
+                    else concluirDesperdicioSemFoto();
+                });
+            };
+            document.getElementById('desp-c').onclick = () => { ov.classList.remove('show'); window._despPendente = null; };
+        }
+        // Grava o registro de desperdício (com ou sem foto) e conclui a tarefa
+        async function gravarRegistroDesperdicio(foto) {
+            const p = window._despPendente; if (!p) return;
+            const tarefa = getTarefaByChave(p.chave);
+            const { setorId } = parseChave(p.chave);
+            const setor = todosSetores().find(s => s.id === setorId);
+            const st = liveData.tarefasStatus[p.chave] || {};
+            // conclui a tarefa normalmente
+            atualizarStatusTarefa(p.chave, { status: 'done', worker: currentWorker, startTime: st.startTime || null, endTime: Date.now(), foto: foto || null });
+            // grava no histórico de desperdício
+            if (!liveData.registrosDesperdicio) liveData.registrosDesperdicio = [];
+            liveData.registrosDesperdicio.push({
+                chave: p.chave,
+                tarefa: tarefa ? tarefa.txt : 'Registro',
+                icone: tarefa ? (tarefa.icone || '🗑️') : '🗑️',
+                setor: setor ? setor.title : '',
+                setorIcon: setor ? setor.icon : '🗑️',
+                quantidade: p.quantidade,
+                unidade: p.unidade,
+                motivo: p.motivo,
+                worker: currentWorker,
+                foto: foto || null,
+                ts: Date.now()
+            });
+            limparRegistrosDesperdicioAntigos();
+            window._despPendente = null;
+            await atualizarCampo('registrosDesperdicio', liveData.registrosDesperdicio);
+            soundConcluir(); soundAplausos(); dispararAnim(p.chave); fecharModal(); renderWorker();
+            showToast('Desperdício registrado ✅', '🗑️', 3000);
+        }
+        function concluirDesperdicioSemFoto() { gravarRegistroDesperdicio(null); }
+        window.concluirDesperdicioComFoto = function(foto) { gravarRegistroDesperdicio(foto); };
+
+        // ---- Relatório / Tela de Controle de Desperdício (painel do gerente) ----
+        function renderDesperdicio(body) {
+            limparRegistrosDesperdicioAntigos();
+            const registros = (liveData.registrosDesperdicio || []).slice().sort((a,b) => b.ts - a.ts);
+            // monta texto p/ WhatsApp
+            const rest = liveData.restaurante?.nome || 'Staff Check';
+            const linhas = [`🗑️ CONTROLE DE DESPERDÍCIO — ${rest}`, `Últimos 30 dias · ${new Date().toLocaleDateString('pt-BR')}`, ''];
+            const porMotivo = {};
+            registros.forEach(r => { const m = r.motivo || 'Outro'; if (!porMotivo[m]) porMotivo[m] = []; porMotivo[m].push(r); });
+            Object.entries(porMotivo).forEach(([motivo, itens]) => {
+                linhas.push(`*${motivo}* (${itens.length})`);
+                itens.forEach(r => { const data = new Date(r.ts).toLocaleDateString('pt-BR'); linhas.push(`  • ${r.tarefa} — ${r.quantidade} ${r.unidade} — ${r.worker} (${data})`); });
+                linhas.push('');
+            });
+            linhas.push(`TOTAL: ${registros.length} registro(s)`);
+            window._desperdicioTxt = linhas.join('\n');
+            // resumo por motivo (chips)
+            let resumoHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">';
+            const motivosCount = {};
+            registros.forEach(r => { motivosCount[r.motivo] = (motivosCount[r.motivo]||0)+1; });
+            if (Object.keys(motivosCount).length === 0) {
+                resumoHTML = '';
+            } else {
+                Object.entries(motivosCount).forEach(([m,c]) => { resumoHTML += `<div style="background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:8px 12px;font-size:11px;font-weight:700;color:var(--text2);">${m}: <span style="color:var(--red);">${c}</span></div>`; });
+                resumoHTML += '</div>';
+            }
+            let html = '';
+            html += `<button class="btn-primary" onclick="exportarDesperdicioWhatsApp()" style="background:#25d366;box-shadow:none;margin-bottom:14px;">📲 Enviar relatório no WhatsApp</button>`;
+            html += resumoHTML;
+            if (!registros.length) {
+                html += '<div class="empty-state"><div class="empty-icon">🗑️</div>Nenhum desperdício registrado ainda.<br><span style="font-size:11px;">Crie tarefas do tipo "Registro de Insumo" em Gerenciar Tarefas.</span></div>';
+                body.innerHTML = html;
+                return;
+            }
+            html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+            registros.forEach((r, i) => {
+                const data = new Date(r.ts).toLocaleDateString('pt-BR');
+                const hora = new Date(r.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+                const fotoThumb = r.foto ? `<img class="task-foto-thumb" src="${r.foto}" onclick="verFoto('${r.foto}')">` : '';
+                html += `<div style="display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--card2);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:var(--radius-md);">
+                    <span style="font-size:20px;flex-shrink:0;">${r.icone||'🗑️'}</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:12.5px;font-weight:700;color:var(--text);line-height:1.3;">${r.tarefa}</div>
+                        <div style="font-size:10px;color:var(--text3);margin-top:3px;">${r.setorIcon||''} ${r.setor||''} · ${r.worker} · ${data} ${hora}</div>
+                        <div style="font-size:11px;color:var(--text2);margin-top:3px;"><strong style="color:var(--red);">${r.quantidade} ${r.unidade}</strong> · ${r.motivo}</div>
+                    </div>
+                    ${fotoThumb}
+                    <button class="delete-btn" onclick="excluirRegistroDesperdicio(${i})">🗑️</button>
+                </div>`;
+            });
+            html += '</div>';
+            body.innerHTML = html;
+        }
+        window.exportarDesperdicioWhatsApp = function(e) { if(e) e.preventDefault(); const txt = encodeURIComponent(window._desperdicioTxt || 'Relatório não gerado.'); window.open('https://wa.me/?text=' + txt, '_blank'); };
+        window.excluirRegistroDesperdicio = async function(idxOrdenado) {
+            const registros = (liveData.registrosDesperdicio || []).slice().sort((a,b) => b.ts - a.ts);
+            const alvo = registros[idxOrdenado]; if (!alvo) return;
+            const ok = await customConfirm('Remover este registro de desperdício?'); if (!ok) return;
+            liveData.registrosDesperdicio = (liveData.registrosDesperdicio || []).filter(r => r.ts !== alvo.ts || r.chave !== alvo.chave);
+            await atualizarCampo('registrosDesperdicio', liveData.registrosDesperdicio);
+            abrirGerenteModal('desperdicio');
+        };
+        // Adiciona biblioteca de registros padrão (bar/cozinha) com escolha de setor
+        window.abrirBibliotecaDesperdicio = async function() {
+            // 1º escolhe a categoria
+            const cat = await customSelect('Que tipo de registro deseja adicionar?', Object.entries(DESP_CATEGORIAS).map(([id,c])=>({ id, label:`${c.icone} ${c.nome}` })));
+            if (!cat) return;
+            const itens = REGISTROS_INSUMO_LIB.filter(r => r.categoria === cat);
+            const escolha = await customSelect(`${DESP_CATEGORIAS[cat].icone} ${DESP_CATEGORIAS[cat].nome} — escolha o modelo:`, itens.map((r,i)=>({ id:String(i), label:`${r.icone} ${r.txt}` })));
+            if (escolha === null) return;
+            const reg = itens[parseInt(escolha)];
+            // sugere setor: se o modelo tem setores sugeridos presentes no template atual, oferece eles primeiro
+            const setores = todosSetores();
+            const sugeridos = setores.filter(s => (reg.setoresSugeridos||[]).includes(s.id));
+            const ordenados = [...sugeridos, ...setores.filter(s => !sugeridos.includes(s))];
+            const setorEscolhido = await customSelect('Adicionar em qual setor?', ordenados.map(s=>({ id:s.id, label:(sugeridos.includes(s)?'⭐ ':'')+`${s.icon} ${s.title}` })));
+            if (!setorEscolhido) return;
+            const nova = { cat:setorEscolhido, txt:reg.txt, prioridade:reg.prioridade||'normal', icone:reg.icone||'🗑️', passos:[], tipo:'insumo' };
+            if (reg.unidadePadrao) nova.unidadePadrao = reg.unidadePadrao;
+            liveData.tarefasCustomizadas.push(nova);
+            await salvar();
+            customAlert('✅ Registro adicionado ao setor!');
+            renderWorker();
         };
 
         function renderRelatorio(body) {

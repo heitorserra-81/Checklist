@@ -920,6 +920,11 @@
                     <div class="mgr-btn-label">Controle de Desperdício</div>
                     <div class="mgr-btn-sub">Insumos e perdas registradas</div>
                 </div>
+                <div class="mgr-btn print" onclick="abrirGerenteModal('imprimir')" style="--btn-glow:rgba(99,102,241,0.6);">
+                    <div class="mgr-btn-icon-wrap" style="background:rgba(99,102,241,0.12);">🖨️</div>
+                    <div class="mgr-btn-label">Imprimir</div>
+                    <div class="mgr-btn-sub">Checklists e relatórios em PDF</div>
+                </div>
                 <div class="mgr-btn schedule" id="mgr-btn-escala" onclick="abrirEscala()">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(249,115,22,0.12);">📅</div>
                     <div class="mgr-btn-label">Escala de Folgas</div>
@@ -951,6 +956,7 @@
             <div class="config-tab" onclick="trocarConfigTab('tema',this)">🎨 Tema</div>
             <div class="config-tab" onclick="trocarConfigTab('setores',this)">📂 Setores</div>
             <div class="config-tab" onclick="trocarConfigTab('tarefas',this)">📋 Tarefas</div>
+            <div class="config-tab" onclick="trocarConfigTab('desperdicio',this)">🗑️ Desperdício</div>
             <div class="config-tab" onclick="trocarConfigTab('restaurante',this)">🏷️ Restaurante</div>
         </div>
         <div class="config-body" id="config-body"></div>
@@ -1603,7 +1609,8 @@ const TAREFAS_RESTAURANTE = {
             tarefasAtivas: {},
             delegacoes: {},
             delegacaoAtiva: false,
-            registrosDesperdicio: []
+            registrosDesperdicio: [],
+            desperdicioItens: ['Taça de vinho','Taça de água','Taça de espumante','Copo longo drink','Copo americano','Caneca','Prato raso','Prato fundo','Prato de sobremesa','Garrafa']
         };
 
         let currentWorker = "";
@@ -1948,7 +1955,8 @@ const TAREFAS_RESTAURANTE = {
                     tarefasAtivas: d.tarefasAtivas || {},
                     delegacoes: d.delegacoes || {},
                     delegacaoAtiva: d.delegacaoAtiva !== undefined ? d.delegacaoAtiva : false,
-                    registrosDesperdicio: d.registrosDesperdicio || []
+                    registrosDesperdicio: d.registrosDesperdicio || [],
+                    desperdicioItens: d.desperdicioItens || liveData.desperdicioItens || []
                 });
                 if (Object.keys(liveData.usuariosSalvos).length === 0) {
                     if (restaurarBackupLocal()) {
@@ -2079,9 +2087,45 @@ const TAREFAS_RESTAURANTE = {
             else if (tab === 'tema') renderConfigTema(body);
             else if (tab === 'setores') renderConfigSetores(body);
             else if (tab === 'tarefas') renderConfigTarefas(body);
+            else if (tab === 'desperdicio') renderConfigDesperdicioItens(body);
             else if (tab === 'restaurante') renderConfigRestaurante(body);
             else if (tab === 'desempenho') renderConfigDesempenho(body);
         }
+
+        function renderConfigDesperdicioItens(body) {
+            const itens = liveData.desperdicioItens || [];
+            let html = '<div class="config-section">';
+            html += '<div class="config-section-title">Itens de Desperdício</div>';
+            html += '<p style="font-size:11px;color:var(--text2);margin-bottom:12px;">Estes itens aparecem na pergunta "Qual item?" quando alguém registra um desperdício (ex.: tipos de taça, copo, prato). É opcional escolher na hora de registrar.</p>';
+            html += '<div style="display:flex;gap:8px;margin-bottom:14px;"><input class="field" id="novo-item-desp" placeholder="Ex: Taça de vinho tinto" style="margin-bottom:0;flex:1;"><button class="btn-primary" onclick="adicionarItemDesperdicio()" style="margin-bottom:0;width:auto;padding:0 18px;">➕</button></div>';
+            if (!itens.length) {
+                html += '<div class="empty-state"><div class="empty-icon">🗑️</div>Nenhum item cadastrado.</div>';
+            } else {
+                html += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                itens.forEach((it, i) => {
+                    html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-md);"><span style="flex:1;font-size:13px;font-weight:600;color:var(--text);">${it}</span><button class="delete-btn" onclick="removerItemDesperdicio(${i})">🗑️</button></div>`;
+                });
+                html += '</div>';
+            }
+            html += '</div>';
+            body.innerHTML = html;
+        }
+        window.adicionarItemDesperdicio = async function() {
+            const inp = document.getElementById('novo-item-desp');
+            const val = (inp?.value || '').trim();
+            if (!val) { customAlert('Digite o nome do item.'); return; }
+            if (!liveData.desperdicioItens) liveData.desperdicioItens = [];
+            if (liveData.desperdicioItens.includes(val)) { customAlert('Esse item já existe.'); return; }
+            liveData.desperdicioItens.push(val);
+            await atualizarCampo('desperdicioItens', liveData.desperdicioItens);
+            renderConfigTab('desperdicio');
+        };
+        window.removerItemDesperdicio = async function(i) {
+            const ok = await customConfirm('Remover este item da lista?'); if (!ok) return;
+            liveData.desperdicioItens.splice(i, 1);
+            await atualizarCampo('desperdicioItens', liveData.desperdicioItens);
+            renderConfigTab('desperdicio');
+        };
 
         function renderConfigDesempenho(body) {
             const toggles = [
@@ -3503,6 +3547,7 @@ const TAREFAS_RESTAURANTE = {
             else if (tipo === 'qualidade') { title.textContent = '⭐ Avaliação de Qualidade'; renderQualidade(body); }
             else if (tipo === 'delegacao') { title.textContent = '🎯 Delegar Tarefas'; renderDelegacao(body); }
             else if (tipo === 'desperdicio') { title.textContent = '🗑️ Controle de Desperdício'; renderDesperdicio(body); }
+            else if (tipo === 'imprimir') { title.textContent = '🖨️ Imprimir'; renderImprimir(body); }
         };
 
         window.fecharGerenteModal = function() { document.getElementById('gerente-full-modal').classList.remove('open'); edicaoTaskIdx = null; };
@@ -4029,8 +4074,13 @@ const TAREFAS_RESTAURANTE = {
             } else {
                 unidadeHTML = `<select class="field" id="desp-unidade" style="margin-bottom:10px;">${DESP_UNIDADES.map(u=>`<option value="${u}">${u}</option>`).join('')}</select>`;
             }
+            const itensLista = liveData.desperdicioItens || [];
+            const itemHTML = itensLista.length ? `
+                    <label style="font-size:11px;color:var(--text3);font-weight:700;display:block;margin-bottom:4px;">Qual item? (opcional)</label>
+                    <select class="field" id="desp-item" style="margin-bottom:10px;"><option value="">— não especificar —</option>${itensLista.map(it=>`<option value="${it}">${it}</option>`).join('')}</select>` : '';
             document.getElementById('dialog-extra').innerHTML = `
                 <div style="text-align:left;margin-top:8px;">
+                    ${itemHTML}
                     <label style="font-size:11px;color:var(--text3);font-weight:700;display:block;margin-bottom:4px;">Quantidade</label>
                     <input class="field" id="desp-qtd" type="number" inputmode="decimal" min="0" step="0.1" placeholder="Ex: 2.5" style="margin-bottom:10px;">
                     ${unidadeHTML}
@@ -4042,8 +4092,10 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('desp-ok').onclick = () => {
                 const qtd = parseFloat(document.getElementById('desp-qtd').value);
                 if (isNaN(qtd) || qtd <= 0) { customAlert('Informe uma quantidade válida.'); return; }
+                const itemEl = document.getElementById('desp-item');
                 window._despPendente = {
                     chave,
+                    item: itemEl ? itemEl.value : '',
                     quantidade: qtd,
                     unidade: document.getElementById('desp-unidade').value,
                     motivo: document.getElementById('desp-motivo').value
@@ -4071,6 +4123,7 @@ const TAREFAS_RESTAURANTE = {
             liveData.registrosDesperdicio.push({
                 chave: p.chave,
                 tarefa: tarefa ? tarefa.txt : 'Registro',
+                item: p.item || '',
                 icone: tarefa ? (tarefa.icone || '🗑️') : '🗑️',
                 setor: setor ? setor.title : '',
                 setorIcon: setor ? setor.icon : '🗑️',
@@ -4101,7 +4154,7 @@ const TAREFAS_RESTAURANTE = {
             registros.forEach(r => { const m = r.motivo || 'Outro'; if (!porMotivo[m]) porMotivo[m] = []; porMotivo[m].push(r); });
             Object.entries(porMotivo).forEach(([motivo, itens]) => {
                 linhas.push(`*${motivo}* (${itens.length})`);
-                itens.forEach(r => { const data = new Date(r.ts).toLocaleDateString('pt-BR'); linhas.push(`  • ${r.tarefa} — ${r.quantidade} ${r.unidade} — ${r.worker} (${data})`); });
+                itens.forEach(r => { const data = new Date(r.ts).toLocaleDateString('pt-BR'); const itemTxt = r.item ? (r.item + ' — ') : ''; linhas.push(`  • ${r.tarefa} — ${itemTxt}${r.quantidade} ${r.unidade} — ${r.worker} (${data})`); });
                 linhas.push('');
             });
             linhas.push(`TOTAL: ${registros.length} registro(s)`);
@@ -4134,7 +4187,7 @@ const TAREFAS_RESTAURANTE = {
                     <div style="flex:1;min-width:0;">
                         <div style="font-size:12.5px;font-weight:700;color:var(--text);line-height:1.3;">${r.tarefa}</div>
                         <div style="font-size:10px;color:var(--text3);margin-top:3px;">${r.setorIcon||''} ${r.setor||''} · ${r.worker} · ${data} ${hora}</div>
-                        <div style="font-size:11px;color:var(--text2);margin-top:3px;"><strong style="color:var(--red);">${r.quantidade} ${r.unidade}</strong> · ${r.motivo}</div>
+                        <div style="font-size:11px;color:var(--text2);margin-top:3px;"><strong style="color:var(--red);">${r.quantidade} ${r.unidade}</strong>${r.item ? ' · '+r.item : ''} · ${r.motivo}</div>
                     </div>
                     ${fotoThumb}
                     <button class="delete-btn" onclick="excluirRegistroDesperdicio(${i})">🗑️</button>
@@ -4143,7 +4196,21 @@ const TAREFAS_RESTAURANTE = {
             html += '</div>';
             body.innerHTML = html;
         }
-        window.exportarDesperdicioWhatsApp = function(e) { if(e) e.preventDefault(); const txt = encodeURIComponent(window._desperdicioTxt || 'Relatório não gerado.'); window.open('https://wa.me/?text=' + txt, '_blank'); };
+        // Abre WhatsApp de forma compatível com PWA instalado (evita aba branca do window.open)
+        function abrirWhatsApp(texto, numero) {
+            const base = numero ? ('https://wa.me/' + numero) : 'https://wa.me/';
+            const url = base + '?text=' + encodeURIComponent(texto);
+            try {
+                const a = document.createElement('a');
+                a.href = url; a.target = '_blank'; a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { try { a.remove(); } catch(e){} }, 500);
+            } catch (e) {
+                location.href = url; // último recurso
+            }
+        }
+        window.exportarDesperdicioWhatsApp = function(e) { if(e) e.preventDefault(); abrirWhatsApp(window._desperdicioTxt || 'Relatório não gerado.'); };
         window.excluirRegistroDesperdicio = async function(idxOrdenado) {
             const registros = (liveData.registrosDesperdicio || []).slice().sort((a,b) => b.ts - a.ts);
             const alvo = registros[idxOrdenado]; if (!alvo) return;
@@ -4173,6 +4240,139 @@ const TAREFAS_RESTAURANTE = {
             await salvar();
             customAlert('✅ Registro adicionado ao setor!');
             renderWorker();
+        };
+
+        // ========================================================
+        // ==================== MÓDULO: IMPRESSÃO ==================
+        // ========================================================
+        function escapeHtmlImp(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+        function gerarHTMLImpressao(opts) {
+            const rest = liveData.restaurante?.nome || 'Staff Check';
+            const logo = liveData.restaurante?.logo || '';
+            const dataStr = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+            const setores = todosSetores().filter(s => liveData.setoresAtivos?.[s.id] !== false);
+            const setoresAlvo = opts.setorId === 'todos' ? setores : setores.filter(s => s.id === opts.setorId);
+            let blocos = '';
+            // CHECKLIST
+            if (opts.tipos.includes('checklist')) {
+                setoresAlvo.forEach(s => {
+                    const tarefas = liveData.tarefasCustomizadas.filter(t => t.cat === s.id);
+                    if (!tarefas.length) return;
+                    let linhas = '';
+                    tarefas.forEach(t => {
+                        const box = opts.comCheckbox ? '<span class="box"></span>' : '';
+                        const pr = t.prioridade === 'alta' ? '<span class="urg">URGENTE</span>' : '';
+                        const selo = (t.tipo === 'insumo') ? '<span class="ins">REGISTRO</span>' : '';
+                        linhas += `<div class="item">${box}<span class="ic">${t.icone||'•'}</span><span class="txt">${escapeHtmlImp(t.txt)}</span>${selo}${pr}</div>`;
+                    });
+                    blocos += `<section><h2>${s.icon} ${escapeHtmlImp(s.title)} — Checklist</h2>${linhas}</section>`;
+                });
+            }
+            // DELEGADAS
+            if (opts.tipos.includes('delegadas')) {
+                let linhas = '';
+                setoresAlvo.forEach(s => {
+                    const tarefas = liveData.tarefasCustomizadas.filter(t => t.cat === s.id);
+                    tarefas.forEach((t, i) => {
+                        const chave = s.id + '_' + i;
+                        const d = (typeof getDelegacao === 'function') ? getDelegacao(chave) : null;
+                        if (!d || !d.worker) return;
+                        const dias = (typeof descreverDiasDelegacao === 'function') ? descreverDiasDelegacao(d) : '';
+                        linhas += `<div class="item"><span class="ic">${t.icone||'•'}</span><span class="txt">${escapeHtmlImp(t.txt)} <small style="color:#777;">(${escapeHtmlImp(s.title)})</small></span><span class="who">${escapeHtmlImp(d.worker)} · ${escapeHtmlImp(dias)}</span></div>`;
+                    });
+                });
+                blocos += `<section><h2>🎯 Tarefas Delegadas</h2>${linhas || '<div class="item"><span class="txt" style="color:#888;">Nenhuma tarefa delegada.</span></div>'}</section>`;
+            }
+            // DESPERDÍCIO
+            if (opts.tipos.includes('desperdicio')) {
+                let regs = (liveData.registrosDesperdicio || []).slice().sort((a,b)=>b.ts-a.ts);
+                if (opts.setorId !== 'todos') {
+                    const nomeSetor = (setores.find(s=>s.id===opts.setorId)||{}).title;
+                    regs = regs.filter(r => r.setor === nomeSetor);
+                }
+                let linhas = '';
+                regs.forEach(r => {
+                    const data = new Date(r.ts).toLocaleDateString('pt-BR');
+                    const item = r.item ? (escapeHtmlImp(r.item)+' · ') : '';
+                    linhas += `<div class="item"><span class="ic">${r.icone||'🗑️'}</span><span class="txt">${escapeHtmlImp(r.tarefa)} — ${item}<b>${escapeHtmlImp(String(r.quantidade))} ${escapeHtmlImp(r.unidade)}</b> · ${escapeHtmlImp(r.motivo)}</span><span class="who">${escapeHtmlImp(r.worker)} · ${data}</span></div>`;
+                });
+                blocos += `<section><h2>🗑️ Controle de Desperdício</h2>${linhas || '<div class="item"><span class="txt" style="color:#888;">Nenhum registro no período.</span></div>'}</section>`;
+            }
+            if (!blocos) blocos = '<p style="text-align:center;color:#888;margin-top:40px;">Nada a imprimir com as opções escolhidas.</p>';
+            const logoHTML = logo ? `<img src="${logo}" class="logo">` : '';
+            return `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtmlImp(rest)}</title><style>
+                @page { margin: 14mm; }
+                * { box-sizing:border-box; }
+                body { font-family:'Helvetica Neue',Arial,sans-serif; color:#1a1a1a; margin:0; padding:18px; }
+                header { display:flex; align-items:center; gap:14px; border-bottom:3px solid #1a1a1a; padding-bottom:14px; }
+                .logo { width:54px; height:54px; border-radius:10px; object-fit:cover; }
+                header .info h1 { font-size:22px; margin:0; letter-spacing:0.5px; }
+                header .info .date { font-size:12px; color:#555; margin-top:3px; text-transform:capitalize; }
+                section { margin-top:22px; page-break-inside:avoid; }
+                section h2 { font-size:15px; background:#1a1a1a; color:#fff; padding:8px 12px; border-radius:6px; margin:0 0 10px; }
+                .item { display:flex; align-items:center; gap:10px; padding:9px 6px; border-bottom:1px solid #ddd; font-size:13px; }
+                .box { width:18px; height:18px; border:2px solid #1a1a1a; border-radius:4px; flex-shrink:0; }
+                .ic { font-size:16px; flex-shrink:0; }
+                .txt { flex:1; }
+                .who { font-size:11px; color:#444; font-weight:bold; white-space:nowrap; }
+                .urg { font-size:9px; font-weight:bold; color:#fff; background:#c0392b; padding:2px 7px; border-radius:4px; }
+                .ins { font-size:9px; font-weight:bold; color:#fff; background:#e15a28; padding:2px 7px; border-radius:4px; }
+                footer { margin-top:34px; padding-top:10px; border-top:1px solid #ddd; text-align:center; font-size:10px; color:#888; }
+                .actions { margin-top:24px; text-align:center; }
+                .actions button { font-family:inherit; font-size:14px; font-weight:bold; padding:12px 22px; border-radius:8px; border:none; cursor:pointer; margin:0 5px; }
+                .btn-print { background:#1a1a1a; color:#fff; }
+                @media print { body { padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; } .actions { display:none; } }
+            </style></head><body>
+                <header>${logoHTML}<div class="info"><h1>${escapeHtmlImp(rest)}</h1><div class="date">${dataStr}</div></div></header>
+                ${blocos}
+                <footer>Staff Check · Desenvolvido por Heitor Serra Neto</footer>
+                <div class="actions"><button class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button></div>
+            </body></html>`;
+        }
+
+        let impTipos = { checklist:true, delegadas:false, desperdicio:false };
+        let impSetor = 'todos';
+        let impCheckbox = true;
+
+        function renderImprimir(body) {
+            const setores = todosSetores().filter(s => liveData.setoresAtivos?.[s.id] !== false);
+            let html = '<div style="padding:4px 2px;">';
+            html += '<p style="font-size:12px;color:var(--text2);margin-bottom:16px;">Monte o documento e toque em <strong>Gerar</strong>. Abre a folha pronta — de lá você imprime ou salva em PDF.</p>';
+            html += '<div class="config-section-title">O que incluir</div>';
+            const tiposDef = [ ['checklist','📋 Checklist do setor'], ['delegadas','🎯 Tarefas delegadas'], ['desperdicio','🗑️ Relatório de desperdício'] ];
+            tiposDef.forEach(([id,label]) => {
+                html += `<div class="config-row"><div class="config-row-info"><div class="config-row-label">${label}</div></div><label class="toggle-switch"><input type="checkbox" ${impTipos[id]?'checked':''} onchange="impToggleTipo('${id}',this.checked)"><span class="toggle-slider"></span></label></div>`;
+            });
+            html += '<div class="config-section-title" style="margin-top:14px;">Setor</div>';
+            html += `<select class="field" id="imp-setor" onchange="impSetor=this.value">`;
+            html += `<option value="todos" ${impSetor==='todos'?'selected':''}>🏢 Todos os setores</option>`;
+            setores.forEach(s => { html += `<option value="${s.id}" ${impSetor===s.id?'selected':''}>${s.icon} ${s.title}</option>`; });
+            html += `</select>`;
+            html += '<div class="config-section-title" style="margin-top:8px;">Checklist na parede</div>';
+            html += `<div class="config-row"><div class="config-row-info"><div class="config-row-label">Espaço pra marcar à mão ☐</div><div class="config-row-sub">Adiciona um quadradinho ao lado de cada tarefa</div></div><label class="toggle-switch"><input type="checkbox" ${impCheckbox?'checked':''} onchange="impCheckbox=this.checked"><span class="toggle-slider"></span></label></div>`;
+            html += `<button class="btn-primary" onclick="executarImpressao()" style="margin-top:18px;">🖨️ Gerar documento</button>`;
+            html += '</div>';
+            body.innerHTML = html;
+        }
+        window.impToggleTipo = function(id, on) { impTipos[id] = on; };
+        window.executarImpressao = function() {
+            const tipos = Object.keys(impTipos).filter(k => impTipos[k]);
+            if (!tipos.length) { customAlert('Escolha ao menos um tipo de documento.'); return; }
+            const html = gerarHTMLImpressao({ tipos, setorId: impSetor, comCheckbox: impCheckbox });
+            try {
+                const blob = new Blob([html], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.target = '_blank'; a.rel = 'noopener';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { try { a.remove(); URL.revokeObjectURL(url); } catch(e){} }, 4000);
+            } catch (e) {
+                const w = window.open('', '_blank');
+                if (!w) { customAlert('Permita pop-ups para abrir a impressão.'); return; }
+                w.document.open(); w.document.write(html); w.document.close();
+            }
         };
 
         function renderRelatorio(body) {
@@ -4563,8 +4763,7 @@ const TAREFAS_RESTAURANTE = {
             });
             msg += `Qualquer dúvida, é só falar. Bom trabalho! 💪`;
             const numero = telefoneParaWhatsApp(u.telefone);
-            const url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(msg);
-            window.open(url, '_blank');
+            abrirWhatsApp(msg, numero);
         };
 
         // ----- Editar telefone do funcionário (gerente) -----
@@ -4586,7 +4785,7 @@ const TAREFAS_RESTAURANTE = {
         window.avaliarTarefa = async function(chave, r) { if (!liveData.avaliacoes) liveData.avaliacoes={}; liveData.avaliacoes[chave]=r; await atualizarCampo('avaliacoes',liveData.avaliacoes); abrirGerenteModal('qualidade'); renderWorker(); };
         window.darFeedback = async function(chave) { const texto=await customPrompt('Feedback para esta tarefa:'); if (!texto||!texto.trim()) return; if (!liveData.feedbacksQualidade) liveData.feedbacksQualidade=[]; const agora=new Date().toLocaleDateString('pt-BR'); liveData.feedbacksQualidade.push({chave,texto:texto.trim(),data:agora}); await atualizarCampo('feedbacksQualidade',liveData.feedbacksQualidade); customAlert('✅ Feedback enviado!'); abrirGerenteModal('qualidade'); };
         window.confirmarZerarTurno = function() { customConfirm('Zerar todas as tarefas?').then(ok=>{ if(ok){ salvarHistorico(); liveData.tarefasStatus={}; localStorage.setItem('sc-last-reset',new Date().toDateString()); salvar(); renderHistorico(); customAlert('Turno zerado!'); } }); };
-        window.exportarWhatsApp = function(e) { if(e) e.preventDefault(); const txt=encodeURIComponent(window._relatorioTxt||'Relatório não gerado.'); window.open('https://wa.me/?text='+txt,'_blank'); };
+        window.exportarWhatsApp = function(e) { if(e) e.preventDefault(); abrirWhatsApp(window._relatorioTxt||'Relatório não gerado.'); };
 
         // ========== PERFIL DO FUNCIONÁRIO ==========
         window.abrirPerfilFuncionario = function(nome, abaInicial='working') { wpWorker=nome; wpAbaAtiva=abaInicial; renderPerfilFuncionario(nome); document.getElementById('worker-profile-overlay').classList.add('show'); document.querySelectorAll('.wp-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===abaInicial)); };

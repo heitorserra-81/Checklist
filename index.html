@@ -1845,6 +1845,7 @@ const TAREFAS_RESTAURANTE = {
                 });
             });
             plantarRegistrosInsumoExemplo(templateId);
+            try { if (typeof preencherEstimativasFaltantes === 'function') preencherEstimativasFaltantes(); } catch(e){}
         }
 
         // Planta alguns registros de insumo prontos nos setores certos, para já abrir e testar
@@ -1975,6 +1976,12 @@ const TAREFAS_RESTAURANTE = {
                     popularTarefasDoTemplate(liveData.templateAtivo || 'restaurante');
                     salvar(true);
                 }
+                // Garante estimativa de tempo em tarefas já salvas que não tenham (uma vez)
+                try {
+                    if (typeof preencherEstimativasFaltantes === 'function' && preencherEstimativasFaltantes()) {
+                        salvar(true);
+                    }
+                } catch(e){}
                 detectarNotificacoes(liveData.tarefasStatus);
                 const newOnline = contarOnline();
                 if (newOnline > oldOnline) soundEntrada();
@@ -3338,11 +3345,16 @@ const TAREFAS_RESTAURANTE = {
         function iniciarCronLista(chave, startTime) {
             const el = document.getElementById('cron_' + chave); if (!el) return;
             if (cronos[chave]) clearInterval(cronos[chave]);
+            const tarefaCron = getTarefaByChave(chave);
+            const estSeg = (tarefaCron && tarefaCron.estimativaSeg) ? tarefaCron.estimativaSeg : 0;
             cronos[chave] = setInterval(() => {
                 const d = Math.round((Date.now() - startTime) / 1000);
                 const el2 = document.getElementById('cron_' + chave);
-                if (el2) el2.textContent = `⏱️ ${String(Math.floor(d/60)).padStart(2,'0')}:${String(d%60).padStart(2,'0')}`;
-                else clearInterval(cronos[chave]);
+                if (el2) {
+                    const estourou = estSeg > 0 && d > estSeg;
+                    el2.textContent = `${estourou ? '⚠️' : '⏱️'} ${String(Math.floor(d/60)).padStart(2,'0')}:${String(d%60).padStart(2,'0')}`;
+                    if (estourou) { el2.style.background = 'rgba(206,43,55,0.18)'; el2.style.color = 'var(--red)'; }
+                } else clearInterval(cronos[chave]);
             }, 1000);
         }
 
@@ -3525,10 +3537,13 @@ const TAREFAS_RESTAURANTE = {
             card.innerHTML = `<div class="modal-sector-pill">${modalSetor.icon} ${modalSetor.title}</div><div class="modal-title">${iconeT} ${txt}</div><div class="modal-meta"><span class="priority-tag ${pc}">${pl}</span></div>${statusHTML}${fotoHTML}<div class="modal-desc"><strong>Como Fazer:</strong>${getDesc(txt,tarefa)}</div>${comPreview}${avalHTML}${feedbackHTML}<div class="modal-actions">${actionsHTML}</div>`;
             if (st.status === 'working' && st.startTime) {
                 if (mainCronInterval) clearInterval(mainCronInterval);
+                const estSegModal = (tarefa && tarefa.estimativaSeg) ? tarefa.estimativaSeg : 0;
                 mainCronInterval = setInterval(() => {
                     const d = Math.round((Date.now() - st.startTime) / 1000);
-                    const t = `⏱️ ${String(Math.floor(d/60)).padStart(2,'0')}:${String(d%60).padStart(2,'0')}`;
-                    const el = document.getElementById(`mt-timer-${chave}`); if (el) el.textContent = t; else clearInterval(mainCronInterval);
+                    const estourou = estSegModal > 0 && d > estSegModal;
+                    const t = `${estourou ? '⚠️' : '⏱️'} ${String(Math.floor(d/60)).padStart(2,'0')}:${String(d%60).padStart(2,'0')}`;
+                    const el = document.getElementById(`mt-timer-${chave}`);
+                    if (el) { el.textContent = t; if (estourou) el.style.color = 'var(--red)'; } else clearInterval(mainCronInterval);
                 }, 1000);
             }
             return card;
@@ -4017,6 +4032,43 @@ const TAREFAS_RESTAURANTE = {
         // ========================================================
         // ============ MÓDULO: TEMPO DE TAREFA ===================
         // ========================================================
+        // Estima tempo (segundos) pela descrição da tarefa — bom senso operacional
+        function estimarTempoPorTexto(txt) {
+            const t = (txt || '').toLowerCase();
+            const regras = [
+                [/aspir|carpete|tapete/, 12*60],
+                [/encerar|polir o piso|lavar o piso|piso da cozinha/, 15*60],
+                [/câmara fria|camara fria|estoque por categoria|inventário|inventario/, 20*60],
+                [/coifa|filtro de gordura|exaustor/, 18*60],
+                [/forno|churrasqueira|brasa|defumar/, 15*60],
+                [/montar o buffet|montar buffet|mise en place/, 20*60],
+                [/escala|relatório|relatorio|planilha|fechamento de caixa|fechamento do caixa/, 15*60],
+                [/receb|conferir nota/, 8*60],
+                [/repor papel|repor sabonete|trocar saco|esvaziar lixeira|lixeira|lixo|paliteiro|guardanapo/, 3*60],
+                [/acender|ligar|desligar|ajustar climatiz|ajustar o ar/, 2*60],
+                [/preparar|prepar|cortar|fatiar|temperar|marinar/, 10*60],
+                [/lavar|higieniz|desinfet|esfreg/, 8*60],
+                [/banheiro|vaso|sanitário|sanitario/, 8*60],
+                [/varrer|limpar o chão|limpar o chao|rodo/, 7*60],
+                [/polir|taças|taca|copos|talher/, 6*60],
+                [/organizar|arrumar|montar as mesas|montar mesas/, 6*60],
+                [/abastec|repor|reabastec|reposição|reposicao/, 5*60],
+                [/contagem|contar|registrar/, 5*60],
+                [/conferir|verificar|checar|testar|aferir|anotar a temperatura/, 4*60],
+            ];
+            for (const [re, seg] of regras) { if (re.test(t)) return seg; }
+            return 5*60;
+        }
+        // Garante que toda tarefa tenha estimativa (preenche as que não têm, sem sobrescrever as definidas)
+        function preencherEstimativasFaltantes() {
+            try {
+                let mudou = false;
+                (liveData.tarefasCustomizadas || []).forEach(t => {
+                    if (!t.estimativaSeg) { t.estimativaSeg = estimarTempoPorTexto(t.txt); mudou = true; }
+                });
+                return mudou;
+            } catch (e) { console.warn('preencherEstimativasFaltantes', e); return false; }
+        }
         // Identifica a tarefa por setor+texto (estável a reordenação)
         function idTarefaTempo(chave) {
             const t = getTarefaByChave(chave);

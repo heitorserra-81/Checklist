@@ -820,8 +820,36 @@
         </div>
     </div>
 
+    <!-- TELA SELEÇÃO DE RESTAURANTE (porta de entrada multi-tenant) -->
+    <div class="screen active" id="scr-restaurante">
+        <div class="login-screen">
+            <div class="login-logo-area">
+                <div class="login-logo-ring"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 12l2 2l4-4"/><circle cx="12" cy="12" r="10"/></svg></div>
+                <h2>Staff Check</h2>
+                <p class="app-credits">Desenvolvido por<br><span class="dev-badge-login">Heitor Serra Neto</span></p>
+            </div>
+            <div class="login-card">
+                <h3>Acesso do Restaurante</h3>
+                <p>Digite o código do seu restaurante para entrar</p>
+                <input type="text" class="field" id="field-rest-id" placeholder="Código do restaurante (ex: marchesini)" autocapitalize="none" autocomplete="off">
+                <button class="btn-primary" onclick="entrarRestaurante()">Entrar</button>
+                <div class="login-divider"><span>ou</span></div>
+                <button class="btn-ghost" onclick="abrirCriarRestaurante()">✨ Criar meu restaurante</button>
+                <div class="criar-conta-expand" id="criar-rest-expand">
+                    <input type="text" class="field" id="field-rest-nome" placeholder="Nome do restaurante" style="margin-bottom:8px;">
+                    <select class="field" id="field-rest-template" style="margin-bottom:8px;"></select>
+                    <input type="password" class="field" id="field-rest-senha" placeholder="Senha mestra (4+ dígitos)" maxlength="12" style="margin-bottom:8px;">
+                    <button class="btn-primary" onclick="criarRestaurante()" style="margin-top:4px;">✅ Criar e Entrar</button>
+                </div>
+                <div class="login-divider"><span>dono do sistema</span></div>
+                <button class="btn-ghost" onclick="abrirPainelDono()" style="border-color:var(--gold);color:var(--gold);">👑 Acesso do Administrador</button>
+            </div>
+            <div class="login-footer"><p><strong>Staff Check</strong> — Sistema de Gestão de Turno<br>Desenvolvido por <strong>Heitor Serra Neto</strong> · 2026</p></div>
+        </div>
+    </div>
+
     <!-- TELA LOGIN -->
-    <div class="screen active" id="scr-login">
+    <div class="screen" id="scr-login">
         <div class="login-screen">
             <div class="login-logo-area">
                 <div class="login-logo-ring"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAAqg0lEQVR42tV9ebhlVXXnb629zx3efXMNVBVIVTHPgoKAAoIGxQFbo5kciB1bkmjUGGNMGz9DTGw1kk6iaRM1GtEYW8IHhihOgKKxAScIg0AxFdTwanjze3c8e6/Vf5xpn3Nvma/763/6fvejLu+dd87Z66y9ht/6rXXJe08gENKXavY5+UehKL8I+Y+INDku/StSVQr/dviVHpYcoclJoAAURMU9hBciUlUiANmR1Svk969QAgWrGHULpUXQyGOKS9vsRikQDarnJkCTy4JIoVCoKlR06HhKz5YJm4rfhvdCCqVRwkuPSc8xeh35BYb+JztPZS1EDICIjiiR8i0En0i8Lwn75/69qIooMxlj8P/by3uf3DwREf4jGWmq2pmAtPqgqaxuIqoEm8lleaW9d25hcbnd7gyqEs22W3ia8hXCI6nYU9nnZJ9kKlbSuyM+SQ12JpWUqzVW3zgzcfS2jVOT48mPnXMEYqYjWY7QGtjhzVRWNFJVEbHWAtj1+Ny/3vrT2//tgQd37T20uNofOPGa7nkMW7FACrkgVDK7k32uiAzBBh25f4uNq1DNrKQGZ9DUrhEABVOjHm3eMHXmydsvv+ScV1xxwc4dWwG42LFhGmVRwnsg8f7IOgYRNcwguuf+J//ik1/711t/urq8DsO1RlSzlpgIyeKzu8zVhyjThlReBKhqcuMKzVagmv+bWuLgcarmyh5oYCaX4AeBjU/MI2XrUFERkUEcS28A76c2TL36pc9911t+6bRTtquKiDLRaGtGACgV0AhLB3gRa223N7jm2n/++Oe+2W33xyaakTWS2eZsDVR4PJV0gxMl4imsZvq5vLDCVUrxMd954a1miqOp3uXiUyqvLvmJJj61eGZgAhEGg3iw1h6fav3+b7/mj971emuNc84YHm15iUZpUCCdx3cfeN1bP373j3a1ZsYNsxeP4uYp0eTkhohIU31IHriqltU304rQahSqlTm1VECBB088aL5OEU3jknz9mYMqTqqa7kYNnkqmzsZwHMeDpdVLX3DeP/7tfz1620bnnGGuuHAqeTEtqZb3aq2578HdL7vqI3sPLk9Pt+LYB78nQLLbDz+HZl6R31zo7kt3IShLq4gJVCuWv7jH0q80jNSCMKn4uabKm0ksfZwwltcXlk847phbrv/IiccfPSyjVIO894RS5CGixpjHnzxw6Ws+MDe/MjFej2MJV0hpXKQ6yssUWyBYbfbn6cGZu8qXrVULHeyg0jUC60O5mSukAAoEk+9iVaVMq/OYU0Ws5fbq2vE7jv7ezX+5desGEeE89M1WxFTWKBUA1O70f/Wtf7Pv0PJ4qx4PfKbnStnaiEiJy4YrucWKY1JKw47QAJXsUaE1BEDKBjjZxpTpqlZFn0d/NHQAkYLS8IGKaIOIUjESnPPjUxOPP7H3tb/131w80hYrV4IAUTWG3/fn1//4J7ump5rOeXB6yuxWs6cfbO9kTYlNoCwYIcpsRyDZxBCoaqJoiuRD2X5r7uNVk4eRqxIFHjg4DKUYPPPQCBKakv3L9gFR7PzE7NQdt//oQx/7kjFGpJQcVI20F7XW/Ojexy961TX1hi1lEhW/Ah0St2ZJlmim/sECgthGh8QBLcxuxSKG3jB7FhTGI5QZJVXNrCGVogEqpB7auszGM5GoWODe73zy+OOO9iKmsCfEpfURAHzwYzcOBjGXzCplT1VBKGezqTqnakbJEhXD2yHZvcNGOhNlyeNkSpktUgtNpEyX0k1VZM5EnHrWaqKXW6gghiLNbL9aa9ora3/+N/+TiMoBKgIBqRpj7vvZU9+84/7xiYYXKfZtuOBKkFYkn5RqNRVbqXBJuTaqlhRQpWLUc9+cXUZC3algC9mmLoSoqPi4wqNlIQhTlgblMIZ4byfGbvjaDw4cWLDWSp4MEDg/TbL7bvjqXb121xa5qCpUk8CYEAb4mjsdUlVBakq0nGpooddQVUmsT6Iumu244CXJW5ITqqgWHircoKER1JKaFB6gkpMSIUt6cj+YrkuBei1aOnD4llvvBiAi+Ubk3EIbw6p6+50/45oVKVabvco2J0kakgeWiEsk05pcRpr7IZCqiGri5jRTHAVDDZSRCENE1Wc6RQQmGAIjN+ol/5huW81OWFwtuYqGRprKpjzYg/lzJ8O3fu8nRdipgKpNLYyoMWb/gcVHnthfrycCymy9hqFKmPuqFthXFozkOZ4WuXUq4MylgSBEENFejMGAvAcrW0ORociACF607zR26lVBGkVUr5HlbH9rnviGHiyMrVJEiHQofJdAKCV8QVS1VrvvoSdc7Iw1ebhkQ8vw9P6F5dV2s15TUZASURi7EQ3Ftxhyslk8kOWupVBXmVQE6z0MBqZV4+2bcdIx5oRn6LHbdPNGTExQvQYiDATtDs8v0dwh//hTeHS3f3KvX1zxZGhsjK2BSo5tjEBFKMj/SqYz8LZZ7pKFdQBgrTl4eHlhafWozbMikpgqm/lEBbCwuO5ioUbmI5MNSrmXVxrCGTOVSeIvyvL1HISU1AQx62CAtbZp1e1zTsBlz5YLz3bH73BTY54hHoiBGHDpFsxthHGIOhId2F+//3793p39H9/vllYwNsY1i9QOIPObBBraOKWkp8iQSfMkW1PsBWqYO93+ymr7qM2z0NT82MScJyfu9wcQIUr2VW6GCyCrhDeTBj49/x1paMgBZZLYY2nVHjVhf/Ul8ou/0Dvr1LhBMgC6wIpABJKaFHiQAg4qgFcVOE9OubvhGHrRMY0XvqT+1O76N745+Pptg0OLPDFOxIFP0OAJ5neWaJKGSR2F2EiKZqX+14s458LtYZMVBaF4FrCnIQHlEB+VMoAcBFQtoTCU2UsFqTLr8pqdrNm3vdK/8cr2jq0uBjqKjktDfgbAqgpReEBUPUEUkiU2yZJ7Xle1K9Sd2RG98Tdbl7+idsM/db9+q1fmRp2SGCILD4tbIiKGd6KqxqY2nfIoOjGM6fKHMsrsB7aKpiP1wEP4UO5iJbUzSdCRgvmZRyNKPY5hjT2tLddfdqH84VXtU3e6HrDkiZOdYyACLwoGM2oAB8lcsuP6QBdwHrGHMJRJgI6Pl3W5vrX+5ne1nvP8wSc/Hs8dQqMJ8bl+JE6VDQa92Hf8+HjNRLy+3BeDxrgtnKFqBSXLlT7coRYB6BQkwYIkC8osi2aBVZF0IcRxFIkBUFXxMCzrbduMomvf0r3qFX0HLDlihuEEPQcxWkZroB5waAV75jB3AIuL1O4C0MYYpmexaSs2bdOJcTiDNaDv1SmEIUyx769pf+e543/8V3zt++TxJ6leT+45CcrIoLs6OHrH1MVv3n7UBU2tu96j+F+f2vPAv+1vTjfFSwhLBMG4DFcsbB4II8wnCaoCJYApL6OojnIK4bVUxcOyX1ptnLiVPvEHa2ef7JeESdUaKCAexmLGIgbu/Rnf9n384Ie0azcOL6I3gJMiojOEZk03baCTT8Y55+t5l+rW7egBKx5eVQhCtNhfn5qxF11pH/qI1uspzCbCFp3F7mkXb3vFZ06JN6130SZo62TzqitOmHlL6/s3PNqcbojPguzUU2vmcar4vD1C7UMpq+dplhZrEfUX0F9aJ8uzLcuyuNy84FT9zPtXN87oomNrNLdU0xbtmL70DVx3A374AK11UatTvYHaFJo2SwyTsETgYxxcx1Pfwzduw8zf0HMu1Je9QU89D+tAN4aQiqE+9P67lDkNu6HGUmexe8qFW1/+hdMXpxakK5YNk3a9xI21Cz68+aE755YXBzbK/FgR0mkYqeS7z4a2RlVT31kUETSHPFHoIWlQY0hDaRFY4xeXmxefKdf9yVp9jFY9RUYJ8B4Nizropm/ho5+kHz+MqE4Tk9iyIbHS2a4PbCUrcaRRQ8cnoUr9jn77Nvru7Xrx5frL79BNO9AGGqB//hh9/2s6tYW8A8CWOgudk56z9aVfPGN+YhE9MtZ4iEBNxHHP1WfjE144e+dnn7Ib6pB8gYog6QmhdqimRlqLck9ZlsXGSuOxLDoqZ0MqMORX1ppnH6efff9aNEYdD8sAEHvMWOw5QH/wIdx4G9WatGkr2FAKwDExZ6EWQaGUAkBQIU1wS49aiza01A1w+zfpnrvkVVfTmc/T279Ct3wOk9sgThUccXexc/w5W6740pnz04voqzHksvOpChE7Ed3ShZfMOEuRlVbABirXxWgI/MotEhX1B9USeBwAgwzpDRpbJs3fv3+xNUFtB2sAwHnMWLr1B/jN9/HeRWzcQmygBBgiQgo2ciL5JM6jIs/mtHZGnCTDZCLasBW9Nl13rTQ+xgNPE0cl0QhH3Fvu7jhr04u/fM787KL0YQyldQVKXRtBY9blAx0AmhRCwakxIRThdagqBFuKOguCAKF0NFXMc5FnZTEQx3177R8tbd+CRYfIQAHvdcby526kt3+ATBObt5AQgUEGxBlUGmAP2dYNK+NKhlQIpEQQqHrUWqiNsXcYj1Iva7m33Dv21I2XX3/ewc2L1FU2JBADcLY9VBFFZrU92Hv7smmSCGhEKUyHq8S2xODIypJaFF0UFXQPlTqoKpMurI69/TVrl5+nhxzVDBRwXjdY+vQ/09v+hKY2UK0JJWJTaE362IhyJFc1fdJ5ikzhczPKScAtUIVN3Qtb7q90tx4/+4Lrzz+8Zdl31Bgm9YnYGZLISAW2Rnf96SPru3q1jS2IgEyWKtEwhyUrAJAtsUcKzcpDxpBeIqUyaOr91be7zdOPde94Q7wkxAQBvNeNlm74Nr/9AzS9kWwDaogTrWHKKtEUXFqrJeMw3ytcMsGAmFL7p2zQX+8ftX360usvPHz0qqwLW4YqgQkKSIKJsIdtRnde++Cjf7E/2jihPnGYmhZ5c3KLVjwZpaF+2XcHNSkqY/RBHQZQqFf1CuVBj3/vqrXxJgaixOpEW5Z++ij/zh/T+AxsPbHEREzExCkyykUJIPWDGQigpbycsqQyM1q5UNlQf32wedv0pddfvLij3V/zYtgpvEKQvlUhHqZZ+8nHH/nZHz5pZ5tZ0EJBdRoqokU+UIrzGGXuUgB7arleHNTjEsBNASa/2q5f8szuiy7WBU/M8AoC9fr0zmuo7ajZIjWZaDgxPaH2lNC9PCyBBjWJpG7EGRqdBvJkqN8ebNg8/vwvX7J4YnewJmrZCXwiIKUkt/Meptm49+8eefCdj0azLZAhMqMKEAXUnlXOU13h0YFxSdcqpkuDghYZ8vzGV/eF4FQ9IRZMGfofn+e7HqDZDRAQG1AiGiaiMjtC0+Uj9ySZhqS6EyDiVJgANjToDmZmWxd/+bKFU3uDZQfD3kOUvJIo0ncMGmvc99ldD779ETszpmwJpii1BYaleDpUyvqTbB7DlpxChanW0vPwiLTTjc4+qXPhebosRKxO0DD0sz30d1+g2Q3wIDK5IQ7rfFWYjSp0PyUiUkiRAUoO/5LBoNOfmGg890vPXz7TuSVnIuPFI7U75EGAsEM02Xz4H3c99Ns/s5NjYAMwiNOtGhRnRrqwLDDMonsKgUhF1RaUKIuaUEqUgEGfX37poGYRiwrgFHWiv/0HWlxHrZEbnZILCO+G8lLFcEFVNawaKBI0nxiD7mC8VX/uF1+wdg56i31Y9gpRVuXsv+Qd0WRz1/WPP3T1/XZ8DMYClij1+0RZVBrmTNmVtKwbXKVpIWdmaFH5C3dVXlYYDMxsSy56rq6BlBArIkuP7KdbvkPTsxCkj6tgvGlQvAnK51Qt0WgK8CdBhKhKUhQg0kFvMFa3F1z3grVzuTM/ILbOkxcSJQ/ygCh5B5pqPXnT7od/417bbFJkoZxtcypKz0GenQSoAUOkiG94SNFCvkh2v2kpIkC5mdHt8RnHD47eho5ACANBBLr5a7SwgqgWln2JAVaQEmsOwg7bNAzVqVXTnSXiidUNBk1jLvjs5asXRJ3DPeIo9uw8O09eUtvsB8ozraf/dfeuN/7E1JqIIlVLxjJn4QVxWmYpwtICiMy5cDm2Y1VRrh9plUmSmkbJypGJAjCc0/POjgmIRZkBSyuOvv0d1Megac2WmFzs3bKrRREgsfO2ZaO6hQQU4koZUoeCIBFiuEFcB1/46RevXdToHl6zNetFlZTySEZAXmubxvfe8sQTb7jbcB21CGrIGCITusSAuKulNKJSl1QAaodLtAFHpBSyUc6PAlSEGkZPP007IIF6Qcvi4V302G40x9OCgaH+en/jpvGz3vyMjc+ZVNKl+7r3f+npQ3tWG9M19RoCSSi2YamCpVCQuthFXp/zqStWXtDqHF6zkXXeE4HAKVMQDOdqG1tz397zxOt/wKijkUjHEnFeYc+lQyPIvDqCgqdkQSGWUanzBxFDpdrsYpoZl23HogsoIRYY0L33ohtTMyJRYvTX+8eeNv3Sz5012OnXMFDQpismX3zVuT9+264Hv717bOOYOlHizGXlBa9APioExM7ZgTzrEy9de/F0+9BqZCMvohAiGOZUCZw3G8cP3LHnqdd+h31ETQtEBCFxsI0yxJNzTqpgahUPykrPWtxZ4uOpLCYNt5sColCNY968QcZn0c8A9hj04MPgJHch7/3kROPFnzl9eefKYnst7smgK8vr3UObl8++7pTTXrizc3gdhlQE6nNqQ8q6TMyOCADnnen7Z/7VFe2XbVg+sEYcOSERBowqeVGv5J3qdPPwXXNPvfZ27htq1oCIXJ8mt+rm0xMpFyyjkoVWUh3mkBc0NgWXLaaWA+s0qi0i3Gz7kXeyYYNng1jUAWpo3dPupxDVAJCBW/M7XzLjToj7HeHIKJNnUmt8x8yZ5TM+d9rJl+7ozrfJJCBdWraWpDydpnrqxWO9f9ZHr+i9csvK3CpxNBC4JERW8oCQineYbCz+5NDTv3YbrzPG6lAL16OjTtbTf1mOexFq41CPgoVVhi/KcdkwmsBUidok8Vl5HKVUUCYDSqF4nZpWRRrbg7C6ioUFsrU0IPXaOB09dSDjQLFSLBQLOWbfM/uilTM+/6zjLjq2u9Alg9SrF2iegFTE61r3nI+8pPfqbStzq8bUvLAoe6HkrWCJlSbHVh6Y3/u6b/Gy0niD1ML3zbHn6kmvFGEwS62l4kakTcMFYg23Xnogjz4yYArkxIEgtVSo+taEJMFhUmhbX0e3n9YtVADtDdSBYlEv5DwGgoEg9uTISMfuscunff78Hc/d3p1fJYOA9SEpuXmtf8YHXtT7le0rB9bJ1JySKEkiHU+i5AfAeGv1kZW9r/sW5j1NNKAG8Oa4S/zOl4rzClHbVNtEgtHTyNBZA2xUh3QoMe8UeKoR1HPNI7qQLqdRDR7pW0DdAbxkFHqYiPfdcbhPIqBY1Ik60VjghJznWNmvm71m+bh/uOAZF+zoLXbIJKSXjOKx3Dnj/ZcPXn/C/P5lcBR78sIiJB4qJEqur9qsrz2xsu91X8Vcnyea8AxVMzaN7ZeIi5WNklU2MDWIo1FlvjxkJQqlp0HaXNYgCrCf7G8U5Qy78PiiiAEPcoCDei1wa4EZp/nbl5/+lwPaiuK+eKgoRDgWij1izzFMvM77zdrOzz7/6POO7c2vwRJIFeKX22e+9/L4qhMX55aYI+fhBV7Ie5ZETLGnsXp7f3vu12/G0z2eGoMw2ACAidSwGosEnGOCMVk1NAxRqcKoH90UlRcVSqiVDjcqaSnSTK7T7sEBjhADAyBqwNqQMWdq0X1X37//+/NmZizuQ4S9wDuKPTlPzrGHlTXeZ9aP+dRlW849djC/JuL9cueUd18Wv+nUhbkl5sgrRKAOGpN4iJA4RbPRPdQ5/Bs347E2T49BDNiCWEFMsFFN06CZVADvsk1AVZZ1xhssOHxElZSRqw4urb8muaGW7FcpzyRaW034GOqBATRqoVHXhBKaHFJj9O0Dv/Lj/XcepOmm60O8Ec9e2Ak74dgZT5Ff4/22+4xPv+yY559Ud+7UP7jcX/3Mg/sXmCMvLJ5EKMF3FCReUa93lwbzV9+sP1vimRaEiQ0lnGQVtnViAymCBrh+ZjpkqMMjScB0VE6fPmlbsjdE5YYdLXW2BYmrQrE4jxjwBBCcUmOCZmex8HSGgjHEcKvhV9cf/qU7T/mXF4ydtsktxMLkPIuSFxIhFRIy2sH+qD311y+cXb5sfVNt+dCSodpAkp2cro1I4cQ0o/56f+nqG/Dv87xhAh5kDNKCP6kqN8adMqlAEgvh4DoKDplOmjYgpXWMDCLLCUMBtEHE1QaogPQTAmY5yJg+FmOwcAidGGLgFLFXY3XrMfCDlIBMTGwgbCaausyPvOa7y48s02Q97quTbJd5dp6cJw92HT3Ya+8bd8tLbaLIKXvPXlgUXpKuJKBW7/f80u/ciHsO0+w4PJGJQCa7HANimjNeuKAB+gH115FROUpEhRKxoNJBVBzIBSW2sOrFuwCyVTMXp1DARlg4TPOHACDWNHrbeSrEB3AGEVuo5YmGP+B2/8rta7vXqdWQAcSzd+Q9OzEi7Bw7GJIIPRKyzrF4VqHkGFX2jmCi2OnqO2/EnftodoKEwRZk8lQrwdbM1DEinlSgnsCIOxisgbhc76OimJohXAEzt2RLGKO7EwP8gXTELjUGa6u090kQ4JSE0AHtPIfG6vBS4JfEIAMxZmbcPd1/+te+2d7foWbTD+CFvScRSgAdL+w8ezHiWRyJZ/EsnlTYOxKOBsrr774RdzxFGyYT6WQ5eqEUJqrpxDY/6JMqRBSM7iJcF2l3YYBz5ZhZzhwulSQKg8MVpDFLhQJOeymfy8JNInIej92fCEgdsK5+84nYdrT2u0X7MTGxIRNBjJlu+ce7c1fd0pvvo9GQWEXIueTN3hmfIDuOvbDz5D2pGu/IwzhjOu+9UW99jDdOkjCxzUpsnOfn6uNoYqOvzeqgq0nKSISVvfBxyJfPoY2CVF7wD0o9S2myqkNpWkLx1bwOEqAkQQ4sMDU89GP0FGrggX6spkZnX4y4E9T4kaGcFmJ5Ztw/vHr46pvjtRj1hsQQR+oocW0ixvtErYym/0tCRqJa/49vwtcfog2TECZjQYbS+lpR6FXXrx91St8RS5y7MFp+KpAOlVo8KiXQcqsRZQaGaVS7ph6hDluAiqKoNejJh2juSVgDJxDoquLsl9LEhGY0v7RQwQw2YAthnh2Xe+YX33qT64lGdXWkakRYPXtPKgxP4kk8i4OqkfrY4IM30c3/ThunSJjIAowszMnBdBWxtZrdcuags57sLzCjt4zVvTC1gLcY8BlHcPKHZEFZHKSjOseDgnPYzJU16UYRtddx722IACfwQKfvNmw3516G7joxBx1IaV2M2ZIY3jgpd82t/d6N4kltzTuCsHpSzypGxKhPYkL2jWb80Rv5pp/QhimSpHKdlY9CaJlY4m5r64n9aJP02+oFLiaOsPQE+ivE0dD6qx2RQatD9cVli6yhmPPsuih+hiiBgmpj9MNb0O6BLLyHeL/i8Lxf4/GmOFfuzEnKLQYmgmfeOOm/+2T7vTd4MspWHMSnb+/Jx6SOpTnm//ordP2dmJlUzSgPnLhzKpPHPbPUj71gbWXVJOqjAlE6fH/V7ioCWn41aB7pq1J1peGyagqUhZ9LOR6pojHOTz9K992OmkXs4BXt9mDqhNolv6jtZSXODVhWHWQiJhORGN44Ld94pP+BG7VWVzXiSYXEk8YKT9Ia1099jb50B81MAYnWZGSNNCiUrJWFfH99evvZ3dozpLMKBVTI1LC+F0tPwNQTgK/ytLImu9JPKlhatdsnhNKqTJmh7K6QqmnQd/8R/T6E4ASifmHFnfv6+s6TpLOWJ25pKYqI2BAbMjVSy5tm8dX74g/foOMtRHXxrJ5gajo9heu+Tl+4lWdmCMxkiWyqPkMWQJxrtMZrOy5bWVhgIoiQCtji4E/h+8Q2B+rzjZkHQqOmTFCpP46Uw3oOFesOWnaoQtXMYQAigJqT/Ni99NOvojGOOIYXuEG3H9mXv8s2rDoHpuDknDKj2JCJSA3NTOHme/w1X9ADi7ARjMXKOv7yn/jz36LJSYCJI2IDTlkPRXqZuXd17dnTX7LQich1E4kRR2jvx+H7KRpLXQTCpLQo9milXXDYBOf0F4zirJYZQlr6TQoRMCCoTdCtn9TjngczhkEfouisrI+fNPOffnf1+g+rmaR0fAsFtH3WREyimJzUb96ndz+KHZtgIjw5x0tdTIwTGSKbcA1CElHQO85xZ3HLaRe3x07qHZqzNhLxBEVkde8PKO6iNkmZXMsDC4I6f3UyhY6GO0Y1oZWo5VlcVGL1p8+zNsaH9tKtf436GBLwBvArC6vPuGz6yt9Gf0XEAwkdPq21E4HIMEfEEVHEM7PkDD0wR/fuph5oapI5SqPBhBOSq0zRGstxZ3njcWfLlkuXDs1Fxqj35B1sU5cewvwDiFqFKaeCPh82+FbTg0o7HjSLpEOmDkbUPVNjRshbMim7WEJMwfgGvvsm3HMTxqbgBnCeRAbzh1Z3vHT2ZW9h1/HxAEyqkntDIiJOYuKIYChq0MQETU5RrQFESO2OIRTS0Zx5TBR3lzafcHa08+UH5+YsVLxPSNjq2rr7VuIoISGNFIiWPXpOdx4Kgmi0kQ5aKdO2txBForyVPYlHOCFHGapN8C0fxYEHEY3B9dU5EunNH1o8+oWzr/7D+lg9bq+CTBCvUXaSBNBJNpQltmRsGvIkBNiQiMfsvfP91W2nX0rbr9w/d9CyQiRNktli99epv0S2HpBES09aS9nG0DCXSue1lhlm5d7GI01mqrAWM+5PrcWDAX/lfeguwNQRx+o8QQfLhw+PnTH+ymtmTjxLu8t+0K+C58QJr4nY5v9NpRPeKwHQuLtWb9a2nf+r3Y2XHNi312YNI4AiGsO+79LiwxSNJ6LPWC4U4MSgoAioCTSIMptFK3AHlVrmyhB+0QmVm6EhS5YlpQA1p3h+L9/8XsRtmBp8rF5I4VbnD3Ya/pLf3XTF1a3ZWd9Z9oO+5hgnpWhO6uCykCDUMlF13TWS3qYTnj173psOu22Lc09ZQynzXRVRSw/eTXN3IxpPsptsmEnJyWSMR6UcXdShMSMlh1ZBFKuFjaqND4SbFtEpK40oG4jD2Azvexg3v0cufz+iaXRXUmfgesuHO+2Z82evOKu1567Orh90D+7xXmAsmYhNwm5SCmd/qKh48TFpXGuOTxx7TuOY81f89KEDh+H71lpNImYAtXE99EPadwfsGJFBmpGkwxfy9kelMqYxgrIx5J8oa8mkIXy+KJbTEbGiElcmCXZVdWyWDzyGm39fLnsPpk9Adyl5yESIVxcPgmubL57cduHG1Sf8vn/vH3x8sDrveh0Rr6JhTcUYG41NNKZ31jefqBPHt6U1v7Lsu3OGCWzSmjVHyhZzd9DBH8KMpRFTRnAZAYuOpN1kk0h0BNcw7ReryKeAorWYKlMhPhQdn+kmU2ShjdOxGV5fxC3v1fPeiON+AYMuBt2E807w8erCvBDXjqnvPK55fDwxWDTdeXSWdNAWH6vC2jpqLapNuWhqIPX57qC3sIp4hQkmaTRLeOC2pfEa9nydlh9FNE7J1ckQcUrdKwpXpbA3aTmu0m+yEKnYkQxo2u1TLUmXOvuDwKocMEliRZSUcvcLVrKQWOsT7Pr6b5+Q/ffgrNeitRW9VcggYa8yAb12t73SVcDUmI4xY8dyKylNqnonLpbuQFa7iJcJ3oCUGUl5TQQckY2w8gj2fIcGa4gmkkw4kU6+Ai63RIb9vkQ0gu0XBtUUtiIMjeOhofmJVFJUymZE5MNptOgAYSZEUA9bA8+YJ++UAw/qSVdgx6WoT6PfhutnExOIoPAD9c6JqCb9q0KqpEKAgcIaeMA7JPV1U6PIoD2ne+7E8qNEEaLxFCcIYMPEAxbNvqUersrELy2JrkLOU1RaEbJYMdUOVNvktSA0688Bj4iJSJWInDY3UNzBT7+Ix27XnZfg6AvQ2AgRuD68U3GZ382ZpwUGlmDvUIWJyDbh+9rZj8P3YukRUgc7lsFDpsTTKJGaRiWkqlWaS9iQW65B21EWuMjns2splWcXKMJxgKnGpULJbDuBlQxUyDbI1LS3ivuux65v6ubTaMszMXWc1iZJ61CBeIhDMguLoCoEA2PTRibXpd6irj6JhYewvo/UwTbBzbS8lBPDUUQl+XpVhbI+ZRoqkGaDByik+lQeuB1CYqXwTUTQoeFQWp7PliO6xYyOXJQMBqVtikxRC3YMvo89P8Seu9GYpMmjMfEMtI7SxizsGLGFkorAD+D7iNfRXdD2Aazv085huC5xRLYJHksdBHMGv/IRqutaYRxoqVcwT1w0nxZRkhEVRjp9BuOtJgxrZceW/SRVKEhVxxj0j5OSEtioJo2hDBVQE7YBFfg+Du/CoQc1KZ+ZKKmvE5ApVAz1RKxkiGuoT+X+O0VOko08CrEqo89UkVcwyTRn46VDEOo122zWws1mszCAAGzdPFtr1MRL0uqairY8kk5DMEQDml9CN6WCypv+vYLAmg7rISXlpMhpGmoaSf861Cdd4oDPMG+LqJYyrXOGfsJ1zv1QqjjlQZ7leU6FmcbwLNDqo/VepiZaM9OTxWYhshmVmQDs3LF161Eb9uw/XK9HOAJaS0dsfC4C+dx9UtF/QAXomc6Z5PQMrFAGJ+2YWlXGzPoGaFmlq2LIVRTjT6sdDsMNYaURCYN4+zFbpqcmRCTfB8UWc86Pt8bOfebJTz2+l5t172VEsqFZf1IQYlClqE9ZI4oWQz3SaYvJoKrkc7bhs9OkwWzJ0Y6QCA0nQMHvqfwkg+yi3A5IISEzZcYTBv3zn30aiLxz6QSlrF+MctrdlS+6EPnwoPBdDFtBqUshd80aDL4K+nPyOU8Z/FABOjirVRgiw2yJLNhmdXeTljGYC20qMGZUeGFZt5tUGwYK6WRl0byomlUovCqi6GUvuqjUYJjBHQqknOMrX3LR1h3b+r0+BV3S1cC6wqmuzlcs40plmK48K5GyQkUWYabtHUnXXYglE8roTpXnTqU24wD/1FJVPqxGZFOwADBR3O6eevrxFz/3WSLCCdJCQcdhcgPOudmZyd+66kq32jGGkc26oYC7ecQaUtEdSBSuYPQQ77ApIu94CWoCqeIV1eWQApZXtPMzUdW9lnsrtfJkivJfQgBiY6Tbe9t/+eV6vea9L1j/GgzcznPS9Xb32Ze96cmn9tWbjcpYwWF3QFW7qGU0XIt9iSOHtsHovmDMTtCNXhlkOsQyCHOjoGUiN5lDiXwQ7BjmXrtzxukn/PC262pRVFDpCVDiECdigohMTrT+9tp3ifOaDXPTfDpglWSkQ9AHEDZ/KirVuSNTbUK2aMZDptLkmex+So1dmVyrHWdBp4GG7bgj+mVEGPqJa9/TaNQln2acPROuaIQxHDv3C5ee96Fr3tKdXzKGU6gy3a9DXOys8lqlMYZ1mnz+2tCYRBruPVeU5u2MmJuv1TGEQ91mRelTtUqqDweAA8Zwb37xw3/6uxddeI6Lh+bd5j2rYeeBYY6de887Xv+ud//n9qHFBJVXHRqBmSEclRpu7iwyR6bZHFjNRmiVu89Kfjnve6AqE7Vw8xVbA9JRs9aTHgEiHdnXo0oEa7hzYP4d7/qN33/bG+LYseFhe1KdJ50bCRG11lzz4c/8yQc/aVvNRr3misgoGFeBTHZUIdkqjvT9ExlGEoLewVCoykwE1Wqt4Od8qUFeBqtYw/xrH9Iaj7Vm0O+71fV3v/tNf/5n73TOccbFUoQ5OIpxycOGIZHRl2+89R3v+e8H9x9qzEwZw1m/ST6wjLTUMCOVZK8y/rggn40eg16Rgx75Kzo0xEJHsjQUw6Q6YmZR6S+tTm2Y/IsP/t6bfv1ViQTyvuNKpX3UwO3g5b3YyD6998A1H/r7L97wrcF6x4yP1es1Jkrac6rEItUjnisYwKZDxeA0DA3nL0DLXo9Ggp8lrSmGN1I4VCwJGUS1P4i13aZa9OorX/Bnf/zWk0/c4Zzj/PsRaEQb888VEGUyshbAT+55+NPXfeVrt965d+9BxA6GkcS4Vfc51IqnQ41aeiSHpmWXn6vqEXQnxRdGZVs5nUUU3sM5RPaobZuvuOz8N//6K5/33GcBcHFsjCmypOEmbwTjkoe/SyOHD5NtlYhpaWn1rh89cNePH3z4sacOHFrsdPsawmw0PBVbM0JnAcGMzL2HiYOF4SjgOyWE4VHVwFEwSyY5qtWsb9owfcqJ288/94wLzjtz06ZZAN75FBzWIys7lQU0erMXt4OkqctG9khR3v/B6//iT/4fvZIxiSV3/nO+jIaGBVSKVIe+JEcT4y0JnSXtta488BElguoX+5ROq+VYvPIXRBgC3qt2qfylEZVvg0k6GpMbDnjD/6Fo0sAjExCNeqrBuNrqejD662iGvmemWpLVEap5RGv+c77gif4jh0/DLbo06l6piq8FzyCzL0Oar6WvpcrB+QK402KiGYo5IPkY2bJkK2pF1TvTUrY2oiispaGxwZghLU0FoPBOysNIS9+Okt9SyMkK6GHl1/8GMMxnHJxGiJ4AAAAASUVORK5CYII=" alt="Staff Check" style="width:100%;height:100%;object-fit:cover;border-radius:22px;"></div>
@@ -1569,7 +1597,7 @@ const TAREFAS_RESTAURANTE = {
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
             authDomain: "staffcheck-d6f20.firebaseapp.com",
@@ -1580,7 +1608,18 @@ const TAREFAS_RESTAURANTE = {
         };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const docRef = doc(db, 'app', 'liveData');
+        // ===== MULTI-TENANT: docRef passa a apontar para restaurantes/{id} =====
+        let docRef = null;                 // documento do restaurante ativo
+        let restauranteAtivoId = null;     // id do restaurante carregado
+        let snapshotUnsub = null;          // listener ativo (para desligar ao trocar)
+        const SUPER_MASTER = '1911';       // senha-mestra do dono do sistema (abre qualquer restaurante)
+        function refRestaurante(id) { return doc(db, 'restaurantes', id); }
+        function refLegacy() { return doc(db, 'app', 'liveData'); } // dado antigo do Marchesini
+        function normalizarIdRest(nome) {
+            return String(nome || '').trim().toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40);
+        }
 
         // ========== CONSTANTES ==========
         const AVATARES_M = ['👨','👨‍🦱','👨‍🦰','👨‍🦳','👨‍🦲','🧔','👮','👷','🧑‍🍳','🧑‍💼','👨‍💼','👨','👨‍🏭','👨‍🚒','👨‍🌾','👨‍🎨','👨‍🏫','👨‍🎤'];
@@ -1925,8 +1964,15 @@ const TAREFAS_RESTAURANTE = {
             return false;
         }
 
-        // ========== FIREBASE ==========
-        onSnapshot(docRef, snap => {
+        // ========== FIREBASE (multi-tenant) ==========
+        // Liga o listener do restaurante escolhido. Só roda após selecionar/criar restaurante.
+        function conectarRestaurante(id) {
+            if (!id) return;
+            restauranteAtivoId = id;
+            docRef = refRestaurante(id);
+            try { localStorage.setItem('sc-rest-id', id); } catch(e){}
+            if (snapshotUnsub) { try { snapshotUnsub(); } catch(e){} snapshotUnsub = null; }
+            snapshotUnsub = onSnapshot(docRef, snap => {
             if (isSaving) return;
             if (snap.exists()) {
                 const d = snap.data();
@@ -2017,8 +2063,25 @@ const TAREFAS_RESTAURANTE = {
             if (sbAltPass) sbAltPass.style.display = (currentWorker === 'Gerente') ? 'block' : 'none';
             verificarResetTurno();
         });
+        }
+        // Migra dados antigos do Marchesini (app/liveData) para restaurantes/marchesini, uma única vez
+        async function migrarMarchesiniSeNecessario() {
+            try {
+                const destino = refRestaurante('marchesini');
+                const jaExiste = await getDoc(destino);
+                if (jaExiste.exists()) return false; // já migrado
+                const antigo = await getDoc(refLegacy());
+                if (!antigo.exists()) return false;  // não há o que migrar
+                const dados = antigo.data();
+                if (!dados.restaurante) dados.restaurante = {};
+                if (!dados.restaurante.nome || dados.restaurante.nome === 'Staff Check') dados.restaurante.nome = 'Marchesini di Roverbella';
+                await setDoc(destino, dados, { merge: true });
+                return true;
+            } catch (e) { console.warn('migração', e); return false; }
+        }
 
         async function salvar(skipLock = false) {
+            if (!docRef) return;
             if (!skipLock) isSaving = true;
             try {
                 await setDoc(docRef, { ...liveData }, { merge: true });
@@ -2028,6 +2091,7 @@ const TAREFAS_RESTAURANTE = {
         }
 
         async function atualizarCampo(campo, valor) {
+            if (!docRef) return;
             isSaving = true;
             try { await updateDoc(docRef, { [campo]: valor }); } catch(e) { console.error(e); }
             setTimeout(() => { isSaving = false; }, 500);
@@ -2036,6 +2100,7 @@ const TAREFAS_RESTAURANTE = {
         async function atualizarStatusTarefa(chave, status) {
             isSaving = true;
             liveData.tarefasStatus[chave] = status;
+            if (!docRef) { setTimeout(() => { isSaving = false; }, 500); return; }
             try { await updateDoc(docRef, { [`tarefasStatus.${chave}`]: status }); } catch(e) { console.error(e); }
             setTimeout(() => { isSaving = false; }, 500);
         }
@@ -2726,11 +2791,11 @@ const TAREFAS_RESTAURANTE = {
         function trocarTela(id) {
             document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            const isLogin=id==='scr-login';
-            document.getElementById('fab-group').style.display=isLogin?'none':'flex';
-            document.getElementById('topbar-login').style.display=isLogin?'none':'flex';
+            const isEntrada = id==='scr-login' || id==='scr-restaurante';
+            document.getElementById('fab-group').style.display=isEntrada?'none':'flex';
+            document.getElementById('topbar-login').style.display=isEntrada?'none':'flex';
             const themeFab=document.getElementById('theme-fab-login');
-            if(themeFab) themeFab.style.display=isLogin?'flex':'none';
+            if(themeFab) themeFab.style.display=isEntrada?'flex':'none';
         }
 
         // ========== LOGIN ==========
@@ -4988,13 +5053,212 @@ const TAREFAS_RESTAURANTE = {
         function renderHistorico(){ const box=document.getElementById('historico-list'); if(!box) return; const hist=liveData.historicoTurnos||[]; if(!hist.length){ box.innerHTML='<p style="color:var(--text3);font-size:12px;padding:8px 0;">Nenhum turno salvo ainda.</p>'; return; } let html=''; hist.slice(0,15).forEach(h=>{ html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div><div style="font-size:11px;color:var(--text3);">${h.feitas}/${h.total} tarefas</div></div><div style="font-size:18px;font-weight:800;color:var(--accent);">${h.pct}%</div></div>`; }); box.innerHTML=html; }
         window.renderHistorico=renderHistorico; window.atualizarNotifEscala=atualizarNotifEscala;
 
-        try { popularTarefasPadrao(); } catch(e){}
-        if(!liveData.templateAtivo) liveData.templateAtivo='restaurante';
+        // ========== BOOT MULTI-TENANT ==========
         if(!localStorage.getItem('sc-last-reset')) localStorage.setItem('sc-last-reset', new Date().toDateString());
         try { atualizarDatetime(); } catch(e){}
-        try { atualizarBadgesOnline(); } catch(e){}
-        function _scAutoBoot(){ try { if(typeof tentarAutoLogin==='function' && !currentWorker) tentarAutoLogin(); } catch(e){} }
-        setTimeout(_scAutoBoot,1500); setTimeout(_scAutoBoot,4000);
+
+        // Popular o select de templates na tela de criar restaurante
+        function popularSelectTemplates() {
+            const sel = document.getElementById('field-rest-template');
+            if (!sel) return;
+            sel.innerHTML = Object.entries(TEMPLATES).map(([id,t]) =>
+                `<option value="${id}">${t.icone} ${t.nome}</option>`).join('');
+        }
+        try { popularSelectTemplates(); } catch(e){}
+
+        // Tenta carregar o restaurante do localStorage (auto-reconexão)
+        async function bootRestaurante() {
+            const restId = localStorage.getItem('sc-rest-id');
+            if (!restId) {
+                trocarTela('scr-restaurante');
+                return;
+            }
+            // Tenta conectar ao restaurante salvo
+            try {
+                const snap = await getDoc(refRestaurante(restId));
+                if (snap.exists()) {
+                    await conectarEEntrar(restId);
+                } else {
+                    // Restaurante não existe mais no Firebase
+                    localStorage.removeItem('sc-rest-id');
+                    trocarTela('scr-restaurante');
+                }
+            } catch(e) {
+                console.warn('bootRestaurante', e);
+                // Sem internet: conecta no modo offline com dados locais
+                conectarRestaurante(restId);
+                trocarTela('scr-restaurante');
+            }
+        }
+
+        // Conecta ao restaurante e entra na tela de login
+        async function conectarEEntrar(id) {
+            conectarRestaurante(id);
+            // Espera um tick pro snapshot carregar antes de tentar auto-login
+            setTimeout(() => {
+                const lastUser = localStorage.getItem('sc-last-user');
+                if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser]) {
+                    tentarAutoLogin();
+                } else if (lastUser === 'Gerente') {
+                    tentarAutoLogin();
+                } else {
+                    trocarTela('scr-login');
+                }
+            }, 1800);
+        }
+
+        // ---- Tela de seleção de restaurante ----
+        window.entrarRestaurante = async function() {
+            const raw = document.getElementById('field-rest-id')?.value?.trim();
+            const id = normalizarIdRest(raw);
+            if (!id) { customAlert('Digite o código do restaurante.'); return; }
+            // Verifica se existe
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (!snap.exists()) { customAlert('Restaurante não encontrado. Verifique o código ou crie um novo.'); return; }
+                await conectarEEntrar(id);
+            } catch(e) { customAlert('Erro de conexão. Verifique sua internet.'); }
+        };
+
+        window.abrirCriarRestaurante = function() {
+            const el = document.getElementById('criar-rest-expand');
+            if (el) el.classList.toggle('show');
+        };
+
+        window.criarRestaurante = async function() {
+            const nome = document.getElementById('field-rest-nome')?.value?.trim();
+            const templateId = document.getElementById('field-rest-template')?.value || 'restaurante';
+            const senha = document.getElementById('field-rest-senha')?.value?.trim();
+            if (!nome) { customAlert('Digite o nome do restaurante.'); return; }
+            if (!senha || senha.length < 4) { customAlert('A senha mestra deve ter pelo menos 4 dígitos.'); return; }
+            const id = normalizarIdRest(nome);
+            if (!id) { customAlert('Nome inválido. Use letras e números.'); return; }
+            // Checa se já existe
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (snap.exists()) {
+                    const ok = await customConfirm(`Já existe um restaurante com o código "${id}". Deseja entrar nele em vez de criar?`, 'Entrar', 'Cancelar');
+                    if (ok) { await conectarEEntrar(id); } return;
+                }
+            } catch(e) {}
+            // Cria o restaurante novo com tarefas do template
+            const restLiveData = { ...liveData }; // começa com estrutura limpa
+            restLiveData.restaurante = { nome, logo: '', fonte: 'DM Sans' };
+            restLiveData.masterPass = senha;
+            restLiveData.templateAtivo = templateId;
+            restLiveData.tarefasCustomizadas = [];
+            restLiveData.tarefasStatus = {};
+            restLiveData.usuariosSalvos = {};
+            restLiveData.historicoTurnos = [];
+            restLiveData.registrosDesperdicio = [];
+            // Popula tarefas do template escolhido
+            const tarefasMap = TAREFAS_POR_TEMPLATE[templateId] || {};
+            const setoresDoTpl = TEMPLATES[templateId]?.setores || [];
+            setoresDoTpl.forEach(s => {
+                (tarefasMap[s.id] || []).forEach(t => { restLiveData.tarefasCustomizadas.push({...t, cat:s.id}); });
+            });
+            // Preenche estimativas
+            (restLiveData.tarefasCustomizadas || []).forEach(t => {
+                if (!t.estimativaSeg && typeof estimarTempoPorTexto === 'function') t.estimativaSeg = estimarTempoPorTexto(t.txt);
+            });
+            try {
+                await setDoc(refRestaurante(id), restLiveData, { merge: false });
+                await adicionarAoIndice(id);
+                customAlert(`✅ Restaurante "${nome}" criado!\nCódigo de acesso: ${id}\nGuarde este código — é com ele que você e sua equipe entram.`);
+                await conectarEEntrar(id);
+            } catch(e) { customAlert('Erro ao criar restaurante. Tente novamente.'); console.error(e); }
+        };
+
+        // ---- Painel do dono do sistema (acesso a todos os restaurantes) ----
+        window.abrirPainelDono = async function() {
+            const senha = await customPrompt('🔐 Senha do administrador do sistema:');
+            if (senha === null) return;
+            if (senha !== SUPER_MASTER) { customAlert('Senha incorreta.'); return; }
+            // Mostra painel com lista de restaurantes
+            await renderPainelDono();
+        };
+
+        async function renderPainelDono() {
+            // Lista todos os documentos em restaurantes/
+            // Como Firestore não tem "listar coleção" facilmente sem regras, usamos um índice simples:
+            // guardamos a lista em restaurantes/__index__ como array de ids
+            let ids = [];
+            try {
+                const idx = await getDoc(doc(db, 'restaurantes', '__index__'));
+                if (idx.exists()) ids = idx.data().ids || [];
+            } catch(e) {}
+            // Adiciona o Marchesini herdado se não estiver no índice
+            if (!ids.includes('marchesini')) ids.unshift('marchesini');
+            const opts = ids.map((id,i) => ({ id: String(i), label: `🏢 ${id}` }));
+            opts.push({ id: 'NOVO', label: '➕ Entrar em qualquer código...' });
+            const escolha = await customSelect('👑 Qual restaurante deseja acessar?', opts);
+            if (escolha === null) return;
+            if (escolha === String(opts.length - 1)) {
+                const id = await customPrompt('Digite o ID do restaurante:');
+                if (id) await entrarComoAdmin(normalizarIdRest(id));
+            } else {
+                await entrarComoAdmin(ids[parseInt(escolha)]);
+            }
+        }
+
+        async function entrarComoAdmin(id) {
+            if (!id) return;
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (!snap.exists()) { customAlert('Restaurante não encontrado: ' + id); return; }
+            } catch(e) { customAlert('Erro de conexão.'); return; }
+            conectarRestaurante(id);
+            currentWorker = 'Gerente';
+            localStorage.setItem('sc-last-user', 'Gerente');
+            document.getElementById('sidebar-after-login').style.display = 'block';
+            document.getElementById('sidebar-before-login').style.display = 'none';
+            setTimeout(() => {
+                trocarTela('scr-manager');
+                renderHistorico();
+                atualizarNotifEscala();
+                showToast(`👑 Acessando restaurante: ${id}`, '👑', 4000);
+            }, 1500);
+        }
+
+        // Garante que o restaurante seja adicionado ao índice quando criado
+        async function adicionarAoIndice(id) {
+            try {
+                const idxRef = doc(db, 'restaurantes', '__index__');
+                const snap = await getDoc(idxRef);
+                const ids = snap.exists() ? (snap.data().ids || []) : [];
+                if (!ids.includes(id)) {
+                    ids.push(id);
+                    await setDoc(idxRef, { ids }, { merge: false });
+                }
+            } catch(e) { console.warn('índice', e); }
+        }
+
+        // Adaptar logout para voltar à tela de restaurante
+        const _logoutOriginal = window.logout;
+        window.logout = async function() {
+            if(currentWorker&&currentWorker!=='Gerente'){
+                if(liveData.loginAtividade) liveData.loginAtividade[currentWorker]={ultimaAtividade:0};
+                await salvar();
+            }
+            currentWorker='';
+            localStorage.removeItem('sc-last-user');
+            document.getElementById('sidebar-after-login').style.display='none';
+            document.getElementById('sidebar-before-login').style.display='block';
+            mudarContexto('worker');
+        };
+
+        // Migrar Marchesini e depois boot
+        (async () => {
+            try {
+                const migrou = await migrarMarchesiniSeNecessario();
+                if (migrou) {
+                    localStorage.setItem('sc-rest-id', 'marchesini');
+                    await adicionarAoIndice('marchesini');
+                    showToast('✅ Seus dados foram migrados para o novo sistema!', '🏢', 5000);
+                }
+            } catch(e) { console.warn('migração', e); }
+            await bootRestaurante();
+        })();
 
     </script>
     <script>

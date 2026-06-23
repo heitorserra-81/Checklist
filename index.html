@@ -35,6 +35,29 @@
             --green-light: var(--accent-light);
             --green-glow: var(--accent-glow);
         }
+        /* SPLASH SCREEN */
+        .splash-screen { position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity 0.6s ease; }
+        .splash-screen.fade-out { opacity:0;pointer-events:none; }
+        .splash-top { position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;padding:16px 20px 0;text-align:center; }
+        .splash-top .splash-app-name { font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase; }
+        .splash-top .splash-dev { font-size:10px;color:var(--text3);margin-top:2px; }
+        .splash-top .splash-dev strong { color:var(--accent);font-weight:700; }
+        .splash-center { display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center; }
+        .splash-logo { width:110px;height:110px;border-radius:28px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.35);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .splash-logo img { width:100%;height:100%;object-fit:cover; }
+        .splash-logo-placeholder { width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,var(--accent),#1b5e20);display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 12px 40px rgba(0,0,0,0.35);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .splash-rest-nome { font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--text);line-height:1.2;animation:splashFadeUp 0.5s 0.15s ease both; }
+        .splash-bem-vindo { font-size:13px;color:var(--text2);font-weight:500;animation:splashFadeUp 0.5s 0.25s ease both; }
+        .splash-dots { display:flex;gap:6px;margin-top:8px;animation:splashFadeUp 0.5s 0.35s ease both; }
+        .splash-dot { width:7px;height:7px;border-radius:50%;background:var(--accent);animation:splashDot 1.2s infinite; }
+        .splash-dot:nth-child(2) { animation-delay:0.2s; }
+        .splash-dot:nth-child(3) { animation-delay:0.4s; }
+        .splash-bottom { position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);left:0;right:0;text-align:center;font-size:10px;color:var(--text3); }
+        .splash-bottom strong { color:var(--accent); }
+        @keyframes splashPop { from{transform:scale(0.7);opacity:0;} to{transform:scale(1);opacity:1;} }
+        @keyframes splashFadeUp { from{transform:translateY(16px);opacity:0;} to{transform:translateY(0);opacity:1;} }
+        @keyframes splashDot { 0%,80%,100%{transform:scale(0.6);opacity:0.4;} 40%{transform:scale(1);opacity:1;} }
+
         /* TEMAS DE COR */
         :root[data-accent="green"] { --accent:#009246;--accent-light:#00b855;--accent-glow:rgba(0,146,70,0.25); }
         :root[data-accent="blue"] { --accent:#2f80ed;--accent-light:#5b9ef7;--accent-glow:rgba(47,128,237,0.25); }
@@ -734,6 +757,23 @@
     </style>
 </head>
 <body>
+    <!-- SPLASH SCREEN -->
+    <div class="splash-screen" id="splash-screen">
+        <div class="splash-top">
+            <div class="splash-app-name">⚙️ Staff Check</div>
+            <div class="splash-dev">Desenvolvido por <strong>Heitor Serra Neto</strong></div>
+        </div>
+        <div class="splash-center">
+            <div id="splash-logo-wrap"></div>
+            <div class="splash-rest-nome" id="splash-rest-nome">Carregando...</div>
+            <div class="splash-bem-vindo" id="splash-bem-vindo">Preparando seu turno</div>
+            <div class="splash-dots"><div class="splash-dot"></div><div class="splash-dot"></div><div class="splash-dot"></div></div>
+        </div>
+        <div class="splash-bottom">
+            <strong>Staff Check</strong> · Sistema de Gestão de Turno · 2026
+        </div>
+    </div>
+
     <div class="lib-sheet-overlay" id="lib-sheet-overlay">
         <div class="lib-sheet">
             <div class="lib-sheet-head"><h3>📚 Biblioteca de Tarefas</h3><button class="modal-close" onclick="fecharLibSheet()" style="margin-left:0;">✕</button></div>
@@ -906,6 +946,7 @@
                 <p>Gestão Avançada do Turno</p>
                 <div class="manager-hero-btns">
                     <button class="btn-manager-hero primary" onclick="irParaAreaTrabalho()">👤 Área de Trabalho</button>
+                    <button class="btn-manager-hero ghost" onclick="copiarLinkEquipe()">🔗 Link da Equipe</button>
                     <button class="btn-manager-hero ghost" onclick="logout()">← Sair</button>
                 </div>
             </div>
@@ -3060,6 +3101,23 @@ const TAREFAS_RESTAURANTE = {
             atualizarPontoWidget();
         };
 
+        window.copiarLinkEquipe = function() {
+            if (!restauranteAtivoId) { customAlert('Nenhum restaurante ativo.'); return; }
+            const base = window.location.origin + window.location.pathname;
+            const link = `${base}?rest=${restauranteAtivoId}`;
+            // Tenta copiar pra área de transferência
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(link).then(() => {
+                    customAlert(`✅ Link copiado!\n\n${link}\n\nEnvie este link pra sua equipe. Ao abrir, já entra direto no restaurante "${restauranteAtivoId}".`);
+                }).catch(() => mostrarLinkManual(link));
+            } else {
+                mostrarLinkManual(link);
+            }
+        };
+        function mostrarLinkManual(link) {
+            customAlert(`🔗 Link da equipe:\n\n${link}\n\nCopie e envie pelo WhatsApp. Ao abrir, entra direto no restaurante.`);
+        }
+
         window.alterarRestaurante = async function() {
             fecharSidebar();
             const nome=await customPrompt('Nome do restaurante:',liveData.restaurante?.nome||'');
@@ -5053,6 +5111,39 @@ const TAREFAS_RESTAURANTE = {
         function renderHistorico(){ const box=document.getElementById('historico-list'); if(!box) return; const hist=liveData.historicoTurnos||[]; if(!hist.length){ box.innerHTML='<p style="color:var(--text3);font-size:12px;padding:8px 0;">Nenhum turno salvo ainda.</p>'; return; } let html=''; hist.slice(0,15).forEach(h=>{ html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div><div style="font-size:11px;color:var(--text3);">${h.feitas}/${h.total} tarefas</div></div><div style="font-size:18px;font-weight:800;color:var(--accent);">${h.pct}%</div></div>`; }); box.innerHTML=html; }
         window.renderHistorico=renderHistorico; window.atualizarNotifEscala=atualizarNotifEscala;
 
+        // ========== SPLASH SCREEN ==========
+        function mostrarSplash(restId) {
+            const splash = document.getElementById('splash-screen');
+            if (!splash) return;
+            // Preenche o logo e nome do restaurante
+            function atualizarSplash() {
+                const logoWrap = document.getElementById('splash-logo-wrap');
+                const nomeEl = document.getElementById('splash-rest-nome');
+                const bemVindoEl = document.getElementById('splash-bem-vindo');
+                const logo = liveData.restaurante?.logo;
+                const nome = liveData.restaurante?.nome || restId || 'Staff Check';
+                if (logoWrap) {
+                    if (logo) {
+                        logoWrap.innerHTML = `<div class="splash-logo"><img src="${logo}" alt="${nome}"></div>`;
+                    } else {
+                        logoWrap.innerHTML = `<div class="splash-logo-placeholder">🍽️</div>`;
+                    }
+                }
+                if (nomeEl) nomeEl.textContent = nome;
+                if (bemVindoEl) bemVindoEl.textContent = 'Bem-vindo ao seu turno!';
+            }
+            // Atualiza quando dados carregarem (snapshot pode demorar um tick)
+            setTimeout(atualizarSplash, 600);
+            atualizarSplash();
+        }
+
+        function esconderSplash() {
+            const splash = document.getElementById('splash-screen');
+            if (!splash) return;
+            splash.classList.add('fade-out');
+            setTimeout(() => { if (splash.parentNode) splash.remove(); }, 650);
+        }
+
         // ========== BOOT MULTI-TENANT ==========
         if(!localStorage.getItem('sc-last-reset')) localStorage.setItem('sc-last-reset', new Date().toDateString());
         try { atualizarDatetime(); } catch(e){}
@@ -5070,23 +5161,24 @@ const TAREFAS_RESTAURANTE = {
         async function bootRestaurante() {
             const restId = localStorage.getItem('sc-rest-id');
             if (!restId) {
+                esconderSplash();
                 trocarTela('scr-restaurante');
                 return;
             }
-            // Tenta conectar ao restaurante salvo
+            mostrarSplash(restId);
             try {
                 const snap = await getDoc(refRestaurante(restId));
                 if (snap.exists()) {
                     await conectarEEntrar(restId);
                 } else {
-                    // Restaurante não existe mais no Firebase
                     localStorage.removeItem('sc-rest-id');
+                    esconderSplash();
                     trocarTela('scr-restaurante');
                 }
             } catch(e) {
                 console.warn('bootRestaurante', e);
-                // Sem internet: conecta no modo offline com dados locais
                 conectarRestaurante(restId);
+                esconderSplash();
                 trocarTela('scr-restaurante');
             }
         }
@@ -5094,7 +5186,6 @@ const TAREFAS_RESTAURANTE = {
         // Conecta ao restaurante e entra na tela de login
         async function conectarEEntrar(id) {
             conectarRestaurante(id);
-            // Espera um tick pro snapshot carregar antes de tentar auto-login
             setTimeout(() => {
                 const lastUser = localStorage.getItem('sc-last-user');
                 if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser]) {
@@ -5104,6 +5195,7 @@ const TAREFAS_RESTAURANTE = {
                 } else {
                     trocarTela('scr-login');
                 }
+                setTimeout(esconderSplash, 400);
             }, 1800);
         }
 
@@ -5112,10 +5204,10 @@ const TAREFAS_RESTAURANTE = {
             const raw = document.getElementById('field-rest-id')?.value?.trim();
             const id = normalizarIdRest(raw);
             if (!id) { customAlert('Digite o código do restaurante.'); return; }
-            // Verifica se existe
             try {
                 const snap = await getDoc(refRestaurante(id));
                 if (!snap.exists()) { customAlert('Restaurante não encontrado. Verifique o código ou crie um novo.'); return; }
+                mostrarSplash(id);
                 await conectarEEntrar(id);
             } catch(e) { customAlert('Erro de conexão. Verifique sua internet.'); }
         };
@@ -5179,27 +5271,42 @@ const TAREFAS_RESTAURANTE = {
         };
 
         async function renderPainelDono() {
-            // Lista todos os documentos em restaurantes/
-            // Como Firestore não tem "listar coleção" facilmente sem regras, usamos um índice simples:
-            // guardamos a lista em restaurantes/__index__ como array de ids
             let ids = [];
             try {
                 const idx = await getDoc(doc(db, 'restaurantes', '__index__'));
                 if (idx.exists()) ids = idx.data().ids || [];
             } catch(e) {}
-            // Adiciona o Marchesini herdado se não estiver no índice
             if (!ids.includes('marchesini')) ids.unshift('marchesini');
-            const opts = ids.map((id,i) => ({ id: String(i), label: `🏢 ${id}` }));
-            opts.push({ id: 'NOVO', label: '➕ Entrar em qualquer código...' });
-            const escolha = await customSelect('👑 Qual restaurante deseja acessar?', opts);
-            if (escolha === null) return;
-            if (escolha === String(opts.length - 1)) {
-                const id = await customPrompt('Digite o ID do restaurante:');
-                if (id) await entrarComoAdmin(normalizarIdRest(id));
-            } else {
-                await entrarComoAdmin(ids[parseInt(escolha)]);
-            }
+            // Monta diálogo visual com cards dos restaurantes
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '👑 Painel do Administrador';
+            let html = '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:55vh;overflow-y:auto;">';
+            html += `<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">${ids.length} restaurante(s) cadastrado(s)</div>`;
+            ids.forEach(id => {
+                const isAtivo = id === restauranteAtivoId;
+                html += `<div onclick="fecharDialogAdmin();entrarComoAdmin('${id}')" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid ${isAtivo?'var(--accent)':'var(--border)'};border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition);">
+                    <span style="font-size:22px;">🏢</span>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:13px;font-weight:700;color:var(--text);">${id}</div>
+                        ${isAtivo?'<div style="font-size:10px;color:var(--accent);font-weight:700;">▶ Restaurante atual</div>':''}
+                    </div>
+                    <span style="font-size:18px;color:var(--text3);">→</span>
+                </div>`;
+            });
+            html += `<div onclick="fecharDialogAdmin();entrarComoAdminManual()" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px dashed var(--border);border-radius:var(--radius-md);cursor:pointer;">
+                <span style="font-size:22px;">🔍</span>
+                <div style="flex:1;font-size:13px;font-weight:600;color:var(--text2);">Acessar por código...</div>
+            </div>`;
+            html += '</div>';
+            document.getElementById('dialog-extra').innerHTML = html;
+            document.getElementById('dialog-btns').innerHTML = `<button class="btn-ghost" onclick="fecharDialogAdmin()" style="margin:0;">Fechar</button>`;
+            ov.classList.add('show');
         }
+        window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
+        window.entrarComoAdminManual = async function() {
+            const id = await customPrompt('Digite o ID do restaurante:');
+            if (id) await entrarComoAdmin(normalizarIdRest(id));
+        };
 
         async function entrarComoAdmin(id) {
             if (!id) return;
@@ -5257,6 +5364,25 @@ const TAREFAS_RESTAURANTE = {
                     showToast('✅ Seus dados foram migrados para o novo sistema!', '🏢', 5000);
                 }
             } catch(e) { console.warn('migração', e); }
+        // Lê ?rest=codigo da URL — link direto do restaurante pro funcionário
+        (function() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const restParam = params.get('rest') || params.get('restaurante');
+                if (restParam) {
+                    const id = normalizarIdRest(restParam);
+                    if (id) {
+                        localStorage.setItem('sc-rest-id', id);
+                        // Limpa o parâmetro da URL sem recarregar a página
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('rest');
+                        url.searchParams.delete('restaurante');
+                        window.history.replaceState({}, '', url.toString());
+                    }
+                }
+            } catch(e) {}
+        })();
+
             await bootRestaurante();
         })();
 

@@ -177,7 +177,7 @@
         .progress-header span { font-size:12px;font-weight:700;color:var(--text2); }
         .progress-pct { font-size:18px;font-weight:900;color:var(--accent);font-family:var(--font-display); }
         .progress-track { background:var(--card3);height:7px;border-radius:4px;overflow:hidden; }
-        .progress-fill { background:linear-gradient(90deg,var(--red),var(--accent));height:100%;width:0%;border-radius:4px;transition:width 0.5s cubic-bezier(.4,0,.2,1); }
+        .progress-fill { background:linear-gradient(90deg,#1e90ff,#ffd700,#00c853);height:100%;width:0%;border-radius:4px;transition:width 0.5s cubic-bezier(.4,0,.2,1);background-size:200% 100%; }
         .progress-stats { display:flex;gap:12px;margin-top:10px; }
         .progress-stat { flex:1;text-align:center;background:var(--card2);border-radius:var(--radius-sm);padding:8px 4px;cursor:pointer;transition:all var(--transition);border:2px solid transparent; }
         .progress-stat:active { transform:scale(0.96); }
@@ -206,18 +206,18 @@
         .task-row::before { content:'';position:absolute;inset:0;border-radius:var(--radius-md);pointer-events:none;z-index:0;opacity:0;transition:opacity 0.4s; }
         /* ::after = máscara interna que cobre o centro, deixando só ~2px de borda visível */
         .task-row::after  { content:'';position:absolute;inset:2px;border-radius:calc(var(--radius-md) - 2px);background:var(--card2);pointer-events:none;z-index:1;opacity:0;transition:opacity 0.4s; }
-        /* Status pendente — azul */
-        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(30,144,255,0.8) 78%,rgba(130,210,255,1) 84%,rgba(30,144,255,0.8) 90%,transparent 97%);animation:taskGlow 2.5s linear infinite;opacity:1;filter:saturate(1.3) brightness(1.1); }
-        .task-row.t-pending::after  { box-shadow:inset 0 0 18px rgba(30,100,255,0.07);opacity:1; }
-        .task-row.t-pending { border-color:rgba(30,144,255,0.3); }
-        /* Status em andamento — amarelo */
-        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(255,165,0,0.8) 78%,rgba(255,230,80,1) 84%,rgba(255,165,0,0.8) 90%,transparent 97%);animation:taskGlow 1.8s linear infinite;opacity:1;filter:saturate(1.3) brightness(1.1); }
+        /* Status pendente — azul forte */
+        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(30,144,255,0.9) 78%,rgba(100,200,255,1) 84%,rgba(30,144,255,0.9) 90%,transparent 97%);animation:taskGlow 2.5s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
+        .task-row.t-pending::after  { box-shadow:inset 0 0 18px rgba(30,100,255,0.08);opacity:1; }
+        .task-row.t-pending { border-color:rgba(30,144,255,0.7); border-width:2px; }
+        /* Status em andamento — amarelo forte */
+        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(255,165,0,0.9) 78%,rgba(255,230,80,1) 84%,rgba(255,165,0,0.9) 90%,transparent 97%);animation:taskGlow 1.8s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
         .task-row.t-working::after  { box-shadow:inset 0 0 18px rgba(220,140,0,0.08);opacity:1; }
-        .task-row.t-working { border-color:rgba(255,165,0,0.3); }
-        /* Status concluído — verde */
-        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(0,180,80,0.8) 78%,rgba(80,240,140,1) 84%,rgba(0,180,80,0.8) 90%,transparent 97%);animation:taskGlow 3s linear infinite;opacity:1;filter:saturate(1.3) brightness(1.1); }
-        .task-row.t-done::after  { box-shadow:inset 0 0 18px rgba(0,160,70,0.08);opacity:1; }
-        .task-row.t-done { border-color:rgba(0,180,80,0.3); }
+        .task-row.t-working { border-color:rgba(255,165,0,0.7); border-width:2px; }
+        /* Status concluído — verde forte */
+        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(0,200,80,0.9) 78%,rgba(80,255,140,1) 84%,rgba(0,200,80,0.9) 90%,transparent 97%);animation:taskGlow 3s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
+        .task-row.t-done::after  { box-shadow:inset 0 0 18px rgba(0,180,70,0.08);opacity:1; }
+        .task-row.t-done { border-color:rgba(0,200,80,0.7); border-width:2px; }
         @keyframes taskGlow { to { --tangle:360deg; } }
         /* Conteúdo acima da máscara */
         .task-row-head,.task-resume,.task-action-bar { position:relative;z-index:2; }
@@ -242,7 +242,7 @@
         .task-row.working-other .task-dot { background:var(--blue);box-shadow:0 0 8px var(--blue); }
         .task-row.done-mine .task-dot { background:var(--accent);box-shadow:0 0 10px var(--accent-glow); }
         .task-row.done-other .task-dot { background:var(--text3); }
-        .task-resume { padding:2px 14px 8px;font-size:11px;color:var(--text3);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+        .task-resume { padding:2px 14px 8px;font-size:11px;color:var(--text2);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
         .task-action-bar { display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(0,0,0,0.06);border-top:1px solid var(--border);flex-wrap:wrap; }
         [data-theme="light"] .task-action-bar { background:rgba(0,0,0,0.03); }
         .worker-avatar-block { display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;cursor:pointer;transition:transform var(--transition); }
@@ -893,14 +893,6 @@
                 <p>Digite o código do seu restaurante para entrar</p>
                 <input type="text" class="field" id="field-rest-id" placeholder="Código do restaurante (ex: marchesini)" autocapitalize="none" autocomplete="off">
                 <button class="btn-primary" onclick="entrarRestaurante()">Entrar</button>
-                <div class="login-divider"><span>ou</span></div>
-                <button class="btn-ghost" onclick="abrirCriarRestaurante()">✨ Criar meu restaurante</button>
-                <div class="criar-conta-expand" id="criar-rest-expand">
-                    <input type="text" class="field" id="field-rest-nome" placeholder="Nome do restaurante" style="margin-bottom:8px;">
-                    <select class="field" id="field-rest-template" style="margin-bottom:8px;"></select>
-                    <input type="password" class="field" id="field-rest-senha" placeholder="Senha mestra (4+ dígitos)" maxlength="12" style="margin-bottom:8px;">
-                    <button class="btn-primary" onclick="criarRestaurante()" style="margin-top:4px;">✅ Criar e Entrar</button>
-                </div>
                 <div class="login-divider"><span>dono do sistema</span></div>
                 <button class="btn-ghost" onclick="abrirPainelDono()" style="border-color:var(--gold);color:var(--gold);">👑 Acesso do Desenvolvedor</button>
             </div>
@@ -3137,18 +3129,14 @@ const TAREFAS_RESTAURANTE = {
             if (!restauranteAtivoId) { customAlert('Nenhum restaurante ativo.'); return; }
             const base = window.location.origin + window.location.pathname;
             const link = `${base}?rest=${restauranteAtivoId}`;
-            // Tenta copiar pra área de transferência
+            const nomeRest = liveData.restaurante?.nome || restauranteAtivoId;
+            const msg = `✅ Link copiado!\n\n${link}\n\nEnvie este link para sua equipe.\nAo abrir, já entra direto no restaurante ${nomeRest}.`;
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(link).then(() => {
-                    customAlert(`✅ Link copiado!\n\n${link}\n\nEnvie este link pra sua equipe. Ao abrir, já entra direto no restaurante "${restauranteAtivoId}".`);
-                }).catch(() => mostrarLinkManual(link));
+                navigator.clipboard.writeText(link).then(() => customAlert(msg)).catch(() => customAlert(msg));
             } else {
-                mostrarLinkManual(link);
+                customAlert(msg);
             }
         };
-        function mostrarLinkManual(link) {
-            customAlert(`🔗 Link da equipe:\n\n${link}\n\nCopie e envie pelo WhatsApp. Ao abrir, entra direto no restaurante.`);
-        }
 
         window.alterarRestaurante = async function() {
             fecharSidebar();
@@ -4358,7 +4346,7 @@ const TAREFAS_RESTAURANTE = {
             let partes = [];
             if (est) partes.push(`⏱️ Estimado ${fmtTempo(est)}`);
             if (media) partes.push(`Média real ${fmtTempo(media.mediaSeg)} (${media.amostras}x)`);
-            return `<div style="font-size:10px;color:var(--text3);font-weight:600;margin-top:3px;">${partes.join(' · ')}</div>`;
+            return `<div style="font-size:10px;color:var(--text2);font-weight:600;margin-top:3px;">${partes.join(' · ')}</div>`;
         }
 
         // ========================================================
@@ -5440,22 +5428,35 @@ const TAREFAS_RESTAURANTE = {
                 if (idx.exists()) ids = idx.data().ids || [];
             } catch(e) {}
             if (!ids.includes('marchesini')) ids.unshift('marchesini');
-            // Monta diálogo visual com cards dos restaurantes
             const ov = document.getElementById('dialog-overlay');
-            document.getElementById('dialog-msg').textContent = '👑 Painel do Administrador';
+            document.getElementById('dialog-msg').textContent = '👑 Painel do Desenvolvedor';
             let html = '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:55vh;overflow-y:auto;">';
             html += `<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">${ids.length} restaurante(s) cadastrado(s)</div>`;
             ids.forEach(id => {
                 const isAtivo = id === restauranteAtivoId;
-                html += `<div onclick="fecharDialogAdmin();entrarComoAdmin('${id}')" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid ${isAtivo?'var(--accent)':'var(--border)'};border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition);">
+                html += `<div onclick="fecharDialogAdmin();entrarComoAdmin('${id}')" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid ${isAtivo?'var(--accent)':'var(--border)'};border-radius:var(--radius-md);cursor:pointer;">
                     <span style="font-size:22px;">🏢</span>
                     <div style="flex:1;min-width:0;">
                         <div style="font-size:13px;font-weight:700;color:var(--text);">${id}</div>
-                        ${isAtivo?'<div style="font-size:10px;color:var(--accent);font-weight:700;">▶ Restaurante atual</div>':''}
+                        ${isAtivo?'<div style="font-size:10px;color:var(--accent);font-weight:700;">▶ Atual</div>':''}
                     </div>
                     <span style="font-size:18px;color:var(--text3);">→</span>
                 </div>`;
             });
+            // Criar novo restaurante
+            html += `<div style="margin-top:8px;padding:12px;background:var(--card2);border:1.5px solid var(--accent);border-radius:var(--radius-md);">
+                <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✨ Criar novo restaurante</div>
+                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante" style="margin-bottom:6px;">
+                <select class="field" id="dev-rest-template" style="margin-bottom:6px;"></select>
+                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente" style="margin-bottom:6px;">
+                <button class="btn-primary" onclick="devCriarRestaurante()" style="width:100%;margin:0;">✅ Criar e Acessar</button>
+            </div>`;
+            // Trocar senha do desenvolvedor
+            html += `<div onclick="fecharDialogAdmin();trocarSenhaDesenvolvedor()" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid rgba(240,185,11,0.4);border-radius:var(--radius-md);cursor:pointer;">
+                <span style="font-size:22px;">🔐</span>
+                <div style="flex:1;font-size:13px;font-weight:700;color:var(--gold);">Trocar senha do desenvolvedor</div>
+            </div>`;
+            // Acessar por código
             html += `<div onclick="fecharDialogAdmin();entrarComoAdminManual()" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px dashed var(--border);border-radius:var(--radius-md);cursor:pointer;">
                 <span style="font-size:22px;">🔍</span>
                 <div style="flex:1;font-size:13px;font-weight:600;color:var(--text2);">Acessar por código...</div>
@@ -5464,7 +5465,49 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('dialog-extra').innerHTML = html;
             document.getElementById('dialog-btns').innerHTML = `<button class="btn-ghost" onclick="fecharDialogAdmin()" style="margin:0;">Fechar</button>`;
             ov.classList.add('show');
+            // Popular select de templates
+            try {
+                const sel = document.getElementById('dev-rest-template');
+                if (sel && typeof TEMPLATES !== 'undefined') {
+                    sel.innerHTML = Object.entries(TEMPLATES).map(([id,t])=>`<option value="${id}">${t.icone} ${t.nome}</option>`).join('');
+                }
+            } catch(e){}
         }
+
+        window.devCriarRestaurante = async function() {
+            const nome = document.getElementById('dev-rest-nome')?.value?.trim();
+            const templateId = document.getElementById('dev-rest-template')?.value || 'restaurante';
+            const senha = document.getElementById('dev-rest-senha')?.value?.trim();
+            if (!nome) { customAlert('Digite o nome do restaurante.'); return; }
+            if (!senha || senha.length < 4) { customAlert('Senha mestra deve ter mínimo 4 caracteres.'); return; }
+            const id = normalizarIdRest(nome);
+            if (!id) { customAlert('Nome inválido.'); return; }
+            fecharDialogAdmin();
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (snap.exists()) { customAlert(`Já existe um restaurante com o código "${id}".`); return; }
+                const restData = { ...liveData, restaurante: { nome, logo:'', fonte:'DM Sans' }, masterPass: senha, templateAtivo: templateId, tarefasCustomizadas: [], tarefasStatus: {}, usuariosSalvos: {}, historicoTurnos: [], registrosDesperdicio: [] };
+                const tarefasMap = typeof TAREFAS_POR_TEMPLATE !== 'undefined' ? (TAREFAS_POR_TEMPLATE[templateId] || {}) : {};
+                const setoresDoTpl = typeof TEMPLATES !== 'undefined' ? (TEMPLATES[templateId]?.setores || []) : [];
+                setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t=>{ restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
+                restData.tarefasCustomizadas.forEach(t=>{ if(!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg=estimarTempoPorTexto(t.txt); });
+                await setDoc(refRestaurante(id), restData, { merge:false });
+                await adicionarAoIndice(id);
+                customAlert(`✅ Restaurante criado!\nCódigo: ${id}\nSenha do gerente: ${senha}`);
+                await entrarComoAdmin(id);
+            } catch(e) { customAlert('Erro ao criar: ' + e.message); }
+        };
+
+        window.trocarSenhaDesenvolvedor = async function() {
+            const nova = await customPrompt('Nova senha do desenvolvedor (mín. 6 caracteres):');
+            if (!nova || nova.length < 6) { if(nova!==null) customAlert('Mínimo 6 caracteres.'); return; }
+            const conf = await customPrompt('Confirme a nova senha:');
+            if (nova !== conf) { customAlert('Senhas não conferem!'); return; }
+            try {
+                await setDoc(doc(db, 'config', 'admin'), { senha: nova }, { merge: false });
+                customAlert(`✅ Senha do desenvolvedor alterada com sucesso!\nNova senha: ${nova}\n\nGuarde bem essa senha.`);
+            } catch(e) { customAlert('Erro ao salvar no Firebase: ' + e.message); }
+        };
         window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
         window.entrarComoAdminManual = async function() {
             const id = await customPrompt('Digite o ID do restaurante:');

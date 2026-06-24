@@ -40,22 +40,22 @@
         .splash-screen.fade-out { opacity:0;pointer-events:none; }
         /* Splash screen */
         .splash-top { position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;padding:16px 20px 0;text-align:center; }
-        .splash-app-logo { width:52px;height:52px;border-radius:14px;overflow:hidden;margin:0 auto 6px;box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+        .splash-app-logo { width:68px;height:68px;border-radius:18px;overflow:hidden;margin:0 auto 8px;box-shadow:0 6px 20px rgba(0,0,0,0.35); }
         .splash-app-logo img { width:100%;height:100%;object-fit:cover; }
-        .splash-app-name { font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px; }
+        .splash-app-name { font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px; }
         /* Badge do desenvolvedor com borda colorida animada */
-        .splash-dev-badge { display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;color:var(--text);position:relative;overflow:hidden;animation:splashFadeUp 0.5s 0.3s ease both; }
+        .splash-dev-label { font-size:10px;color:var(--text3);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px; }
+        .splash-dev-badge { display:inline-flex;align-items:center;padding:7px 18px;border-radius:22px;font-size:13px;font-weight:800;color:var(--text);position:relative;overflow:hidden;animation:splashFadeUp 0.5s 0.3s ease both; }
         .splash-dev-badge::before { content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(#1e90ff 0deg,#ffa500 120deg,#00d050 240deg,#1e90ff 360deg);animation:devBadgeSpin 3s linear infinite;z-index:0; }
-        .splash-dev-badge::after { content:'';position:absolute;inset:2px;border-radius:18px;background:var(--card);z-index:1; }
+        .splash-dev-badge::after { content:'';position:absolute;inset:2.5px;border-radius:20px;background:var(--card);z-index:1; }
         .splash-dev-badge span { position:relative;z-index:2; }
-        .splash-dev-label { font-size:9px;color:var(--text3);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px; }
         @keyframes devBadgeSpin { to { transform:rotate(360deg); } }
         .splash-center { display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center; }
-        .splash-logo { width:140px;height:140px;border-radius:32px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .splash-logo { width:160px;height:160px;border-radius:36px;overflow:hidden;box-shadow:0 18px 52px rgba(0,0,0,0.45);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
         .splash-logo img { width:100%;height:100%;object-fit:cover; }
-        .splash-logo-placeholder { width:140px;height:140px;border-radius:32px;background:linear-gradient(135deg,var(--accent),#1b5e20);display:flex;align-items:center;justify-content:center;font-size:64px;box-shadow:0 16px 48px rgba(0,0,0,0.4);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
-        .splash-rest-nome { font-family:var(--font-display);font-size:30px;font-weight:900;color:var(--text);line-height:1.1;animation:splashFadeUp 0.5s 0.15s ease both; }
-        .splash-bem-vindo { font-size:14px;color:var(--text2);font-weight:600;animation:splashFadeUp 0.5s 0.25s ease both; }
+        .splash-logo-placeholder { width:160px;height:160px;border-radius:36px;background:linear-gradient(135deg,var(--accent),#1b5e20);display:flex;align-items:center;justify-content:center;font-size:72px;box-shadow:0 18px 52px rgba(0,0,0,0.45);animation:splashPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .splash-rest-nome { font-family:var(--font-display);font-size:32px;font-weight:900;color:var(--text);line-height:1.1;animation:splashFadeUp 0.5s 0.15s ease both; }
+        .splash-bem-vindo { font-size:15px;color:var(--text2);font-weight:600;animation:splashFadeUp 0.5s 0.25s ease both; }
         .splash-dots { display:flex;gap:6px;margin-top:4px;animation:splashFadeUp 0.5s 0.35s ease both; }
         .splash-dot { width:7px;height:7px;border-radius:50%;background:var(--accent);animation:splashDot 1.2s infinite; }
         .splash-dot:nth-child(2) { animation-delay:0.2s; }
@@ -579,11 +579,10 @@
         .chat-overlay.show .chat-box { transform:translateY(0); }
         .chat-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0; }
         .chat-header h3 { font-size:13px;font-weight:800;color:var(--accent); }
-        /* Chat equipe online — borda girando usando transform:rotate() (compatível iOS) */
-        .chat-online-section { border:2px solid transparent;border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
-        .chat-online-section::before { content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(transparent 72%,rgba(0,220,90,0.8) 80%,rgba(100,255,160,1) 85%,rgba(0,220,90,0.8) 90%,transparent 98%);animation:chatSpin 3s linear infinite;z-index:0;pointer-events:none; }
-        .chat-online-section::after { content:'';position:absolute;inset:3px;border-radius:calc(var(--radius-lg) - 3px);background:var(--card2);z-index:1;pointer-events:none; }
-        @keyframes chatSpin { to { transform:rotate(360deg); } }
+        /* Chat equipe online — luz varrendo da esquerda pra direita */
+        .chat-online-section { border:2px solid rgba(0,200,80,0.5);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
+        .chat-online-section::before { content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,220,90,0.6),rgba(100,255,160,0.9),rgba(0,220,90,0.6),transparent);animation:chatVarrer 2.5s ease-in-out infinite;z-index:0;pointer-events:none; }
+        @keyframes chatVarrer { 0%{left:-60%;} 100%{left:120%;} }
         .chat-online-section-title,.chat-online-bar { position:relative;z-index:2; }
         .chat-online-section-title { font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:0 14px 6px; }
         .chat-online-bar { display:flex;gap:8px;padding:0 14px;overflow-x:auto;scrollbar-width:none;align-items:flex-start; }
@@ -966,7 +965,7 @@
                     <button onclick="abrirPainelDono()" style="background:transparent;border:1px solid rgba(240,185,11,0.4);color:var(--gold);padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body);">👑 Painel do Desenvolvedor</button>
                 </div>
             </div>
-            <div class="historico-card" id="historico-card"><h3>📊 Histórico de Turnos</h3><div id="historico-list"></div></div>
+            <!-- histórico movido para dentro de Relatórios --><div id="historico-list" style="display:none;"></div>
             <div class="mgr-grid">
                 <div class="mgr-btn tasks" onclick="abrirGerenteModal('biblioteca')">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(0,146,70,0.12);">📚</div>
@@ -1007,6 +1006,11 @@
                     <div class="mgr-btn-icon-wrap" style="background:rgba(225,90,40,0.12);">🗑️</div>
                     <div class="mgr-btn-label">Controle de Desperdício</div>
                     <div class="mgr-btn-sub">Insumos e perdas registradas</div>
+                </div>
+                <div class="mgr-btn" onclick="abrirGerenteModal('relatorios')" style="--btn-glow:rgba(99,102,241,0.6);">
+                    <div class="mgr-btn-icon-wrap" style="background:rgba(99,102,241,0.12);">📊</div>
+                    <div class="mgr-btn-label">Relatórios</div>
+                    <div class="mgr-btn-sub">Histórico e dados do turno</div>
                 </div>
                 <div class="mgr-btn print" onclick="abrirGerenteModal('imprimir')" style="--btn-glow:rgba(99,102,241,0.6);">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(99,102,241,0.12);">🖨️</div>
@@ -1929,18 +1933,32 @@ const TAREFAS_RESTAURANTE = {
             return getSetoresDoTemplate(templateId);
         }
 
-        function popularTarefasDoTemplate(templateId) {
+        function popularTarefasDoTemplate(templateId, forcar=false) {
             const tarefasMap = TAREFAS_POR_TEMPLATE[templateId];
             if (!tarefasMap) return;
             const setores = TEMPLATES[templateId]?.setores || [];
-            liveData.tarefasCustomizadas = [];
-            setores.forEach(s => {
-                const tarefas = tarefasMap[s.id] || [];
-                tarefas.forEach(t => {
-                    liveData.tarefasCustomizadas.push({ ...t, cat: s.id });
+            // Só zera tarefas se forçado explicitamente (novo restaurante) ou se não há tarefas
+            if (!forcar && liveData.tarefasCustomizadas && liveData.tarefasCustomizadas.length > 0) {
+                // Apenas adiciona tarefas de setores que estão completamente vazios
+                setores.forEach(s => {
+                    const jaTemNesseSetor = liveData.tarefasCustomizadas.some(t => t.cat === s.id);
+                    if (!jaTemNesseSetor) {
+                        const tarefas = tarefasMap[s.id] || [];
+                        tarefas.forEach(t => {
+                            liveData.tarefasCustomizadas.push({ ...t, cat: s.id });
+                        });
+                    }
                 });
-            });
-            plantarRegistrosInsumoExemplo(templateId);
+            } else {
+                liveData.tarefasCustomizadas = [];
+                setores.forEach(s => {
+                    const tarefas = tarefasMap[s.id] || [];
+                    tarefas.forEach(t => {
+                        liveData.tarefasCustomizadas.push({ ...t, cat: s.id });
+                    });
+                });
+                plantarRegistrosInsumoExemplo(templateId);
+            }
             try { if (typeof preencherEstimativasFaltantes === 'function') preencherEstimativasFaltantes(); } catch(e){}
         }
 
@@ -1980,7 +1998,7 @@ const TAREFAS_RESTAURANTE = {
             if (!ok) return;
             liveData.templateAtivo = templateId;
             liveData.setoresCustomizados = [];
-            popularTarefasDoTemplate(templateId);
+            popularTarefasDoTemplate(templateId, true);
             liveData.tarefasStatus = {};
             await salvar();
             renderConfigTab('template');
@@ -2076,7 +2094,7 @@ const TAREFAS_RESTAURANTE = {
                     }
                 }
                 if (liveData.tarefasCustomizadas.length === 0) {
-                    popularTarefasDoTemplate(liveData.templateAtivo || 'restaurante');
+                    popularTarefasDoTemplate(liveData.templateAtivo || 'restaurante', true);
                     salvar(true);
                 }
                 // Garante estimativa de tempo em tarefas já salvas que não tenham (uma vez)
@@ -2552,11 +2570,18 @@ const TAREFAS_RESTAURANTE = {
         }
 
         // ========== NOTIFICAÇÕES ==========
+        const _appAbertoTs = Date.now(); // timestamp de quando o app abriu
+        let _primeiroSnapshot = true;    // ignora o primeiro snapshot (dados já existentes)
         function detectarNotificacoes(novosStatus) {
+            // Na primeira leitura do Firebase, só salva o estado sem notificar
+            if (_primeiroSnapshot) { _primeiroSnapshot = false; lastTaskStatusSnapshot = {...novosStatus}; return; }
             const oldStatus = lastTaskStatusSnapshot;
             for (const [chave, st] of Object.entries(novosStatus)) {
                 const oldSt = oldStatus[chave];
                 if (!st || !st.worker) continue;
+                // Só notifica mudanças que aconteceram APÓS o app abrir
+                const tsAtividade = st.startTime || st.endTime || 0;
+                if (tsAtividade && tsAtividade < _appAbertoTs) continue;
                 const tarefa = getTarefaByChave(chave);
                 const nomeTarefa = tarefa ? tarefa.txt : 'uma tarefa';
                 if (!oldSt || oldSt.status !== st.status) {
@@ -3824,6 +3849,7 @@ const TAREFAS_RESTAURANTE = {
             else if (tipo === 'delegacao') { title.textContent = '🎯 Delegar Tarefas'; renderDelegacao(body); }
             else if (tipo === 'desperdicio') { title.textContent = '🗑️ Controle de Desperdício'; renderDesperdicio(body); }
             else if (tipo === 'imprimir') { title.textContent = '🖨️ Imprimir'; renderImprimir(body); }
+            else if (tipo === 'relatorios') { title.textContent = '📊 Relatórios'; renderRelatorios(body); }
         };
 
         window.fecharGerenteModal = function() { document.getElementById('gerente-full-modal').classList.remove('open'); edicaoTaskIdx = null; };
@@ -4627,6 +4653,37 @@ const TAREFAS_RESTAURANTE = {
             renderWorker();
         };
 
+        function renderRelatorios(body) {
+            const hist = liveData.historicoTurnos || [];
+            let html = '<div style="padding:4px 2px;">';
+            // Botão histórico de turnos
+            html += '<div style="margin-bottom:16px;">';
+            html += '<div class="config-section-title">🕐 Histórico de Turnos</div>';
+            if (!hist.length) {
+                html += '<p style="font-size:12px;color:var(--text3);padding:12px 0;">Nenhum turno salvo ainda. Ao zerar o turno, ele aparece aqui.</p>';
+            } else {
+                hist.slice(0,15).forEach(h => {
+                    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
+                        <div>
+                            <div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div>
+                            <div style="font-size:11px;color:var(--text3);">${h.feitas}/${h.total} tarefas concluídas</div>
+                        </div>
+                        <div style="font-size:20px;font-weight:900;color:var(--accent);">${h.pct}%</div>
+                    </div>`;
+                });
+            }
+            html += '</div>';
+            // Placeholder para futuros relatórios
+            html += '<div class="config-section-title" style="margin-top:8px;">Em breve</div>';
+            html += '<div style="padding:16px;background:var(--card2);border-radius:var(--radius-md);border:1px dashed var(--border);text-align:center;">';
+            html += '<div style="font-size:28px;margin-bottom:8px;">📈</div>';
+            html += '<div style="font-size:13px;font-weight:700;color:var(--text);">Painel de Analytics</div>';
+            html += '<div style="font-size:11px;color:var(--text3);margin-top:4px;">Gráficos de desempenho, ranking da equipe e análise de desperdício chegando em breve.</div>';
+            html += '</div>';
+            html += '</div>';
+            body.innerHTML = html;
+        }
+
         // ========================================================
         // ==================== MÓDULO: IMPRESSÃO ==================
         // ========================================================
@@ -5255,7 +5312,7 @@ const TAREFAS_RESTAURANTE = {
         function renderDM() { const wall=document.getElementById('dm-wall'); if(!wall||!dmTarget) return; const key=dmKey(currentWorker,dmTarget); const msgs=liveData.mensagensDM?.[key]||[]; let html=''; msgs.forEach(m=>{ const mine=m.user===currentWorker; html+=`<div style="display:flex;margin-bottom:8px;justify-content:${mine?'flex-end':'flex-start'};"><div style="max-width:72%;background:${mine?'var(--accent)':'var(--card3)'};color:${mine?'#fff':'var(--text)'};padding:8px 12px;border-radius:14px;font-size:13px;word-break:break-word;">${m.texto}</div></div>`; }); wall.innerHTML=html||'<p style="text-align:center;color:var(--text3);padding:20px;font-size:13px;">Conversa privada. Diga olá!</p>'; wall.scrollTop=wall.scrollHeight; }
         window.enviarDM = async function() { const i=document.getElementById('dm-input'); const txt=i.value.trim(); if(!txt||!dmTarget) return; const key=dmKey(currentWorker,dmTarget); if(!liveData.mensagensDM) liveData.mensagensDM={}; if(!liveData.mensagensDM[key]) liveData.mensagensDM[key]=[]; liveData.mensagensDM[key].push({user:currentWorker,texto:txt,ts:Date.now()}); i.value=''; await atualizarCampo('mensagensDM',liveData.mensagensDM); renderDM(); };
 
-        function customAlert(msg,btn='OK'){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=''; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-primary" id="dlg-ok" style="margin:0;">${btn}</button>`; ov.classList.add('show'); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(true); }; }); }
+        function customAlert(msg,btn='OK'){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); const msgEl=document.getElementById('dialog-msg'); msgEl.innerHTML=String(msg).replace(/\n/g,'<br>'); document.getElementById('dialog-extra').innerHTML=''; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-primary" id="dlg-ok" style="margin:0;">${btn}</button>`; ov.classList.add('show'); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(true); }; }); }
         function customConfirm(msg,ok='Confirmar',cancel='Cancelar'){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=''; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">${cancel}</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;">${ok}</button>`; ov.classList.add('show'); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(true); }; document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(false); }; }); }
         function customPrompt(msg,ph=''){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; document.getElementById('dialog-extra').innerHTML=`<input class="field" id="dlg-input" type="text" inputmode="text" autocomplete="off" placeholder="${ph}" style="margin:8px 0 0;">`; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-ok" style="margin:0;flex:1;">OK</button>`; ov.classList.add('show'); const inp=document.getElementById('dlg-input'); setTimeout(()=>inp.focus(),150); document.getElementById('dlg-ok').onclick=()=>{ ov.classList.remove('show'); res(inp.value.trim()); }; document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(null); }; }); }
         function customSelect(msg,options){ return new Promise(res=>{ const ov=document.getElementById('dialog-overlay'); document.getElementById('dialog-msg').textContent=msg; const ex=document.getElementById('dialog-extra'); let html='<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:50vh;overflow-y:auto;">'; options.forEach(o=>{ html+=`<button class="btn-ghost cs-opt" data-id="${o.id}" style="margin:0;text-align:left;">${o.label}</button>`; }); html+='</div>'; ex.innerHTML=html; const b=document.getElementById('dialog-btns'); b.innerHTML=`<button class="btn-ghost" id="dlg-c" style="margin:0;">Cancelar</button>`; ov.classList.add('show'); ex.querySelectorAll('.cs-opt').forEach(btn=>{ btn.onclick=()=>{ ov.classList.remove('show'); res(btn.dataset.id); }; }); document.getElementById('dlg-c').onclick=()=>{ ov.classList.remove('show'); res(null); }; }); }

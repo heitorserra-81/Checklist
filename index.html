@@ -579,11 +579,12 @@
         .chat-overlay.show .chat-box { transform:translateY(0); }
         .chat-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0; }
         .chat-header h3 { font-size:13px;font-weight:800;color:var(--accent); }
-        /* Chat equipe online — luz varrendo da esquerda pra direita */
-        .chat-online-section { border:2px solid rgba(0,200,80,0.5);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
-        .chat-online-section::before { content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,220,90,0.6),rgba(100,255,160,0.9),rgba(0,220,90,0.6),transparent);animation:chatVarrer 2.5s ease-in-out infinite;z-index:0;pointer-events:none; }
-        @keyframes chatVarrer { 0%{left:-60%;} 100%{left:120%;} }
-        .chat-online-section-title,.chat-online-bar { position:relative;z-index:2; }
+        /* Chat equipe online — borda pulsando verde (sem pseudo-elementos, funciona em todos os devices) */
+        .chat-online-section { border:2px solid rgba(0,200,80,0.4);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);animation:chatBorderPulse 2s ease-in-out infinite; }
+        @keyframes chatBorderPulse {
+            0%,100% { border-color:rgba(0,200,80,0.25); box-shadow:none; }
+            50% { border-color:rgba(0,220,90,0.95); box-shadow:0 0 12px rgba(0,200,80,0.35); }
+        }
         .chat-online-section-title { font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:0 14px 6px; }
         .chat-online-bar { display:flex;gap:8px;padding:0 14px;overflow-x:auto;scrollbar-width:none;align-items:flex-start; }
         .chat-online-bar::-webkit-scrollbar { display:none; }
@@ -5439,6 +5440,8 @@ const TAREFAS_RESTAURANTE = {
         // Conecta ao restaurante e entra na tela de login
         async function conectarEEntrar(id) {
             conectarRestaurante(id);
+            // Espera 2.5s pro snapshot do Firebase carregar os dados do restaurante
+            // antes de tentar auto-login (garante logo e dados corretos)
             setTimeout(() => {
                 const lastUser = localStorage.getItem('sc-last-user');
                 if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser]) {
@@ -5449,7 +5452,7 @@ const TAREFAS_RESTAURANTE = {
                     trocarTela('scr-login');
                 }
                 sinalizarSplashPronto();
-            }, 1800);
+            }, 2500);
         }
 
         // ---- Tela de seleção de restaurante ----
@@ -5560,9 +5563,10 @@ const TAREFAS_RESTAURANTE = {
             // Criar novo restaurante
             html += `<div style="margin-top:8px;padding:12px;background:var(--card2);border:1.5px solid var(--accent);border-radius:var(--radius-md);">
                 <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✨ Criar novo restaurante</div>
-                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante" style="margin-bottom:6px;">
+                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante (ex: Pizzaria do João)" oninput="atualizarPreviewCodigo(this.value)" style="margin-bottom:4px;">
+                <div id="dev-rest-codigo-preview" style="font-size:10px;color:var(--text3);margin-bottom:8px;padding:0 2px;">Código: —</div>
                 <select class="field" id="dev-rest-template" style="margin-bottom:6px;"></select>
-                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente" style="margin-bottom:6px;">
+                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente (mín. 4 dígitos)" style="margin-bottom:6px;">
                 <button class="btn-primary" onclick="devCriarRestaurante()" style="width:100%;margin:0;">✅ Criar e Acessar</button>
             </div>`;
             // Trocar senha do desenvolvedor
@@ -5587,6 +5591,14 @@ const TAREFAS_RESTAURANTE = {
                 }
             } catch(e){}
         }
+
+        window.atualizarPreviewCodigo = function(nome) {
+            const el = document.getElementById('dev-rest-codigo-preview');
+            if (!el) return;
+            const id = normalizarIdRest(nome);
+            el.textContent = id ? `Código: ${id}` : 'Código: —';
+            el.style.color = id ? 'var(--accent)' : 'var(--text3)';
+        };
 
         window.devCriarRestaurante = async function() {
             const nome = document.getElementById('dev-rest-nome')?.value?.trim();

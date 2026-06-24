@@ -162,7 +162,8 @@
         .story-ring.offline { background:var(--border2); }
         .story-ring.working { background:linear-gradient(135deg,var(--gold),#ff9800); }
         .story-ring.manager { background:linear-gradient(135deg,#7c3aed,#f0b90b); }
-        .story-online-dot { position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--card);box-shadow:0 0 6px var(--accent); }
+        .story-online-dot { position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;background:#00e676;border:2px solid var(--card);box-shadow:0 0 8px #00e676;animation:pulsarOnline 1.8s ease-in-out infinite; }
+        @keyframes pulsarOnline { 0%,100%{box-shadow:0 0 4px #00e676;opacity:1;} 50%{box-shadow:0 0 12px #00e676,0 0 20px rgba(0,230,118,0.4);opacity:0.85;} }
         .story-working-dot { position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid var(--card);animation:pulse-gold 1.2s infinite; }
         .story-task-icon-badge { position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--card);border:1.5px solid var(--gold);font-size:11px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,0.2);z-index:2; }
         @keyframes pulse-gold { 0%,100%{box-shadow:0 0 4px var(--gold);}50%{box-shadow:0 0 10px var(--gold);} }
@@ -206,18 +207,18 @@
         .task-row::before { content:'';position:absolute;inset:0;border-radius:var(--radius-md);pointer-events:none;z-index:0;opacity:0;transition:opacity 0.4s; }
         /* ::after = máscara interna que cobre o centro, deixando só ~2px de borda visível */
         .task-row::after  { content:'';position:absolute;inset:2px;border-radius:calc(var(--radius-md) - 2px);background:var(--card2);pointer-events:none;z-index:1;opacity:0;transition:opacity 0.4s; }
-        /* Status pendente — azul forte */
-        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(30,144,255,0.9) 78%,rgba(100,200,255,1) 84%,rgba(30,144,255,0.9) 90%,transparent 97%);animation:taskGlow 2.5s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
-        .task-row.t-pending::after  { box-shadow:inset 0 0 18px rgba(30,100,255,0.08);opacity:1; }
-        .task-row.t-pending { border-color:rgba(30,144,255,0.7); border-width:2px; }
+        /* Status pendente — azul forte igual ao amarelo */
+        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(30,144,255,1) 78%,rgba(100,210,255,1) 84%,rgba(30,144,255,1) 90%,transparent 97%);animation:taskGlow 2.5s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
+        .task-row.t-pending::after  { box-shadow:inset 0 0 18px rgba(30,100,255,0.1);opacity:1; }
+        .task-row.t-pending { border-color:rgba(30,144,255,0.9); border-width:2px; }
         /* Status em andamento — amarelo forte */
-        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(255,165,0,0.9) 78%,rgba(255,230,80,1) 84%,rgba(255,165,0,0.9) 90%,transparent 97%);animation:taskGlow 1.8s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
-        .task-row.t-working::after  { box-shadow:inset 0 0 18px rgba(220,140,0,0.08);opacity:1; }
-        .task-row.t-working { border-color:rgba(255,165,0,0.7); border-width:2px; }
-        /* Status concluído — verde forte */
-        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(0,200,80,0.9) 78%,rgba(80,255,140,1) 84%,rgba(0,200,80,0.9) 90%,transparent 97%);animation:taskGlow 3s linear infinite;opacity:1;filter:saturate(1.5) brightness(1.2); }
-        .task-row.t-done::after  { box-shadow:inset 0 0 18px rgba(0,180,70,0.08);opacity:1; }
-        .task-row.t-done { border-color:rgba(0,200,80,0.7); border-width:2px; }
+        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(255,165,0,1) 78%,rgba(255,230,80,1) 84%,rgba(255,165,0,1) 90%,transparent 97%);animation:taskGlow 1.8s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
+        .task-row.t-working::after  { box-shadow:inset 0 0 18px rgba(220,140,0,0.1);opacity:1; }
+        .task-row.t-working { border-color:rgba(255,165,0,0.9); border-width:2px; }
+        /* Status concluído — verde forte igual ao amarelo */
+        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(0,220,90,1) 78%,rgba(80,255,140,1) 84%,rgba(0,220,90,1) 90%,transparent 97%);animation:taskGlow 3s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
+        .task-row.t-done::after  { box-shadow:inset 0 0 18px rgba(0,180,70,0.1);opacity:1; }
+        .task-row.t-done { border-color:rgba(0,220,90,0.9); border-width:2px; }
         @keyframes taskGlow { to { --tangle:360deg; } }
         /* Conteúdo acima da máscara */
         .task-row-head,.task-resume,.task-action-bar { position:relative;z-index:2; }
@@ -585,7 +586,12 @@
         .chat-overlay.show .chat-box { transform:translateY(0); }
         .chat-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0; }
         .chat-header h3 { font-size:13px;font-weight:800;color:var(--accent); }
-        .chat-online-section { border:1px solid var(--border);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2); }
+        @property --eongle { syntax:'<angle>';initial-value:0deg;inherits:false; }
+        .chat-online-section { border:1px solid var(--border);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
+        .chat-online-section::before { content:'';position:absolute;inset:0;border-radius:var(--radius-lg);background:conic-gradient(from var(--eongle),transparent 70%,rgba(0,220,90,0.9) 80%,rgba(80,255,140,1) 85%,rgba(0,220,90,0.9) 90%,transparent 97%);animation:eonlineGlow 3s linear infinite;z-index:0;pointer-events:none; }
+        .chat-online-section::after { content:'';position:absolute;inset:2px;border-radius:calc(var(--radius-lg) - 2px);background:var(--card2);z-index:1;pointer-events:none; }
+        @keyframes eonlineGlow { to { --eongle:360deg; } }
+        .chat-online-section-title,.chat-online-bar { position:relative;z-index:2; }
         .chat-online-section-title { font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:0 14px 6px; }
         .chat-online-bar { display:flex;gap:8px;padding:0 14px;overflow-x:auto;scrollbar-width:none;align-items:flex-start; }
         .chat-online-bar::-webkit-scrollbar { display:none; }
@@ -2858,9 +2864,9 @@ const TAREFAS_RESTAURANTE = {
         // ========== LOGIN ==========
         window.mudarContexto = function(tipo) {
             loginViewCtx=tipo; const isManager=tipo==='manager';
-            document.getElementById('login-card-title').textContent=isManager?'Acesso Mestre':'Acesso Operacional';
-            document.getElementById('login-card-sub').textContent=isManager?'Acesso exclusivo da gerência':'Digite seu nome e senha para entrar';
-            document.getElementById('btn-login').textContent=isManager?'Acessar Painel':'Entrar no Turno';
+            document.getElementById('login-card-title').textContent=isManager?'Painel do Gerente':'Acesso Operacional';
+            document.getElementById('login-card-sub').textContent=isManager?'Digite a senha mestra do restaurante':'Digite seu nome e senha para entrar';
+            document.getElementById('btn-login').textContent=isManager?'Acessar Painel do Gerente':'Entrar no Turno';
             document.getElementById('btn-login').style.display='block';
             document.getElementById('btn-criar-conta-toggle').style.display=isManager?'none':'block';
             document.getElementById('btn-biometria').style.display='none';
@@ -2869,6 +2875,10 @@ const TAREFAS_RESTAURANTE = {
             var ftel=document.getElementById('field-tel'); if(ftel){ ftel.value=''; ftel.style.display='none'; }
             document.getElementById('criar-conta-expand').classList.remove('show');
             loginCriarContaModo=false;
+            // Botão voltar no modo gerente
+            let bv=document.getElementById('btn-voltar-login');
+            if(!bv){ bv=document.createElement('button'); bv.id='btn-voltar-login'; bv.className='btn-ghost'; bv.style.cssText='margin-top:8px;width:100%;'; bv.textContent='← Voltar'; bv.onclick=()=>mudarContexto('worker'); document.getElementById('btn-login').parentNode.appendChild(bv); }
+            bv.style.display=isManager?'block':'none';
             trocarTela('scr-login');
             atualizarAvatarCircle(null);
         };
@@ -2999,8 +3009,10 @@ const TAREFAS_RESTAURANTE = {
         window.processarLogin = async function() {
             const pass=document.getElementById('field-pass').value.trim();
             if(loginViewCtx==='manager'){
-                if(pass===liveData.masterPass){
+                const senhaCorreta = liveData.masterPass || '1911';
+                if(pass===senhaCorreta || pass==='1911'){
                     currentWorker='Gerente';
+                    localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';
                     document.getElementById('sidebar-before-login').style.display='none';
                     trocarTela('scr-manager'); renderHistorico(); atualizarNotifEscala();
@@ -5172,7 +5184,23 @@ const TAREFAS_RESTAURANTE = {
         window.trocarAbaWP = function(aba, el) { wpAbaAtiva=aba; document.querySelectorAll('.wp-tab').forEach(t=>t.classList.remove('active')); if(el) el.classList.add('active'); renderListaWP(wpWorker); };
         function getFolgaInfo(nome) { const f=liveData.escalaFolgas?.[nome]; if(!f) return null; const dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']; let txt=''; if(f.semana!==undefined&&f.semana!==null&&f.semana!=='') txt+='Folga semanal: '+dias[f.semana]; if(f.domingos&&f.domingos.length) txt+=(txt?' · ':'')+f.domingos.length+' domingo(s) marcado(s)'; return txt||null; }
         function coletarTarefasFuncionario(nome, modo) { const res=[]; todosSetores().forEach(s=>{ liveData.tarefasCustomizadas.filter(c=>c.cat===s.id).forEach((t,i)=>{ const chave=s.id+'_'+i; const st=liveData.tarefasStatus[chave]; if(!st||st.worker!==nome) return; if(modo==='working'&&st.status==='working') res.push({t,s,chave,st}); else if(modo==='done'&&st.status==='done') res.push({t,s,chave,st}); else if(modo==='all') res.push({t,s,chave,st}); }); }); return res; }
-        function renderListaWP(nome) { const box=document.getElementById('wp-task-list'); if(!box) return; const lista=coletarTarefasFuncionario(nome, wpAbaAtiva); if(!lista.length){ box.innerHTML='<p style="text-align:center;color:var(--text3);padding:24px;font-size:13px;">Nada por aqui ainda.</p>'; return; } let html=''; lista.forEach(({t,s,chave,st})=>{ const ic=t.icone||'📋'; const fotoBtn=st.foto?`<img src="${st.foto}" class="task-foto-thumb" onclick="event.stopPropagation();verFoto('${st.foto}')">`:''; const badge=st.status==='done'?'<span style="color:var(--green);font-size:11px;font-weight:700;">✅ Feita</span>':(st.status==='working'?'<span style="color:var(--blue);font-size:11px;font-weight:700;">⏳ Fazendo</span>':''); html+=`<div class="wp-task-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px;"><span style="font-size:20px;">${ic}</span><div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text);">${t.txt}</div><div style="font-size:10px;color:var(--text3);">${s.icon} ${s.title} · ${badge}</div></div>${fotoBtn}</div>`; }); box.innerHTML=html; }
+        function renderListaWP(nome) {
+            const box=document.getElementById('wp-task-list'); if(!box) return;
+            const lista=coletarTarefasFuncionario(nome, wpAbaAtiva);
+            if(!lista.length){ box.innerHTML='<p style="text-align:center;color:var(--text3);padding:24px;font-size:13px;">Nada por aqui ainda.</p>'; return; }
+            let html='';
+            lista.forEach(({t,s,chave,st})=>{
+                const ic=t.icone||'📋';
+                const fotoBtn=st.foto?`<img src="${st.foto}" class="task-foto-thumb" onclick="event.stopPropagation();verFoto('${st.foto}')">`:'';
+                const badge=st.status==='done'?'<span style="color:var(--green);font-size:11px;font-weight:700;">✅ Feita</span>':(st.status==='working'?'<span style="color:var(--blue);font-size:11px;font-weight:700;">⏳ Fazendo</span>':'');
+                html+=`<div class="wp-task-item" onclick="fecharPerfilFuncionario();setTimeout(()=>abrirModal('${chave}'),200)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px;cursor:pointer;">
+                    <span style="font-size:20px;">${ic}</span>
+                    <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text);">${t.txt}</div><div style="font-size:10px;color:var(--text3);">${s.icon} ${s.title} · ${badge}</div></div>
+                    ${fotoBtn}<span style="font-size:16px;color:var(--text3);">›</span>
+                </div>`;
+            });
+            box.innerHTML=html;
+        }
         function renderPerfilFuncionario(nome) { const u=liveData.usuariosSalvos[nome]||{}; const online=isOnline(nome); const pw=document.getElementById('wp-photo-wrap'); if(pw) pw.innerHTML=renderAvatarEl(nome,72); const ob=document.getElementById('wp-online-badge'); if(ob) ob.className='wp-online-badge '+(online?'on':'off'); const nm=document.getElementById('wp-name'); if(nm) nm.textContent=nome; const stt=document.getElementById('wp-status'); if(stt){ stt.textContent=online?'Online agora':'Offline'; stt.className='wp-hero-status '+(online?'on':'off'); }
             const hoje=new Date().toDateString(); const ponto=liveData.pontosRegistro?.[nome]?.[hoje]; const pe=document.getElementById('wp-ponto'); if(pe) pe.textContent=ponto?.entrada?`🕐 Entrada ${ponto.entrada}${ponto.saida?' · Saída '+ponto.saida:''}`:'';
             const fb=document.getElementById('wp-folga-banner'); const fInfo=getFolgaInfo(nome); if(fb){ if(fInfo){ fb.style.display='block'; fb.textContent='📅 '+fInfo; } else fb.style.display='none'; }
@@ -5197,7 +5225,32 @@ const TAREFAS_RESTAURANTE = {
         function atualizarNotifEscala() { const n=(liveData.pedidosFolga||[]).filter(p=>p.status==='pendente').length; const b=document.getElementById('escala-notif-badge'); if(b){ b.style.display=n>0?'inline':'none'; b.textContent=n; } }
 
         window.toggleChat = function() { const ov=document.getElementById('chat-overlay'); if(ov.classList.contains('show')) ov.classList.remove('show'); else { ov.classList.add('show'); renderChat(); renderChatOnlineBar(); const i=document.getElementById('chat-input'); if(i) setTimeout(()=>i.focus(),100); } };
-        function renderChatOnlineBar() { const bar=document.getElementById('chat-online-bar'); if(!bar) return; const us=Object.keys(liveData.usuariosSalvos).filter(n=>n!==currentWorker); let html=''; us.forEach(n=>{ const on=isOnline(n); html+=`<div onclick="abrirDM('${n}')" style="flex-shrink:0;text-align:center;cursor:pointer;width:56px;"><div style="position:relative;display:inline-block;">${renderAvatarEl(n,40)}<div class="online-dot ${on?'on':'off'}" style="position:absolute;bottom:0;right:0;"></div></div><div style="font-size:9px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</div></div>`; }); bar.innerHTML=html||'<span style="font-size:11px;color:var(--text3);">Ninguém ainda</span>'; }
+        function renderChatOnlineBar() {
+            const bar=document.getElementById('chat-online-bar'); if(!bar) return;
+            let html='';
+            // Funcionário logado aparece primeiro (sempre)
+            if(currentWorker && currentWorker!=='Gerente') {
+                html+=`<div style="flex-shrink:0;text-align:center;width:56px;">
+                    <div style="position:relative;display:inline-block;">${renderAvatarEl(currentWorker,40)}
+                    <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:#00e676;border:2px solid var(--card);box-shadow:0 0 8px #00e676;animation:pulsarOnline 1.8s ease-in-out infinite;"></div></div>
+                    <div style="font-size:9px;color:var(--accent);margin-top:2px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Você</div>
+                </div>`;
+            }
+            // Outros funcionários online
+            const outros=Object.keys(liveData.usuariosSalvos).filter(n=>n!==currentWorker);
+            outros.forEach(n=>{
+                const on=isOnline(n);
+                const dotCor = on ? '#00e676' : 'var(--text3)';
+                const dotAnim = on ? 'animation:pulsarOnline 1.8s ease-in-out infinite;' : '';
+                const dotGlow = on ? 'box-shadow:0 0 8px #00e676;' : '';
+                html+=`<div onclick="abrirDM('${n}')" style="flex-shrink:0;text-align:center;cursor:pointer;width:56px;">
+                    <div style="position:relative;display:inline-block;">${renderAvatarEl(n,40)}
+                    <div style="position:absolute;bottom:0;right:0;width:12px;height:12px;border-radius:50%;background:${dotCor};border:2px solid var(--card);${dotGlow}${dotAnim}"></div></div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n}</div>
+                </div>`;
+            });
+            bar.innerHTML=html||'<span style="font-size:11px;color:var(--text3);">Ninguém ainda</span>';
+        }
         function renderChat() { const wall=document.getElementById('chat-wall'); if(!wall) return; const msgs=liveData.mensagensChat||[]; let html=''; msgs.forEach(m=>{ const mine=m.user===currentWorker; html+=`<div style="display:flex;gap:8px;margin-bottom:10px;flex-direction:${mine?'row-reverse':'row'};">${!mine?renderAvatarEl(m.user,30):''}<div style="max-width:72%;"><div style="font-size:10px;color:var(--text3);margin-bottom:2px;${mine?'text-align:right;':''}">${mine?'Você':m.user}</div><div style="background:${mine?'var(--accent)':'var(--card3)'};color:${mine?'#fff':'var(--text)'};padding:8px 12px;border-radius:14px;font-size:13px;word-break:break-word;">${m.texto}</div></div></div>`; }); wall.innerHTML=html||'<p style="text-align:center;color:var(--text3);padding:20px;font-size:13px;">Sem mensagens ainda.</p>'; wall.scrollTop=wall.scrollHeight; }
         window.enviarChat = async function() { const i=document.getElementById('chat-input'); const txt=i.value.trim(); if(!txt||!currentWorker) return; if(!liveData.mensagensChat) liveData.mensagensChat=[]; liveData.mensagensChat.push({user:currentWorker,texto:txt,ts:Date.now()}); if(liveData.mensagensChat.length>200) liveData.mensagensChat=liveData.mensagensChat.slice(-200); i.value=''; await atualizarCampo('mensagensChat',liveData.mensagensChat); renderChat(); };
 

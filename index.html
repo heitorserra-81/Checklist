@@ -136,7 +136,8 @@
         }
         * { box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none; }
         html,body { width:100%;overflow-x:hidden; }
-        body { background:var(--bg);color:var(--text);font-family:var(--font-body);padding:0 0 90px 0;min-height:100vh;transition:background var(--transition),color var(--transition); }
+        body { background:var(--bg);color:var(--text);font-family:var(--font-body);padding:0 0 90px 0;min-height:100vh;transition:background var(--transition),color var(--transition);overscroll-behavior-x:none; }
+        html { overscroll-behavior-x:none; }
         input,textarea { user-select:text;-webkit-user-select:text; }
         ::-webkit-scrollbar { width:4px;height:4px; }
         ::-webkit-scrollbar-track { background:transparent; }
@@ -448,7 +449,10 @@
         .modal-close { width:32px;height:32px;border-radius:50%;background:var(--card2);border:none;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-left:auto;flex-shrink:0; }
         .modal-carousel-wrap { display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;flex:1; }
         .modal-carousel-wrap::-webkit-scrollbar { display:none; }
-        .modal-card { min-width:100%;scroll-snap-align:center;padding:16px 18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px; }
+        .modal-card { min-width:100%;scroll-snap-align:center;padding:16px 18px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;border-top:3px solid transparent;transition:border-color 0.3s; }
+        .modal-card.mc-pending { border-top-color:#1e90ff; }
+        .modal-card.mc-working { border-top-color:#ffa500; }
+        .modal-card.mc-done    { border-top-color:#00d050; }
         .modal-sector-pill { display:inline-flex;align-items:center;gap:6px;background:rgba(0,146,70,0.12);border:1px solid rgba(0,146,70,0.25);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;color:var(--accent);width:fit-content; }
         .modal-title { font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);line-height:1.3; }
         .modal-status-bar { display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--card2);border-radius:var(--radius-md);border:1px solid var(--border); }
@@ -772,6 +776,10 @@
 
         /* SCREENS */
         .screen { display:none; }
+        @keyframes setorEntrarDir { from{opacity:0;transform:translateX(36px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes setorEntrarEsq { from{opacity:0;transform:translateX(-36px)} to{opacity:1;transform:translateX(0)} }
+        .setor-anim-dir { animation:setorEntrarDir 0.26s cubic-bezier(0.25,0.8,0.25,1) both; }
+        .setor-anim-esq { animation:setorEntrarEsq 0.26s cubic-bezier(0.25,0.8,0.25,1) both; }
         .screen.active { display:block; }
         .empty-state { padding:30px;text-align:center;color:var(--text3);font-size:12px; }
         .empty-state .empty-icon { font-size:36px;margin-bottom:8px; }
@@ -935,7 +943,7 @@
     <div class="screen" id="scr-developer">
         <div class="dev-screen">
             <div class="dev-header">
-                <button onclick="trocarTela('scr-restaurante')" style="background:transparent;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;min-width:44px;">←</button>
+                <button onclick="sairPainelDev()" style="background:transparent;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;min-width:44px;">←</button>
                 <div class="dev-header-title">👑 Painel do Desenvolvedor</div>
                 <button onclick="window.trocarSenhaDesenvolvedor()" style="background:rgba(240,185,11,0.15);border:1.5px solid var(--gold);color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;padding:8px 14px;border-radius:20px;min-width:80px;">🔐 Minha Senha</button>
             </div>
@@ -1763,7 +1771,7 @@ const TAREFAS_RESTAURANTE = {
             setoresCustomizados: [],
             loginAtividade: {},
             restaurante: { nome: "Staff Check", logo: "", fonte: "DM Sans" },
-            masterPass: "1911",
+            masterPass: "",
             historicoTurnos: [],
             pontosRegistro: {},
             avaliacoes: {},
@@ -2115,7 +2123,7 @@ const TAREFAS_RESTAURANTE = {
             isSaving = false;
             liveData = {
                 restaurante:{nome:'',logo:'',fonte:'DM Sans'},
-                masterPass:'1911', templateAtivo:'restaurante',
+                masterPass:'', templateAtivo:'restaurante',
                 tarefasCustomizadas:[], tarefasStatus:{}, usuariosSalvos:{},
                 historicoTurnos:[], mensagensChat:[], pedidosFolga:[],
                 registrosDesperdicio:[], desperdicioItens:[], temposTarefa:{},
@@ -3120,7 +3128,7 @@ const TAREFAS_RESTAURANTE = {
             const pass=document.getElementById('field-pass').value.trim();
             if(loginViewCtx==='manager'){
                 const senhaCorreta = liveData.masterPass || '';
-                if(pass===senhaCorreta || pass==='1911'){
+                if(pass===senhaCorreta && senhaCorreta){
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';
@@ -3392,6 +3400,20 @@ const TAREFAS_RESTAURANTE = {
         window.confirmarRecorte = ()=>{
             if(!cropImg) return;
             const canvas=document.getElementById('crop-canvas');
+            // Contexto: logo do desenvolvedor (criação de restaurante)
+            if(cropCtx==='dev_logo'){
+                const formato = window._logoFormatoRecorte || 'quadrado';
+                const out=document.createElement('canvas'); out.width=300; out.height=300;
+                const ctx=out.getContext('2d');
+                if(formato==='redondo'){ ctx.beginPath(); ctx.arc(150,150,150,0,Math.PI*2); ctx.clip(); }
+                ctx.drawImage(canvas,0,0,280,280,0,0,300,300);
+                const resultado=out.toDataURL('image/jpeg',0.85);
+                document.getElementById('crop-overlay').style.display='none';
+                window._devLogoTemp = resultado;
+                window._devLogoFmtSel = formato;
+                _devAtualizarPreviewLogo(resultado, formato);
+                cropImg=null; return;
+            }
             // Contexto: logo do restaurante
             if(cropCtx==='logo_restaurante'){
                 const formato = window._logoFormatoRecorte || 'quadrado';
@@ -3535,11 +3557,16 @@ const TAREFAS_RESTAURANTE = {
                     <div class="peek-side ${prevS ? '' : 'empty'}">${prevS ? `<span class="peek-dot" style="background:${prevS.color};"></span>◀ ${prevS.icon} ${prevS.title}` : ''}</div>
                     <div class="peek-side ${nextS ? '' : 'empty'}">${nextS ? `${nextS.icon} ${nextS.title} ▶<span class="peek-dot" style="background:${nextS.color};"></span>` : ''}</div>`;
                 content.appendChild(peek);
-                if (prevS) peek.children[0].onclick = () => { activeSector = prevS.id; renderWorker(); };
-                if (nextS) peek.children[1].onclick = () => { activeSector = nextS.id; renderWorker(); };
+                if (prevS) peek.children[0].onclick = () => { window._setorDir='esq'; activeSector = prevS.id; renderWorker(); };
+                if (nextS) peek.children[1].onclick = () => { window._setorDir='dir'; activeSector = nextS.id; renderWorker(); };
             }
             const card = document.createElement('div');
             card.className = 'sector-card';
+            // Animação de entrada ao trocar de setor
+            if (window._setorDir) {
+                card.classList.add('setor-anim-' + window._setorDir);
+                window._setorDir = null;
+            }
             card.style.borderTop = `3px solid ${setor.color}`;
             card.style.setProperty('--sec-c', setor.color);
             card.style.setProperty('--sec-c2', '#2f80ed');
@@ -3854,7 +3881,8 @@ const TAREFAS_RESTAURANTE = {
             const prioridade = tarefa?.prioridade || 'normal';
             const pc = prioridade === 'alta' ? 'priority-alta' : prioridade === 'baixa' ? 'priority-baixa' : 'priority-normal';
             const pl = prioridade === 'alta' ? '🔴 Urgente' : prioridade === 'baixa' ? '🔵 Baixa' : '⚪ Normal';
-            const card = document.createElement('div'); card.className = 'modal-card';
+            const statusClass = st.status === 'done' ? 'mc-done' : st.status === 'working' ? 'mc-working' : 'mc-pending';
+            const card = document.createElement('div'); card.className = 'modal-card ' + statusClass;
             let statusHTML = '';
             if (st.status === 'done') {
                 const dur = st.endTime && st.startTime ? Math.round((st.endTime - st.startTime) / 1000) : 0;
@@ -5351,8 +5379,9 @@ const TAREFAS_RESTAURANTE = {
             lista.forEach(({t,s,chave,st})=>{
                 const ic=t.icone||'📋';
                 const fotoBtn=st.foto?`<img src="${st.foto}" class="task-foto-thumb" onclick="event.stopPropagation();verFoto('${st.foto}')">`:'';
-                const badge=st.status==='done'?'<span style="color:var(--green);font-size:11px;font-weight:700;">✅ Feita</span>':(st.status==='working'?'<span style="color:var(--blue);font-size:11px;font-weight:700;">⏳ Fazendo</span>':'');
-                html+=`<div class="wp-task-item" onclick="fecharPerfilFuncionario();setTimeout(()=>abrirModal('${chave}'),200)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:1px solid var(--border);border-radius:var(--radius-md);margin-bottom:6px;cursor:pointer;">
+                const badge=st.status==='done'?'<span style="color:var(--green);font-size:11px;font-weight:700;">✅ Feita</span>':(st.status==='working'?'<span style="color:var(--blue);font-size:11px;font-weight:700;">⏳ Fazendo</span>':'<span style="color:#1e90ff;font-size:11px;font-weight:700;">🔵 Pendente</span>');
+                const wpBorder = st.status==='done'?'rgba(0,208,80,0.7)':st.status==='working'?'rgba(255,165,0,0.7)':'rgba(30,144,255,0.5)';
+                html+=`<div class="wp-task-item" onclick="fecharPerfilFuncionario();setTimeout(()=>abrirModal('${chave}'),200)" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card2);border:2px solid ${wpBorder};border-radius:var(--radius-md);margin-bottom:6px;cursor:pointer;">
                     <span style="font-size:20px;">${ic}</span>
                     <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--text);">${t.txt}</div><div style="font-size:10px;color:var(--text3);">${s.icon} ${s.title} · ${badge}</div></div>
                     ${fotoBtn}<span style="font-size:16px;color:var(--text3);">›</span>
@@ -5722,27 +5751,72 @@ const TAREFAS_RESTAURANTE = {
             window._devLogoTemp = null;
         }
 
-        window.devEscolherLogo = function() { document.getElementById('dev-logo-input')?.click(); };
+        window.devEscolherLogo = function() {
+            // Mostra picker de formato antes de abrir o arquivo
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '🖼️ Formato do logo';
+            document.getElementById('dialog-extra').innerHTML = `
+                <div style="display:flex;gap:10px;margin-top:12px;">
+                    <div id="dev-fmt-redondo" onclick="window._devLogoFmt='redondo';document.getElementById('dev-fmt-redondo').style.borderColor='var(--accent)';document.getElementById('dev-fmt-quadrado').style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:50px;text-align:center;cursor:pointer;">
+                        <div style="width:40px;height:40px;border-radius:50%;background:var(--accent);margin:0 auto 6px;"></div>
+                        <div style="font-size:12px;font-weight:700;">Redondo</div>
+                    </div>
+                    <div id="dev-fmt-quadrado" onclick="window._devLogoFmt='quadrado';document.getElementById('dev-fmt-quadrado').style.borderColor='var(--accent)';document.getElementById('dev-fmt-redondo').style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:16px;text-align:center;cursor:pointer;">
+                        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent);margin:0 auto 6px;"></div>
+                        <div style="font-size:12px;font-weight:700;">Quadrado</div>
+                    </div>
+                </div>`;
+            window._devLogoFmt = 'quadrado';
+            document.getElementById('dialog-btns').innerHTML = `
+                <button class="btn-ghost" onclick="document.getElementById('dialog-overlay').classList.remove('show')" style="margin:0;flex:1;">Cancelar</button>
+                <button class="btn-primary" onclick="document.getElementById('dialog-overlay').classList.remove('show');document.getElementById('dev-logo-input').click()" style="margin:0;flex:1;">Escolher Foto</button>`;
+            ov.classList.add('show');
+        };
         window.devLogoSelecionado = function(event) {
             const file = event.target.files[0]; if(!file) return;
+            const fmt = window._devLogoFmt || 'quadrado';
             const reader = new FileReader();
             reader.onload = e => {
                 const img = new Image();
                 img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 300; canvas.height = 300;
-                    const ctx = canvas.getContext('2d');
-                    const sc = Math.max(300/img.width, 300/img.height);
-                    ctx.drawImage(img, (300-img.width*sc)/2, (300-img.height*sc)/2, img.width*sc, img.height*sc);
-                    const resultado = canvas.toDataURL('image/jpeg', 0.85);
-                    window._devLogoTemp = resultado;
-                    const preview = document.getElementById('dev-logo-preview');
-                    if (preview) preview.innerHTML = `<img src="${resultado}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`;
+                    if (file.type === 'image/png') {
+                        const size = 300;
+                        const canvas = document.createElement('canvas');
+                        canvas.width = size; canvas.height = size;
+                        const ctx = canvas.getContext('2d');
+                        if (fmt === 'redondo') { ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.clip(); }
+                        const sc = Math.max(size/img.width, size/img.height);
+                        ctx.drawImage(img, (size-img.width*sc)/2, (size-img.height*sc)/2, img.width*sc, img.height*sc);
+                        const resultado = canvas.toDataURL('image/png', 1.0);
+                        window._devLogoTemp = resultado;
+                        window._devLogoFmtSel = fmt;
+                        _devAtualizarPreviewLogo(resultado, fmt);
+                    } else {
+                        // Abre recorte
+                        cropImg = img;
+                        cropCtx = 'dev_logo';
+                        window._logoFormatoRecorte = fmt;
+                        const cont = document.getElementById('crop-container');
+                        const cw = cont.clientWidth||280, ch = cont.clientHeight||280;
+                        const sw = cw/img.naturalWidth, sh = ch/img.naturalHeight;
+                        cropBaseScale = Math.max(sw,sh);
+                        cropBaseX = (cw-img.naturalWidth*cropBaseScale)/2;
+                        cropBaseY = (ch-img.naturalHeight*cropBaseScale)/2;
+                        cropScale = 1; cropTX = 0; cropTY = 0;
+                        cont.style.borderRadius = fmt === 'redondo' ? '50%' : '16px';
+                        desenharCrop();
+                        document.getElementById('crop-overlay').style.display = 'flex';
+                    }
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
+        function _devAtualizarPreviewLogo(dataUrl, fmt) {
+            const radius = fmt === 'redondo' ? '50%' : '18px';
+            const preview = document.getElementById('dev-logo-preview');
+            if (preview) preview.innerHTML = `<img src="${dataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius};">`;
+        }
         window.devAtualizarCodigo = function(val) {
             const el = document.getElementById('dev-rest-codigo-preview');
             if (!el) return;
@@ -5807,13 +5881,13 @@ const TAREFAS_RESTAURANTE = {
 
         // ===== AÇÕES DO PAINEL DO DESENVOLVEDOR =====
         window.devVerDetalhes = async function(id) {
-            let info = {nome:id,logo:'',suspended:false,masterPass:'1911',funcCount:0,tarefasCount:0};
+            let info = {nome:id,logo:'',suspended:false,masterPass:'',funcCount:0,tarefasCount:0};
             try {
                 const snap = await getDoc(refRestaurante(id));
                 if (snap.exists()) {
                     const d = snap.data();
                     info = { nome:d.restaurante?.nome||id, logo:d.restaurante?.logo||'', suspended:d.suspended||false,
-                        masterPass:d.masterPass||'1911', funcCount:Object.keys(d.usuariosSalvos||{}).length,
+                        masterPass:d.masterPass||'', funcCount:Object.keys(d.usuariosSalvos||{}).length,
                         tarefasCount:(d.tarefasCustomizadas||[]).length };
                 }
             } catch(e) { customAlert('Erro ao carregar:\n'+e.message); return; }
@@ -5889,6 +5963,14 @@ const TAREFAS_RESTAURANTE = {
                 await renderPainelDesenvolvedor();
             }catch(e){ customAlert('Erro:\n'+e.message); }
         };
+        window.sairPainelDev = function() {
+            // Volta para onde estava antes do painel do dev
+            if (restauranteAtivoId && currentWorker) {
+                trocarTela(currentWorker === 'Gerente' ? 'scr-manager' : 'scr-worker');
+            } else {
+                trocarTela('scr-restaurante');
+            }
+        };
         window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
         window.trocarSenhaDesenvolvedor = async function() {
             const nova = await customPrompt('Nova senha do desenvolvedor\n(mínimo 4 caracteres):');
@@ -5911,26 +5993,22 @@ const TAREFAS_RESTAURANTE = {
             if (!id) return;
             try {
                 const snap = await getDoc(refRestaurante(id));
-                if (!snap.exists()) { customAlert('Restaurante não encontrado: ' + id); return; }
-            } catch(e) { customAlert('Erro de conexão.'); return; }
-            // Se já está no painel do gerente de outro restaurante, pergunta se quer trocar
-            const mesmoRest = id === restauranteAtivoId;
-            if (!mesmoRest && restauranteAtivoId) {
-                const ok = await customConfirm(`Trocar para o restaurante "${id}"?\nVocê sairá do restaurante atual (${restauranteAtivoId}).`, 'Trocar', 'Cancelar');
-                if (!ok) return;
-            }
-            conectarRestaurante(id);
+                if (!snap.exists()) { customAlert('Restaurante "' + id + '" não encontrado.'); return; }
+            } catch(e) { customAlert('Erro de conexão: ' + e.message); return; }
+            // Trocar restaurante — reseta tudo antes
+            isSaving = false;
             currentWorker = 'Gerente';
             localStorage.setItem('sc-last-user', 'Gerente');
             localStorage.setItem('sc-rest-id', id);
+            conectarRestaurante(id); // já atualiza restauranteAtivoId e docRef
             document.getElementById('sidebar-after-login').style.display = 'block';
             document.getElementById('sidebar-before-login').style.display = 'none';
-            setTimeout(() => {
-                trocarTela('scr-manager');
-                renderHistorico();
-                atualizarNotifEscala();
-                showToast(`👑 Restaurante: ${id}`, '👑', 3000);
-            }, 1200);
+            // Aguarda snapshot carregar dados do novo restaurante
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            trocarTela('scr-manager');
+            renderHistorico();
+            atualizarNotifEscala();
+            showToast('👑 Restaurante: ' + id, '👑', 3000);
         }
 
         // Garante que o restaurante seja adicionado ao índice quando criado

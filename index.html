@@ -201,6 +201,13 @@
 
         /* TASK ROW */
         .task-row { margin:6px 10px;border-radius:var(--radius-md);border:1.5px solid var(--border);overflow:hidden;transition:transform 0.25s cubic-bezier(0.25,0.8,0.25,1.2),box-shadow 0.2s,opacity 0.2s;position:relative;background:var(--card2);touch-action:manipulation;will-change:transform,box-shadow; }
+        @property --tangle { syntax:'<angle>';initial-value:0deg;inherits:false; }
+        .task-row::before { content:'';position:absolute;inset:0;border-radius:var(--radius-md);z-index:0;pointer-events:none;opacity:0;transition:opacity 0.4s; }
+        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 72%,rgba(30,144,255,0.95) 82%,rgba(100,200,255,1) 87%,rgba(30,144,255,0.95) 92%,transparent 100%);animation:taskGlow 2.2s linear infinite;opacity:1; }
+        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 72%,rgba(255,165,0,0.95) 82%,rgba(255,220,80,1) 87%,rgba(255,165,0,0.95) 92%,transparent 100%);animation:taskGlow 1.6s linear infinite;opacity:1; }
+        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 72%,rgba(0,180,80,0.95) 82%,rgba(80,255,140,1) 87%,rgba(0,180,80,0.95) 92%,transparent 100%);animation:taskGlow 2.6s linear infinite;opacity:1; }
+        @keyframes taskGlow { to { --tangle:360deg; } }
+        .task-row-head,.task-resume,.task-action-bar { position:relative;z-index:1; }
         .task-row:last-child { margin-bottom:10px; }
         .task-row.idle { border-color:var(--border); }
         .task-row.working-mine { border-color:var(--gold);background:rgba(240,185,11,0.04); }
@@ -3127,53 +3134,50 @@ const TAREFAS_RESTAURANTE = {
             if(nome!==null){ liveData.restaurante=liveData.restaurante||{}; liveData.restaurante.nome=nome.trim(); await salvar(); }
         };
 
-        let _logoFormatoEscolhido = 'quadrado'; // 'redondo' ou 'quadrado'
+        let _logoFormatoEscolhido = 'quadrado';
+        let _logoFileTemp = null;
+
         window.logoAtualizada = function(event) {
             const file = event.target.files[0]; if (!file) return;
+            _logoFileTemp = file;
+            _logoFormatoEscolhido = 'quadrado';
+            window._logoFormatoEscolhido = 'quadrado';
             const isPng = file.type === 'image/png';
-            // Pergunta o formato antes de abrir o recorte
             const ov = document.getElementById('dialog-overlay');
-            document.getElementById('dialog-msg').textContent = '🖼️ Formato do logo';
+            document.getElementById('dialog-msg').textContent = '\u{1F5BC}\uFE0F Formato do logo';
             document.getElementById('dialog-extra').innerHTML = `
                 <div style="display:flex;gap:10px;margin-top:12px;">
-                    <div onclick="window._logoFormatoEscolhido='redondo';this.style.borderColor='var(--accent)';this.nextElementSibling.style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:50px;text-align:center;cursor:pointer;">
+                    <div id="fmt-redondo" onclick="window._logoFormatoEscolhido='redondo';document.getElementById('fmt-redondo').style.borderColor='var(--accent)';document.getElementById('fmt-quadrado').style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:50px;text-align:center;cursor:pointer;">
                         <div style="width:40px;height:40px;border-radius:50%;background:var(--accent);margin:0 auto 6px;"></div>
                         <div style="font-size:12px;font-weight:700;color:var(--text);">Redondo</div>
                     </div>
-                    <div onclick="window._logoFormatoEscolhido='quadrado';this.style.borderColor='var(--accent)';this.previousElementSibling.style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:16px;text-align:center;cursor:pointer;">
+                    <div id="fmt-quadrado" onclick="window._logoFormatoEscolhido='quadrado';document.getElementById('fmt-quadrado').style.borderColor='var(--accent)';document.getElementById('fmt-redondo').style.borderColor='var(--border)';" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:16px;text-align:center;cursor:pointer;">
                         <div style="width:40px;height:40px;border-radius:10px;background:var(--accent);margin:0 auto 6px;"></div>
                         <div style="font-size:12px;font-weight:700;color:var(--text);">Quadrado</div>
                     </div>
                 </div>
-                ${isPng ? '<div style="font-size:10px;color:var(--accent);margin-top:8px;text-align:center;">✅ PNG detectado — fundo transparente será preservado</div>' : ''}`;
+                ${isPng ? '<div style="font-size:10px;color:var(--accent);margin-top:8px;text-align:center;">\u2705 PNG \u2014 fundo transparente ser\u00e1 preservado</div>' : ''}`;
             document.getElementById('dialog-btns').innerHTML = `
                 <button class="btn-ghost" onclick="document.getElementById('dialog-overlay').classList.remove('show')" style="margin:0;flex:1;">Cancelar</button>
-                <button class="btn-primary" onclick="document.getElementById('dialog-overlay').classList.remove('show');_processarLogoComFormato(event._file)" id="btn-logo-ok" style="margin:0;flex:1;">Continuar</button>`;
-            // Passa o file pelo botão
-            document.getElementById('btn-logo-ok').addEventListener('click', () => _processarLogoComFormato(file), { once: true });
+                <button class="btn-primary" onclick="window._confirmarFormatoLogo()" style="margin:0;flex:1;">Continuar \u2702\uFE0F</button>`;
             ov.classList.add('show');
-            _logoFormatoEscolhido = 'quadrado'; // default
-            window._logoFormatoEscolhido = 'quadrado';
         };
 
-        window._processarLogoComFormato = function(file) {
-            if (!file) return;
+        window._confirmarFormatoLogo = function() {
+            document.getElementById('dialog-overlay').classList.remove('show');
+            const file = _logoFileTemp; if (!file) return;
             const formato = window._logoFormatoEscolhido || 'quadrado';
             const isPng = file.type === 'image/png';
             const reader = new FileReader();
             reader.onload = e => {
-                if (isPng) {
-                    // PNG: preserva transparência, só redimensiona
-                    const img = new Image();
-                    img.onload = () => {
+                const img = new Image();
+                img.onload = () => {
+                    if (isPng) {
                         const size = 300;
                         const canvas = document.createElement('canvas');
                         canvas.width = size; canvas.height = size;
                         const ctx = canvas.getContext('2d');
-                        if (formato === 'redondo') {
-                            ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.clip();
-                        }
-                        // Centraliza e cobre
+                        if (formato === 'redondo') { ctx.beginPath(); ctx.arc(size/2,size/2,size/2,0,Math.PI*2); ctx.clip(); }
                         const sc = Math.max(size/img.width, size/img.height);
                         const x = (size - img.width*sc)/2, y = (size - img.height*sc)/2;
                         ctx.drawImage(img, x, y, img.width*sc, img.height*sc);
@@ -3182,34 +3186,24 @@ const TAREFAS_RESTAURANTE = {
                         liveData.restaurante.logo = resultado;
                         liveData.restaurante.logoFormato = formato;
                         salvar(); renderConfigTab('restaurante');
-                    };
-                    img.src = e.target.result;
-                } else {
-                    // Outros formatos: usa o recorte existente
-                    cameraContext = 'logo_restaurante';
-                    cropCtx = 'logo_restaurante';
-                    window._logoFormatoRecorte = formato;
-                    const img = new Image();
-                    img.onload = () => {
+                        showToast('\u2705 Logo salvo!', '\u{1F5BC}\uFE0F', 2000);
+                    } else {
                         cropImg = img;
+                        cropCtx = 'logo_restaurante';
+                        window._logoFormatoRecorte = formato;
                         const cont = document.getElementById('crop-container');
                         const cw = cont.clientWidth||280, ch = cont.clientHeight||280;
                         const sw = cw/img.naturalWidth, sh = ch/img.naturalHeight;
                         cropBaseScale = Math.max(sw,sh);
                         cropBaseX = (cw - img.naturalWidth*cropBaseScale)/2;
                         cropBaseY = (ch - img.naturalHeight*cropBaseScale)/2;
-                        cropScale=1; cropTX=0; cropTY=0;
-                        // Ajusta o crop container pra mostrar o formato certo
-                        if (formato === 'quadrado') {
-                            cont.style.borderRadius = '16px';
-                        } else {
-                            cont.style.borderRadius = '50%';
-                        }
+                        cropScale = 1; cropTX = 0; cropTY = 0;
+                        cont.style.borderRadius = formato === 'redondo' ? '50%' : '16px';
                         desenharCrop();
                         document.getElementById('crop-overlay').style.display = 'flex';
-                    };
-                    img.src = e.target.result;
-                }
+                    }
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         };
@@ -3425,11 +3419,11 @@ const TAREFAS_RESTAURANTE = {
                 const isWO = st.status === 'working' && st.worker !== currentWorker;
                 const isDM = st.status === 'done' && st.worker === currentWorker;
                 let rc = 'task-row ';
-                if (isWM) rc += 'working-mine';
-                else if (isWO) rc += 'working-other';
-                else if (isDM) rc += 'done-mine';
-                else if (st.status === 'done') rc += 'done-other';
-                else rc += 'idle';
+                if (isWM) rc += 'working-mine t-working';
+                else if (isWO) rc += 'working-other t-working';
+                else if (isDM) rc += 'done-mine t-done';
+                else if (st.status === 'done') rc += 'done-other t-done';
+                else rc += 'idle t-pending';
                 row.className = rc; row.id = 'row_' + chave; row.dataset.key = chave;
                 const pc = tarefa.prioridade === 'alta' ? 'priority-alta' : tarefa.prioridade === 'baixa' ? 'priority-baixa' : 'priority-normal';
                 const pl = tarefa.prioridade === 'alta' ? '🔴 Urgente' : tarefa.prioridade === 'baixa' ? '🔵 Baixa' : '⚪ Normal';
@@ -3595,8 +3589,9 @@ const TAREFAS_RESTAURANTE = {
                 customAlert('🔒 Esta tarefa foi delegada para ' + dono + '. Apenas essa pessoa pode executá-la.');
                 return;
             }
+            soundPegar(); // toca imediatamente ao pegar (antes do await pra funcionar no modal também)
             await atualizarStatusTarefa(chave, { status: 'working', worker: currentWorker, startTime: Date.now() });
-            soundPegar(); renderWorker();
+            renderWorker();
         };
 
         window.concluirTarefaLista = function(chave) {

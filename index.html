@@ -376,6 +376,12 @@
         input:checked+.toggle-slider { background:var(--accent);border-color:var(--accent); }
         input:checked+.toggle-slider:before { transform:translateX(20px); }
 
+        /* RESPONSIVIDADE TABLET */
+        @media (min-width:600px) {
+            body { display:flex;justify-content:center;background:#000; }
+            #app { max-width:480px;width:100%;position:relative;box-shadow:0 0 40px rgba(0,0,0,0.6); }
+        }
+
         /* TEMAS DE COR - SELETOR */
         .color-theme-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px; }
         .color-theme-btn { padding:12px 8px;border-radius:var(--radius-md);border:2px solid var(--border);background:var(--card2);cursor:pointer;text-align:center;transition:all var(--transition);font-family:var(--font-body); }
@@ -949,7 +955,7 @@
                 <p id="login-card-sub">Digite seu nome e senha para entrar</p>
                 <div class="login-avatar-circle" id="login-avatar-circle"><span class="avatar-placeholder">👤</span></div>
                 <input type="text" class="field" id="field-user" placeholder="Seu Nome (Ex: Heitor)" oninput="detectarFuncionario()" autocomplete="name">
-                <input type="password" class="field" id="field-pass" placeholder="Senha de 4 dígitos" maxlength="4" pattern="\d*" inputmode="numeric" autocomplete="current-password">
+                <input type="tel" class="field" id="field-pass" placeholder="Senha de 4 dígitos" maxlength="4" pattern="\d*" inputmode="numeric" autocomplete="current-password">
                 <input type="tel" class="field" id="field-tel" placeholder="WhatsApp (Ex: (19) 99999-9999)" maxlength="16" inputmode="tel" autocomplete="tel" oninput="mascaraTelefone(this)" style="display:none;">
                 <button class="btn-primary" id="btn-login" onclick="processarLogin()">Entrar no Turno</button>
                 <button class="btn-biometria" id="btn-biometria" onclick="loginComBiometria()">🔐 Entrar com Face ID / Touch ID</button>
@@ -2082,11 +2088,36 @@ const TAREFAS_RESTAURANTE = {
             restauranteAtivoId = id;
             docRef = refRestaurante(id);
             try { localStorage.setItem('sc-rest-id', id); } catch(e){}
+            // Reset crítico: limpa liveData e isSaving ao trocar de restaurante
+            isSaving = false;
+            liveData = {
+                restaurante:{nome:'',logo:'',fonte:'DM Sans'},
+                masterPass:'1911', templateAtivo:'restaurante',
+                tarefasCustomizadas:[], tarefasStatus:{}, usuariosSalvos:{},
+                historicoTurnos:[], mensagensChat:[], pedidosFolga:[],
+                registrosDesperdicio:[], desperdicioItens:[], temposTarefa:{},
+                mostrarTempos:true, loginAtividade:{}, setoresAtivos:{},
+                delegacoes:{}, delegacaoAtiva:false
+            };
             if (snapshotUnsub) { try { snapshotUnsub(); } catch(e){} snapshotUnsub = null; }
             snapshotUnsub = onSnapshot(docRef, snap => {
             if (isSaving) return;
             if (snap.exists()) {
                 const d = snap.data();
+                // Verificar suspensão
+                if (d.suspended) {
+                    trocarTela('scr-restaurante');
+                    customAlert('🚫 Este restaurante está suspenso.\nEntre em contato com o administrador do sistema.');
+                    return;
+                }
+                // Verificar aviso do desenvolvedor
+                if (d.avisoDesenvolvedor && d.avisoDesenvolvedor.msg && d.avisoDesenvolvedor.ts) {
+                    const jaViu = localStorage.getItem(`aviso-visto-${restauranteAtivoId}`);
+                    if (jaViu !== String(d.avisoDesenvolvedor.ts)) {
+                        localStorage.setItem(`aviso-visto-${restauranteAtivoId}`, String(d.avisoDesenvolvedor.ts));
+                        setTimeout(() => customAlert(`📢 Aviso do Sistema:\n\n${d.avisoDesenvolvedor.msg}`), 1500);
+                    }
+                }
                 const oldMsgs = liveData.mensagensChat.length;
                 const oldOnline = contarOnline();
                 const novasTarefas = d.tarefasCustomizadas;
@@ -3142,15 +3173,25 @@ const TAREFAS_RESTAURANTE = {
         };
 
         window.acessarGerente = function() {
-            customPrompt('Senha da gerência:').then(s=>{
-                if (s === null) return;
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = '🔑 Painel do Gerente';
+            document.getElementById('dialog-extra').innerHTML = '<input class="field" id="dlg-gerente-pass" type="tel" inputmode="numeric" pattern="\\d*" maxlength="12" placeholder="Senha mestra do restaurante" style="margin:8px 0 0;">';
+            document.getElementById('dialog-btns').innerHTML = '<button class="btn-ghost" id="dlg-g-cancel" style="margin:0;flex:1;">Cancelar</button><button class="btn-primary" id="dlg-g-ok" style="margin:0;flex:1;">Entrar</button>';
+            ov.classList.add('show');
+            setTimeout(()=>document.getElementById('dlg-gerente-pass')?.focus(),150);
+            document.getElementById('dlg-g-ok').onclick = () => {
+                const s = document.getElementById('dlg-gerente-pass')?.value?.trim();
+                ov.classList.remove('show');
                 const senhaCorreta = liveData.masterPass || '1911';
                 if (s === senhaCorreta || s === '1911') {
+                    currentWorker='Gerente';
+                    localStorage.setItem('sc-last-user','Gerente');
+                    document.getElementById('sidebar-after-login').style.display='block';
+                    document.getElementById('sidebar-before-login').style.display='none';
                     trocarTela('scr-manager'); renderHistorico(); atualizarNotifEscala();
-                } else {
-                    customAlert('Senha incorreta!');
-                }
-            });
+                } else { customAlert('Senha incorreta!'); }
+            };
+            document.getElementById('dlg-g-cancel').onclick = () => ov.classList.remove('show');
         };
 
         function tentarAutoLogin() {
@@ -5615,16 +5656,22 @@ const TAREFAS_RESTAURANTE = {
                 const logoHtml = info.logo
                     ? `<img src="${info.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius};">`
                     : `<span style="font-size:28px;">🏢</span>`;
-                html += `<div class="dev-rest-card ${isAtivo?'ativo':''}" onclick="devAcessarRestaurante('${id}')">
+                html += `<div class="dev-rest-card ${isAtivo?'ativo':''}" onclick="devVerDetalhes('${id}')">
                     ${isAtivo ? '<div class="dev-rest-badge">Atual</div>' : ''}
                     <div class="dev-rest-logo">${logoHtml}</div>
                     <div class="dev-rest-nome">${info.nome}</div>
                     <div class="dev-rest-id">${id}</div>
+                    <div style="font-size:9px;color:var(--text3);margin-top:4px;">Toque para ações →</div>
                 </div>`;
             });
             html += '</div>';
             // Criar novo restaurante
-            html += '<div class="dev-section-title">Ações</div>';
+            html += '<div class="dev-section-title">Ações Globais</div>';
+            html += `<div class="dev-action-btn" onclick="devEnviarAvisoTodos()">
+                <div class="dev-action-icon">📢</div>
+                <div><div class="dev-action-label">Enviar Aviso a Todos</div><div class="dev-action-sub">Mensagem para todos os restaurantes</div></div>
+            </div>`;
+            html += '<div class="dev-section-title" style="margin-top:8px;">Criar Novo Restaurante</div>';
             html += `<div class="dev-criar-form">
                 <div class="dev-criar-title">✨ Criar novo restaurante</div>
                 <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante" oninput="atualizarPreviewCodigo(this.value)" style="margin-bottom:4px;">
@@ -5686,6 +5733,91 @@ const TAREFAS_RESTAURANTE = {
             } catch(e) { customAlert('Erro ao criar:\n' + e.message); console.error(e); }
         };
 
+
+        // ===== AÇÕES DO PAINEL DO DESENVOLVEDOR =====
+        window.devVerDetalhes = async function(id) {
+            let info = {nome:id,logo:'',suspended:false,masterPass:'1911',funcCount:0,tarefasCount:0};
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (snap.exists()) {
+                    const d = snap.data();
+                    info = { nome:d.restaurante?.nome||id, logo:d.restaurante?.logo||'', suspended:d.suspended||false,
+                        masterPass:d.masterPass||'1911', funcCount:Object.keys(d.usuariosSalvos||{}).length,
+                        tarefasCount:(d.tarefasCustomizadas||[]).length };
+                }
+            } catch(e) { customAlert('Erro ao carregar:\n'+e.message); return; }
+            const link = `${window.location.origin}${window.location.pathname}?rest=${id}`;
+            const statusIcon = info.suspended ? '🔴 Suspenso' : '🟢 Ativo';
+            const ov = document.getElementById('dialog-overlay');
+            document.getElementById('dialog-msg').textContent = `🏢 ${info.nome}`;
+            document.getElementById('dialog-extra').innerHTML = `
+                <div style="font-size:11px;color:var(--text3);margin:8px 0 12px;">
+                    <div>Código: <strong style="color:var(--text);">${id}</strong></div>
+                    <div>Status: <strong>${statusIcon}</strong></div>
+                    <div>Funcionários: <strong>${info.funcCount}</strong> · Tarefas: <strong>${info.tarefasCount}</strong></div>
+                    <div style="margin-top:4px;">Senha gerente: <strong style="color:var(--accent);">${info.masterPass}</strong></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <button onclick="fecharDialogAdmin();devAcessarRestaurante('${id}')" class="btn-primary" style="margin:0;">👑 Entrar como Gerente</button>
+                    <button onclick="fecharDialogAdmin();devCopiarLink('${id}')" class="btn-ghost" style="margin:0;">🔗 Copiar Link da Equipe</button>
+                    <button onclick="fecharDialogAdmin();devRedefinirSenha('${id}')" class="btn-ghost" style="margin:0;">🔐 Redefinir Senha do Gerente</button>
+                    <button onclick="fecharDialogAdmin();devToggleSuspender('${id}',${info.suspended})" class="btn-ghost" style="margin:0;${info.suspended?'border-color:var(--accent);color:var(--accent)':'border-color:var(--red);color:var(--red)'};">${info.suspended?'✅ Reativar':'🚫 Suspender'}</button>
+                    <button onclick="fecharDialogAdmin();devEnviarAviso('${id}')" class="btn-ghost" style="margin:0;">📢 Enviar Aviso</button>
+                    <button onclick="fecharDialogAdmin();devExcluirRestaurante('${id}','${info.nome}')" class="btn-ghost" style="margin:0;border-color:var(--red);color:var(--red);">🗑️ Excluir</button>
+                </div>`;
+            document.getElementById('dialog-btns').innerHTML = '<button class="btn-ghost" onclick="fecharDialogAdmin()" style="margin:0;">Fechar</button>';
+            ov.classList.add('show');
+        };
+        window.devCopiarLink = function(id) {
+            const link = `${window.location.origin}${window.location.pathname}?rest=${id}`;
+            if(navigator.clipboard) navigator.clipboard.writeText(link).then(()=>customAlert(`LINK COPIADO! ✅\n\n${link}\n\nCompartilhe com a equipe.`)).catch(()=>customAlert(`Link:\n\n${link}`));
+            else customAlert(`Link:\n\n${link}`);
+        };
+        window.devRedefinirSenha = async function(id) {
+            const nova = await customPrompt('Nova senha mestra para este restaurante:');
+            if(!nova||nova.length<4){ if(nova!==null) customAlert('Mínimo 4 caracteres.'); return; }
+            try { await setDoc(refRestaurante(id),{masterPass:nova},{merge:true}); customAlert(`✅ Senha redefinida!\nNova senha: ${nova}`); await renderPainelDesenvolvedor(); }
+            catch(e){ customAlert('Erro:\n'+e.message); }
+        };
+        window.devToggleSuspender = async function(id,estaSuspenso) {
+            const acao = estaSuspenso?'reativar':'suspender';
+            const ok = await customConfirm(`Deseja ${acao} o restaurante "${id}"?`,acao.charAt(0).toUpperCase()+acao.slice(1),'Cancelar');
+            if(!ok) return;
+            try { await setDoc(refRestaurante(id),{suspended:!estaSuspenso},{merge:true}); customAlert(estaSuspenso?'✅ Restaurante reativado!':'🚫 Restaurante suspenso!'); await renderPainelDesenvolvedor(); }
+            catch(e){ customAlert('Erro:\n'+e.message); }
+        };
+        window.devEnviarAviso = async function(id) {
+            const msg = await customPrompt('Digite o aviso:');
+            if(!msg||!msg.trim()) return;
+            try { await setDoc(refRestaurante(id),{avisoDesenvolvedor:{msg:msg.trim(),ts:Date.now()}},{merge:true}); customAlert('✅ Aviso enviado!'); }
+            catch(e){ customAlert('Erro:\n'+e.message); }
+        };
+        window.devEnviarAvisoTodos = async function() {
+            const msg = await customPrompt('Aviso para TODOS os restaurantes:');
+            if(!msg||!msg.trim()) return;
+            let ids=[];
+            try{ const idx=await getDoc(doc(db,'restaurantes','__index__')); if(idx.exists()) ids=idx.data().ids||[]; }catch(e){}
+            if(!ids.length){ customAlert('Nenhum restaurante cadastrado.'); return; }
+            const ok=await customConfirm(`Enviar para ${ids.length} restaurante(s)?`,'Enviar','Cancelar');
+            if(!ok) return;
+            let ok2=0;
+            for(const id of ids){ try{ await setDoc(refRestaurante(id),{avisoDesenvolvedor:{msg:msg.trim(),ts:Date.now()}},{merge:true}); ok2++; }catch(e){} }
+            customAlert(`✅ Enviado para ${ok2}/${ids.length} restaurantes!`);
+        };
+        window.devExcluirRestaurante = async function(id,nome) {
+            if(id==='marchesini'){ customAlert('Não é possível excluir o restaurante principal.'); return; }
+            const conf=await customPrompt(`Digite o código do restaurante para confirmar a exclusão:\n\n${id}`);
+            if(conf!==id){ if(conf!==null) customAlert('Código incorreto.'); return; }
+            try {
+                const idxRef=doc(db,'restaurantes','__index__');
+                const snap=await getDoc(idxRef);
+                if(snap.exists()){ const ids=(snap.data().ids||[]).filter(i=>i!==id); const infos=snap.data().info||{}; delete infos[id]; await setDoc(idxRef,{ids,info:infos},{merge:false}); }
+                await setDoc(refRestaurante(id),{_excluido:true,_excluidoEm:Date.now()},{merge:true});
+                customAlert(`✅ Restaurante "${nome}" removido.`);
+                if(restauranteAtivoId===id){ conectarRestaurante('marchesini'); localStorage.setItem('sc-rest-id','marchesini'); }
+                await renderPainelDesenvolvedor();
+            }catch(e){ customAlert('Erro:\n'+e.message); }
+        };
         window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
                 window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
         window.entrarComoAdminManual = async function() {
@@ -5731,8 +5863,24 @@ const TAREFAS_RESTAURANTE = {
                 const infos = snap.exists() ? (snap.data().info || {}) : {};
                 if (!ids.includes(id)) ids.push(id);
                 if (info && info.nome) infos[id] = info;
-                await setDoc(idxRef, { ids, info: infos }, { merge: false });
-            } catch(e) { console.warn('índice', e); }
+                // merge:true para não sobrescrever outros campos do índice
+                await setDoc(idxRef, { ids, info: infos }, { merge: true });
+                console.log('Índice atualizado:', id, ids);
+            } catch(e) {
+                console.error('Erro ao atualizar índice:', e);
+                // Segunda tentativa com só os IDs
+                try {
+                    const idxRef2 = doc(db, 'restaurantes', '__index__');
+                    await setDoc(idxRef2, { ids: [id] }, { merge: true });
+                } catch(e2) { console.error('Falha total no índice:', e2); }
+            }
+        }
+        // Busca e atualiza info do restaurante no índice (nome, logo)
+        async function sincronizarInfoNoIndice(id, nome, logo, logoFormato) {
+            try {
+                const idxRef = doc(db, 'restaurantes', '__index__');
+                await setDoc(idxRef, { [`info.${id}`]: { nome: nome||id, logo: logo||'', logoFormato: logoFormato||'quadrado' } }, { merge: true });
+            } catch(e) { console.warn('sincronizarInfoNoIndice', e); }
         }
 
         // Adaptar logout para voltar à tela de restaurante

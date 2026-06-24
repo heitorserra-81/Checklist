@@ -66,7 +66,28 @@
         @keyframes splashFadeUp { from{transform:translateY(16px);opacity:0;} to{transform:translateY(0);opacity:1;} }
         @keyframes splashDot { 0%,80%,100%{transform:scale(0.6);opacity:0.4;} 40%{transform:scale(1);opacity:1;} }
 
-        /* TEMAS DE COR */
+        /* ===== TELA DO DESENVOLVEDOR ===== */
+        .dev-screen { display:flex;flex-direction:column;height:100%;background:var(--bg); }
+        .dev-header { padding:calc(env(safe-area-inset-top,0px)+14px) 16px 14px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0; }
+        .dev-header-title { flex:1;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--gold); }
+        .dev-body { flex:1;overflow-y:auto;padding:16px; }
+        .dev-rest-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px; }
+        .dev-rest-card { background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden; }
+        .dev-rest-card:active { transform:scale(0.97); }
+        .dev-rest-card.ativo { border-color:var(--accent);box-shadow:0 0 16px rgba(0,146,70,0.2); }
+        .dev-rest-logo { width:64px;height:64px;border-radius:16px;margin:0 auto 10px;overflow:hidden;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:28px; }
+        .dev-rest-logo img { width:100%;height:100%;object-fit:cover; }
+        .dev-rest-nome { font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.3; }
+        .dev-rest-id { font-size:10px;color:var(--text3); }
+        .dev-rest-badge { position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;color:#fff;background:var(--accent);padding:2px 6px;border-radius:6px; }
+        .dev-section-title { font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin:0 0 10px; }
+        .dev-action-btn { display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;margin-bottom:10px;transition:all 0.2s; }
+        .dev-action-btn:active { transform:scale(0.98); }
+        .dev-action-icon { font-size:22px;flex-shrink:0; }
+        .dev-action-label { font-size:14px;font-weight:700;color:var(--text); }
+        .dev-action-sub { font-size:11px;color:var(--text3);margin-top:1px; }
+        .dev-criar-form { background:var(--card);border:1.5px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:12px; }
+        .dev-criar-title { font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px; }
         :root[data-accent="green"] { --accent:#009246;--accent-light:#00b855;--accent-glow:rgba(0,146,70,0.25); }
         :root[data-accent="blue"] { --accent:#2f80ed;--accent-light:#5b9ef7;--accent-glow:rgba(47,128,237,0.25); }
         :root[data-accent="gold"] { --accent:#f0b90b;--accent-light:#f7d147;--accent-glow:rgba(240,185,11,0.25); }
@@ -878,6 +899,20 @@
         <div class="top-bar-actions">
             <button class="icon-btn" onclick="toggleTheme()" title="Alternar tema"><span id="theme-icon">🌙</span></button>
             <button class="icon-btn" onclick="abrirSidebar()">☰</button>
+        </div>
+    </div>
+
+    <!-- TELA DO DESENVOLVEDOR -->
+    <div class="screen" id="scr-developer">
+        <div class="dev-screen">
+            <div class="dev-header">
+                <button onclick="trocarTela('scr-restaurante')" style="background:transparent;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;">←</button>
+                <div class="dev-header-title">👑 Painel do Desenvolvedor</div>
+                <button onclick="trocarSenhaDesenvolvedor()" style="background:transparent;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;padding:4px 8px;">🔐 Senha</button>
+            </div>
+            <div class="dev-body" id="dev-body">
+                <div style="text-align:center;padding:40px;color:var(--text3);">Carregando...</div>
+            </div>
         </div>
     </div>
 
@@ -4289,8 +4324,15 @@ const TAREFAS_RESTAURANTE = {
             delete liveData.usuariosSalvos[n];
             if (liveData.loginAtividade) delete liveData.loginAtividade[n];
             if (liveData.pontosRegistro) delete liveData.pontosRegistro[n];
-            Object.keys(liveData.tarefasStatus).forEach(chave => { if (liveData.tarefasStatus[chave]?.worker === n) liveData.tarefasStatus[chave] = { status: 'idle', worker: '' }; });
-            await salvar(); abrirGerenteModal('equipe'); customAlert(`${n} foi removido.`);
+            Object.keys(liveData.tarefasStatus).forEach(chave => {
+                if (liveData.tarefasStatus[chave]?.worker === n) liveData.tarefasStatus[chave] = { status: 'idle', worker: '' };
+            });
+            // Usar isSaving=true para evitar que o snapshot sobrescreva antes de salvar
+            isSaving = true;
+            await salvar(true);
+            isSaving = false;
+            abrirGerenteModal('equipe');
+            customAlert(`${n} foi removido.`);
         };
 
         // ========================================================
@@ -5524,80 +5566,88 @@ const TAREFAS_RESTAURANTE = {
             try {
                 const adminDoc = await getDoc(doc(db, 'config', 'admin'));
                 if (!adminDoc.exists()) {
-                    // Documento não existe ainda — usa fallback do código
                     if (senha !== SUPER_MASTER) { customAlert('Senha incorreta.'); return; }
                 } else {
                     const senhaCorreta = adminDoc.data().senha;
                     if (senha !== senhaCorreta) { customAlert('Senha incorreta.'); return; }
                 }
             } catch(e) {
-                customAlert('❌ Erro de conexão com o Firebase.\nVerifique sua internet e tente novamente.');
-                console.error('abrirPainelDono Firebase error:', e);
-                return;
+                // Firebase offline — usa fallback
+                if (senha !== SUPER_MASTER) { customAlert('Senha incorreta.'); return; }
             }
-            await renderPainelDono();
+            trocarTela('scr-developer');
+            await renderPainelDesenvolvedor();
         };
 
-        async function renderPainelDono() {
+        async function renderPainelDesenvolvedor() {
+            const body = document.getElementById('dev-body');
+            body.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);">⏳ Carregando restaurantes...</div>';
+            // Busca índice de restaurantes
             let ids = [];
+            let infos = {};
             try {
                 const idx = await getDoc(doc(db, 'restaurantes', '__index__'));
-                if (idx.exists()) ids = idx.data().ids || [];
+                if (idx.exists()) { ids = idx.data().ids || []; infos = idx.data().info || {}; }
             } catch(e) {}
             if (!ids.includes('marchesini')) ids.unshift('marchesini');
-            const ov = document.getElementById('dialog-overlay');
-            document.getElementById('dialog-msg').textContent = '👑 Painel do Desenvolvedor';
-            let html = '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;max-height:55vh;overflow-y:auto;">';
-            html += `<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">${ids.length} restaurante(s) cadastrado(s)</div>`;
+            // Busca info de cada restaurante (nome e logo) se não tiver no índice
+            const infoPromises = ids.map(async id => {
+                if (infos[id] && infos[id].nome) return;
+                try {
+                    const snap = await getDoc(refRestaurante(id));
+                    if (snap.exists()) {
+                        const d = snap.data();
+                        infos[id] = { nome: d.restaurante?.nome || id, logo: d.restaurante?.logo || '', logoFormato: d.restaurante?.logoFormato || 'quadrado' };
+                    }
+                } catch(e) { infos[id] = { nome: id, logo: '' }; }
+            });
+            await Promise.all(infoPromises);
+            // Monta HTML
+            let html = '';
+            // Grid de restaurantes
+            html += `<div class="dev-section-title">${ids.length} restaurante(s) cadastrado(s)</div>`;
+            html += '<div class="dev-rest-grid">';
             ids.forEach(id => {
+                const info = infos[id] || { nome: id, logo: '' };
                 const isAtivo = id === restauranteAtivoId;
-                html += `<div onclick="fecharDialogAdmin();entrarComoAdmin('${id}')" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid ${isAtivo?'var(--accent)':'var(--border)'};border-radius:var(--radius-md);cursor:pointer;">
-                    <span style="font-size:22px;">🏢</span>
-                    <div style="flex:1;min-width:0;">
-                        <div style="font-size:13px;font-weight:700;color:var(--text);">${id}</div>
-                        ${isAtivo?'<div style="font-size:10px;color:var(--accent);font-weight:700;">▶ Atual</div>':''}
-                    </div>
-                    <span style="font-size:18px;color:var(--text3);">→</span>
+                const fmt = info.logoFormato || 'quadrado';
+                const radius = fmt === 'redondo' ? '50%' : '16px';
+                const logoHtml = info.logo
+                    ? `<img src="${info.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius};">`
+                    : `<span style="font-size:28px;">🏢</span>`;
+                html += `<div class="dev-rest-card ${isAtivo?'ativo':''}" onclick="devAcessarRestaurante('${id}')">
+                    ${isAtivo ? '<div class="dev-rest-badge">Atual</div>' : ''}
+                    <div class="dev-rest-logo">${logoHtml}</div>
+                    <div class="dev-rest-nome">${info.nome}</div>
+                    <div class="dev-rest-id">${id}</div>
                 </div>`;
             });
+            html += '</div>';
             // Criar novo restaurante
-            html += `<div style="margin-top:8px;padding:12px;background:var(--card2);border:1.5px solid var(--accent);border-radius:var(--radius-md);">
-                <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;">✨ Criar novo restaurante</div>
-                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante (ex: Pizzaria do João)" oninput="atualizarPreviewCodigo(this.value)" style="margin-bottom:4px;">
-                <div id="dev-rest-codigo-preview" style="font-size:10px;color:var(--text3);margin-bottom:8px;padding:0 2px;">Código: —</div>
-                <select class="field" id="dev-rest-template" style="margin-bottom:6px;"></select>
-                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente (mín. 4 dígitos)" style="margin-bottom:6px;">
+            html += '<div class="dev-section-title">Ações</div>';
+            html += `<div class="dev-criar-form">
+                <div class="dev-criar-title">✨ Criar novo restaurante</div>
+                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante" oninput="atualizarPreviewCodigo(this.value)" style="margin-bottom:4px;">
+                <div id="dev-rest-codigo-preview" style="font-size:10px;color:var(--text3);margin-bottom:10px;padding:0 2px;">Código: —</div>
+                <select class="field" id="dev-rest-template" style="margin-bottom:8px;"></select>
+                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente (mín. 4 dígitos)" style="margin-bottom:10px;">
                 <button class="btn-primary" onclick="devCriarRestaurante()" style="width:100%;margin:0;">✅ Criar e Acessar</button>
             </div>`;
-            // Trocar senha do desenvolvedor
-            html += `<div onclick="fecharDialogAdmin();trocarSenhaDesenvolvedor()" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px solid rgba(240,185,11,0.4);border-radius:var(--radius-md);cursor:pointer;">
-                <span style="font-size:22px;">🔐</span>
-                <div style="flex:1;font-size:13px;font-weight:700;color:var(--gold);">Trocar senha do desenvolvedor</div>
+            // Ações extras
+            html += `<div class="dev-action-btn" onclick="entrarComoAdminManual()">
+                <div class="dev-action-icon">🔍</div>
+                <div><div class="dev-action-label">Acessar por código</div><div class="dev-action-sub">Entrar em qualquer restaurante</div></div>
             </div>`;
-            // Acessar por código
-            html += `<div onclick="fecharDialogAdmin();entrarComoAdminManual()" style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--card2);border:1.5px dashed var(--border);border-radius:var(--radius-md);cursor:pointer;">
-                <span style="font-size:22px;">🔍</span>
-                <div style="flex:1;font-size:13px;font-weight:600;color:var(--text2);">Acessar por código...</div>
-            </div>`;
-            html += '</div>';
-            document.getElementById('dialog-extra').innerHTML = html;
-            document.getElementById('dialog-btns').innerHTML = `<button class="btn-ghost" onclick="fecharDialogAdmin()" style="margin:0;">Fechar</button>`;
-            ov.classList.add('show');
+            body.innerHTML = html;
             // Popular select de templates
-            try {
-                const sel = document.getElementById('dev-rest-template');
-                if (sel && typeof TEMPLATES !== 'undefined') {
-                    sel.innerHTML = Object.entries(TEMPLATES).map(([id,t])=>`<option value="${id}">${t.icone} ${t.nome}</option>`).join('');
-                }
-            } catch(e){}
+            const sel = document.getElementById('dev-rest-template');
+            if (sel && typeof TEMPLATES !== 'undefined') {
+                sel.innerHTML = Object.entries(TEMPLATES).map(([id,t])=>`<option value="${id}">${t.icone} ${t.nome}</option>`).join('');
+            }
         }
 
-        window.atualizarPreviewCodigo = function(nome) {
-            const el = document.getElementById('dev-rest-codigo-preview');
-            if (!el) return;
-            const id = normalizarIdRest(nome);
-            el.textContent = id ? `Código: ${id}` : 'Código: —';
-            el.style.color = id ? 'var(--accent)' : 'var(--text3)';
+        window.devAcessarRestaurante = async function(id) {
+            await entrarComoAdmin(id);
         };
 
         window.devCriarRestaurante = async function() {
@@ -5607,34 +5657,37 @@ const TAREFAS_RESTAURANTE = {
             if (!nome) { customAlert('Digite o nome do restaurante.'); return; }
             if (!senha || senha.length < 4) { customAlert('Senha mestra deve ter mínimo 4 caracteres.'); return; }
             const id = normalizarIdRest(nome);
-            if (!id) { customAlert('Nome inválido.'); return; }
-            fecharDialogAdmin();
+            if (!id) { customAlert('Nome inválido. Use letras e números.'); return; }
             try {
                 const snap = await getDoc(refRestaurante(id));
-                if (snap.exists()) { customAlert(`Já existe um restaurante com o código "${id}".`); return; }
-                const restData = { ...liveData, restaurante: { nome, logo:'', fonte:'DM Sans' }, masterPass: senha, templateAtivo: templateId, tarefasCustomizadas: [], tarefasStatus: {}, usuariosSalvos: {}, historicoTurnos: [], registrosDesperdicio: [] };
+                if (snap.exists()) {
+                    const ok = await customConfirm(`Já existe um restaurante com o código "${id}".\nDeseja acessar ele?`, 'Acessar', 'Cancelar');
+                    if (ok) await devAcessarRestaurante(id);
+                    return;
+                }
+                // Estrutura limpa — não herda dados do restaurante atual
+                const restData = {
+                    restaurante: { nome, logo:'', fonte:'DM Sans' },
+                    masterPass: senha, templateAtivo: templateId,
+                    tarefasCustomizadas: [], tarefasStatus: {}, usuariosSalvos: {},
+                    historicoTurnos: [], registrosDesperdicio: [], desperdicioItens: [],
+                    temposTarefa: {}, mostrarTempos: true, mensagensChat: [],
+                    pedidosFolga: [], loginAtividade: {}, setoresAtivos: {}
+                };
                 const tarefasMap = typeof TAREFAS_POR_TEMPLATE !== 'undefined' ? (TAREFAS_POR_TEMPLATE[templateId] || {}) : {};
                 const setoresDoTpl = typeof TEMPLATES !== 'undefined' ? (TEMPLATES[templateId]?.setores || []) : [];
-                setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t=>{ restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
-                restData.tarefasCustomizadas.forEach(t=>{ if(!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg=estimarTempoPorTexto(t.txt); });
+                setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t => { restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
+                restData.tarefasCustomizadas.forEach(t => { if (!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg = estimarTempoPorTexto(t.txt); });
                 await setDoc(refRestaurante(id), restData, { merge:false });
-                await adicionarAoIndice(id);
-                customAlert(`✅ Restaurante criado!\nCódigo: ${id}\nSenha do gerente: ${senha}`);
-                await entrarComoAdmin(id);
-            } catch(e) { customAlert('Erro ao criar: ' + e.message); }
+                await adicionarAoIndiceComInfo(id, { nome, logo:'', logoFormato:'quadrado' });
+                const link = `${window.location.origin}${window.location.pathname}?rest=${id}`;
+                await customAlert(`✅ Restaurante criado!\nNome: ${nome}\nCódigo: ${id}\nSenha do gerente: ${senha}\n\nLink da equipe:\n${link}`);
+                await devAcessarRestaurante(id);
+            } catch(e) { customAlert('Erro ao criar:\n' + e.message); console.error(e); }
         };
 
-        window.trocarSenhaDesenvolvedor = async function() {
-            const nova = await customPrompt('Nova senha do desenvolvedor (mín. 6 caracteres):');
-            if (!nova || nova.length < 6) { if(nova!==null) customAlert('Mínimo 6 caracteres.'); return; }
-            const conf = await customPrompt('Confirme a nova senha:');
-            if (nova !== conf) { customAlert('Senhas não conferem!'); return; }
-            try {
-                await setDoc(doc(db, 'config', 'admin'), { senha: nova }, { merge: false });
-                customAlert(`✅ Senha do desenvolvedor alterada com sucesso!\nNova senha: ${nova}\n\nGuarde bem essa senha.`);
-            } catch(e) { customAlert('Erro ao salvar no Firebase: ' + e.message); }
-        };
         window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
+                window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
         window.entrarComoAdminManual = async function() {
             const id = await customPrompt('Digite o ID do restaurante:');
             if (id) await entrarComoAdmin(normalizarIdRest(id));
@@ -5668,14 +5721,17 @@ const TAREFAS_RESTAURANTE = {
 
         // Garante que o restaurante seja adicionado ao índice quando criado
         async function adicionarAoIndice(id) {
+            await adicionarAoIndiceComInfo(id, {});
+        }
+        async function adicionarAoIndiceComInfo(id, info) {
             try {
                 const idxRef = doc(db, 'restaurantes', '__index__');
                 const snap = await getDoc(idxRef);
                 const ids = snap.exists() ? (snap.data().ids || []) : [];
-                if (!ids.includes(id)) {
-                    ids.push(id);
-                    await setDoc(idxRef, { ids }, { merge: false });
-                }
+                const infos = snap.exists() ? (snap.data().info || {}) : {};
+                if (!ids.includes(id)) ids.push(id);
+                if (info && info.nome) infos[id] = info;
+                await setDoc(idxRef, { ids, info: infos }, { merge: false });
             } catch(e) { console.warn('índice', e); }
         }
 

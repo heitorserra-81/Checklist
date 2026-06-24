@@ -3214,37 +3214,19 @@ const TAREFAS_RESTAURANTE = {
             reader.readAsDataURL(file);
         };
 
-        // Sobrescreve confirmarRecorte para salvar logo quando contexto for logo_restaurante
-        const _confirmarRecorteOriginal = window.confirmarRecorte;
-        window.confirmarRecorte = function() {
-            if (cropCtx !== 'logo_restaurante') { _confirmarRecorteOriginal && _confirmarRecorteOriginal(); return; }
-            if (!cropImg) return;
-            const formato = window._logoFormatoRecorte || 'quadrado';
-            const canvas = document.getElementById('crop-canvas');
-            const out = document.createElement('canvas'); out.width=300; out.height=300;
-            const ctx = out.getContext('2d');
-            if (formato === 'redondo') { ctx.beginPath(); ctx.arc(150,150,150,0,Math.PI*2); ctx.clip(); }
-            ctx.drawImage(canvas,0,0,280,280,0,0,300,300);
-            const resultado = out.toDataURL('image/jpeg', 0.85);
-            document.getElementById('crop-overlay').style.display = 'none';
-            if (!liveData.restaurante) liveData.restaurante = {};
-            liveData.restaurante.logo = resultado;
-            liveData.restaurante.logoFormato = formato;
-            salvar(); renderConfigTab('restaurante');
-            cropImg = null;
-        };
+        // Confirmar recorte de logo — integrado na função principal confirmarRecorte acima
 
         window.alterarSenhaMestra = async function() {
-            if(currentWorker!=='Gerente') return;
-            const atual=await customPrompt('Senha mestra atual:');
-            if(atual!==liveData.masterPass){ customAlert('Senha incorreta!'); return; }
-            const nova=await customPrompt('Nova senha mestra:');
-            if(!nova||nova.length<4){ customAlert('Mínimo 4 caracteres!'); return; }
-            const conf=await customPrompt('Confirme a nova senha:');
-            if(nova!==conf){ customAlert('Senhas não conferem!'); return; }
-            liveData.masterPass=nova;
+            const atual = await customPrompt('Senha mestra atual:');
+            if (atual === null) return;
+            if (atual !== liveData.masterPass) { customAlert('Senha incorreta!'); return; }
+            const nova = await customPrompt('Nova senha mestra (mínimo 4 caracteres):');
+            if (!nova || nova.length < 4) { customAlert('Mínimo 4 caracteres!'); return; }
+            const conf = await customPrompt('Confirme a nova senha:');
+            if (nova !== conf) { customAlert('Senhas não conferem!'); return; }
+            liveData.masterPass = nova;
             await salvar();
-            customAlert('Senha mestra alterada!');
+            customAlert('✅ Senha mestra alterada com sucesso!');
         };
 
         // ========== FOTO / RECORTE ==========
@@ -3273,7 +3255,24 @@ const TAREFAS_RESTAURANTE = {
         window.cancelarRecorte = ()=>{ document.getElementById('crop-overlay').style.display='none'; cropImg=null; };
         window.confirmarRecorte = ()=>{
             if(!cropImg) return;
-            const canvas=document.getElementById('crop-canvas'); const out=document.createElement('canvas'); out.width=150; out.height=150;
+            const canvas=document.getElementById('crop-canvas');
+            // Contexto: logo do restaurante
+            if(cropCtx==='logo_restaurante'){
+                const formato = window._logoFormatoRecorte || 'quadrado';
+                const out=document.createElement('canvas'); out.width=300; out.height=300;
+                const ctx=out.getContext('2d');
+                if(formato==='redondo'){ ctx.beginPath(); ctx.arc(150,150,150,0,Math.PI*2); ctx.clip(); }
+                ctx.drawImage(canvas,0,0,280,280,0,0,300,300);
+                const resultado=out.toDataURL('image/jpeg',0.85);
+                document.getElementById('crop-overlay').style.display='none';
+                if(!liveData.restaurante) liveData.restaurante={};
+                liveData.restaurante.logo=resultado;
+                liveData.restaurante.logoFormato=formato;
+                salvar(); renderConfigTab('restaurante');
+                cropImg=null; return;
+            }
+            // Contextos: login e update de foto de funcionário
+            const out=document.createElement('canvas'); out.width=150; out.height=150;
             const ctx=out.getContext('2d'); ctx.save(); ctx.beginPath(); ctx.arc(75,75,75,0,Math.PI*2); ctx.clip();
             ctx.drawImage(canvas,0,0,280,280,0,0,150,150); ctx.restore();
             const compressed=out.toDataURL('image/jpeg',0.7);

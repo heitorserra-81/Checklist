@@ -202,26 +202,11 @@
 
         /* TASK ROW */
         .task-row { margin:6px 10px;border-radius:var(--radius-md);border:1.5px solid var(--border);overflow:hidden;transition:transform 0.25s cubic-bezier(0.25,0.8,0.25,1.2),box-shadow 0.2s,opacity 0.2s;position:relative;background:var(--card2);touch-action:manipulation;will-change:transform,box-shadow; }
-        @property --tangle { syntax:'<angle>';initial-value:0deg;inherits:false; }
-        /* ::before = glow rotativo cobrindo o card inteiro */
-        .task-row::before { content:'';position:absolute;inset:0;border-radius:var(--radius-md);pointer-events:none;z-index:0;opacity:0;transition:opacity 0.4s; }
-        /* ::after = máscara interna que cobre o centro, deixando só ~2px de borda visível */
-        .task-row::after  { content:'';position:absolute;inset:2px;border-radius:calc(var(--radius-md) - 2px);background:var(--card2);pointer-events:none;z-index:1;opacity:0;transition:opacity 0.4s; }
-        /* Status pendente — azul forte igual ao amarelo */
-        .task-row.t-pending::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(30,144,255,1) 78%,rgba(100,210,255,1) 84%,rgba(30,144,255,1) 90%,transparent 97%);animation:taskGlow 2.5s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
-        .task-row.t-pending::after  { box-shadow:inset 0 0 18px rgba(30,100,255,0.1);opacity:1; }
-        .task-row.t-pending { border-color:rgba(30,144,255,0.9); border-width:2px; }
-        /* Status em andamento — amarelo forte */
-        .task-row.t-working::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(255,165,0,1) 78%,rgba(255,230,80,1) 84%,rgba(255,165,0,1) 90%,transparent 97%);animation:taskGlow 1.8s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
-        .task-row.t-working::after  { box-shadow:inset 0 0 18px rgba(220,140,0,0.1);opacity:1; }
-        .task-row.t-working { border-color:rgba(255,165,0,0.9); border-width:2px; }
-        /* Status concluído — verde forte igual ao amarelo */
-        .task-row.t-done::before { background:conic-gradient(from var(--tangle),transparent 65%,rgba(0,220,90,1) 78%,rgba(80,255,140,1) 84%,rgba(0,220,90,1) 90%,transparent 97%);animation:taskGlow 3s linear infinite;opacity:1;filter:saturate(1.8) brightness(1.3); }
-        .task-row.t-done::after  { box-shadow:inset 0 0 18px rgba(0,180,70,0.1);opacity:1; }
-        .task-row.t-done { border-color:rgba(0,220,90,0.9); border-width:2px; }
-        @keyframes taskGlow { to { --tangle:360deg; } }
-        /* Conteúdo acima da máscara */
-        .task-row-head,.task-resume,.task-action-bar { position:relative;z-index:2; }
+        /* Cards de tarefa — borda colorida estática + brilho suave (sem animação = mais leve) */
+        .task-row.t-pending { border:3px solid rgba(30,144,255,0.85);box-shadow:0 0 10px rgba(30,144,255,0.2),inset 0 0 16px rgba(30,100,255,0.06); }
+        .task-row.t-working { border:3px solid rgba(255,165,0,0.85);box-shadow:0 0 10px rgba(255,165,0,0.2),inset 0 0 16px rgba(220,140,0,0.06); }
+        .task-row.t-done    { border:3px solid rgba(0,210,80,0.85);box-shadow:0 0 10px rgba(0,210,80,0.2),inset 0 0 16px rgba(0,180,60,0.06); }
+        .task-row-head,.task-resume,.task-action-bar { position:relative;z-index:1; }
         .task-row:last-child { margin-bottom:10px; }
         .task-row.idle { border-color:var(--border); }
         .task-row.working-mine { border-color:var(--gold);background:rgba(240,185,11,0.04); }
@@ -586,11 +571,11 @@
         .chat-overlay.show .chat-box { transform:translateY(0); }
         .chat-header { display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0; }
         .chat-header h3 { font-size:13px;font-weight:800;color:var(--accent); }
-        @property --eongle { syntax:'<angle>';initial-value:0deg;inherits:false; }
-        .chat-online-section { border:1px solid var(--border);border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
-        .chat-online-section::before { content:'';position:absolute;inset:0;border-radius:var(--radius-lg);background:conic-gradient(from var(--eongle),transparent 70%,rgba(0,220,90,0.9) 80%,rgba(80,255,140,1) 85%,rgba(0,220,90,0.9) 90%,transparent 97%);animation:eonlineGlow 3s linear infinite;z-index:0;pointer-events:none; }
-        .chat-online-section::after { content:'';position:absolute;inset:2px;border-radius:calc(var(--radius-lg) - 2px);background:var(--card2);z-index:1;pointer-events:none; }
-        @keyframes eonlineGlow { to { --eongle:360deg; } }
+        /* Chat equipe online — borda girando usando transform:rotate() (compatível iOS) */
+        .chat-online-section { border:2px solid transparent;border-radius:var(--radius-lg);margin:8px 14px;padding:8px 0;background:var(--card2);position:relative;overflow:hidden; }
+        .chat-online-section::before { content:'';position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:conic-gradient(transparent 72%,rgba(0,220,90,0.8) 80%,rgba(100,255,160,1) 85%,rgba(0,220,90,0.8) 90%,transparent 98%);animation:chatSpin 3s linear infinite;z-index:0;pointer-events:none; }
+        .chat-online-section::after { content:'';position:absolute;inset:3px;border-radius:calc(var(--radius-lg) - 3px);background:var(--card2);z-index:1;pointer-events:none; }
+        @keyframes chatSpin { to { transform:rotate(360deg); } }
         .chat-online-section-title,.chat-online-bar { position:relative;z-index:2; }
         .chat-online-section-title { font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;font-weight:700;padding:0 14px 6px; }
         .chat-online-bar { display:flex;gap:8px;padding:0 14px;overflow-x:auto;scrollbar-width:none;align-items:flex-start; }
@@ -968,7 +953,7 @@
                     <button class="btn-manager-hero ghost" onclick="logout()">← Sair</button>
                 </div>
                 <div style="margin-top:10px;">
-                    <button onclick="abrirPainelDono()" style="background:transparent;border:1px solid rgba(240,185,11,0.4);color:var(--gold);padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body);">👑 Painel do Sistema</button>
+                    <button onclick="abrirPainelDono()" style="background:transparent;border:1px solid rgba(240,185,11,0.4);color:var(--gold);padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-body);">👑 Painel do Desenvolvedor</button>
                 </div>
             </div>
             <div class="historico-card" id="historico-card"><h3>📊 Histórico de Turnos</h3><div id="historico-list"></div></div>
@@ -3142,7 +3127,7 @@ const TAREFAS_RESTAURANTE = {
             const base = window.location.origin + window.location.pathname;
             const link = `${base}?rest=${restauranteAtivoId}`;
             const nomeRest = liveData.restaurante?.nome || restauranteAtivoId;
-            const msg = `✅ Link copiado!\n\n${link}\n\nEnvie este link para sua equipe.\nAo abrir, já entra direto no restaurante ${nomeRest}.`;
+            const msg = `LINK COPIADO! ✅\n\n${link}\n\nCompartilhe com seus funcionários. Ao abrir, já entra direto no restaurante ${nomeRest}.`;
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(link).then(() => customAlert(msg)).catch(() => customAlert(msg));
             } else {

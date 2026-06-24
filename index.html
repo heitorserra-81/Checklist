@@ -66,28 +66,51 @@
         @keyframes splashFadeUp { from{transform:translateY(16px);opacity:0;} to{transform:translateY(0);opacity:1;} }
         @keyframes splashDot { 0%,80%,100%{transform:scale(0.6);opacity:0.4;} 40%{transform:scale(1);opacity:1;} }
 
-        /* ===== TELA DO DESENVOLVEDOR ===== */
+        /* ===== TELA DO DESENVOLVEDOR — REDESIGN COMPLETO ===== */
         .dev-screen { display:flex;flex-direction:column;height:100%;background:var(--bg); }
-        .dev-header { padding:calc(env(safe-area-inset-top,0px)+14px) 16px 14px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0; }
-        .dev-header-title { flex:1;font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--gold); }
-        .dev-body { flex:1;overflow-y:auto;padding:16px; }
-        .dev-rest-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px; }
-        .dev-rest-card { background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px 12px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden; }
-        .dev-rest-card:active { transform:scale(0.97); }
-        .dev-rest-card.ativo { border-color:var(--accent);box-shadow:0 0 16px rgba(0,146,70,0.2); }
-        .dev-rest-logo { width:64px;height:64px;border-radius:16px;margin:0 auto 10px;overflow:hidden;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:28px; }
+        .dev-header { padding:calc(env(safe-area-inset-top,0px)+14px) 16px 14px;background:linear-gradient(135deg,rgba(240,185,11,0.12),rgba(240,185,11,0.04));border-bottom:1px solid rgba(240,185,11,0.2);display:flex;align-items:center;gap:12px;flex-shrink:0; }
+        .dev-header-title { flex:1;font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--gold);line-height:1.1; }
+        .dev-body { flex:1;overflow-y:auto;padding:16px 14px; }
+        /* Cards de restaurante */
+        .dev-rest-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px; }
+        .dev-rest-card { background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:18px 12px 14px;text-align:center;cursor:pointer;transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden; }
+        .dev-rest-card::before { content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(240,185,11,0.06),transparent);opacity:0;transition:opacity 0.2s; }
+        .dev-rest-card:active { transform:scale(0.96);box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+        .dev-rest-card.ativo { border-color:rgba(240,185,11,0.6);box-shadow:0 0 20px rgba(240,185,11,0.15); }
+        .dev-rest-card.ativo::before { opacity:1; }
+        .dev-rest-card.suspenso { border-color:rgba(206,43,55,0.5);opacity:0.7; }
+        .dev-rest-logo { width:72px;height:72px;border-radius:18px;margin:0 auto 12px;overflow:hidden;background:linear-gradient(135deg,var(--card2),rgba(240,185,11,0.1));display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 4px 16px rgba(0,0,0,0.2); }
         .dev-rest-logo img { width:100%;height:100%;object-fit:cover; }
-        .dev-rest-nome { font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;line-height:1.3; }
-        .dev-rest-id { font-size:10px;color:var(--text3); }
-        .dev-rest-badge { position:absolute;top:8px;right:8px;font-size:9px;font-weight:700;color:#fff;background:var(--accent);padding:2px 6px;border-radius:6px; }
-        .dev-section-title { font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin:0 0 10px; }
-        .dev-action-btn { display:flex;align-items:center;gap:12px;padding:14px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;margin-bottom:10px;transition:all 0.2s; }
-        .dev-action-btn:active { transform:scale(0.98); }
-        .dev-action-icon { font-size:22px;flex-shrink:0; }
-        .dev-action-label { font-size:14px;font-weight:700;color:var(--text); }
-        .dev-action-sub { font-size:11px;color:var(--text3);margin-top:1px; }
-        .dev-criar-form { background:var(--card);border:1.5px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:12px; }
-        .dev-criar-title { font-size:13px;font-weight:700;color:var(--accent);margin-bottom:12px; }
+        .dev-rest-nome { font-size:12px;font-weight:800;color:var(--text);margin-bottom:3px;line-height:1.3; }
+        .dev-rest-id { font-size:9px;color:var(--text3);font-family:monospace; }
+        .dev-rest-hint { font-size:9px;color:var(--accent);margin-top:6px;font-weight:600; }
+        .dev-rest-badge { position:absolute;top:10px;right:10px;font-size:9px;font-weight:800;color:#fff;background:var(--gold);padding:3px 8px;border-radius:8px;box-shadow:0 2px 8px rgba(240,185,11,0.4); }
+        .dev-rest-badge.susp { background:var(--red); }
+        /* Seções */
+        .dev-section { margin-bottom:20px; }
+        .dev-section-title { font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:0 0 10px;padding-left:2px; }
+        /* Botões de ação globais */
+        .dev-action-btn { display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;cursor:pointer;margin-bottom:10px;transition:all 0.2s;text-align:left; }
+        .dev-action-btn:active { transform:scale(0.98);background:var(--card2); }
+        .dev-action-btn.gold { border-color:rgba(240,185,11,0.3);background:rgba(240,185,11,0.06); }
+        .dev-action-btn.danger { border-color:rgba(206,43,55,0.3);background:rgba(206,43,55,0.06); }
+        .dev-action-icon { font-size:24px;flex-shrink:0;width:32px;text-align:center; }
+        .dev-action-text .label { font-size:14px;font-weight:700;color:var(--text); }
+        .dev-action-text .sub { font-size:11px;color:var(--text3);margin-top:1px; }
+        /* Formulário criar restaurante */
+        .dev-criar-form { background:var(--card);border:2px solid rgba(0,146,70,0.4);border-radius:20px;padding:18px;margin-bottom:12px;box-shadow:0 4px 20px rgba(0,146,70,0.08); }
+        .dev-criar-header { display:flex;align-items:center;gap:10px;margin-bottom:16px; }
+        .dev-criar-icon { width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#1b5e20);display:flex;align-items:center;justify-content:center;font-size:20px; }
+        .dev-criar-title { font-size:15px;font-weight:800;color:var(--accent); }
+        .dev-criar-sub { font-size:11px;color:var(--text3); }
+        .dev-logo-preview { width:80px;height:80px;border-radius:20px;border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;margin:0 auto 12px;overflow:hidden;background:var(--card2); }
+        .dev-logo-preview img { width:100%;height:100%;object-fit:cover; }
+        .dev-codigo-preview { font-size:11px;font-weight:700;padding:2px 0 10px;padding-left:2px; }
+        .dev-template-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px; }
+        .dev-tpl-btn { padding:10px 6px;border:1.5px solid var(--border);border-radius:12px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--card2); }
+        .dev-tpl-btn.sel { border-color:var(--accent);background:rgba(0,146,70,0.1); }
+        .dev-tpl-btn .ico { font-size:20px;display:block;margin-bottom:3px; }
+        .dev-tpl-btn .nm { font-size:9px;font-weight:700;color:var(--text2); }
         :root[data-accent="green"] { --accent:#009246;--accent-light:#00b855;--accent-glow:rgba(0,146,70,0.25); }
         :root[data-accent="blue"] { --accent:#2f80ed;--accent-light:#5b9ef7;--accent-glow:rgba(47,128,237,0.25); }
         :root[data-accent="gold"] { --accent:#f0b90b;--accent-light:#f7d147;--accent-glow:rgba(240,185,11,0.25); }
@@ -5622,116 +5645,164 @@ const TAREFAS_RESTAURANTE = {
 
         async function renderPainelDesenvolvedor() {
             const body = document.getElementById('dev-body');
-            body.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3);">⏳ Carregando restaurantes...</div>';
-            // Busca índice de restaurantes
-            let ids = [];
-            let infos = {};
+            body.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text3);">⏳ Carregando...</div>';
+            let ids = [], infos = {};
             try {
-                const idx = await getDoc(doc(db, 'restaurantes', '__index__'));
+                const idx = await getDoc(doc(db, 'restaurantes', 'zindice'));
                 if (idx.exists()) { ids = idx.data().ids || []; infos = idx.data().info || {}; }
-            } catch(e) {}
+            } catch(e) { console.error('Erro ao carregar índice:', e); }
             if (!ids.includes('marchesini')) ids.unshift('marchesini');
-            // Busca info de cada restaurante (nome e logo) se não tiver no índice
-            const infoPromises = ids.map(async id => {
-                if (infos[id] && infos[id].nome) return;
+            // Buscar info de cada restaurante
+            await Promise.all(ids.map(async id => {
+                if (infos[id]?.nome) return;
                 try {
                     const snap = await getDoc(refRestaurante(id));
                     if (snap.exists()) {
                         const d = snap.data();
-                        infos[id] = { nome: d.restaurante?.nome || id, logo: d.restaurante?.logo || '', logoFormato: d.restaurante?.logoFormato || 'quadrado' };
+                        infos[id] = { nome: d.restaurante?.nome || id, nomeCompleto: d.restaurante?.nomeCompleto || d.restaurante?.nome || id, logo: d.restaurante?.logo || '', logoFormato: d.restaurante?.logoFormato || 'quadrado', suspended: d.suspended || false };
                     }
                 } catch(e) { infos[id] = { nome: id, logo: '' }; }
-            });
-            await Promise.all(infoPromises);
-            // Monta HTML
+            }));
+            const tmplList = typeof TEMPLATES !== 'undefined' ? Object.entries(TEMPLATES) : [];
             let html = '';
             // Grid de restaurantes
-            html += `<div class="dev-section-title">${ids.length} restaurante(s) cadastrado(s)</div>`;
-            html += '<div class="dev-rest-grid">';
+            html += '<div class="dev-section"><div class="dev-section-title">🏢 ' + ids.length + ' restaurante(s) cadastrado(s)</div><div class="dev-rest-grid">';
             ids.forEach(id => {
                 const info = infos[id] || { nome: id, logo: '' };
                 const isAtivo = id === restauranteAtivoId;
+                const isSusp = info.suspended;
                 const fmt = info.logoFormato || 'quadrado';
                 const radius = fmt === 'redondo' ? '50%' : '16px';
-                const logoHtml = info.logo
-                    ? `<img src="${info.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius};">`
-                    : `<span style="font-size:28px;">🏢</span>`;
-                html += `<div class="dev-rest-card ${isAtivo?'ativo':''}" onclick="devVerDetalhes('${id}')">
+                const logoHtml = info.logo ? `<img src="${info.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:${radius};">` : '🏢';
+                html += `<div class="dev-rest-card ${isAtivo?'ativo':''} ${isSusp?'suspenso':''}" onclick="devVerDetalhes('${id}')">
                     ${isAtivo ? '<div class="dev-rest-badge">Atual</div>' : ''}
+                    ${isSusp ? '<div class="dev-rest-badge susp">Suspenso</div>' : ''}
                     <div class="dev-rest-logo">${logoHtml}</div>
-                    <div class="dev-rest-nome">${info.nome}</div>
+                    <div class="dev-rest-nome">${info.nomeCompleto || info.nome}</div>
                     <div class="dev-rest-id">${id}</div>
-                    <div style="font-size:9px;color:var(--text3);margin-top:4px;">Toque para ações →</div>
+                    <div class="dev-rest-hint">Toque para gerenciar →</div>
                 </div>`;
             });
-            html += '</div>';
-            // Criar novo restaurante
-            html += '<div class="dev-section-title">Ações Globais</div>';
-            html += `<div class="dev-action-btn" onclick="devEnviarAvisoTodos()">
+            html += '</div></div>';
+            // Ações globais
+            html += '<div class="dev-section"><div class="dev-section-title">⚡ Ações Globais</div>';
+            html += `<div class="dev-action-btn gold" onclick="devEnviarAvisoTodos()">
                 <div class="dev-action-icon">📢</div>
-                <div><div class="dev-action-label">Enviar Aviso a Todos</div><div class="dev-action-sub">Mensagem para todos os restaurantes</div></div>
+                <div class="dev-action-text"><div class="label">Enviar Aviso a Todos</div><div class="sub">Mensagem para todos os restaurantes</div></div>
             </div>`;
-            html += '<div class="dev-section-title" style="margin-top:8px;">Criar Novo Restaurante</div>';
-            html += `<div class="dev-criar-form">
-                <div class="dev-criar-title">✨ Criar novo restaurante</div>
-                <input class="field" id="dev-rest-nome" placeholder="Nome do restaurante" oninput="atualizarPreviewCodigo(this.value)" style="margin-bottom:4px;">
-                <div id="dev-rest-codigo-preview" style="font-size:10px;color:var(--text3);margin-bottom:10px;padding:0 2px;">Código: —</div>
-                <select class="field" id="dev-rest-template" style="margin-bottom:8px;"></select>
-                <input class="field" id="dev-rest-senha" type="text" inputmode="text" placeholder="Senha mestra do gerente (mín. 4 dígitos)" style="margin-bottom:10px;">
-                <button class="btn-primary" onclick="devCriarRestaurante()" style="width:100%;margin:0;">✅ Criar e Acessar</button>
-            </div>`;
-            // Ações extras
             html += `<div class="dev-action-btn" onclick="entrarComoAdminManual()">
                 <div class="dev-action-icon">🔍</div>
-                <div><div class="dev-action-label">Acessar por código</div><div class="dev-action-sub">Entrar em qualquer restaurante</div></div>
-            </div>`;
+                <div class="dev-action-text"><div class="label">Acessar por Código</div><div class="sub">Entrar em qualquer restaurante</div></div>
+            </div></div>`;
+            // Formulário criar restaurante
+            html += '<div class="dev-section"><div class="dev-section-title">✨ Novo Restaurante</div><div class="dev-criar-form">';
+            html += '<div class="dev-criar-header"><div class="dev-criar-icon">🏗️</div><div><div class="dev-criar-title">Criar Restaurante</div><div class="dev-criar-sub">Preencha os dados do novo cliente</div></div></div>';
+            // Logo upload
+            html += '<div id="dev-logo-preview" class="dev-logo-preview" onclick="devEscolherLogo()">📷<br><span style="font-size:9px;color:var(--text3);margin-top:4px;display:block;">Logo (opcional)</span></div>';
+            html += '<input type="file" id="dev-logo-input" accept="image/*" style="display:none;" onchange="devLogoSelecionado(event)">';
+            // Nome completo
+            html += '<input class="field" id="dev-rest-nome-completo" placeholder="Nome completo (ex: Marchesini di Roverbella)" style="margin-bottom:6px;">';
+            // Nome curto / código
+            html += '<input class="field" id="dev-rest-nome" placeholder="Nome curto / código (ex: marchesini)" oninput="devAtualizarCodigo(this.value)" style="margin-bottom:4px;">';
+            html += '<div id="dev-rest-codigo-preview" class="dev-codigo-preview" style="color:var(--text3);">Código: —</div>';
+            // Templates
+            html += '<div class="dev-section-title" style="margin-top:4px;">Tipo de Negócio</div><div class="dev-template-grid" id="dev-tpl-grid">';
+            let devTplSel = 'restaurante';
+            tmplList.forEach(([id,t]) => {
+                html += `<div class="dev-tpl-btn ${id===devTplSel?'sel':''}" onclick="devSelecionarTpl('${id}',this)">${'<span class="ico">'+t.icone+'</span><span class="nm">'+t.nome+'</span>'}</div>`;
+            });
+            html += '</div>';
+            html += '<input type="hidden" id="dev-rest-template" value="restaurante">';
+            // Senha
+            html += '<input class="field" id="dev-rest-senha" type="tel" inputmode="numeric" pattern="\\d*" placeholder="Senha do gerente (4+ dígitos, só números)" style="margin-bottom:12px;">';
+            html += '<button class="btn-primary" onclick="devCriarRestaurante()" style="width:100%;margin:0;font-size:15px;padding:14px;">✅ Criar e Acessar</button>';
+            html += '</div></div>';
             body.innerHTML = html;
-            // Popular select de templates
-            const sel = document.getElementById('dev-rest-template');
-            if (sel && typeof TEMPLATES !== 'undefined') {
-                sel.innerHTML = Object.entries(TEMPLATES).map(([id,t])=>`<option value="${id}">${t.icone} ${t.nome}</option>`).join('');
-            }
+            // Variável para logo temporário
+            window._devLogoTemp = null;
         }
+
+        window.devEscolherLogo = function() { document.getElementById('dev-logo-input')?.click(); };
+        window.devLogoSelecionado = function(event) {
+            const file = event.target.files[0]; if(!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 300; canvas.height = 300;
+                    const ctx = canvas.getContext('2d');
+                    const sc = Math.max(300/img.width, 300/img.height);
+                    ctx.drawImage(img, (300-img.width*sc)/2, (300-img.height*sc)/2, img.width*sc, img.height*sc);
+                    const resultado = canvas.toDataURL('image/jpeg', 0.85);
+                    window._devLogoTemp = resultado;
+                    const preview = document.getElementById('dev-logo-preview');
+                    if (preview) preview.innerHTML = `<img src="${resultado}" style="width:100%;height:100%;object-fit:cover;border-radius:18px;">`;
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+        window.devAtualizarCodigo = function(val) {
+            const el = document.getElementById('dev-rest-codigo-preview');
+            if (!el) return;
+            const id = normalizarIdRest(val);
+            el.textContent = id ? 'Código: ' + id : 'Código: —';
+            el.style.color = id ? 'var(--accent)' : 'var(--text3)';
+        };
+        window.devSelecionarTpl = function(id, el) {
+            document.querySelectorAll('.dev-tpl-btn').forEach(b => b.classList.remove('sel'));
+            el.classList.add('sel');
+            const input = document.getElementById('dev-rest-template');
+            if (input) input.value = id;
+        };
 
         window.devAcessarRestaurante = async function(id) {
             await entrarComoAdmin(id);
         };
 
         window.devCriarRestaurante = async function() {
-            const nome = document.getElementById('dev-rest-nome')?.value?.trim();
+            const nomeCompleto = document.getElementById('dev-rest-nome-completo')?.value?.trim();
+            const nomeCurto = document.getElementById('dev-rest-nome')?.value?.trim();
             const templateId = document.getElementById('dev-rest-template')?.value || 'restaurante';
             const senha = document.getElementById('dev-rest-senha')?.value?.trim();
-            if (!nome) { customAlert('Digite o nome do restaurante.'); return; }
-            if (!senha || senha.length < 4) { customAlert('Senha mestra deve ter mínimo 4 caracteres.'); return; }
-            const id = normalizarIdRest(nome);
+            const nome = nomeCurto || nomeCompleto;
+            if (!nomeCompleto && !nomeCurto) { customAlert('Digite pelo menos o nome do restaurante.'); return; }
+            if (!senha || senha.length < 4) { customAlert('Senha do gerente deve ter mínimo 4 dígitos.'); return; }
+            const id = normalizarIdRest(nomeCurto || nomeCompleto);
             if (!id) { customAlert('Nome inválido. Use letras e números.'); return; }
             try {
                 const snap = await getDoc(refRestaurante(id));
                 if (snap.exists()) {
-                    const ok = await customConfirm(`Já existe um restaurante com o código "${id}".\nDeseja acessar ele?`, 'Acessar', 'Cancelar');
+                    const ok = await customConfirm('Já existe um restaurante com o código "' + id + '". Deseja acessar ele?', 'Acessar', 'Cancelar');
                     if (ok) await devAcessarRestaurante(id);
                     return;
                 }
-                // Estrutura limpa — não herda dados do restaurante atual
+                const logoData = window._devLogoTemp || '';
                 const restData = {
-                    restaurante: { nome, logo:'', fonte:'DM Sans' },
+                    restaurante: { nome: nomeCompleto || nome, nomeCompleto: nomeCompleto || nome, logo: logoData, fonte: 'DM Sans' },
                     masterPass: senha, templateAtivo: templateId,
                     tarefasCustomizadas: [], tarefasStatus: {}, usuariosSalvos: {},
                     historicoTurnos: [], registrosDesperdicio: [], desperdicioItens: [],
                     temposTarefa: {}, mostrarTempos: true, mensagensChat: [],
-                    pedidosFolga: [], loginAtividade: {}, setoresAtivos: {}
+                    pedidosFolga: [], loginAtividade: {}, setoresAtivos: {}, delegacoes: {}, delegacaoAtiva: false
                 };
                 const tarefasMap = typeof TAREFAS_POR_TEMPLATE !== 'undefined' ? (TAREFAS_POR_TEMPLATE[templateId] || {}) : {};
                 const setoresDoTpl = typeof TEMPLATES !== 'undefined' ? (TEMPLATES[templateId]?.setores || []) : [];
                 setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t => { restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
-                restData.tarefasCustomizadas.forEach(t => { if (!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg = estimarTempoPorTexto(t.txt); });
-                await setDoc(refRestaurante(id), restData, { merge:false });
-                await adicionarAoIndiceComInfo(id, { nome, logo:'', logoFormato:'quadrado' });
-                const link = `${window.location.origin}${window.location.pathname}?rest=${id}`;
-                await customAlert(`✅ Restaurante criado!\nNome: ${nome}\nCódigo: ${id}\nSenha do gerente: ${senha}\n\nLink da equipe:\n${link}`);
+                restData.tarefasCustomizadas.forEach(t => { if(!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg=estimarTempoPorTexto(t.txt); });
+                // Salvar restaurante
+                await setDoc(refRestaurante(id), restData, { merge: false });
+                console.log('Restaurante criado:', id);
+                // Salvar no índice
+                await adicionarAoIndiceComInfo(id, { nome: nomeCompleto || nome, nomeCompleto: nomeCompleto || nome, logo: logoData, logoFormato: 'quadrado' });
+                console.log('Índice atualizado');
+                const link = window.location.origin + window.location.pathname + '?rest=' + id;
+                await customAlert('✅ Restaurante criado!\n\nNome: ' + (nomeCompleto || nome) + '\nCódigo: ' + id + '\nSenha do gerente: ' + senha + '\n\nLink da equipe:\n' + link);
+                window._devLogoTemp = null;
                 await devAcessarRestaurante(id);
-            } catch(e) { customAlert('Erro ao criar:\n' + e.message); console.error(e); }
-        };
+            } catch(e) { customAlert('Erro ao criar: ' + e.message); console.error(e); }
+        };;
 
 
         // ===== AÇÕES DO PAINEL DO DESENVOLVEDOR =====
@@ -5796,7 +5867,7 @@ const TAREFAS_RESTAURANTE = {
             const msg = await customPrompt('Aviso para TODOS os restaurantes:');
             if(!msg||!msg.trim()) return;
             let ids=[];
-            try{ const idx=await getDoc(doc(db,'restaurantes','__index__')); if(idx.exists()) ids=idx.data().ids||[]; }catch(e){}
+            try{ const idx=await getDoc(doc(db,'restaurantes','zindice')); if(idx.exists()) ids=idx.data().ids||[]; }catch(e){}
             if(!ids.length){ customAlert('Nenhum restaurante cadastrado.'); return; }
             const ok=await customConfirm(`Enviar para ${ids.length} restaurante(s)?`,'Enviar','Cancelar');
             if(!ok) return;
@@ -5809,7 +5880,7 @@ const TAREFAS_RESTAURANTE = {
             const conf=await customPrompt(`Digite o código do restaurante para confirmar a exclusão:\n\n${id}`);
             if(conf!==id){ if(conf!==null) customAlert('Código incorreto.'); return; }
             try {
-                const idxRef=doc(db,'restaurantes','__index__');
+                const idxRef=doc(db,'restaurantes','zindice');
                 const snap=await getDoc(idxRef);
                 if(snap.exists()){ const ids=(snap.data().ids||[]).filter(i=>i!==id); const infos=snap.data().info||{}; delete infos[id]; await setDoc(idxRef,{ids,info:infos},{merge:false}); }
                 await setDoc(refRestaurante(id),{_excluido:true,_excluidoEm:Date.now()},{merge:true});
@@ -5868,7 +5939,7 @@ const TAREFAS_RESTAURANTE = {
         }
         async function adicionarAoIndiceComInfo(id, info) {
             try {
-                const idxRef = doc(db, 'restaurantes', '__index__');
+                const idxRef = doc(db, 'restaurantes', 'zindice');
                 const snap = await getDoc(idxRef);
                 const ids = snap.exists() ? (snap.data().ids || []) : [];
                 const infos = snap.exists() ? (snap.data().info || {}) : {};
@@ -5881,7 +5952,7 @@ const TAREFAS_RESTAURANTE = {
                 console.error('Erro ao atualizar índice:', e);
                 // Segunda tentativa com só os IDs
                 try {
-                    const idxRef2 = doc(db, 'restaurantes', '__index__');
+                    const idxRef2 = doc(db, 'restaurantes', 'zindice');
                     await setDoc(idxRef2, { ids: [id] }, { merge: true });
                 } catch(e2) { console.error('Falha total no índice:', e2); }
             }
@@ -5889,7 +5960,7 @@ const TAREFAS_RESTAURANTE = {
         // Busca e atualiza info do restaurante no índice (nome, logo)
         async function sincronizarInfoNoIndice(id, nome, logo, logoFormato) {
             try {
-                const idxRef = doc(db, 'restaurantes', '__index__');
+                const idxRef = doc(db, 'restaurantes', 'zindice');
                 await setDoc(idxRef, { [`info.${id}`]: { nome: nome||id, logo: logo||'', logoFormato: logoFormato||'quadrado' } }, { merge: true });
             } catch(e) { console.warn('sincronizarInfoNoIndice', e); }
         }

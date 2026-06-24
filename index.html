@@ -245,9 +245,9 @@
         .sector-tabs { display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 2px 10px;margin-bottom:4px;scroll-behavior:smooth; }
         .sector-tabs::-webkit-scrollbar { display:none; }
         /* Swipe de setores */
-        .sector-swipe-wrap { display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch; }
+        .sector-swipe-wrap { display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;width:100%;max-width:100%; }
         .sector-swipe-wrap::-webkit-scrollbar { display:none; }
-        .sector-swipe-item { min-width:100%;scroll-snap-align:start;flex-shrink:0; }
+        .sector-swipe-item { min-width:100%;width:100%;scroll-snap-align:start;flex-shrink:0;box-sizing:border-box; }
         .sector-tab { background:var(--card2);border:1.5px solid var(--border);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;transition:all var(--transition);flex-shrink:0;font-family:var(--font-body); }
         .sector-tab.active { background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow); }
         .sector-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow-card); }
@@ -3134,8 +3134,17 @@ const TAREFAS_RESTAURANTE = {
         window.processarLogin = async function() {
             const pass=document.getElementById('field-pass').value.trim();
             if(loginViewCtx==='manager'){
-                const senhaCorreta = liveData.masterPass || '';
-                if(pass===senhaCorreta && senhaCorreta){
+                // Se liveData ainda não carregou, aguarda um pouco
+                if(!liveData.masterPass && !restauranteAtivoId) {
+                    customAlert('Aguarde o restaurante carregar e tente novamente.');
+                    return;
+                }
+                const senhaCorreta = liveData.masterPass;
+                if(!senhaCorreta) {
+                    customAlert('Senha mestra não configurada. Use o painel do desenvolvedor para redefinir.');
+                    return;
+                }
+                if(pass===senhaCorreta){
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';
@@ -3220,8 +3229,9 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('dlg-g-ok').onclick = () => {
                 const s = document.getElementById('dlg-gerente-pass')?.value?.trim();
                 ov.classList.remove('show');
-                const senhaCorreta = liveData.masterPass || '';
-                if (s === senhaCorreta && senhaCorreta) {
+                const senhaCorreta = liveData.masterPass;
+                if(!senhaCorreta) { customAlert('Senha mestra não configurada.\nUse o Painel do Desenvolvedor para redefinir.'); return; }
+                if (s === senhaCorreta) {
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';

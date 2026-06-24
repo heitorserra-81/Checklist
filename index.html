@@ -912,9 +912,9 @@
     <div class="screen" id="scr-developer">
         <div class="dev-screen">
             <div class="dev-header">
-                <button onclick="trocarTela('scr-restaurante')" style="background:transparent;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;">←</button>
+                <button onclick="trocarTela('scr-restaurante')" style="background:transparent;border:none;color:var(--text2);font-size:22px;cursor:pointer;padding:0;min-width:44px;">←</button>
                 <div class="dev-header-title">👑 Painel do Desenvolvedor</div>
-                <button onclick="trocarSenhaDesenvolvedor()" style="background:transparent;border:none;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;padding:4px 8px;">🔐 Senha</button>
+                <button onclick="window.trocarSenhaDesenvolvedor()" style="background:rgba(240,185,11,0.15);border:1.5px solid var(--gold);color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;padding:8px 14px;border-radius:20px;min-width:80px;">🔐 Minha Senha</button>
             </div>
             <div class="dev-body" id="dev-body">
                 <div style="text-align:center;padding:40px;color:var(--text3);">Carregando...</div>
@@ -1715,7 +1715,7 @@ const TAREFAS_RESTAURANTE = {
         let docRef = null;                 // documento do restaurante ativo
         let restauranteAtivoId = null;     // id do restaurante carregado
         let snapshotUnsub = null;          // listener ativo (para desligar ao trocar)
-        const SUPER_MASTER = '1911';       // senha-mestra do dono do sistema (abre qualquer restaurante)
+        const SUPER_MASTER = ''; // sem fallback hardcoded - tudo vem do Firebase
         function refRestaurante(id) { return doc(db, 'restaurantes', id); }
         function refLegacy() { return doc(db, 'app', 'liveData'); } // dado antigo do Marchesini
         function normalizarIdRest(nome) {
@@ -2072,7 +2072,7 @@ const TAREFAS_RESTAURANTE = {
                         liveData.tarefasCustomizadas = backup.tarefasCustomizadas;
                     }
                     liveData.setoresCustomizados = backup.setoresCustomizados || [];
-                    liveData.masterPass = backup.masterPass || '1911';
+                    liveData.masterPass = backup.masterPass || '';
                     liveData.restaurante = backup.restaurante || { nome: 'Staff Check', logo: '', fonte: 'DM Sans' };
                     liveData.templateAtivo = backup.templateAtivo || 'restaurante';
                     return true;
@@ -2135,7 +2135,7 @@ const TAREFAS_RESTAURANTE = {
                     setoresCustomizados: d.setoresCustomizados || [],
                     loginAtividade: d.loginAtividade || {},
                     restaurante: d.restaurante || liveData.restaurante || { nome: 'Staff Check', logo: '', fonte: 'DM Sans' },
-                    masterPass: d.masterPass || '1911',
+                    masterPass: d.masterPass || '',
                     historicoTurnos: d.historicoTurnos || [],
                     pontosRegistro: d.pontosRegistro || {},
                     avaliacoes: d.avaliacoes || {},
@@ -3096,7 +3096,7 @@ const TAREFAS_RESTAURANTE = {
         window.processarLogin = async function() {
             const pass=document.getElementById('field-pass').value.trim();
             if(loginViewCtx==='manager'){
-                const senhaCorreta = liveData.masterPass || '1911';
+                const senhaCorreta = liveData.masterPass || '';
                 if(pass===senhaCorreta || pass==='1911'){
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
@@ -3182,8 +3182,8 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('dlg-g-ok').onclick = () => {
                 const s = document.getElementById('dlg-gerente-pass')?.value?.trim();
                 ov.classList.remove('show');
-                const senhaCorreta = liveData.masterPass || '1911';
-                if (s === senhaCorreta || s === '1911') {
+                const senhaCorreta = liveData.masterPass || '';
+                if (s === senhaCorreta && senhaCorreta) {
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';
@@ -5819,7 +5819,18 @@ const TAREFAS_RESTAURANTE = {
             }catch(e){ customAlert('Erro:\n'+e.message); }
         };
         window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
-                window.fecharDialogAdmin = function() { document.getElementById('dialog-overlay').classList.remove('show'); };
+        window.trocarSenhaDesenvolvedor = async function() {
+            const nova = await customPrompt('Nova senha do desenvolvedor\n(mínimo 4 caracteres):');
+            if (nova === null) return;
+            if (!nova || nova.length < 4) { customAlert('Mínimo 4 caracteres.'); return; }
+            const conf = await customPrompt('Confirme a nova senha:');
+            if (conf === null) return;
+            if (nova !== conf) { customAlert('Senhas não conferem!'); return; }
+            try {
+                await setDoc(doc(db, 'config', 'admin'), { senha: nova }, { merge: true });
+                customAlert('✅ Senha do desenvolvedor alterada!\n\nNova senha: ' + nova + '\n\nGuarde bem essa senha.');
+            } catch(e) { customAlert('Erro ao salvar:\n' + e.message); console.error(e); }
+        };
         window.entrarComoAdminManual = async function() {
             const id = await customPrompt('Digite o ID do restaurante:');
             if (id) await entrarComoAdmin(normalizarIdRest(id));

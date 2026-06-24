@@ -242,8 +242,12 @@
         .progress-stat-lbl { font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;font-weight:600; }
 
         /* SECTOR TABS */
-        .sector-tabs { display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 2px 10px;margin-bottom:4px; }
+        .sector-tabs { display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 2px 10px;margin-bottom:4px;scroll-behavior:smooth; }
         .sector-tabs::-webkit-scrollbar { display:none; }
+        /* Swipe de setores */
+        .sector-swipe-wrap { display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch; }
+        .sector-swipe-wrap::-webkit-scrollbar { display:none; }
+        .sector-swipe-item { min-width:100%;scroll-snap-align:start;flex-shrink:0; }
         .sector-tab { background:var(--card2);border:1.5px solid var(--border);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;transition:all var(--transition);flex-shrink:0;font-family:var(--font-body); }
         .sector-tab.active { background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow); }
         .sector-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow-card); }
@@ -2131,7 +2135,10 @@ const TAREFAS_RESTAURANTE = {
                 delegacoes:{}, delegacaoAtiva:false
             };
             if (snapshotUnsub) { try { snapshotUnsub(); } catch(e){} snapshotUnsub = null; }
+            const _snapDocPath = docRef.path; // captura path do restaurante atual
             snapshotUnsub = onSnapshot(docRef, snap => {
+            // Ignora snapshots de restaurantes antigos (evita dados do Marchesini no Garden)
+            if (snap.ref.path !== docRef.path) return;
             if (isSaving) return;
             if (snap.exists()) {
                 const d = snap.data();
@@ -2569,7 +2576,7 @@ const TAREFAS_RESTAURANTE = {
                     <button class="btn-ghost" style="flex:1;" onclick="document.getElementById('logo-input').click()">📷 Enviar Logo</button>
                     ${rest.logo ? `<button class="btn-ghost" style="flex:1;color:var(--red);border-color:var(--red);" onclick="removerLogo()">🗑️ Remover</button>` : ''}
                 </div>
-                ${rest.logo ? `<img src="${rest.logo}" style="width:80px;height:80px;border-radius:16px;object-fit:cover;margin-bottom:12px;border:2px solid var(--border);">` : ''}
+                ${rest.logo ? `<img src="${rest.logo}" style="width:80px;height:80px;border-radius:${rest.logoFormato==='redondo'?'50%':'16px'};object-fit:cover;margin-bottom:12px;border:2px solid var(--border);">` : ''}
                 <div class="config-section-title" style="margin-top:8px;">Exibição</div>
                 <div class="config-row">
                     <div class="config-row-icon">⏱️</div>
@@ -3523,56 +3530,66 @@ const TAREFAS_RESTAURANTE = {
             document.getElementById('stat-feitas').textContent = feitas;
             document.getElementById('stat-andamento').textContent = andamento;
             document.getElementById('stat-pendentes').textContent = total - feitas - andamento;
+            // ===== TABS com scroll automático =====
             const tabsEl = document.getElementById('sector-tabs'); tabsEl.innerHTML = '';
-            setores.forEach(s => {
+            setores.forEach((s, si) => {
                 const tab = document.createElement('div');
                 tab.className = 'sector-tab' + (s.id === activeSector ? ' active' : '');
+                tab.id = 'tab-' + s.id;
                 tab.textContent = s.icon + ' ' + s.title;
                 tab.style.borderLeft = `3px solid ${s.color}`;
-                tab.onclick = () => { activeSector = s.id; renderWorker(); };
+                tab.onclick = () => {
+                    activeSector = s.id;
+                    // Rola o container de setores para o índice correto
+                    const swWrap = document.getElementById('sector-swipe-wrap');
+                    if (swWrap) swWrap.scrollTo({ left: si * swWrap.clientWidth, behavior: 'smooth' });
+                    // Atualiza tabs
+                    document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                };
                 tabsEl.appendChild(tab);
             });
+            // Scroll tab ativo pro centro
+            setTimeout(() => {
+                const activeTab = document.getElementById('tab-' + activeSector);
+                if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }, 50);
+
+            // ===== CONTAINER SWIPE =====
             const content = document.getElementById('sector-content'); content.innerHTML = '';
-            const setor = setores.find(s => s.id === activeSector); if (!setor) return;
-            let tarefas = liveData.tarefasCustomizadas.filter((t, i) => {
-                if (t.cat !== setor.id) return false;
-                const origIdx = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).indexOf(t);
-                const chaveAtiva = setor.id + '_t_' + origIdx;
-                return liveData.tarefasAtivas?.[chaveAtiva] !== false;
-            });
-            if (activeFilter === 'pendentes') tarefas = tarefas.filter((_, i) => !liveData.tarefasStatus[setor.id + '_' + i] || liveData.tarefasStatus[setor.id + '_' + i].status === 'idle');
-            else if (activeFilter === 'andamento') tarefas = tarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'working');
-            else if (activeFilter === 'feitas') tarefas = tarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done');
-            else if (activeFilter === 'prioritarias') tarefas = tarefas.filter(t => t.prioridade === 'alta');
-            const origTarefas = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id);
-            const sFT = origTarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done').length;
-            const sT = origTarefas.length;
-            // PEEK: prévia dos setores vizinhos (esquerda/direita)
-            const curIdx = setores.findIndex(s => s.id === setor.id);
-            const prevS = setores[curIdx - 1], nextS = setores[curIdx + 1];
-            if (fxOnAttr('swipefx')) {
-                const peek = document.createElement('div');
-                peek.className = 'sector-peek';
-                peek.innerHTML = `
-                    <div class="peek-side ${prevS ? '' : 'empty'}">${prevS ? `<span class="peek-dot" style="background:${prevS.color};"></span>◀ ${prevS.icon} ${prevS.title}` : ''}</div>
-                    <div class="peek-side ${nextS ? '' : 'empty'}">${nextS ? `${nextS.icon} ${nextS.title} ▶<span class="peek-dot" style="background:${nextS.color};"></span>` : ''}</div>`;
-                content.appendChild(peek);
-                if (prevS) peek.children[0].onclick = () => { window._setorDir='esq'; activeSector = prevS.id; renderWorker(); };
-                if (nextS) peek.children[1].onclick = () => { window._setorDir='dir'; activeSector = nextS.id; renderWorker(); };
-            }
-            const card = document.createElement('div');
-            card.className = 'sector-card';
-            // Animação de entrada ao trocar de setor
-            if (window._setorDir) {
-                card.classList.add('setor-anim-' + window._setorDir);
-                window._setorDir = null;
-            }
-            card.style.borderTop = `3px solid ${setor.color}`;
-            card.style.setProperty('--sec-c', setor.color);
-            card.style.setProperty('--sec-c2', '#2f80ed');
-            card.innerHTML = `<div class="sector-header" style="background:linear-gradient(135deg,${setor.color},${setor.color}cc);"><div class="sector-header-left"><div class="sector-icon-circle" style="background:rgba(255,255,255,0.2);">${setor.icon}</div><h3 style="color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.35);">${setor.title}</h3></div><div class="sector-done-badge" style="color:#fff;background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3);">${sFT}/${sT}</div></div><div id="tasks-list-inner"></div>`;
-            content.appendChild(card);
-            const tasksListEl = card.querySelector('#tasks-list-inner');
+            const swipeWrap = document.createElement('div');
+            swipeWrap.id = 'sector-swipe-wrap';
+            swipeWrap.className = 'sector-swipe-wrap';
+            content.appendChild(swipeWrap);
+
+            // ===== RENDERIZA TODOS OS SETORES =====
+            setores.forEach((setor, si) => {
+                const swipeItem = document.createElement('div');
+                swipeItem.className = 'sector-swipe-item';
+                swipeWrap.appendChild(swipeItem);
+
+                let tarefas = liveData.tarefasCustomizadas.filter((t, i) => {
+                    if (t.cat !== setor.id) return false;
+                    const origIdx = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id).indexOf(t);
+                    const chaveAtiva = setor.id + '_t_' + origIdx;
+                    return liveData.tarefasAtivas?.[chaveAtiva] !== false;
+                });
+                if (activeFilter === 'pendentes') tarefas = tarefas.filter((_, i) => !liveData.tarefasStatus[setor.id + '_' + i] || liveData.tarefasStatus[setor.id + '_' + i].status === 'idle');
+                else if (activeFilter === 'andamento') tarefas = tarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'working');
+                else if (activeFilter === 'feitas') tarefas = tarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done');
+                else if (activeFilter === 'prioritarias') tarefas = tarefas.filter(t => t.prioridade === 'alta');
+                const origTarefas = liveData.tarefasCustomizadas.filter(c => c.cat === setor.id);
+                const sFT = origTarefas.filter((_, i) => liveData.tarefasStatus[setor.id + '_' + i]?.status === 'done').length;
+                const sT = origTarefas.length;
+                const card = document.createElement('div');
+                card.className = 'sector-card';
+                card.style.borderTop = `3px solid ${setor.color}`;
+                card.style.setProperty('--sec-c', setor.color);
+                card.style.setProperty('--sec-c2', '#2f80ed');
+                card.innerHTML = `<div class="sector-header" style="background:linear-gradient(135deg,${setor.color},${setor.color}cc);"><div class="sector-header-left"><div class="sector-icon-circle" style="background:rgba(255,255,255,0.2);">${setor.icon}</div><h3 style="color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.35);">${setor.title}</h3></div><div class="sector-done-badge" style="color:#fff;background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3);">${sFT}/${sT}</div></div><div id="tasks-list-inner-${setor.id}"></div>`;
+                swipeItem.appendChild(card);
+                const tasksListEl = card.querySelector('#tasks-list-inner-' + setor.id);
             if (tarefas.length === 0) { tasksListEl.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div>Nenhuma tarefa neste filtro.</div>'; }
             let tarefasOrdenadas = tarefas.map(t => ({ ...t, _idx: origTarefas.indexOf(t) }));
             if (currentWorker !== 'Gerente') tarefasOrdenadas = aplicarOrdemPessoal(tarefasOrdenadas, setor.id);
@@ -3634,8 +3651,38 @@ const TAREFAS_RESTAURANTE = {
                 tasksListEl.appendChild(row);
                 if (st.status === 'working' && st.startTime) iniciarCronLista(chave, st.startTime);
             });
-            if (currentWorker !== 'Gerente') habilitarDragNaLista(tasksListEl, setor.id);
-            // ===== SWIPE ENTRE SETORES (corrigido: handlers únicos, sem duplicação) =====
+                if (currentWorker !== 'Gerente') habilitarDragNaLista(tasksListEl, setor.id);
+            }); // fim forEach setores
+
+            // ===== Scroll para o setor ativo =====
+            const activeIdx = setores.findIndex(s => s.id === activeSector);
+            if (activeIdx >= 0) {
+                requestAnimationFrame(() => {
+                    swipeWrap.scrollLeft = activeIdx * swipeWrap.clientWidth;
+                });
+            }
+
+            // ===== Detectar setor visível ao scrollar e atualizar tabs =====
+            let _swipeScrollTimer;
+            swipeWrap.onscroll = () => {
+                clearTimeout(_swipeScrollTimer);
+                _swipeScrollTimer = setTimeout(() => {
+                    const idx = Math.round(swipeWrap.scrollLeft / swipeWrap.clientWidth);
+                    if (setores[idx] && setores[idx].id !== activeSector) {
+                        activeSector = setores[idx].id;
+                        document.querySelectorAll('.sector-tab').forEach((t, i) => {
+                            t.classList.toggle('active', i === idx);
+                        });
+                        const activeTab = document.getElementById('tab-' + activeSector);
+                        if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    }
+                }, 80);
+            };
+
+            // ===== SWIPE ANTIGO REMOVIDO (substituído pelo scroll-snap nativo) =====
+            if (content._swS) content.removeEventListener('touchstart', content._swS);
+            if (content._swE) content.removeEventListener('touchend', content._swE);
+            // ===== SWIPE ENTRE SETORES (legado - mantido para compatibilidade) =====
             if (content._swS) content.removeEventListener('touchstart', content._swS);
             if (content._swE) content.removeEventListener('touchend', content._swE);
             let swX = 0, swY = 0;

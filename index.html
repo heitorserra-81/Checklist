@@ -2220,10 +2220,9 @@ const TAREFAS_RESTAURANTE = {
                     }
                 }
             } else {
-                if (!restaurarBackupLocal()) {
-                    popularTarefasPadrao();
-                }
-                salvar(true);
+                // Documento não existe no Firebase — NÃO recriar automaticamente
+                // Isso evita recriar restaurantes que foram deletados pelo desenvolvedor
+                console.warn('Documento não existe:', docRef.path);
             }
             atualizarDatetime();
             atualizarBadgesOnline();

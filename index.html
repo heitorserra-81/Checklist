@@ -5886,10 +5886,7 @@ const TAREFAS_RESTAURANTE = {
                     temposTarefa: {}, mostrarTempos: true, mensagensChat: [],
                     pedidosFolga: [], loginAtividade: {}, setoresAtivos: {}, delegacoes: {}, delegacaoAtiva: false
                 };
-                const tarefasMap = typeof TAREFAS_POR_TEMPLATE !== 'undefined' ? (TAREFAS_POR_TEMPLATE[templateId] || {}) : {};
-                const setoresDoTpl = typeof TEMPLATES !== 'undefined' ? (TEMPLATES[templateId]?.setores || []) : [];
-                setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t => { restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
-                restData.tarefasCustomizadas.forEach(t => { if(!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg=estimarTempoPorTexto(t.txt); });
+                // Template NÃO é aplicado automaticamente — gerente escolhe nas configurações
                 // Limpa usuário anterior (restaurante novo = sem auto-login)
                 localStorage.removeItem('sc-last-user');
                 // Salvar restaurante
@@ -6022,21 +6019,60 @@ const TAREFAS_RESTAURANTE = {
                 const snap = await getDoc(refRestaurante(id));
                 if (!snap.exists()) { customAlert('Restaurante "' + id + '" não encontrado.'); return; }
             } catch(e) { customAlert('Erro de conexão: ' + e.message); return; }
-            // Trocar restaurante — reseta tudo antes
+            // Trocar restaurante — reseta liveData completamente antes de qualquer render
             isSaving = false;
             currentWorker = 'Gerente';
-            localStorage.removeItem('sc-last-user'); // limpa usuário anterior ao trocar restaurante
+            localStorage.removeItem('sc-last-user');
             localStorage.setItem('sc-last-user', 'Gerente');
             localStorage.setItem('sc-rest-id', id);
-            conectarRestaurante(id); // já atualiza restauranteAtivoId e docRef
+            // Reseta liveData para evitar que dados do restaurante anterior apareçam
+            liveData = {
+                restaurante:{nome:'',logo:'',fonte:'DM Sans'},
+                masterPass:'', templateAtivo:'restaurante',
+                tarefasCustomizadas:[], tarefasStatus:{}, usuariosSalvos:{},
+                historicoTurnos:[], mensagensChat:[], pedidosFolga:[],
+                registrosDesperdicio:[], desperdicioItens:[], temposTarefa:{},
+                mostrarTempos:true, loginAtividade:{}, setoresAtivos:{},
+                delegacoes:{}, delegacaoAtiva:false
+            };
+            // Espera snapshot real do Firebase antes de renderizar
+            await new Promise((resolve) => {
+                const unsub = onSnapshot(refRestaurante(id), (snap) => {
+                    if (snap.exists()) {
+                        const d = snap.data();
+                        Object.assign(liveData, {
+                            restaurante: d.restaurante || {nome:'',logo:'',fonte:'DM Sans'},
+                            masterPass: d.masterPass || '',
+                            templateAtivo: d.templateAtivo || 'restaurante',
+                            tarefasCustomizadas: d.tarefasCustomizadas || [],
+                            tarefasStatus: d.tarefasStatus || {},
+                            usuariosSalvos: d.usuariosSalvos || {},
+                            historicoTurnos: d.historicoTurnos || [],
+                            mensagensChat: d.mensagensChat || [],
+                            pedidosFolga: d.pedidosFolga || [],
+                            registrosDesperdicio: d.registrosDesperdicio || [],
+                            desperdicioItens: d.desperdicioItens || [],
+                            temposTarefa: d.temposTarefa || {},
+                            mostrarTempos: d.mostrarTempos !== false,
+                            loginAtividade: d.loginAtividade || {},
+                            setoresAtivos: d.setoresAtivos || {},
+                            delegacoes: d.delegacoes || {},
+                            delegacaoAtiva: d.delegacaoAtiva || false
+                        });
+                        unsub();
+                        resolve();
+                    }
+                });
+                // Fallback: se demorar mais de 5s, continua mesmo assim
+                setTimeout(resolve, 5000);
+            });
+            conectarRestaurante(id);
             document.getElementById('sidebar-after-login').style.display = 'block';
             document.getElementById('sidebar-before-login').style.display = 'none';
-            // Aguarda snapshot carregar dados do novo restaurante
-            await new Promise(resolve => setTimeout(resolve, 2000));
             trocarTela('scr-manager');
             renderHistorico();
             atualizarNotifEscala();
-            showToast('👑 Restaurante: ' + id, '👑', 3000);
+            showToast('👑 Restaurante: ' + (liveData.restaurante?.nome || id), '👑', 3000);
         }
 
         // Garante que o restaurante seja adicionado ao índice quando criado

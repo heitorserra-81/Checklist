@@ -5890,6 +5890,8 @@ const TAREFAS_RESTAURANTE = {
                 const setoresDoTpl = typeof TEMPLATES !== 'undefined' ? (TEMPLATES[templateId]?.setores || []) : [];
                 setoresDoTpl.forEach(s => { (tarefasMap[s.id]||[]).forEach(t => { restData.tarefasCustomizadas.push({...t,cat:s.id}); }); });
                 restData.tarefasCustomizadas.forEach(t => { if(!t.estimativaSeg && typeof estimarTempoPorTexto==='function') t.estimativaSeg=estimarTempoPorTexto(t.txt); });
+                // Limpa usuário anterior (restaurante novo = sem auto-login)
+                localStorage.removeItem('sc-last-user');
                 // Salvar restaurante
                 await setDoc(refRestaurante(id), restData, { merge: false });
                 console.log('Restaurante criado:', id);
@@ -6023,6 +6025,7 @@ const TAREFAS_RESTAURANTE = {
             // Trocar restaurante — reseta tudo antes
             isSaving = false;
             currentWorker = 'Gerente';
+            localStorage.removeItem('sc-last-user'); // limpa usuário anterior ao trocar restaurante
             localStorage.setItem('sc-last-user', 'Gerente');
             localStorage.setItem('sc-rest-id', id);
             conectarRestaurante(id); // já atualiza restauranteAtivoId e docRef

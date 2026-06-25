@@ -477,6 +477,14 @@
 
         /* WORKER PROFILE */
         .worker-profile-overlay { position:fixed;inset:0;background:var(--overlay);z-index:11000;display:none;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:env(safe-area-inset-bottom,0); }
+        @keyframes medalhaSubir { 0%{transform:translateY(60px) scale(0.5);opacity:0;} 60%{transform:translateY(-10px) scale(1.2);opacity:1;} 100%{transform:translateY(0) scale(1);opacity:1;} }
+        @keyframes confettiCair { 0%{transform:translateY(-20px) rotate(0deg);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+        @keyframes conquista-pop { 0%{transform:scale(0) rotate(-10deg);opacity:0;} 70%{transform:scale(1.15) rotate(3deg);opacity:1;} 100%{transform:scale(1) rotate(0deg);opacity:1;} }
+        .medalha-anim { animation: medalhaSubir 0.7s cubic-bezier(.4,0,.2,1) forwards; }
+        .conquista-badge { display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:800;animation:conquista-pop 0.5s cubic-bezier(.4,0,.2,1) forwards;margin:3px; }
+        .termometro-wrap { background:var(--card2);border-radius:14px;padding:14px;margin-bottom:12px; }
+        .termometro-bar { height:14px;border-radius:8px;background:var(--card3);overflow:hidden;margin:8px 0; }
+        .termometro-fill { height:100%;border-radius:8px;transition:width 0.8s cubic-bezier(.4,0,.2,1); }
         .worker-profile-overlay.show { display:flex; }
         .worker-profile-sheet { background:var(--card);border-radius:var(--radius-xl) var(--radius-xl) 0 0;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(0,0,0,0.4);animation:slideUp 0.3s cubic-bezier(.4,0,.2,1); }
         .wp-handle { width:36px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 0;flex-shrink:0; }
@@ -894,9 +902,10 @@
             <div class="wp-folga-pedir" id="wp-folga-pedir"><button class="btn-pedir-folga" id="btn-pedir-folga-wp">📅 Pedir Folga / Troca</button></div>
             <div class="wp-stats" id="wp-stats"></div>
             <div class="wp-tabs" id="wp-tabs">
-                <div class="wp-tab active" data-tab="working" onclick="trocarAbaWP('working',this)">⏳ Fazendo Agora</div>
-                <div class="wp-tab" data-tab="done" onclick="trocarAbaWP('done',this)">✅ Feitas Hoje</div>
+                <div class="wp-tab active" data-tab="working" onclick="trocarAbaWP('working',this)">⏳ Fazendo</div>
+                <div class="wp-tab" data-tab="done" onclick="trocarAbaWP('done',this)">✅ Feitas</div>
                 <div class="wp-tab" data-tab="all" onclick="trocarAbaWP('all',this)">📋 Todas</div>
+                <div class="wp-tab" data-tab="placar" onclick="trocarAbaWP('placar',this)">🏆 Placar</div>
             </div>
             <div class="wp-task-list" id="wp-task-list"></div>
         </div>
@@ -1042,6 +1051,20 @@
                 </div>
             </div>
             <!-- histórico movido para dentro de Relatórios --><div id="historico-list" style="display:none;"></div>
+            <!-- TERMÔMETRO DO TURNO -->
+            <div class="termometro-wrap" id="termometro-wrap" style="margin:0 16px 4px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:12px;font-weight:800;color:var(--text2);">🌡️ TERMÔMETRO DO TURNO</span>
+                    <span id="term-pct" style="font-size:18px;font-weight:900;color:var(--accent);">0%</span>
+                </div>
+                <div class="termometro-bar">
+                    <div class="termometro-fill" id="term-fill" style="width:0%;background:var(--accent);"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);">
+                    <span id="term-status">Calculando...</span>
+                    <span id="term-counts"></span>
+                </div>
+            </div>
             <div class="mgr-grid">
                 <div class="mgr-btn tasks" onclick="abrirGerenteModal('biblioteca')">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(0,146,70,0.12);">📚</div>
@@ -2214,7 +2237,7 @@ const TAREFAS_RESTAURANTE = {
             if (modalChave && document.getElementById('task-modal').classList.contains('show')) abrirModal(modalChave);
             if (document.getElementById('chat-overlay').classList.contains('show')) { renderChat(); renderChatOnlineBar(); }
             if (document.getElementById('dm-overlay').classList.contains('show')) renderDM();
-            if (document.getElementById('scr-manager').classList.contains('active')) { renderHistorico(); atualizarNotifEscala(); }
+            if (document.getElementById('scr-manager').classList.contains('active')) { renderHistorico(); atualizarNotifEscala(); atualizarTermometro(); }
             if (wpWorker && document.getElementById('worker-profile-overlay').classList.contains('show')) renderPerfilFuncionario(wpWorker);
             if (document.getElementById('escala-modal').classList.contains('open')) renderCalendarioEscala();
             renderSidebarUsers();
@@ -2568,6 +2591,11 @@ const TAREFAS_RESTAURANTE = {
                     <div class="config-row-info"><div class="config-row-label">Mostrar tempos das tarefas</div><div class="config-row-sub">Estimativa e média real de cada tarefa</div></div>
                     <label class="toggle-switch"><input type="checkbox" ${liveData.mostrarTempos!==false?'checked':''} onchange="toggleMostrarTempos(this.checked)"><span class="toggle-slider"></span></label>
                 </div>
+                <div class="config-row">
+                    <div class="config-row-icon">🏆</div>
+                    <div class="config-row-info"><div class="config-row-label">Placar competitivo</div><div class="config-row-sub">Ranking e conquistas no perfil dos funcionários</div></div>
+                    <label class="toggle-switch"><input type="checkbox" ${liveData.placardAtivo!==false?'checked':''} onchange="window.togglePlacard(this.checked)"><span class="toggle-slider"></span></label>
+                </div>
                 <button class="btn-primary" onclick="salvarConfigRestaurante()">💾 Salvar Configurações</button>
             </div>`;
             body.innerHTML = html;
@@ -2577,6 +2605,11 @@ const TAREFAS_RESTAURANTE = {
             liveData.mostrarTempos = on;
             await atualizarCampo('mostrarTempos', on);
             if (document.getElementById('scr-worker').classList.contains('active')) renderWorker();
+        };
+
+        window.togglePlacard = async function(on) {
+            liveData.placardAtivo = on;
+            await atualizarCampo('placardAtivo', on);
         };
 
         window.salvarConfigRestaurante = async function() {
@@ -5606,7 +5639,117 @@ const TAREFAS_RESTAURANTE = {
         window.abrirPerfilFuncionario = function(nome, abaInicial='working') { wpWorker=nome; wpAbaAtiva=abaInicial; renderPerfilFuncionario(nome); document.getElementById('worker-profile-overlay').classList.add('show'); document.querySelectorAll('.wp-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===abaInicial)); };
 
         window.fecharPerfilFuncionario = function() { document.getElementById('worker-profile-overlay').classList.remove('show'); Object.values(wpCronos||{}).forEach(c=>clearInterval(c)); wpCronos={}; wpWorker=null; };
-        window.trocarAbaWP = function(aba, el) { wpAbaAtiva=aba; document.querySelectorAll('.wp-tab').forEach(t=>t.classList.remove('active')); if(el) el.classList.add('active'); renderListaWP(wpWorker); };
+        window.trocarAbaWP = function(aba, el) {
+            wpAbaAtiva=aba;
+            document.querySelectorAll('.wp-tab').forEach(t=>t.classList.remove('active'));
+            if(el) el.classList.add('active');
+            if(aba==='placar') renderPlacardWP(wpWorker);
+            else renderListaWP(wpWorker);
+        };
+
+        function calcularConquistas(nome) {
+            const status = liveData.tarefasStatus||{};
+            const usuarios = liveData.usuariosSalvos||{};
+            // Contagem geral
+            const contagem = {};
+            const tempos = {}; const temposN = {};
+            Object.values(status).forEach(st=>{
+                if(st.status==='done'&&st.worker){
+                    contagem[st.worker]=(contagem[st.worker]||0)+1;
+                    if(st.startTime&&st.endTime){
+                        const d=Math.round((st.endTime-st.startTime)/1000);
+                        if(d>0&&d<7200){tempos[st.worker]=(tempos[st.worker]||0)+d;temposN[st.worker]=(temposN[st.worker]||0)+1;}
+                    }
+                }
+            });
+            const ranking = Object.entries(contagem).sort((a,b)=>b[1]-a[1]);
+            const meuTotal = contagem[nome]||0;
+            const meuTempo = temposN[nome]?Math.round(tempos[nome]/temposN[nome]):null;
+            const menorTempo = Object.entries(tempos).filter(([w])=>temposN[w]>=3).map(([w,t])=>({w,med:Math.round(t/temposN[w])})).sort((a,b)=>a.med-b.med);
+            const conquistas = [];
+            if(ranking[0]?.[0]===nome && meuTotal>0) conquistas.push({icon:'🥇',label:'Líder do Turno',cor:'#f59e0b',bg:'rgba(245,158,11,0.15)'});
+            if(meuTotal>=10) conquistas.push({icon:'🔥',label:'10+ Tarefas',cor:'#ef4444',bg:'rgba(239,68,68,0.15)'});
+            if(meuTotal>=20) conquistas.push({icon:'💪',label:'20+ Tarefas',cor:'#6366f1',bg:'rgba(99,102,241,0.15)'});
+            if(menorTempo[0]?.w===nome) conquistas.push({icon:'⚡',label:'Mais Rápido',cor:'#06b6d4',bg:'rgba(6,182,212,0.15)'});
+            // Zero pendências no setor mais ativo
+            const setores = todosSetores().filter(s=>liveData.setoresAtivos?.[s.id]!==false);
+            const todosDone = setores.some(s=>{
+                const ts = liveData.tarefasCustomizadas.filter(t=>t.cat===s.id);
+                return ts.length>0 && ts.every((t,i)=>status[s.id+'_'+i]?.status==='done');
+            });
+            if(todosDone) conquistas.push({icon:'🎯',label:'Setor Completo',cor:'#10b981',bg:'rgba(16,185,129,0.15)'});
+            if(meuTempo && meuTempo < 180) conquistas.push({icon:'🚀',label:'Super Veloz',cor:'#8b5cf6',bg:'rgba(139,92,246,0.15)'});
+            return {conquistas, ranking, meuTotal, meuTempo, contagem};
+        }
+
+        function dispararConfete() {
+            const cores=['#f59e0b','#10b981','#6366f1','#ef4444','#06b6d4','#ec4899'];
+            for(let i=0;i<18;i++){
+                const el=document.createElement('div');
+                el.style.cssText=`position:fixed;top:-10px;left:${Math.random()*100}vw;width:8px;height:8px;border-radius:${Math.random()>0.5?'50%':'2px'};background:${cores[Math.floor(Math.random()*cores.length)]};z-index:99999;pointer-events:none;animation:confettiCair ${1.2+Math.random()*1.5}s ease-in forwards;animation-delay:${Math.random()*0.5}s;`;
+                document.body.appendChild(el);
+                setTimeout(()=>el.remove(),3000);
+            }
+        }
+
+        function renderPlacardWP(nome) {
+            const box=document.getElementById('wp-task-list'); if(!box) return;
+            const placardAtivo = liveData.placardAtivo !== false;
+            if(!placardAtivo) {
+                box.innerHTML=`<div style="text-align:center;padding:32px 16px;">
+                    <div style="font-size:40px;margin-bottom:12px;">🏆</div>
+                    <div style="font-size:14px;font-weight:700;color:var(--text);">Placar desativado pelo gerente</div>
+                    <div style="font-size:12px;color:var(--text3);margin-top:6px;">O placar competitivo está temporariamente desabilitado.</div>
+                </div>`;
+                return;
+            }
+            const {conquistas, ranking, meuTotal, meuTempo, contagem} = calcularConquistas(nome);
+            const minhaPosicao = ranking.findIndex(([w])=>w===nome);
+            const medalhas = ['🥇','🥈','🥉'];
+            const cores = ['#f59e0b','#9ca3af','#cd7f32'];
+
+            // Dispara animação se for 1º lugar
+            setTimeout(()=>{
+                if(minhaPosicao===0 && meuTotal>0) { dispararConfete(); try{new Audio('data:audio/wav;base64,').play();}catch(e){} }
+            }, 400);
+
+            let html = '';
+
+            // Minhas conquistas
+            if(conquistas.length) {
+                html+=`<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:8px;">SUAS CONQUISTAS</div><div style="display:flex;flex-wrap:wrap;">`;
+                conquistas.forEach((c,i)=>{
+                    html+=`<span class="conquista-badge" style="background:${c.bg};color:${c.cor};animation-delay:${i*0.1}s;">${c.icon} ${c.label}</span>`;
+                });
+                html+='</div></div>';
+            }
+
+            // Minha posição
+            const medalha = minhaPosicao>=0&&minhaPosicao<3?medalhas[minhaPosicao]:(minhaPosicao>=0?`${minhaPosicao+1}º`:'—');
+            html+=`<div style="text-align:center;padding:16px 0;margin-bottom:14px;">
+                <div class="medalha-anim" style="font-size:56px;display:inline-block;">${medalha}</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-top:4px;">${meuTotal} tarefa${meuTotal!==1?'s':''} concluída${meuTotal!==1?'s':''}</div>
+                ${meuTempo?`<div style="font-size:11px;color:var(--text3);">Tempo médio: ${Math.floor(meuTempo/60)}m ${meuTempo%60}s</div>`:''}
+            </div>`;
+
+            // Ranking completo
+            html+='<div style="font-size:11px;font-weight:800;color:var(--text3);letter-spacing:1px;margin-bottom:8px;">RANKING DA EQUIPE</div>';
+            ranking.forEach(([w,total],i)=>{
+                const ehEu = w===nome;
+                const med = medalhas[i]||`${i+1}º`;
+                const cor = i<3?cores[i]:'var(--text3)';
+                html+=`<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;margin-bottom:6px;background:${ehEu?'rgba(99,102,241,0.12)':'var(--card2)'};border:1.5px solid ${ehEu?'var(--accent)':'transparent'};">
+                    <span style="font-size:20px;min-width:28px;text-align:center;">${med}</span>
+                    ${renderAvatarEl(w,36)}
+                    <div style="flex:1;"><div style="font-size:13px;font-weight:${ehEu?'800':'600'};color:${ehEu?'var(--accent)':'var(--text)'};">${w}${ehEu?' (você)':''}</div></div>
+                    <div style="font-size:16px;font-weight:900;color:${cor};">${total}</div>
+                </div>`;
+            });
+
+            if(!ranking.length) html+='<div style="text-align:center;color:var(--text3);font-size:12px;padding:16px;">Nenhum dado ainda. Conclua tarefas para aparecer no ranking!</div>';
+
+            box.innerHTML=html;
+        }
         function getFolgaInfo(nome) { const f=liveData.escalaFolgas?.[nome]; if(!f) return null; const dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado']; let txt=''; if(f.semana!==undefined&&f.semana!==null&&f.semana!=='') txt+='Folga semanal: '+dias[f.semana]; if(f.domingos&&f.domingos.length) txt+=(txt?' · ':'')+f.domingos.length+' domingo(s) marcado(s)'; return txt||null; }
         function coletarTarefasFuncionario(nome, modo) { const res=[]; todosSetores().forEach(s=>{ liveData.tarefasCustomizadas.filter(c=>c.cat===s.id).forEach((t,i)=>{ const chave=s.id+'_'+i; const st=liveData.tarefasStatus[chave]; if(!st||st.worker!==nome) return; if(modo==='working'&&st.status==='working') res.push({t,s,chave,st}); else if(modo==='done'&&st.status==='done') res.push({t,s,chave,st}); else if(modo==='all') res.push({t,s,chave,st}); }); }); return res; }
         function renderListaWP(nome) {
@@ -5696,6 +5839,30 @@ const TAREFAS_RESTAURANTE = {
         window.verFoto = function(src){ const ov=document.getElementById('foto-viewer'); const img=document.getElementById('foto-viewer-img'); if(img) img.src=src; if(ov) ov.classList.add('show'); };
         function renderHistorico(){ const box=document.getElementById('historico-list'); if(!box) return; const hist=liveData.historicoTurnos||[]; if(!hist.length){ box.innerHTML='<p style="color:var(--text3);font-size:12px;padding:8px 0;">Nenhum turno salvo ainda.</p>'; return; } let html=''; hist.slice(0,15).forEach(h=>{ html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><div><div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div><div style="font-size:11px;color:var(--text3);">${h.feitas}/${h.total} tarefas</div></div><div style="font-size:18px;font-weight:800;color:var(--accent);">${h.pct}%</div></div>`; }); box.innerHTML=html; }
         window.renderHistorico=renderHistorico; window.atualizarNotifEscala=atualizarNotifEscala;
+
+        function atualizarTermometro() {
+            const wrap = document.getElementById('termometro-wrap'); if(!wrap) return;
+            const todas = liveData.tarefasCustomizadas||[];
+            const status = liveData.tarefasStatus||{};
+            let feitas=0, andamento=0, pendentes=0;
+            todas.forEach((t,i)=>{
+                const st = status[t.cat+'_'+i]?.status||'idle';
+                if(st==='done') feitas++;
+                else if(st==='working') andamento++;
+                else pendentes++;
+            });
+            const total = todas.length||1;
+            const pct = Math.round((feitas/total)*100);
+            const fill = document.getElementById('term-fill');
+            const pctEl = document.getElementById('term-pct');
+            const statusEl = document.getElementById('term-status');
+            const countsEl = document.getElementById('term-counts');
+            if(fill) { fill.style.width=pct+'%'; fill.style.background=pct>=80?'#10b981':pct>=50?'#f59e0b':'#6366f1'; }
+            if(pctEl) { pctEl.textContent=pct+'%'; pctEl.style.color=pct>=80?'#10b981':pct>=50?'#f59e0b':'#6366f1'; }
+            if(statusEl) statusEl.textContent = pct>=80?'🟢 Turno excelente!':pct>=50?'🟡 Bom ritmo':pct>=20?'🔵 Em andamento':'🔴 Turno iniciando';
+            if(countsEl) countsEl.textContent = `✅${feitas} ⏳${andamento} 📋${pendentes}`;
+        }
+        window.atualizarTermometro = atualizarTermometro;
 
         // ========== SPLASH SCREEN ==========
         let _splashLogoCarregado = false;
@@ -5787,24 +5954,41 @@ const TAREFAS_RESTAURANTE = {
         // Tenta carregar o restaurante do localStorage (auto-reconexão)
         async function bootRestaurante() {
             const restId = localStorage.getItem('sc-rest-id');
-            if (!restId) {
+            // Fix: ler ?rest= da URL para PWA instalado (localStorage separado do Safari)
+            const urlRest = new URLSearchParams(window.location.search).get('rest');
+            if (urlRest && urlRest !== restId) {
+                localStorage.setItem('sc-rest-id', urlRest);
+                // Limpa URL sem recarregar
+                try { history.replaceState(null,'',window.location.pathname); } catch(e){}
+            }
+            const idFinal = urlRest || restId;
+            if (!idFinal) {
                 esconderSplash();
                 trocarTela('scr-restaurante');
                 return;
             }
-            mostrarSplash(restId);
+            mostrarSplash(idFinal);
+            // Timeout de 4s — se Firebase demorar, libera a tela
+            const timer = setTimeout(() => {
+                console.warn('bootRestaurante timeout — continuando sem dados');
+                conectarRestaurante(idFinal);
+                esconderSplash();
+                trocarTela('scr-login');
+            }, 4000);
             try {
-                const snap = await getDoc(refRestaurante(restId));
+                const snap = await getDoc(refRestaurante(idFinal));
+                clearTimeout(timer);
                 if (snap.exists()) {
-                    await conectarEEntrar(restId);
+                    await conectarEEntrar(idFinal);
                 } else {
                     localStorage.removeItem('sc-rest-id');
                     esconderSplash();
                     trocarTela('scr-restaurante');
                 }
             } catch(e) {
+                clearTimeout(timer);
                 console.warn('bootRestaurante', e);
-                conectarRestaurante(restId);
+                conectarRestaurante(idFinal);
                 esconderSplash();
                 trocarTela('scr-restaurante');
             }
@@ -6464,8 +6648,17 @@ const TAREFAS_RESTAURANTE = {
         }
         // iOS / casos sem prompt nativo: instrui o usuário
         const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        // Inclui ?rest= na URL para que o PWA instalado lembre o restaurante
+        const restAtual = localStorage.getItem('sc-rest-id');
+        if (restAtual) {
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set('rest', restAtual);
+                history.replaceState(null, '', url.toString());
+            } catch(e){}
+        }
         if (isIOS) {
-            if (window.customAlert) customAlert("Para instalar no iPhone:\n\n1) Toque no botão Compartilhar (quadrado com seta) na barra do Safari.\n2) Escolha \"Adicionar à Tela de Início\".\n3) Toque em Adicionar.");
+            if (window.customAlert) customAlert("Para instalar no iPhone:\n\n1) Toque no botão Compartilhar (quadrado com seta) na barra do Safari.\n2) Escolha \"Adicionar à Tela de Início\".\n3) Toque em Adicionar.\n\nO app vai abrir direto no seu restaurante! 🎉");
         } else {
             if (window.customAlert) customAlert("Para instalar:\n\nAbra o menu do navegador (⋮) e toque em \"Instalar app\" ou \"Adicionar à tela inicial\".");
         }

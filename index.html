@@ -245,9 +245,8 @@
         .sector-tabs { display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 2px 10px;margin-bottom:4px;scroll-behavior:smooth; }
         .sector-tabs::-webkit-scrollbar { display:none; }
         /* Swipe de setores */
-        .sector-swipe-wrap { display:flex;overflow-x:scroll;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;width:100%;max-width:100%; }
-        .sector-swipe-wrap::-webkit-scrollbar { display:none; }
-        .sector-swipe-item { min-width:100%;width:100%;scroll-snap-align:start;flex-shrink:0;box-sizing:border-box; }
+        .sector-swipe-wrap { position:relative;overflow:hidden;width:100%;max-width:100%; }
+        .sector-swipe-item { width:100%;box-sizing:border-box; }
         .sector-tab { background:var(--card2);border:1.5px solid var(--border);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;color:var(--text2);white-space:nowrap;cursor:pointer;transition:all var(--transition);flex-shrink:0;font-family:var(--font-body); }
         .sector-tab.active { background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 2px 12px var(--accent-glow); }
         .sector-card { background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow-card); }
@@ -2248,6 +2247,11 @@ const TAREFAS_RESTAURANTE = {
         // Migra dados antigos do Marchesini (app/liveData) para restaurantes/marchesini, uma única vez
         async function migrarMarchesiniSeNecessario() {
             try {
+                // CORREÇÃO: nunca migrar se o restaurante ativo não for marchesini
+                // Isso evitava que Garden e outros restaurantes herdassem dados do Marchesini
+                const restAtivo = localStorage.getItem('sc-rest-id') || 'marchesini';
+                if (restAtivo !== 'marchesini') return false;
+
                 const destino = refRestaurante('marchesini');
                 const jaExiste = await getDoc(destino);
                 if (jaExiste.exists()) return false; // já migrado
@@ -3549,10 +3553,11 @@ const TAREFAS_RESTAURANTE = {
                 tab.textContent = s.icon + ' ' + s.title;
                 tab.style.borderLeft = `3px solid ${s.color}`;
                 tab.onclick = () => {
+                    const prevIdx = setores.findIndex(s2 => s2.id === activeSector);
+                    const nextIdx = si;
+                    const dir = nextIdx > prevIdx ? 'next' : 'prev';
                     activeSector = s.id;
-                    // Rola o container de setores para o índice correto
-                    const swWrap = document.getElementById('sector-swipe-wrap');
-                    if (swWrap) swWrap.scrollTo({ left: si * swWrap.clientWidth, behavior: 'smooth' });
+                    renderSetorAtivo(activeSector, dir);
                     // Atualiza tabs
                     document.querySelectorAll('.sector-tab').forEach(t => t.classList.remove('active'));
                     tab.classList.add('active');
@@ -3573,11 +3578,17 @@ const TAREFAS_RESTAURANTE = {
             swipeWrap.className = 'sector-swipe-wrap';
             content.appendChild(swipeWrap);
 
-            // ===== RENDERIZA TODOS OS SETORES =====
-            setores.forEach((setor, si) => {
+            // ===== RENDERIZA APENAS O SETOR ATIVO (um por vez, seguro para Safari) =====
+            function renderSetorAtivo(setorId, direcao) {
+                swipeWrap.innerHTML = '';
+                const setor = setores.find(s => s.id === setorId);
+                if (!setor) return;
                 const swipeItem = document.createElement('div');
                 swipeItem.className = 'sector-swipe-item';
+                if (direcao === 'next') swipeItem.classList.add('setor-anim-dir');
+                else if (direcao === 'prev') swipeItem.classList.add('setor-anim-esq');
                 swipeWrap.appendChild(swipeItem);
+                const si = setores.findIndex(s => s.id === setorId);
 
                 let tarefas = liveData.tarefasCustomizadas.filter((t, i) => {
                     if (t.cat !== setor.id) return false;
@@ -3662,37 +3673,12 @@ const TAREFAS_RESTAURANTE = {
                 if (st.status === 'working' && st.startTime) iniciarCronLista(chave, st.startTime);
             });
                 if (currentWorker !== 'Gerente') habilitarDragNaLista(tasksListEl, setor.id);
-            }); // fim forEach setores
+            } // fim renderSetorAtivo
 
-            // ===== Scroll para o setor ativo =====
-            const activeIdx = setores.findIndex(s => s.id === activeSector);
-            if (activeIdx >= 0) {
-                requestAnimationFrame(() => {
-                    swipeWrap.scrollLeft = activeIdx * swipeWrap.clientWidth;
-                });
-            }
+            // Renderiza o setor ativo inicialmente (sem animação)
+            renderSetorAtivo(activeSector, null);
 
-            // ===== Detectar setor visível ao scrollar e atualizar tabs =====
-            let _swipeScrollTimer;
-            swipeWrap.onscroll = () => {
-                clearTimeout(_swipeScrollTimer);
-                _swipeScrollTimer = setTimeout(() => {
-                    const idx = Math.round(swipeWrap.scrollLeft / swipeWrap.clientWidth);
-                    if (setores[idx] && setores[idx].id !== activeSector) {
-                        activeSector = setores[idx].id;
-                        document.querySelectorAll('.sector-tab').forEach((t, i) => {
-                            t.classList.toggle('active', i === idx);
-                        });
-                        const activeTab = document.getElementById('tab-' + activeSector);
-                        if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    }
-                }, 80);
-            };
-
-            // ===== SWIPE ANTIGO REMOVIDO (substituído pelo scroll-snap nativo) =====
-            if (content._swS) content.removeEventListener('touchstart', content._swS);
-            if (content._swE) content.removeEventListener('touchend', content._swE);
-            // ===== SWIPE ENTRE SETORES (legado - mantido para compatibilidade) =====
+            // ===== SWIPE ENTRE SETORES com touch (animação CSS suave) =====
             if (content._swS) content.removeEventListener('touchstart', content._swS);
             if (content._swE) content.removeEventListener('touchend', content._swE);
             let swX = 0, swY = 0;
@@ -3704,39 +3690,15 @@ const TAREFAS_RESTAURANTE = {
                     const all = setores, cur = all.findIndex(s => s.id === activeSector);
                     const nxt = dx > 0 ? Math.min(all.length - 1, cur + 1) : Math.max(0, cur - 1);
                     if (nxt === cur) return;
-                    if (!swFx) { activeSector = all[nxt].id; renderWorker(); return; }
-                    const el = document.getElementById('sector-content');
-                    if (el._sliding) return; el._sliding = true;
                     const goingNext = dx > 0;
-                    const w = el.offsetWidth;
-                    const parent = el.parentElement;
-                    // camada que SAI = cópia do setor atual, sobreposta
-                    const outgoing = document.createElement('div');
-                    outgoing.innerHTML = el.innerHTML;
-                    outgoing.style.cssText = `position:absolute;left:0;width:${w}px;top:${el.offsetTop}px;z-index:6;pointer-events:none;will-change:transform;`;
-                    parent.style.position = 'relative';
-                    const prevOverflow = parent.style.overflowX;
-                    parent.style.overflowX = 'hidden';
-                    parent.appendChild(outgoing);
-                    // re-renderiza o setor NOVO no lugar (camada que ENTRA)
+                    const dir = goingNext ? 'next' : 'prev';
                     activeSector = all[nxt].id;
-                    renderWorker();
-                    el.style.transition = 'none';
-                    el.style.transform = `translateX(${goingNext ? '100%' : '-100%'})`;
-                    el.style.willChange = 'transform';
-                    requestAnimationFrame(() => requestAnimationFrame(() => {
-                        const ease = 'transform 0.33s cubic-bezier(0.22,1,0.36,1)';
-                        el.style.transition = ease;
-                        el.style.transform = 'translateX(0)';
-                        outgoing.style.transition = ease;
-                        outgoing.style.transform = `translateX(${goingNext ? '-100%' : '100%'})`;
-                    }));
-                    setTimeout(() => {
-                        outgoing.remove();
-                        el.style.transition = ''; el.style.transform = ''; el.style.willChange = '';
-                        parent.style.overflowX = prevOverflow;
-                        el._sliding = false;
-                    }, 380);
+                    // Atualiza tab ativa
+                    document.querySelectorAll('.sector-tab').forEach((t, i) => t.classList.toggle('active', i === nxt));
+                    const activeTab = document.getElementById('tab-' + activeSector);
+                    if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    // Renderiza apenas o novo setor com animação CSS (seguro para Safari)
+                    renderSetorAtivo(activeSector, dir);
                 }
             };
             content.addEventListener('touchstart', content._swS, { passive: true });

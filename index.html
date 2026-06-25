@@ -1063,11 +1063,7 @@
                     <div class="mgr-btn-label">Zerar Turno</div>
                     <div class="mgr-btn-sub">Reiniciar todas as tarefas</div>
                 </div>
-                <div class="mgr-btn report" onclick="abrirGerenteModal('relatorio')">
-                    <div class="mgr-btn-icon-wrap" style="background:rgba(124,58,237,0.12);">📋</div>
-                    <div class="mgr-btn-label">Relatório do Turno</div>
-                    <div class="mgr-btn-sub">Exportar via WhatsApp</div>
-                </div>
+
                 <div class="mgr-btn quality" onclick="abrirGerenteModal('qualidade')">
                     <div class="mgr-btn-icon-wrap" style="background:rgba(13,148,136,0.12);">⭐</div>
                     <div class="mgr-btn-label">Avaliação de Qualidade</div>
@@ -3128,12 +3124,12 @@ const TAREFAS_RESTAURANTE = {
                     customAlert('Aguarde o restaurante carregar e tente novamente.');
                     return;
                 }
-                const senhaCorreta = liveData.masterPass;
+                const senhaCorreta = String(liveData.masterPass || '').trim();
                 if(!senhaCorreta) {
                     customAlert('Senha mestra não configurada. Use o painel do desenvolvedor para redefinir.');
                     return;
                 }
-                if(pass===senhaCorreta){
+                if(String(pass).trim()===senhaCorreta){
                     currentWorker='Gerente';
                     localStorage.setItem('sc-last-user','Gerente');
                     document.getElementById('sidebar-after-login').style.display='block';
@@ -3216,9 +3212,9 @@ const TAREFAS_RESTAURANTE = {
             ov.classList.add('show');
             setTimeout(()=>document.getElementById('dlg-gerente-pass')?.focus(),150);
             document.getElementById('dlg-g-ok').onclick = () => {
-                const s = document.getElementById('dlg-gerente-pass')?.value?.trim();
+                const s = String(document.getElementById('dlg-gerente-pass')?.value?.trim() || '');
                 ov.classList.remove('show');
-                const senhaCorreta = liveData.masterPass;
+                const senhaCorreta = String(liveData.masterPass || '').trim();
                 if(!senhaCorreta) { customAlert('Senha mestra não configurada.\nUse o Painel do Desenvolvedor para redefinir.'); return; }
                 if (s === senhaCorreta) {
                     currentWorker='Gerente';
@@ -4792,35 +4788,273 @@ const TAREFAS_RESTAURANTE = {
             renderWorker();
         };
 
-        function renderRelatorios(body) {
-            const hist = liveData.historicoTurnos || [];
-            let html = '<div style="padding:4px 2px;">';
-            // Botão histórico de turnos
-            html += '<div style="margin-bottom:16px;">';
-            html += '<div class="config-section-title">🕐 Histórico de Turnos</div>';
-            if (!hist.length) {
-                html += '<p style="font-size:12px;color:var(--text3);padding:12px 0;">Nenhum turno salvo ainda. Ao zerar o turno, ele aparece aqui.</p>';
-            } else {
-                hist.slice(0,15).forEach(h => {
-                    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);">
-                        <div>
-                            <div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div>
-                            <div style="font-size:11px;color:var(--text3);">${h.feitas}/${h.total} tarefas concluídas</div>
-                        </div>
-                        <div style="font-size:20px;font-weight:900;color:var(--accent);">${h.pct}%</div>
-                    </div>`;
+        // ====== RELATÓRIOS — TELA COMPLETA ======
+        let _relAba = 'visao'; // aba ativa: visao | turnos | desempenho | tarefas | desperdicio | comparativo
+        let _relPeriodo = 'hoje'; // hoje | semana | mes
+
+        function _relFiltrarPorPeriodo(lista, campoTs) {
+            const agora = Date.now();
+            const inicio = _relPeriodo === 'hoje' ? new Date().setHours(0,0,0,0)
+                : _relPeriodo === 'semana' ? agora - 7*24*60*60*1000
+                : agora - 30*24*60*60*1000;
+            return lista.filter(item => (item[campoTs]||0) >= inicio);
+        }
+
+        function _relBarras(dados, cor) {
+            // dados = [{label, valor}]
+            if (!dados.length) return '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">Sem dados no período.</div>';
+            const max = Math.max(...dados.map(d=>d.valor), 1);
+            return dados.map(d => {
+                const pct = Math.round((d.valor/max)*100);
+                return `<div style="margin-bottom:10px;">
+                    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px;">
+                        <span>${d.label}</span><span style="font-weight:700;color:var(--text);">${d.valor}</span>
+                    </div>
+                    <div style="background:var(--card2);border-radius:6px;height:10px;overflow:hidden;">
+                        <div style="background:${cor||'var(--accent)'};width:${pct}%;height:100%;border-radius:6px;transition:width 0.4s;"></div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function _relPizza(dados) {
+            if (!dados.length) return '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">Sem dados no período.</div>';
+            const total = dados.reduce((a,d)=>a+d.valor,0)||1;
+            const cores = ['#6366f1','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899'];
+            let svg = `<svg viewBox="0 0 42 42" style="width:120px;height:120px;transform:rotate(-90deg);">`;
+            let offset = 0;
+            dados.forEach((d,i) => {
+                const pct = (d.valor/total)*100;
+                svg += `<circle cx="21" cy="21" r="15.9" fill="none" stroke="${cores[i%cores.length]}" stroke-width="10" stroke-dasharray="${pct} ${100-pct}" stroke-dashoffset="${-offset}" />`;
+                offset += pct;
+            });
+            svg += '</svg>';
+            const legenda = dados.map((d,i)=>`<div style="display:flex;align-items:center;gap:6px;font-size:11px;margin-bottom:4px;"><span style="width:10px;height:10px;border-radius:50%;background:${cores[i%cores.length]};flex-shrink:0;"></span><span style="color:var(--text2);">${d.label}</span><span style="margin-left:auto;font-weight:700;color:var(--text);">${Math.round((d.valor/total)*100)}%</span></div>`).join('');
+            return `<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">${svg}<div style="flex:1;min-width:120px;">${legenda}</div></div>`;
+        }
+
+        function _relKPI(valor, label, cor, sub) {
+            return `<div style="background:var(--card2);border-radius:12px;padding:14px;flex:1;min-width:120px;border-left:3px solid ${cor||'var(--accent)'};">
+                <div style="font-size:24px;font-weight:900;color:${cor||'var(--accent)'};">${valor}</div>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">${label}</div>
+                ${sub?`<div style="font-size:10px;color:var(--text3);margin-top:2px;">${sub}</div>`:''}
+            </div>`;
+        }
+
+        function _relAbaVisao() {
+            const setores = todosSetores().filter(s=>liveData.setoresAtivos?.[s.id]!==false);
+            const todas = liveData.tarefasCustomizadas||[];
+            const status = liveData.tarefasStatus||{};
+            let pendentes=0, andamento=0, concluidas=0;
+            todas.forEach((t,i)=>{
+                const chave = t.cat+'_'+i;
+                const st = status[chave]?.status||'idle';
+                if(st==='done') concluidas++;
+                else if(st==='working') andamento++;
+                else pendentes++;
+            });
+            const total = todas.length||1;
+            const pctGeral = Math.round((concluidas/total)*100);
+
+            // Taxa por setor
+            let setorRows = '';
+            setores.forEach(s=>{
+                const ts = todas.filter(t=>t.cat===s.id);
+                const feat = ts.filter((t,i)=>status[s.id+'_'+i]?.status==='done').length;
+                const pct = ts.length?Math.round((feat/ts.length)*100):0;
+                const cor = pct>=80?'#10b981':pct>=50?'#f59e0b':'#ef4444';
+                setorRows+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+                    <span style="font-size:18px;">${s.icon}</span>
+                    <div style="flex:1;">
+                        <div style="font-size:12px;font-weight:700;color:var(--text);">${s.title}</div>
+                        <div style="background:var(--card2);border-radius:4px;height:6px;margin-top:4px;overflow:hidden;"><div style="background:${cor};width:${pct}%;height:100%;border-radius:4px;"></div></div>
+                    </div>
+                    <span style="font-size:13px;font-weight:900;color:${cor};">${pct}%</span>
+                </div>`;
+            });
+
+            return `
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                    ${_relKPI(pctGeral+'%','Conclusão Geral','#6366f1','do turno atual')}
+                    ${_relKPI(concluidas,'Concluídas','#10b981')}
+                    ${_relKPI(andamento,'Em andamento','#f59e0b')}
+                    ${_relKPI(pendentes,'Pendentes','#ef4444')}
+                </div>
+                <div class="config-section-title">Taxa por Setor</div>
+                ${setorRows||'<div style="color:var(--text3);font-size:12px;padding:12px 0;">Nenhum setor ativo.</div>'}
+                <div class="config-section-title" style="margin-top:16px;">📲 Relatório do Turno</div>
+                <button class="btn-primary" onclick="abrirGerenteModal('relatorio')" style="width:100%;margin-top:4px;">📋 Exportar via WhatsApp</button>`;
+        }
+
+        function _relAbaTurnos() {
+            const hist = liveData.historicoTurnos||[];
+            if(!hist.length) return '<div style="color:var(--text3);font-size:12px;text-align:center;padding:24px 0;">Nenhum turno salvo ainda.<br>Ao zerar o turno, ele aparece aqui.</div>';
+            return hist.slice(0,20).map(h=>`
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);">
+                    <div>
+                        <div style="font-size:13px;font-weight:700;color:var(--text);">${h.data}</div>
+                        <div style="font-size:11px;color:var(--text3);">${h.feitas||0}/${h.total||0} tarefas · ${h.equipe?.length||0} funcionários</div>
+                    </div>
+                    <div style="font-size:22px;font-weight:900;color:${(h.pct||0)>=80?'#10b981':(h.pct||0)>=50?'#f59e0b':'#ef4444'};">${h.pct||0}%</div>
+                </div>`).join('');
+        }
+
+        function _relAbaDesempenho() {
+            const hist = liveData.historicoTurnos||[];
+            const status = liveData.tarefasStatus||{};
+            const usuarios = liveData.usuariosSalvos||{};
+            // Ranking por tarefas concluídas (turno atual + histórico)
+            const contagem = {};
+            Object.values(status).forEach(st=>{
+                if(st.status==='done' && st.worker && st.worker!=='Gerente') {
+                    contagem[st.worker]=(contagem[st.worker]||0)+1;
+                }
+            });
+            hist.forEach(h=>{
+                (h.statusSnapshot ? Object.values(h.statusSnapshot) : []).forEach(st=>{
+                    if(st.status==='done'&&st.worker&&st.worker!=='Gerente') contagem[st.worker]=(contagem[st.worker]||0)+1;
                 });
-            }
-            html += '</div>';
-            // Placeholder para futuros relatórios
-            html += '<div class="config-section-title" style="margin-top:8px;">Em breve</div>';
-            html += '<div style="padding:16px;background:var(--card2);border-radius:var(--radius-md);border:1px dashed var(--border);text-align:center;">';
-            html += '<div style="font-size:28px;margin-bottom:8px;">📈</div>';
-            html += '<div style="font-size:13px;font-weight:700;color:var(--text);">Painel de Analytics</div>';
-            html += '<div style="font-size:11px;color:var(--text3);margin-top:4px;">Gráficos de desempenho, ranking da equipe e análise de desperdício chegando em breve.</div>';
-            html += '</div>';
-            html += '</div>';
-            body.innerHTML = html;
+            });
+            const ranking = Object.entries(contagem).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,valor])=>({label,valor}));
+            // Tempo médio por funcionário
+            const tempos = {};
+            const temposN = {};
+            Object.values(status).forEach(st=>{
+                if(st.status==='done'&&st.worker&&st.startTime&&st.endTime){
+                    const dur=Math.round((st.endTime-st.startTime)/1000);
+                    if(dur>0&&dur<7200){tempos[st.worker]=(tempos[st.worker]||0)+dur;temposN[st.worker]=(temposN[st.worker]||0)+1;}
+                }
+            });
+            const tempoMedioRows = Object.entries(tempos).map(([w,t])=>{
+                const med=Math.round(t/temposN[w]);
+                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
+                    <span style="font-size:13px;color:var(--text);">${w}</span>
+                    <span style="font-size:12px;font-weight:700;color:var(--accent);">⏱️ ${Math.floor(med/60)}m ${med%60}s / tarefa</span>
+                </div>`;
+            }).join('');
+            return `
+                <div class="config-section-title">🏆 Ranking de Produtividade</div>
+                ${_relBarras(ranking,'#6366f1')}
+                <div class="config-section-title" style="margin-top:16px;">⏱️ Tempo Médio por Funcionário</div>
+                ${tempoMedioRows||'<div style="color:var(--text3);font-size:12px;padding:12px 0;">Sem dados suficientes ainda.</div>'}`;
+        }
+
+        function _relAbaTarefas() {
+            const todas = liveData.tarefasCustomizadas||[];
+            const status = liveData.tarefasStatus||{};
+            // Tarefas mais concluídas
+            const contagemT = {};
+            todas.forEach((t,i)=>{
+                const chave=t.cat+'_'+i;
+                const st=status[chave];
+                if(st?.status==='done') contagemT[t.txt]=(contagemT[t.txt]||0)+1;
+            });
+            const maisFeitas = Object.entries(contagemT).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,valor])=>({label,valor}));
+            // Tarefas que mais atrasam (maior tempo médio em andamento)
+            const atrasadas = [];
+            todas.forEach((t,i)=>{
+                const chave=t.cat+'_'+i;
+                const st=status[chave];
+                if(st?.status==='done'&&st.startTime&&st.endTime){
+                    const dur=Math.round((st.endTime-st.startTime)/1000);
+                    if(dur>0&&dur<14400) atrasadas.push({label:t.txt,valor:dur});
+                }
+            });
+            atrasadas.sort((a,b)=>b.valor-a.valor);
+            const atrasadasTop = atrasadas.slice(0,5).map(d=>({...d,valor:Math.floor(d.valor/60)}));
+            // Horário de pico
+            const pico = {};
+            Object.values(status).forEach(st=>{
+                if(st.status==='done'&&st.endTime){
+                    const h=new Date(st.endTime).getHours();
+                    pico[h]=(pico[h]||0)+1;
+                }
+            });
+            const picoArr = Object.entries(pico).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([h,v])=>({label:h+'h',valor:v})).sort((a,b)=>parseInt(a.label)-parseInt(b.label));
+            return `
+                <div class="config-section-title">🔝 Tarefas Mais Concluídas</div>
+                ${_relBarras(maisFeitas,'#10b981')}
+                <div class="config-section-title" style="margin-top:16px;">🐢 Tarefas que Mais Demoram (min)</div>
+                ${_relBarras(atrasadasTop,'#f59e0b')}
+                <div class="config-section-title" style="margin-top:16px;">🕐 Horário de Pico</div>
+                ${_relBarras(picoArr,'#6366f1')}`;
+        }
+
+        function _relAbaDesperdicio() {
+            const regs = _relFiltrarPorPeriodo(liveData.registrosDesperdicio||[],'ts');
+            // Por tipo/item
+            const porItem = {};
+            regs.forEach(r=>{porItem[r.item||r.tarefa]=(porItem[r.item||r.tarefa]||0)+1;});
+            const porItemArr = Object.entries(porItem).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,valor])=>({label,valor}));
+            // Por motivo
+            const porMotivo = {};
+            regs.forEach(r=>{porMotivo[r.motivo||'Outros']=(porMotivo[r.motivo||'Outros']||0)+1;});
+            const porMotivoArr = Object.entries(porMotivo).sort((a,b)=>b[1]-a[1]).map(([label,valor])=>({label,valor}));
+            return `
+                <div class="config-section-title">🗑️ Por Item (${regs.length} registros)</div>
+                ${_relBarras(porItemArr,'#ef4444')}
+                <div class="config-section-title" style="margin-top:16px;">📊 Por Motivo</div>
+                ${_relPizza(porMotivoArr)}`;
+        }
+
+        function _relAbaComparativo() {
+            const hist = liveData.historicoTurnos||[];
+            const hoje = new Date();
+            const ontem = new Date(hoje); ontem.setDate(ontem.getDate()-1);
+            const semAtr = new Date(hoje); semAtr.setDate(semAtr.getDate()-7);
+            const fmt = d=>d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+            const buscar = (data)=>{
+                const str=data.toLocaleDateString('pt-BR');
+                return hist.find(h=>h.data&&h.data.includes(str));
+            };
+            const hoje_h=buscar(hoje), ontem_h=buscar(ontem), sem_h=buscar(semAtr);
+            const row=(label,h)=>h?`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);">
+                <div><div style="font-size:13px;font-weight:700;color:var(--text);">${label}</div><div style="font-size:11px;color:var(--text3);">${h.feitas||0}/${h.total||0} tarefas · ${h.equipe?.length||0} func.</div></div>
+                <div style="font-size:22px;font-weight:900;color:${(h.pct||0)>=80?'#10b981':(h.pct||0)>=50?'#f59e0b':'#ef4444'};">${h.pct||0}%</div>
+            </div>`:`<div style="padding:12px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text3);">${label} — sem dados</div>`;
+            // Tendência últimos 7 turnos
+            const ultimos = hist.slice(0,7).reverse();
+            const tendencia = ultimos.map((h,i)=>({label:h.data?.slice(0,5)||'',valor:h.pct||0}));
+            return `
+                <div class="config-section-title">📅 Comparativo</div>
+                ${row('Hoje ('+fmt(hoje)+')',hoje_h)}
+                ${row('Ontem ('+fmt(ontem)+')',ontem_h)}
+                ${row('7 dias atrás ('+fmt(semAtr)+')',sem_h)}
+                <div class="config-section-title" style="margin-top:16px;">📈 Tendência (últimos 7 turnos)</div>
+                ${_relBarras(tendencia,'#6366f1')}`;
+        }
+
+        function renderRelatorios(body) {
+            const abas = [
+                {id:'visao',   icon:'📊', label:'Visão Geral'},
+                {id:'turnos',  icon:'🕐', label:'Turnos'},
+                {id:'desempenho',icon:'🏆',label:'Desempenho'},
+                {id:'tarefas', icon:'⏱️', label:'Tarefas'},
+                {id:'desperdicio',icon:'🗑️',label:'Desperdício'},
+                {id:'comparativo',icon:'📅',label:'Comparativo'},
+            ];
+            const periodos = [{id:'hoje',label:'Hoje'},{id:'semana',label:'7 dias'},{id:'mes',label:'30 dias'}];
+
+            const abaHTML = abas.map(a=>`<button onclick="window._relMudarAba('${a.id}')" id="relaba-${a.id}" style="display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border:none;background:${_relAba===a.id?'var(--accent)':'var(--card2)'};color:${_relAba===a.id?'#fff':'var(--text2)'};border-radius:10px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all 0.2s;">
+                <span style="font-size:16px;">${a.icon}</span>${a.label}</button>`).join('');
+
+            const perHTML = periodos.map(p=>`<button onclick="window._relMudarPeriodo('${p.id}')" id="relper-${p.id}" style="flex:1;padding:7px;border:none;background:${_relPeriodo===p.id?'var(--accent)':'var(--card2)'};color:${_relPeriodo===p.id?'#fff':'var(--text2)'};border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;">${p.label}</button>`).join('');
+
+            let conteudo = '';
+            if(_relAba==='visao') conteudo=_relAbaVisao();
+            else if(_relAba==='turnos') conteudo=_relAbaTurnos();
+            else if(_relAba==='desempenho') conteudo=_relAbaDesempenho();
+            else if(_relAba==='tarefas') conteudo=_relAbaTarefas();
+            else if(_relAba==='desperdicio') conteudo=_relAbaDesperdicio();
+            else if(_relAba==='comparativo') conteudo=_relAbaComparativo();
+
+            body.innerHTML = `
+                <div style="overflow-x:auto;display:flex;gap:8px;padding-bottom:10px;margin-bottom:4px;scrollbar-width:none;">${abaHTML}</div>
+                ${_relAba!=='turnos'&&_relAba!=='visao'&&_relAba!=='comparativo'?`<div style="display:flex;gap:6px;margin-bottom:14px;">${perHTML}</div>`:''}
+                <div id="rel-conteudo">${conteudo}</div>`;
+
+            window._relMudarAba = function(id) { _relAba=id; renderRelatorios(body); };
+            window._relMudarPeriodo = function(id) { _relPeriodo=id; renderRelatorios(body); };
         }
 
         // ========================================================

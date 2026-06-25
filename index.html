@@ -2157,21 +2157,16 @@ const TAREFAS_RESTAURANTE = {
                 }
                 const oldMsgs = liveData.mensagensChat.length;
                 const oldOnline = contarOnline();
-                const novasTarefas = d.tarefasCustomizadas;
-                const tarefasValidas = novasTarefas && novasTarefas.length > 0
-                    ? novasTarefas
-                    : (liveData.tarefasCustomizadas.length > 0 ? liveData.tarefasCustomizadas : []);
+                // ISOLAMENTO: nunca usar liveData como fallback — dados vêm APENAS do Firebase
                 Object.assign(liveData, {
                     tarefasStatus: d.tarefasStatus || {},
-                    usuariosSalvos: (d.usuariosSalvos && Object.keys(d.usuariosSalvos).length > 0)
-                        ? d.usuariosSalvos
-                        : liveData.usuariosSalvos,
+                    usuariosSalvos: d.usuariosSalvos || {},
                     mensagensChat: d.mensagensChat || [],
                     mensagensDM: d.mensagensDM || {},
-                    tarefasCustomizadas: tarefasValidas,
+                    tarefasCustomizadas: d.tarefasCustomizadas || [],
                     setoresCustomizados: d.setoresCustomizados || [],
                     loginAtividade: d.loginAtividade || {},
-                    restaurante: d.restaurante || liveData.restaurante || { nome: 'Staff Check', logo: '', fonte: 'DM Sans' },
+                    restaurante: d.restaurante || { nome: 'Staff Check', logo: '', fonte: 'DM Sans' },
                     masterPass: d.masterPass || '',
                     historicoTurnos: d.historicoTurnos || [],
                     pontosRegistro: d.pontosRegistro || {},
@@ -2187,20 +2182,11 @@ const TAREFAS_RESTAURANTE = {
                     delegacoes: d.delegacoes || {},
                     delegacaoAtiva: d.delegacaoAtiva !== undefined ? d.delegacaoAtiva : false,
                     registrosDesperdicio: d.registrosDesperdicio || [],
-                    desperdicioItens: d.desperdicioItens || liveData.desperdicioItens || [],
+                    desperdicioItens: d.desperdicioItens || [],
                     temposTarefa: d.temposTarefa || {},
                     mostrarTempos: d.mostrarTempos !== undefined ? d.mostrarTempos : true
                 });
-                if (Object.keys(liveData.usuariosSalvos).length === 0) {
-                    if (restaurarBackupLocal()) {
-                        console.log('Backup local restaurado');
-                        salvar(true);
-                    }
-                }
-                if (liveData.tarefasCustomizadas.length === 0) {
-                    popularTarefasDoTemplate(liveData.templateAtivo || 'restaurante', true);
-                    salvar(true);
-                }
+                // NÃO aplicar template automaticamente — gerente escolhe nas configurações
                 // Garante estimativa de tempo em tarefas já salvas que não tenham (uma vez)
                 try {
                     if (typeof preencherEstimativasFaltantes === 'function' && preencherEstimativasFaltantes()) {
@@ -5592,20 +5578,53 @@ const TAREFAS_RESTAURANTE = {
 
         // Conecta ao restaurante e entra na tela de login
         async function conectarEEntrar(id) {
-            conectarRestaurante(id);
-            // Espera 2.5s pro snapshot do Firebase carregar os dados do restaurante
-            // antes de tentar auto-login (garante logo e dados corretos)
-            setTimeout(() => {
-                const lastUser = localStorage.getItem('sc-last-user');
-                if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser]) {
-                    tentarAutoLogin();
-                } else if (lastUser === 'Gerente') {
-                    tentarAutoLogin();
-                } else {
-                    trocarTela('scr-login');
+            // Reseta liveData completamente — dados vêm só do Firebase, nunca da memória anterior
+            liveData = {
+                restaurante:{nome:'',logo:'',fonte:'DM Sans'},
+                masterPass:'', templateAtivo:'restaurante',
+                tarefasCustomizadas:[], tarefasStatus:{}, usuariosSalvos:{},
+                historicoTurnos:[], mensagensChat:[], pedidosFolga:[],
+                registrosDesperdicio:[], desperdicioItens:[], temposTarefa:{},
+                mostrarTempos:true, loginAtividade:{}, setoresAtivos:{},
+                delegacoes:{}, delegacaoAtiva:false
+            };
+            // Busca dados reais com getDoc (síncrono, sem timing) antes de qualquer render
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (snap.exists()) {
+                    const d = snap.data();
+                    Object.assign(liveData, {
+                        restaurante: d.restaurante || {nome:'',logo:'',fonte:'DM Sans'},
+                        masterPass: d.masterPass || '',
+                        templateAtivo: d.templateAtivo || 'restaurante',
+                        tarefasCustomizadas: d.tarefasCustomizadas || [],
+                        tarefasStatus: d.tarefasStatus || {},
+                        usuariosSalvos: d.usuariosSalvos || {},
+                        historicoTurnos: d.historicoTurnos || [],
+                        mensagensChat: d.mensagensChat || [],
+                        pedidosFolga: d.pedidosFolga || [],
+                        registrosDesperdicio: d.registrosDesperdicio || [],
+                        desperdicioItens: d.desperdicioItens || [],
+                        temposTarefa: d.temposTarefa || {},
+                        mostrarTempos: d.mostrarTempos !== false,
+                        loginAtividade: d.loginAtividade || {},
+                        setoresAtivos: d.setoresAtivos || {},
+                        delegacoes: d.delegacoes || {},
+                        delegacaoAtiva: d.delegacaoAtiva || false
+                    });
                 }
-                sinalizarSplashPronto();
-            }, 2500);
+            } catch(e) { console.warn('getDoc erro:', e); }
+            // Agora conecta o listener em tempo real (com liveData já correto)
+            conectarRestaurante(id);
+            const lastUser = localStorage.getItem('sc-last-user');
+            if (lastUser && liveData.usuariosSalvos && liveData.usuariosSalvos[lastUser]) {
+                tentarAutoLogin();
+            } else if (lastUser === 'Gerente') {
+                tentarAutoLogin();
+            } else {
+                trocarTela('scr-login');
+            }
+            sinalizarSplashPronto();
         }
 
         // ---- Tela de seleção de restaurante ----
@@ -6014,17 +6033,12 @@ const TAREFAS_RESTAURANTE = {
 
         async function entrarComoAdmin(id) {
             if (!id) return;
-            try {
-                const snap = await getDoc(refRestaurante(id));
-                if (!snap.exists()) { customAlert('Restaurante "' + id + '" não encontrado.'); return; }
-            } catch(e) { customAlert('Erro de conexão: ' + e.message); return; }
-            // Trocar restaurante — reseta liveData completamente antes de qualquer render
+            // Reseta liveData completamente
             isSaving = false;
             currentWorker = 'Gerente';
             localStorage.removeItem('sc-last-user');
             localStorage.setItem('sc-last-user', 'Gerente');
             localStorage.setItem('sc-rest-id', id);
-            // Reseta liveData para evitar que dados do restaurante anterior apareçam
             liveData = {
                 restaurante:{nome:'',logo:'',fonte:'DM Sans'},
                 masterPass:'', templateAtivo:'restaurante',
@@ -6034,37 +6048,32 @@ const TAREFAS_RESTAURANTE = {
                 mostrarTempos:true, loginAtividade:{}, setoresAtivos:{},
                 delegacoes:{}, delegacaoAtiva:false
             };
-            // Espera snapshot real do Firebase antes de renderizar
-            await new Promise((resolve) => {
-                const unsub = onSnapshot(refRestaurante(id), (snap) => {
-                    if (snap.exists()) {
-                        const d = snap.data();
-                        Object.assign(liveData, {
-                            restaurante: d.restaurante || {nome:'',logo:'',fonte:'DM Sans'},
-                            masterPass: d.masterPass || '',
-                            templateAtivo: d.templateAtivo || 'restaurante',
-                            tarefasCustomizadas: d.tarefasCustomizadas || [],
-                            tarefasStatus: d.tarefasStatus || {},
-                            usuariosSalvos: d.usuariosSalvos || {},
-                            historicoTurnos: d.historicoTurnos || [],
-                            mensagensChat: d.mensagensChat || [],
-                            pedidosFolga: d.pedidosFolga || [],
-                            registrosDesperdicio: d.registrosDesperdicio || [],
-                            desperdicioItens: d.desperdicioItens || [],
-                            temposTarefa: d.temposTarefa || {},
-                            mostrarTempos: d.mostrarTempos !== false,
-                            loginAtividade: d.loginAtividade || {},
-                            setoresAtivos: d.setoresAtivos || {},
-                            delegacoes: d.delegacoes || {},
-                            delegacaoAtiva: d.delegacaoAtiva || false
-                        });
-                        unsub();
-                        resolve();
-                    }
+            // Busca dados reais com getDoc antes de renderizar
+            try {
+                const snap = await getDoc(refRestaurante(id));
+                if (!snap.exists()) { customAlert('Restaurante "' + id + '" não encontrado.'); return; }
+                const d = snap.data();
+                Object.assign(liveData, {
+                    restaurante: d.restaurante || {nome:'',logo:'',fonte:'DM Sans'},
+                    masterPass: d.masterPass || '',
+                    templateAtivo: d.templateAtivo || 'restaurante',
+                    tarefasCustomizadas: d.tarefasCustomizadas || [],
+                    tarefasStatus: d.tarefasStatus || {},
+                    usuariosSalvos: d.usuariosSalvos || {},
+                    historicoTurnos: d.historicoTurnos || [],
+                    mensagensChat: d.mensagensChat || [],
+                    pedidosFolga: d.pedidosFolga || [],
+                    registrosDesperdicio: d.registrosDesperdicio || [],
+                    desperdicioItens: d.desperdicioItens || [],
+                    temposTarefa: d.temposTarefa || {},
+                    mostrarTempos: d.mostrarTempos !== false,
+                    loginAtividade: d.loginAtividade || {},
+                    setoresAtivos: d.setoresAtivos || {},
+                    delegacoes: d.delegacoes || {},
+                    delegacaoAtiva: d.delegacaoAtiva || false
                 });
-                // Fallback: se demorar mais de 5s, continua mesmo assim
-                setTimeout(resolve, 5000);
-            });
+            } catch(e) { customAlert('Erro de conexão: ' + e.message); return; }
+            // Conecta listener em tempo real (com liveData já correto)
             conectarRestaurante(id);
             document.getElementById('sidebar-after-login').style.display = 'block';
             document.getElementById('sidebar-before-login').style.display = 'none';

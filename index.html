@@ -1734,7 +1734,7 @@ const TAREFAS_RESTAURANTE = {
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyAts9fsoZ_GrF3MRHDRlAw61Xti2uBkdnM",
             authDomain: "staffcheck-d6f20.firebaseapp.com",
@@ -5867,9 +5867,15 @@ const TAREFAS_RESTAURANTE = {
             try {
                 const snap = await getDoc(refRestaurante(id));
                 if (snap.exists()) {
-                    const ok = await customConfirm('Já existe um restaurante com o código "' + id + '". Deseja acessar ele?', 'Acessar', 'Cancelar');
-                    if (ok) await devAcessarRestaurante(id);
-                    return;
+                    // Se foi excluído anteriormente (apenas marcado como _excluido), permite recriar
+                    const dadosExist = snap.data();
+                    if (!dadosExist._excluido) {
+                        const ok = await customConfirm('Já existe um restaurante com o código "' + id + '". Deseja acessar ele?', 'Acessar', 'Cancelar');
+                        if (ok) await devAcessarRestaurante(id);
+                        return;
+                    }
+                    // Se _excluido === true, apaga o documento antigo e recria do zero
+                    await deleteDoc(refRestaurante(id));
                 }
                 const logoData = window._devLogoTemp || '';
                 const restData = {
@@ -5976,7 +5982,7 @@ const TAREFAS_RESTAURANTE = {
                 const idxRef=doc(db,'restaurantes','zindice');
                 const snap=await getDoc(idxRef);
                 if(snap.exists()){ const ids=(snap.data().ids||[]).filter(i=>i!==id); const infos=snap.data().info||{}; delete infos[id]; await setDoc(idxRef,{ids,info:infos},{merge:false}); }
-                await setDoc(refRestaurante(id),{_excluido:true,_excluidoEm:Date.now()},{merge:true});
+                await deleteDoc(refRestaurante(id));
                 customAlert(`✅ Restaurante "${nome}" removido.`);
                 if(restauranteAtivoId===id){ conectarRestaurante('marchesini'); localStorage.setItem('sc-rest-id','marchesini'); }
                 await renderPainelDesenvolvedor();

@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="dark" data-sectorglow="on" data-anim="on" data-sound="on" data-stories="on" data-swipefx="on">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=390, initial-scale=1.0, viewport-fit=cover">
     <title>Staff Check</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -404,10 +404,10 @@
         input:checked+.toggle-slider:before { transform:translateX(20px); }
 
         /* RESPONSIVIDADE TABLET */
-        /* TABLET e PC: zoom proporcional baseado na largura da tela */
+        /* TABLET e PC: viewport fixo em 390px, browser escala automaticamente */
         @media (min-width:600px) {
-            body { display:flex;justify-content:center;background:#000;min-height:100vh; }
-            #app { width:390px;position:relative;box-shadow:0 0 60px rgba(0,0,0,0.8);transform-origin:top center; }
+            body { background:#000; }
+            #app { width:100%;max-width:390px;margin:0 auto;box-shadow:0 0 60px rgba(0,0,0,0.8); }
         }
 
         /* TEMAS DE COR - SELETOR */
@@ -6632,33 +6632,6 @@ const TAREFAS_RESTAURANTE = {
         }
 
         // Captura o evento de instalação (Android/Chrome)
-        // ZOOM PROPORCIONAL — tablet e PC ficam igual ao celular escalado
-        function aplicarZoom() {
-            const app = document.getElementById('app');
-            if (!app) return;
-            const w = window.innerWidth;
-            if (w < 600) {
-                app.style.transform = '';
-                app.style.marginBottom = '';
-                document.body.style.minHeight = '';
-                return;
-            }
-            const zoom = w / 390;
-            const alturaReal = app.offsetHeight * zoom;
-            app.style.transform = `scale(${zoom})`;
-            app.style.transformOrigin = 'top center';
-            app.style.marginLeft = 'auto';
-            app.style.marginRight = 'auto';
-            document.body.style.minHeight = alturaReal + 'px';
-        }
-        aplicarZoom();
-        window.addEventListener('resize', aplicarZoom);
-        // Re-aplica após renders
-        const _origRenderWorker = window.renderWorker;
-        if (typeof _origRenderWorker === 'function') {
-            window.renderWorker = function(...args) { _origRenderWorker(...args); setTimeout(aplicarZoom, 100); };
-        }
-
         window.addEventListener("beforeinstallprompt", (e) => {
             e.preventDefault();
             window.deferredPrompt = e;
